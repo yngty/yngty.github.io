@@ -615,12 +615,12 @@ livere_uid: # <your_uid>
 # Gitalk
 # For more information: https://gitalk.github.io
 gitalk:
-  enable: false
-  github_id: # GitHub repo owner
-  repo: # Repository name to store issues
-  client_id: # GitHub Application Client ID
-  client_secret: # GitHub Application Client Secret
-  admin_user: # GitHub repo owner and collaborators, only these guys can initialize gitHub issues
+  enable: true
+  github_id: yngty # GitHub repo owner
+  repo: gitalk # Repository name to store issues
+  client_id: 236d3753e62ad995e8ca # GitHub Application Client ID
+  client_secret: 761e4f5e4a5f77352510c5c951accc840e73019a # GitHub Application Client Secret
+  admin_user: yngty # GitHub repo owner and collaborators, only these guys can initialize gitHub issues
   distraction_free_mode: true # Facebook-like distraction free mode
   # Gitalk's display language depends on user's browser or system environment
   # If you want everyone visiting your site to see a uniform language, you can set a force language value
