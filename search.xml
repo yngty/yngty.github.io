@@ -18,4 +18,29 @@
 <p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
 ]]></content>
   </entry>
+  <entry>
+    <title>Effective C++ 1：将C++视作一系列的语言</title>
+    <url>/2020/12/07/effective-cpp-1/</url>
+    <content><![CDATA[<blockquote>
+<p>Item 1: View C++ as a federation of languages</p>
+</blockquote>
+<p>一开始，<code>Ｃ++</code> 只是 <code>Ｃ</code> 加上一些面向对象特性，<code>Ｃ++</code> 最初的名称 <code>Ｃ with Classes</code> 也反映了这个血缘关系。现在这个语言逐渐成熟，已经是一个<strong>多重泛型编程语言</strong>(<code>multiparadigm programming language</code>)。同时支持过程形式(<code>procedural</code>)、面向对象形式(<code>object-oriented</code>)、函数形式(<code>functional</code>)、泛型形式(<code>generic</code>)、元编程形式(<code>metaprogramming</code>)</p>
+<p>将 <code>C++</code> 视为一个由相关语言组成的联邦而非单一的语言。</p>
+<p><code>C++</code> 主要４个子语言：</p>
+<ul>
+<li><code>C</code>。说到底Ｃ++仍是以Ｃ为基础。许多时候Ｃ++对问题的解法其实不过就是较高级的Ｃ的解法如<code>item2</code>、<code>item13</code>。当只使用<code>C++</code>中<code>C</code>的那部分语法，　会发现<code>C</code>语言的缺陷：没有模板、没有异常、没有重载。</li>
+<li><code>Object-Oriented</code>。面向对象程序设计也是<code>C++</code>的设计初衷：构造与析构、封装与继承、多态、动态绑定的虚函数。</li>
+<li><code>Template C++</code>。这是C++的泛型编程部分，大多数程序员经验最少的部分。<strong>TMP模板元编程</strong>（<code>template metaprogramming</code>）也是一个新兴的程序设计范式。</li>
+<li><code>STL</code>。<code>STL</code>是一个特殊的模板库，它将容器、迭代器和算法优雅地结合在一起。</li>
+</ul>
+<p><code>C++</code> 程序设计的惯例并非一成不变，而是取决于你使用 <code>C++</code> 语言的哪一部分。例如， 在基于C语言的程序设计中，基本类型传参时传值比传引用更有效率。 然而当你接触 <code>Object-Oriented C++</code> 时会发现，传常量指针是更好的选择。运用<code>Template C++</code>时尤其如此，因为彼时你甚至不知道所处理的对象的类型。 但是你如果又碰到了<code>STL</code>，其中的迭代器和函数对象都是基于<code>C</code>语言的指针而设计的， 这时又回到了原来的规则：传值比传引用更好。</p>
+]]></content>
+      <categories>
+        <category>Effective-C++</category>
+      </categories>
+      <tags>
+        <tag>Effective-C++</tag>
+        <tag>C++</tag>
+      </tags>
+  </entry>
 </search>
