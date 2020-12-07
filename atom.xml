@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>瓜地</title>
+  
+  <subtitle>不学无术</subtitle>
+  <link href="https://yngty.github.io/atom.xml" rel="self"/>
+  
+  <link href="https://yngty.github.io/"/>
+  <updated>2020-12-07T13:58:30.804Z</updated>
+  <id>https://yngty.github.io/</id>
+  
+  <author>
+    <name>yngty</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Effective C++ 1：将C++视作一系列的语言</title>
+    <link href="https://yngty.github.io/2020/12/07/effective-cpp-1/"/>
+    <id>https://yngty.github.io/2020/12/07/effective-cpp-1/</id>
+    <published>2020-12-07T20:40:56.000Z</published>
+    <updated>2020-12-07T13:58:30.804Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;Item 1: View C++ as a federation of languages&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;一开始，&lt;code&gt;Ｃ++&lt;/code&gt; 只是 &lt;code&gt;Ｃ&lt;/code&gt;</summary>
+        
+      
+    
+    
+    
+    <category term="Effective-C++" scheme="https://yngty.github.io/categories/Effective-C/"/>
+    
+    
+    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
+    
+    <category term="C++" scheme="https://yngty.github.io/tags/C/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Hello World</title>
+    <link href="https://yngty.github.io/2020/12/03/hello-world/"/>
+    <id>https://yngty.github.io/2020/12/03/hello-world/</id>
+    <published>2020-12-03T07:00:31.753Z</published>
+    <updated>2020-12-03T07:00:31.753Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.io/docs/&quot;&gt;documentation&lt;/a&gt;</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+</feed>
