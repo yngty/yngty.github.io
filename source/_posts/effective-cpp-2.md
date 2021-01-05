@@ -1,5 +1,5 @@
 ---
-title: Effective C++ 2：尽量以const, enum, inline 替换 &#35;deifne
+title: Effective C++ 2：尽量以const, enum, inline 替换 &#35;define
 date: 2020-12-14 12:36:49
 tags:
 - Effective-C++
