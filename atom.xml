@@ -6,7 +6,7 @@
   <link href="https://yngty.github.io/atom.xml" rel="self"/>
   
   <link href="https://yngty.github.io/"/>
-  <updated>2021-01-05T15:32:37.209Z</updated>
+  <updated>2021-01-05T15:46:37.189Z</updated>
   <id>https://yngty.github.io/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://yngty.github.io/2021/01/05/effective-cpp-3/"/>
     <id>https://yngty.github.io/2021/01/05/effective-cpp-3/</id>
     <published>2021-01-05T22:04:32.000Z</published>
-    <updated>2021-01-05T15:32:37.209Z</updated>
+    <updated>2021-01-05T15:46:37.189Z</updated>
     
     
       
@@ -47,11 +47,11 @@
   </entry>
   
   <entry>
-    <title>Effective C++ 2：尽量以const, enum, inline 替换 \#deifne</title>
+    <title>Effective C++ 2：尽量以const, enum, inline 替换 &amp;#35;deifne</title>
     <link href="https://yngty.github.io/2020/12/14/effective-cpp-2/"/>
     <id>https://yngty.github.io/2020/12/14/effective-cpp-2/</id>
     <published>2020-12-14T12:36:49.000Z</published>
-    <updated>2021-01-05T15:32:37.209Z</updated>
+    <updated>2021-01-05T15:46:37.189Z</updated>
     
     
       
@@ -82,7 +82,7 @@
     <link href="https://yngty.github.io/2020/12/07/effective-cpp-1/"/>
     <id>https://yngty.github.io/2020/12/07/effective-cpp-1/</id>
     <published>2020-12-07T20:40:56.000Z</published>
-    <updated>2021-01-05T15:32:37.209Z</updated>
+    <updated>2021-01-05T15:46:37.189Z</updated>
     
     
       
