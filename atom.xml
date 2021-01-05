@@ -6,7 +6,7 @@
   <link href="https://yngty.github.io/atom.xml" rel="self"/>
   
   <link href="https://yngty.github.io/"/>
-  <updated>2021-01-04T14:20:22.260Z</updated>
+  <updated>2021-01-05T15:15:41.817Z</updated>
   <id>https://yngty.github.io/</id>
   
   <author>
@@ -17,11 +17,41 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Effective C++ 3：尽可能使用 const</title>
+    <link href="https://yngty.github.io/2021/01/05/effective-cpp-3/"/>
+    <id>https://yngty.github.io/2021/01/05/effective-cpp-3/</id>
+    <published>2021-01-05T22:04:32.000Z</published>
+    <updated>2021-01-05T15:15:41.817Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;Item3: Use const whenever possible.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h1 id=&quot;常量的声明&quot;&gt;&lt;a href=&quot;#常量的声明&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="Effective-C++" scheme="https://yngty.github.io/categories/Effective-C/"/>
+    
+    
+    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
+    
+    <category term="C++" scheme="https://yngty.github.io/tags/C/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Effective C++ 2：尽量以const, enum, inline 替换</title>
     <link href="https://yngty.github.io/2020/12/14/effective-cpp-2/"/>
     <id>https://yngty.github.io/2020/12/14/effective-cpp-2/</id>
     <published>2020-12-14T12:36:49.000Z</published>
-    <updated>2021-01-04T14:20:22.260Z</updated>
+    <updated>2021-01-05T15:15:41.817Z</updated>
     
     
       
@@ -52,7 +82,7 @@
     <link href="https://yngty.github.io/2020/12/07/effective-cpp-1/"/>
     <id>https://yngty.github.io/2020/12/07/effective-cpp-1/</id>
     <published>2020-12-07T20:40:56.000Z</published>
-    <updated>2021-01-04T14:20:22.260Z</updated>
+    <updated>2021-01-05T15:15:41.817Z</updated>
     
     
       

@@ -23,14 +23,14 @@
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"yngty.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}};
   </script>
-<meta name="description" content="Item 2: Prefer consts, enums, and inlines to #defines  我们先看看#deifne 有哪些的问题: 不利于调试1#define ASPECT_RATION 1.653 在预处理时候 ASPECT_RATION 可能就被移走了,ASPECT_RATION 没有进入 符号表, 运行此常量获得编译错误信息时, 可能会疑惑。因为这个错误信息总是提到 1">
+<meta name="description" content="Item3: Use const whenever possible.  常量的声明指针的常量声明： 12345char greeting[] &#x3D; &quot;Hello&quot;;char* p &#x3D; greeting;                 &#x2F;&#x2F;non-const pointer, non-const dataconst char* p &#x3D; greeting;">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Effective C++ 2：尽量以const, enum, inline 替换">
-<meta property="og:url" content="https://yngty.github.io/2020/12/14/effective-cpp-2/index.html">
+<meta property="og:title" content="Effective C++ 3：尽可能使用 const">
+<meta property="og:url" content="https://yngty.github.io/2021/01/05/effective-cpp-3/index.html">
 <meta property="og:site_name" content="瓜地">
-<meta property="og:description" content="Item 2: Prefer consts, enums, and inlines to #defines  我们先看看#deifne 有哪些的问题: 不利于调试1#define ASPECT_RATION 1.653 在预处理时候 ASPECT_RATION 可能就被移走了,ASPECT_RATION 没有进入 符号表, 运行此常量获得编译错误信息时, 可能会疑惑。因为这个错误信息总是提到 1">
+<meta property="og:description" content="Item3: Use const whenever possible.  常量的声明指针的常量声明： 12345char greeting[] &#x3D; &quot;Hello&quot;;char* p &#x3D; greeting;                 &#x2F;&#x2F;non-const pointer, non-const dataconst char* p &#x3D; greeting;">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-12-14T12:36:49.000Z">
+<meta property="article:published_time" content="2021-01-05T22:04:32.000Z">
 <meta property="article:modified_time" content="2021-01-05T15:15:41.817Z">
 <meta property="article:author" content="yngty">
 <meta property="article:tag" content="Effective-C++">
@@ -38,7 +38,7 @@
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://yngty.github.io/2020/12/14/effective-cpp-2/">
+<link rel="canonical" href="https://yngty.github.io/2021/01/05/effective-cpp-3/">
 
 
 <script class="page-configurations">
@@ -50,7 +50,7 @@
     lang   : 'zh-CN'
   };
 </script>
-<title>Effective C++ 2：尽量以const, enum, inline 替换 | 瓜地</title>
+<title>Effective C++ 3：尽可能使用 const | 瓜地</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-5F9JL1V3HN"></script>
     <script>
@@ -198,7 +198,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <section class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%8D%E5%88%A9%E4%BA%8E%E8%B0%83%E8%AF%95"><span class="nav-number">1.</span> <span class="nav-text">不利于调试</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%8D%E9%87%8D%E8%A7%86scope"><span class="nav-number">2.</span> <span class="nav-text">不重视scope</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#enum-%E6%AF%94-const-%E6%9B%B4%E5%A5%BD%E7%94%A8"><span class="nav-number">2.1.</span> <span class="nav-text">enum 比 const 更好用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%8D%E6%98%93%E7%90%86%E8%A7%A3"><span class="nav-number">3.</span> <span class="nav-text">不易理解</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B8%B8%E9%87%8F%E7%9A%84%E5%A3%B0%E6%98%8E"><span class="nav-number">1.</span> <span class="nav-text">常量的声明</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#const-%E6%88%90%E5%91%98%E5%87%BD%E6%95%B0"><span class="nav-number">2.</span> <span class="nav-text">const 成员函数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#bitsise-constness-%E5%92%8C-logical-constness"><span class="nav-number">3.</span> <span class="nav-text">bitsise constness 和　logical constness</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9C%A8const%E5%92%8Cnon-const%E6%88%90%E5%91%98%E5%87%BD%E6%95%B0%E4%B8%AD%E9%81%BF%E5%85%8D%E9%87%8D%E5%A4%8D"><span class="nav-number">4.</span> <span class="nav-text">在const和non-const成员函数中避免重复</span></a></li></ol></div>
         </section>
         <!--/noindex-->
 
@@ -282,7 +282,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2020/12/14/effective-cpp-2/">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2021/01/05/effective-cpp-3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -295,7 +295,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Effective C++ 2：尽量以const, enum, inline 替换
+          Effective C++ 3：尽可能使用 const
         </h1>
 
         <div class="post-meta-container">
@@ -305,16 +305,10 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
+      
 
-      <time title="创建时间：2020-12-14 12:36:49" itemprop="dateCreated datePublished" datetime="2020-12-14T12:36:49+00:00">2020-12-14</time>
+      <time title="创建时间：2021-01-05 22:04:32 / 修改时间：15:15:41" itemprop="dateCreated datePublished" datetime="2021-01-05T22:04:32+00:00">2021-01-05</time>
     </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-01-05 15:15:41" itemprop="dateModified" datetime="2021-01-05T15:15:41+00:00">2021-01-05</time>
-      </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
@@ -340,14 +334,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>1.3k</span>
+      <span>2.4k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>1 分钟</span>
+      <span>2 分钟</span>
     </span>
 </div>
 
@@ -359,31 +353,39 @@
     
     <div class="post-body" itemprop="articleBody">
         <blockquote>
-<p>Item 2: Prefer consts, enums, and inlines to #defines</p>
+<p>Item3: Use const whenever possible.</p>
 </blockquote>
-<p>我们先看看<code>#deifne</code> 有哪些的问题:</p>
-<h1 id="不利于调试"><a href="#不利于调试" class="headerlink" title="不利于调试"></a>不利于调试</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define ASPECT_RATION 1.653</span><br></pre></td></tr></table></figure>
-<p>在预处理时候 <code>ASPECT_RATION</code> 可能就被移走了,<code>ASPECT_RATION</code> 没有进入 符号表, 运行此常量获得编译错误信息时, 可能会疑惑。因为这个错误信息总是提到 <code>1.653</code>，而不是<code>ASPECT_RATION</code> ， 如果 <code>ASPECT_RATION</code> 定义不是自己写的头文件中，可能对 <code>1.653</code> 的来源毫无概念，将因追踪它浪费时间，解决之道是以一个常量替换上述宏 。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">double</span> AspectRatio = <span class="number">1.653</span> <span class="comment">//大写名称通常用于宏</span></span><br><span class="line">                                 <span class="comment">//因此这里改变名称写法</span></span><br></pre></td></tr></table></figure>
-<p>作为一个语言常量，<code>ASPECT_RATION</code> 肯定会被编译器看到，当然会进入记号表内。此外对于浮点常量(<code>floating point constant</code>)而言，使用常量可能比使用<code>#define</code> 导致较少量的码。</p>
-<h1 id="不重视scope"><a href="#不重视scope" class="headerlink" title="不重视scope"></a>不重视scope</h1><p>无法利用 <code>#define</code> 创建<code>class</code>专属常量。一旦宏定义，它就在其后的编译过程中有效（除非在某处 <code>#undef</code> ）。而 <code>const</code> 可以。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">GamePlayer</span> &#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">int</span> NumTurns; <span class="comment">//常量声明式</span></span><br><span class="line">    <span class="keyword">int</span> scores[NumTurns];      <span class="comment">//使用该常量</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="enum-比-const-更好用"><a href="#enum-比-const-更好用" class="headerlink" title="enum 比 const 更好用"></a>enum 比 const 更好用</h2><p>旧式编译器也许不支持上述语法，　它们不允许static在声明式上获得初值，此外所谓的“<code>in-classs　初值设定</code>”也只运行对<strong>整数常量</strong>进行，　如果编译器不支持上述语法，可以将初值放在定义式</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CostEstimate</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">double</span> FudgeFactor;  <span class="comment">//staitc class　常量声明位于头文件内</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">double</span> CostEstimate::FudgeFactor = <span class="number">1.35</span>; <span class="comment">//staitc class　常量定义位于实现文件内</span></span><br></pre></td></tr></table></figure>
-<p>如果使用<code>emnu</code>就很简单：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">GamePlayer</span> &#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="class"><span class="keyword">enum</span> &#123;</span> NumTurns = <span class="number">5</span> &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> scores[NumTurns];　<span class="comment">//the enum hack</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>　</p>
-<h1 id="不易理解"><a href="#不易理解" class="headerlink" title="不易理解"></a>不易理解</h1><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CALL_WITH_MAX(a, b)  f((a) &gt; (b) ? (a) : (b))</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> a = <span class="number">5</span>, b =<span class="number">0</span>;</span><br><span class="line">CALL_WITH_MAX(++a, b);     　<span class="comment">//ａ被累加二次</span></span><br><span class="line">CALL_WITH_MAX(++a, b + <span class="number">10</span>);　<span class="comment">//ａ被累加一次</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>必须记住为宏的所有实参加上小括号</li>
-<li>在这里调用ｆ之前，ａ的递增次取决与“它被拿来与谁比较”</li>
-</ul>
-<p>更好的做法是使用　<code>template inline</code>　函数。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">callWithMax</span><span class="params">(<span class="keyword">const</span> T &amp;a, <span class="keyword">const</span> T &amp;b)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (a &gt; b ? a : b);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h1 id="常量的声明"><a href="#常量的声明" class="headerlink" title="常量的声明"></a>常量的声明</h1><p>指针的常量声明：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span> greeting[] = <span class="string">&quot;Hello&quot;</span>;</span><br><span class="line"><span class="keyword">char</span>* p = greeting;                 <span class="comment">//non-const pointer, non-const data</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">char</span>* p = greeting;           <span class="comment">//non-const pointer, const data</span></span><br><span class="line"><span class="keyword">char</span>* <span class="keyword">const</span> p = greeting;           <span class="comment">//const pointer, non-const data</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">char</span>* <span class="keyword">const</span> p = greeting;     <span class="comment">//const pointer, const data</span></span><br></pre></td></tr></table></figure>
+<p>如果 <code>const</code> 出现在<code>*</code>左边，表示被指物为常量;　如果出现在<code>*</code>右边，表示指针自身为常量；如果出现在<code>*</code>两边，表示被指物和指针两者都是常量。</p>
+<p>如果被指物是常量，<code>const</code> 放在类型之前和放在类型之后<code>*</code>之前表示的意义一样：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">f1</span><span class="params">(<span class="keyword">const</span> Widget* p)</span></span>;　<span class="comment">//f1　获得一个指针，指向一个常量Ｗidget对象</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">f2</span><span class="params">(widget <span class="keyword">const</span> *p)</span></span>;　<span class="comment">//f2 也是</span></span><br></pre></td></tr></table></figure>
 
 
+<p>STL的<code>iterator</code> 系以指针塑模出来，所以<code>iterator</code>的作用像个<code>T*</code>指针。如果希望指针是常量，可以声明为 <code>const iterator</code>，如果希望被指物为常量，需使用 <code>const_iterator</code></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; vec;</span><br><span class="line">...</span><br><span class="line"><span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;::iterator iter = vec.begin();    <span class="comment">//iter的作用像个Ｔ* const</span></span><br><span class="line">*iter = <span class="number">10</span>;                                             <span class="comment">//没问题，改变iter所指物  </span></span><br><span class="line">++iter;　　　　　　　　　　　　　　　　　　　　　　 　　　　     <span class="comment">//错误，iter是const</span></span><br><span class="line"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;::const_iterator cIter = vec.begin();   <span class="comment">//cIter的作用像个const Ｔ*</span></span><br><span class="line">*cIter = <span class="number">10</span>;                                            <span class="comment">//错误，*cIter是const</span></span><br><span class="line">++cIter;                                                <span class="comment">//没问题，　改变cIter</span></span><br></pre></td></tr></table></figure>
+<p>返回值声明为常量，可以降低代码被错误使用:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Rational</span>　&#123;</span>...&#125;;</span><br><span class="line"><span class="keyword">const</span> Rational <span class="keyword">operator</span>*&#123;<span class="keyword">const</span> Rational&amp; lhs, <span class="keyword">const</span> Rational&amp; rhs&#125;;</span><br></pre></td></tr></table></figure>
+<p>当我们本来想做个比较，错误地输入<code>=</code></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (a * b = c) ...</span><br></pre></td></tr></table></figure>
+<p>编译器就会报错误：不可给常量赋值。</p>
+<h1 id="const-成员函数"><a href="#const-成员函数" class="headerlink" title="const 成员函数"></a>const 成员函数</h1><p>声明const 成员函数，是为了确认该成员函数可以作用与const对象，也使class接口比较容易理解，可以得知哪些函数可以改动对象内容，哪些不可以。</p>
+<p>成员函数只是常量性不同是可以被重载。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TextBlock</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  ...</span><br><span class="line">  <span class="keyword">const</span> <span class="keyword">char</span>&amp; <span class="keyword">operator</span>[](<span class="built_in">std</span>::<span class="keyword">size_t</span> position) <span class="keyword">const</span>   <span class="comment">// operator[] for</span></span><br><span class="line">  &#123; <span class="keyword">return</span> text[position]; &#125;                           <span class="comment">// const objects</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">char</span>&amp; <span class="keyword">operator</span>[](<span class="built_in">std</span>::<span class="keyword">size_t</span> position)               <span class="comment">// operator[] for</span></span><br><span class="line">  &#123; <span class="keyword">return</span> text[position]; &#125;                           <span class="comment">// non-const objects</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">   <span class="built_in">std</span>::<span class="built_in">string</span> text;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function">TextBlock <span class="title">tb</span><span class="params">(<span class="string">&quot;Hello&quot;</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">const</span> TextBlock <span class="title">ctb</span><span class="params">(<span class="string">&quot;World&quot;</span>)</span></span>;</span><br><span class="line">tb[<span class="number">0</span>] = <span class="string">&#x27;x&#x27;</span>;             <span class="comment">// fine — writing a non-const TextBlock</span></span><br><span class="line">ctb[<span class="number">0</span>] = <span class="string">&#x27;x&#x27;</span>;            <span class="comment">// error! — writing a const TextBlock</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="bitsise-constness-和-logical-constness"><a href="#bitsise-constness-和-logical-constness" class="headerlink" title="bitsise constness 和　logical constness"></a>bitsise constness 和　logical constness</h1><p><code>bitsise constness</code>: 成员函数只有在不改变对象的任何非静态成员变量时才可以被称为常量函数。也是C++对常量性的定义。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TextBlock</span>&#123;</span></span><br><span class="line">   </span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">char</span>&amp; <span class="keyword">operator</span>[](<span class="built_in">std</span>::<span class="keyword">size_t</span> position) <span class="keyword">const</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> pText[position];</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">char</span>* pText;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> TextBlock tb;</span><br><span class="line"><span class="keyword">char</span> *p = &amp;tb[<span class="number">1</span>];</span><br><span class="line">*p = <span class="string">&#x27;a&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="在const和non-const成员函数中避免重复"><a href="#在const和non-const成员函数中避免重复" class="headerlink" title="在const和non-const成员函数中避免重复"></a>在const和non-const成员函数中避免重复</h1><p>当<code>const</code>和<code>non-const</code>成员函数有着实质等价的实现时，令<code>non-const</code>函数调用<code>const</code>函数可以避免代码重复。不可以反着来。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">char</span>&amp; <span class="keyword">operator</span>[](<span class="built_in">std</span>::<span class="keyword">size_t</span> position) <span class="keyword">const</span> &#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">return</span> text[position]</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">char</span>&amp; <span class="keyword">operator</span>[](<span class="built_in">std</span>::<span class="keyword">size_t</span> position) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">const_cast</span>&lt;<span class="keyword">char</span>&amp;&gt;(</span><br><span class="line">        <span class="keyword">static_cast</span>&lt;<span class="keyword">const</span> TextBlock&amp;&gt;(*<span class="keyword">this</span>)</span><br><span class="line">            [position]</span><br><span class="line">        )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><code>*this</code> 的类型是 <code>TextBlock</code>，先把它强制隐式转换为 <code>const TextBlock</code>，这样我们才能调用那个常量方法。</li>
+<li>调用 <code>operator[](std::size_t) const</code>，得到的返回值类型为 <code>const char&amp;</code>。</li>
+<li>把返回值去掉 <code>const</code> 属性，得到类型为 <code>char&amp;</code> 的返回值。</li>
+</ol>
 
     </div>
 
@@ -401,7 +403,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://yngty.github.io/2020/12/14/effective-cpp-2/" title="Effective C++ 2：尽量以const, enum, inline 替换">https://yngty.github.io/2020/12/14/effective-cpp-2/</a>
+      <a href="https://yngty.github.io/2021/01/05/effective-cpp-3/" title="Effective C++ 3：尽可能使用 const">https://yngty.github.io/2021/01/05/effective-cpp-3/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -418,14 +420,11 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2020/12/07/effective-cpp-1/" rel="prev" title="Effective C++ 1：将C++视作一系列的语言">
-                  <i class="fa fa-chevron-left"></i> Effective C++ 1：将C++视作一系列的语言
+                <a href="/2020/12/14/effective-cpp-2/" rel="prev" title="Effective C++ 2：尽量以const, enum, inline 替换">
+                  <i class="fa fa-chevron-left"></i> Effective C++ 2：尽量以const, enum, inline 替换
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2021/01/05/effective-cpp-3/" rel="next" title="Effective C++ 3：尽可能使用 const">
-                  Effective C++ 3：尽可能使用 const <i class="fa fa-chevron-right"></i>
-                </a>
             </div>
           </div>
     </footer>
@@ -529,7 +528,7 @@ NexT.utils.loadComments('#gitalk-container', () => {
       repo        : 'gitalk',
       owner       : 'yngty',
       admin       : ['yngty'],
-      id          : '6b833eae1f883945f425c5bcafd6f6ed',
+      id          : 'f27c9315aef9cc56536a87de73132b04',
         language: '',
       distractionFreeMode: true
     });
