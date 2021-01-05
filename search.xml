@@ -26,7 +26,7 @@
       </tags>
   </entry>
   <entry>
-    <title>Effective C++ 2：尽量以const, enum, inline 替换</title>
+    <title>Effective C++ 2：尽量以const, enum, inline 替换 \#deifne</title>
     <url>/2020/12/14/effective-cpp-2/</url>
     <content><![CDATA[<blockquote>
 <p>Item 2: Prefer consts, enums, and inlines to #defines</p>
