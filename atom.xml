@@ -6,7 +6,7 @@
   <link href="https://yngty.github.io/atom.xml" rel="self"/>
   
   <link href="https://yngty.github.io/"/>
-  <updated>2021-01-05T15:52:19.041Z</updated>
+  <updated>2021-01-13T15:29:39.488Z</updated>
   <id>https://yngty.github.io/</id>
   
   <author>
@@ -17,11 +17,24 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>effective-cpp-4</title>
+    <link href="https://yngty.github.io/2021/01/13/effective-cpp-4/"/>
+    <id>https://yngty.github.io/2021/01/13/effective-cpp-4/</id>
+    <published>2021-01-13T22:41:25.000Z</published>
+    <updated>2021-01-13T15:29:39.488Z</updated>
+    
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
     <title>Effective C++ 3：尽可能使用 const</title>
     <link href="https://yngty.github.io/2021/01/05/effective-cpp-3/"/>
     <id>https://yngty.github.io/2021/01/05/effective-cpp-3/</id>
     <published>2021-01-05T22:04:32.000Z</published>
-    <updated>2021-01-05T15:52:19.041Z</updated>
+    <updated>2021-01-13T15:29:39.488Z</updated>
     
     
       
@@ -51,7 +64,7 @@
     <link href="https://yngty.github.io/2020/12/14/effective-cpp-2/"/>
     <id>https://yngty.github.io/2020/12/14/effective-cpp-2/</id>
     <published>2020-12-14T12:36:49.000Z</published>
-    <updated>2021-01-05T15:52:19.041Z</updated>
+    <updated>2021-01-13T15:29:39.488Z</updated>
     
     
       
@@ -82,7 +95,7 @@
     <link href="https://yngty.github.io/2020/12/07/effective-cpp-1/"/>
     <id>https://yngty.github.io/2020/12/07/effective-cpp-1/</id>
     <published>2020-12-07T20:40:56.000Z</published>
-    <updated>2021-01-05T15:52:19.041Z</updated>
+    <updated>2021-01-13T15:29:39.488Z</updated>
     
     
       
