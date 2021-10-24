@@ -113,7 +113,7 @@
     <title>Effective C++ 4：确定对象被使用前已先被初始化</title>
     <url>/2021/01/13/effective-cpp-4/</url>
     <content><![CDATA[<blockquote>
-<p>Make sure that objects are initialized before they’re used.</p>
+<p>Item 4: Make sure that objects are initialized before they’re used.</p>
 </blockquote>
 <h1 id="手工初始化内置对象"><a href="#手工初始化内置对象" class="headerlink" title="手工初始化内置对象"></a>手工初始化内置对象</h1><p>为内置对象进行手工初始化，因为<code>C++</code>不保证初始化他们。</p>
 <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> x = <span class="number">0</span>;                                  <span class="comment">//对 int 进行手工初始化</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">char</span> *text = <span class="string">&quot;A C-style string&quot;</span>;      <span class="comment">//对指针进行手工初始化</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">double</span> d;</span><br><span class="line"><span class="built_in">std</span>::<span class="built_in">cin</span> &gt;&gt; d;                              <span class="comment">//以读取 input stream 的方式完成初始化</span></span><br></pre></td></tr></table></figure>
@@ -136,6 +136,28 @@
 <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Directory</span> &#123;</span> ... &#125;</span><br><span class="line"></span><br><span class="line">Directory::Directory( params) </span><br><span class="line">&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="built_in">std</span>::<span class="keyword">size_t</span> disks = tfs().numDisks();</span><br><span class="line">    ...    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Directory&amp; <span class="title">tempDir</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">static</span> Directory td;</span><br><span class="line">    <span class="keyword">return</span> td;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 ]]></content>
+      <categories>
+        <category>Effective-C++</category>
+      </categories>
+      <tags>
+        <tag>Effective-C++</tag>
+        <tag>C++</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Effective C++ 5：了解c++默默编写并调用哪些函数</title>
+    <url>/2021/10/24/effective-cpp-5/</url>
+    <content><![CDATA[<blockquote>
+<p>Item 5: Know what functions C++ silently writes and calls</p>
+</blockquote>
+<h1 id="默认函数"><a href="#默认函数" class="headerlink" title="默认函数"></a>默认函数</h1><p>在 <code>C++</code> 中，一个类有八个默认函数：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Empty</span> &#123;</span></span><br><span class="line">    Empty () &#123;&#125; <span class="comment">//默认构造函数    </span></span><br><span class="line">    Empty (<span class="keyword">const</span> Empty &amp;) &#123;&#125; <span class="comment">// 默认拷贝构造函数</span></span><br><span class="line">    Empty (<span class="keyword">const</span> Empty &amp;&amp;) &#123;&#125; <span class="comment">// 默认移动构造函数(`C++11`)</span></span><br><span class="line">    ~Empty() &#123;&#125; <span class="comment">// 默认析构函数</span></span><br><span class="line">    Empty&amp; <span class="keyword">operator</span>=(<span class="keyword">const</span> Empty&amp;) &#123;&#125; <span class="comment">// 默认重载赋值运算符函数</span></span><br><span class="line">    Empty&amp; <span class="keyword">operator</span>=(<span class="keyword">const</span> Empty&amp;&amp;)&#123;&#125; <span class="comment">// 默认重载移动赋值操作符函数函数</span></span><br><span class="line">    Empty* <span class="keyword">operator</span> &amp;() &#123;&#125; <span class="comment">// 默认重载取址运算符函数</span></span><br><span class="line">    <span class="keyword">const</span> Empty* <span class="keyword">operator</span> &amp;() <span class="keyword">const</span> &#123;&#125; <span class="comment">// 默认重载取址运算符 `const` 函数</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h1 id="调用时机"><a href="#调用时机" class="headerlink" title="调用时机"></a>调用时机</h1><p>只有你需要用到这些函数并且你又没有显示的声明这些函数的时候，编译器才会贴心的自动声明相应的函数。</p>
+<h1 id="引用成员"><a href="#引用成员" class="headerlink" title="引用成员"></a>引用成员</h1><p>如果你打算在一个“内含引用成员”或者“内含<code>const</code>成员”的类内支持赋值操作，就必须定义自己的默认拷贝赋值操作符。因为 <code>C++</code> 本身不允许引用改指不同的对象，也不允许更改 <code>const</code> 成员。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">string</span> &amp; name;</span><br><span class="line">    Person(<span class="built_in">string</span> &amp;str):name(str) &#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="built_in">string</span> s1 = <span class="string">&quot;hello&quot;</span>, s2 = <span class="string">&quot;world&quot;</span>;</span><br><span class="line">Person p1(s1), p2(s2);</span><br><span class="line">p1 = p2;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">error: object of type &#39;Person&#39; cannot be assigned because its copy assignment operator is implicitly deleted</span><br></pre></td></tr></table></figure>]]></content>
       <categories>
         <category>Effective-C++</category>
       </categories>

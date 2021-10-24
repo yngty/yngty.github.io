@@ -6,7 +6,7 @@
   <link href="https://yngty.github.io/atom.xml" rel="self"/>
   
   <link href="https://yngty.github.io/"/>
-  <updated>2021-10-22T01:48:24.041Z</updated>
+  <updated>2021-10-24T12:47:55.753Z</updated>
   <id>https://yngty.github.io/</id>
   
   <author>
@@ -17,11 +17,11 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>Effective C++ 4：确定对象被使用前已先被初始化</title>
-    <link href="https://yngty.github.io/2021/01/13/effective-cpp-4/"/>
-    <id>https://yngty.github.io/2021/01/13/effective-cpp-4/</id>
-    <published>2021-01-13T14:41:25.000Z</published>
-    <updated>2021-10-22T01:48:24.041Z</updated>
+    <title>Effective C++ 5：了解c++默默编写并调用哪些函数</title>
+    <link href="https://yngty.github.io/2021/10/24/effective-cpp-5/"/>
+    <id>https://yngty.github.io/2021/10/24/effective-cpp-5/</id>
+    <published>2021-10-24T12:17:05.000Z</published>
+    <updated>2021-10-24T12:47:55.753Z</updated>
     
     
       
@@ -29,9 +29,39 @@
         
         
     <summary type="html">&lt;blockquote&gt;
-&lt;p&gt;Make sure that objects are initialized before they’re used.&lt;/p&gt;
+&lt;p&gt;Item 5: Know what functions C++ silently writes and calls&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;h1 id=&quot;手工初始化内置对象&quot;&gt;&lt;a href=&quot;#手工初始化内置对象&quot;</summary>
+&lt;h1 id=&quot;默认函数&quot;&gt;&lt;a href=&quot;#默认函数&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="Effective-C++" scheme="https://yngty.github.io/categories/Effective-C/"/>
+    
+    
+    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
+    
+    <category term="C++" scheme="https://yngty.github.io/tags/C/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Effective C++ 4：确定对象被使用前已先被初始化</title>
+    <link href="https://yngty.github.io/2021/01/13/effective-cpp-4/"/>
+    <id>https://yngty.github.io/2021/01/13/effective-cpp-4/</id>
+    <published>2021-01-13T14:41:25.000Z</published>
+    <updated>2021-10-24T12:19:49.547Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;Item 4: Make sure that objects are initialized before they’re used.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h1 id=&quot;手工初始化内置对象&quot;&gt;&lt;a</summary>
         
       
     
