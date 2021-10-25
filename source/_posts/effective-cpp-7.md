@@ -1,5 +1,5 @@
 ---
-title: Effective C++ 7：为多态墓类声明 virtual 析构函数
+title: Effective C++ 7：为多态基类声明 virtual 析构函数
 date: 2021-10-25 13:09:45
 tags:
 - Effective-C++
