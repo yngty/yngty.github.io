@@ -166,4 +166,26 @@
         <tag>C++</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Effective C++ 6：若不想使用编译器自动生成的函数，就该明确拒绝</title>
+    <url>/2021/10/25/effective-cpp-6/</url>
+    <content><![CDATA[<blockquote>
+<p>Item 6: Explicitly disallow the use of compiler-generated functions you do not want.</p>
+</blockquote>
+<p>在C++中，编译器会自动生成一些你没有显式定义的函数。可以参考:<a href="/2021/10/24/effective-cpp-5/" title="了解c++默默编写并调用哪些函数">了解c++默默编写并调用哪些函数</a><br>然而有时候我们希望禁用掉这些函数，可以通过把自动生成的函数设为 <code>private</code> 来禁用它或者在 <code>c++11</code> 中使用 <code>delete</code> 关键字。</p>
+<p>比如我们禁用拷贝的功能：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">HomeForSale</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    ...</span><br><span class="line">    </span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    HomeForSale(<span class="keyword">const</span> HomeForSale &amp;);  <span class="comment">// 只有声明</span></span><br><span class="line">    HomeForSale&amp; <span class="keyword">operator</span>=(<span class="keyword">const</span> HomeForSale&amp;) = <span class="keyword">delete</span>； <span class="comment">// c++11</span></span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>我们可以专门设计一个阻止<code>copying</code> 的类</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">namespace</span> noncopyable_ &#123;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">noncopyable</span> &#123;</span></span><br><span class="line">        <span class="keyword">protected</span>:</span><br><span class="line">            noncopyable() &#123;&#125;</span><br><span class="line">            ~noncopyable()&#123;&#125;</span><br><span class="line">            <span class="comment">/** C++11</span></span><br><span class="line"><span class="comment">            noncopyable() = default;</span></span><br><span class="line"><span class="comment">            ~noncopyable() = default;</span></span><br><span class="line"><span class="comment">            */</span></span><br><span class="line">        <span class="keyword">private</span>:</span><br><span class="line">            noncopyable(<span class="keyword">const</span> noncopyable&amp;);</span><br><span class="line">            noncopyable&amp; <span class="keyword">operator</span>=( <span class="keyword">const</span> noncopyable&amp; );</span><br><span class="line">            <span class="comment">/** C++11</span></span><br><span class="line"><span class="comment">            noncopyable( const noncopyable&amp; ) = delete;</span></span><br><span class="line"><span class="comment">            noncopyable&amp; operator=( const noncopyable&amp; ) = delete;</span></span><br><span class="line"><span class="comment">            */</span></span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">HomeForSale</span> :</span> <span class="keyword">private</span> noncopyable_::noncopyable</span><br><span class="line">&#123;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">HomeForSale p1, p2;</span><br><span class="line">p1 = p2;</span><br><span class="line"></span><br><span class="line">error: object of type &#x27;HomeForSale&#x27; cannot be assigned because its copy assignment operator is implicitly deleted</span><br><span class="line">    p1 = p2;</span><br><span class="line">       ^</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>Effective-C++</category>
+      </categories>
+      <tags>
+        <tag>Effective-C++</tag>
+        <tag>C++</tag>
+      </tags>
+  </entry>
 </search>
