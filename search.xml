@@ -188,4 +188,26 @@
         <tag>C++</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Effective C++ 7：为多态墓类声明 virtual 析构函数</title>
+    <url>/2021/10/25/effective-cpp-7/</url>
+    <content><![CDATA[<blockquote>
+<p>Item 7: Declare destructors virtual in polymorphic base classes.</p>
+</blockquote>
+<p>析构函数声明为虚函数目的在于以基类指针调用析构函数时能够正确地析构子类部分的内存。 否则子类部分的内存将会泄漏，正确的用法如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 基类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TimeKeeper</span>&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">virtual</span> ~TimeKeeper();</span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br><span class="line">TimeKeeper *ptk = getTimeKeeper():  <span class="comment">// 可能返回任何一种子类</span></span><br><span class="line">...</span><br><span class="line"><span class="keyword">delete</span> ptk;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>polymorphic (带多态性质的) base classes 应该声明一个 virtual 析构函数。如果<br>class 带有任何 virtual 函数，它就应该拥有一个 virtual 析构函数。</li>
+<li>Classes 的设计目的如果不是作为 base classes 使用，或不是为了具备多态性<br>(polymorphically) ，就不该声明 virtual 析构函数。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Effective-C++</category>
+      </categories>
+      <tags>
+        <tag>Effective-C++</tag>
+        <tag>C++</tag>
+      </tags>
+  </entry>
 </search>
