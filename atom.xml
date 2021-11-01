@@ -6,7 +6,7 @@
   <link href="https://yngty.github.io/atom.xml" rel="self"/>
   
   <link href="https://yngty.github.io/"/>
-  <updated>2021-11-01T04:59:20.756Z</updated>
+  <updated>2021-11-01T05:06:57.036Z</updated>
   <id>https://yngty.github.io/</id>
   
   <author>
@@ -17,11 +17,39 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Effective C++ 10：赋值运算符要返回自己的引用</title>
+    <link href="https://yngty.github.io/2021/11/01/effective-cpp-10/"/>
+    <id>https://yngty.github.io/2021/11/01/effective-cpp-10/</id>
+    <published>2021-11-01T12:59:28.000Z</published>
+    <updated>2021-11-01T05:06:57.036Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;Item 10：Have assignment operators return a reference to</summary>
+        
+      
+    
+    
+    
+    <category term="Effective-C++" scheme="https://yngty.github.io/categories/Effective-C/"/>
+    
+    
+    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
+    
+    <category term="C++" scheme="https://yngty.github.io/tags/C/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Effective C++ 9：绝不在构造和析构过程中调用 virtual 函数</title>
     <link href="https://yngty.github.io/2021/11/01/effective-cpp-9/"/>
     <id>https://yngty.github.io/2021/11/01/effective-cpp-9/</id>
     <published>2021-11-01T12:03:51.000Z</published>
-    <updated>2021-11-01T04:59:20.756Z</updated>
+    <updated>2021-11-01T05:06:57.040Z</updated>
     
     
       
