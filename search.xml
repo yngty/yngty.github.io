@@ -241,5 +241,12 @@
 <li>如果客户需要对某个操作函数运行期间抛出的异常做出反应，那么 <code>class</code> 应该提<br>供一个普通函数(而非在析构函数中)执行该操作。</li>
 </ul>
 ]]></content>
+      <categories>
+        <category>Effective-C++</category>
+      </categories>
+      <tags>
+        <tag>Effective-C++</tag>
+        <tag>C++</tag>
+      </tags>
   </entry>
 </search>
