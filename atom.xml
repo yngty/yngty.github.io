@@ -6,7 +6,7 @@
   <link href="https://yngty.github.io/atom.xml" rel="self"/>
   
   <link href="https://yngty.github.io/"/>
-  <updated>2021-10-25T08:28:07.665Z</updated>
+  <updated>2021-11-01T04:03:17.276Z</updated>
   <id>https://yngty.github.io/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Effective C++ 8：析构函数不要抛出异常</title>
+    <link href="https://yngty.github.io/2021/10/25/effective-cpp-8/"/>
+    <id>https://yngty.github.io/2021/10/25/effective-cpp-8/</id>
+    <published>2021-10-25T13:29:41.000Z</published>
+    <updated>2021-11-01T04:03:17.276Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;Item 8: Prevent exceptions from leaving destructors.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;code&gt;C++&lt;/code&gt;</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>Effective C++ 7：为多态基类声明 virtual 析构函数</title>
