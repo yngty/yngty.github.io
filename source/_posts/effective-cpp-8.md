@@ -2,6 +2,10 @@
 title: Effective C++ 8：析构函数不要抛出异常
 date: 2021-10-25 13:29:41
 tags:
+- Effective-C++
+- C++
+categories:
+- Effective-C++
 ---
 
 > Item 8: Prevent exceptions from leaving destructors.
