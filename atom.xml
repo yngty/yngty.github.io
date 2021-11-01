@@ -6,7 +6,7 @@
   <link href="https://yngty.github.io/atom.xml" rel="self"/>
   
   <link href="https://yngty.github.io/"/>
-  <updated>2021-11-01T04:05:23.959Z</updated>
+  <updated>2021-11-01T04:59:20.756Z</updated>
   <id>https://yngty.github.io/</id>
   
   <author>
@@ -17,11 +17,41 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Effective C++ 9：绝不在构造和析构过程中调用 virtual 函数</title>
+    <link href="https://yngty.github.io/2021/11/01/effective-cpp-9/"/>
+    <id>https://yngty.github.io/2021/11/01/effective-cpp-9/</id>
+    <published>2021-11-01T12:03:51.000Z</published>
+    <updated>2021-11-01T04:59:20.756Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;Item 9: Never call virtual functions during construction or destruction.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;在构造和析构期间不要调用</summary>
+        
+      
+    
+    
+    
+    <category term="Effective-C++" scheme="https://yngty.github.io/categories/Effective-C/"/>
+    
+    
+    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
+    
+    <category term="C++" scheme="https://yngty.github.io/tags/C/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Effective C++ 8：析构函数不要抛出异常</title>
     <link href="https://yngty.github.io/2021/10/25/effective-cpp-8/"/>
     <id>https://yngty.github.io/2021/10/25/effective-cpp-8/</id>
-    <published>2021-10-25T13:29:41.000Z</published>
-    <updated>2021-11-01T04:05:23.959Z</updated>
+    <published>2021-10-25T05:29:41.000Z</published>
+    <updated>2021-11-01T04:04:20.395Z</updated>
     
     
       

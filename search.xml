@@ -249,4 +249,30 @@
         <tag>C++</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Effective C++ 9：绝不在构造和析构过程中调用 virtual 函数</title>
+    <url>/2021/11/01/effective-cpp-9/</url>
+    <content><![CDATA[<blockquote>
+<p>Item 9: Never call virtual functions during construction or destruction.</p>
+</blockquote>
+<p>在构造和析构期间不要调用 <code>virtual</code> 函数，因为这类调用不会下降至 <code>derived class</code><br>(比起当前执行构造函数和析构函数的那层)。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Transaction</span> &#123;</span>                               <span class="comment">// base class for all</span></span><br><span class="line"><span class="keyword">public</span>:                                           <span class="comment">// transactions</span></span><br><span class="line">    Transaction()&#123;                                <span class="comment">// base class ctor           </span></span><br><span class="line">        logTransaction();                         <span class="comment">// as final action, log this               </span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">logTransaction</span><span class="params">()</span> <span class="keyword">const</span> </span>= <span class="number">0</span>;      <span class="comment">// make type-dependent</span></span><br><span class="line">&#125;;</span><br><span class="line">  </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BuyTransaction</span>:</span> <span class="keyword">public</span> Transaction &#123;        <span class="comment">// derived class</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">logTransaction</span><span class="params">()</span> <span class="keyword">const</span></span>;          <span class="comment">// how to log trans-</span></span><br><span class="line">&#125;;</span><br><span class="line">...</span><br><span class="line">BuyTransaction b;</span><br></pre></td></tr></table></figure>
+
+<p><code>b</code> 在构造时，调用到父类Transaction的构造函数，其中对 <code>logTransaction</code> 的调用会被解析到 <code>Transaction</code> 类。 那是一个纯虚函数，因此程序会非正常退出。</p>
+<p>在<code>derived class</code> 对象的 <code>base class</code> 构造期间，对象的类型是 <code>base class</code> 而不是 <code>derived classo</code> 不只 <code>virtual</code> 函数会被编译器解析至(resolve to) <code>base class</code> ，若使用运行期类型信息 <code>RTTI</code>(runtime type information, 例如 <code>dynamic_cast</code>  <code>typeid</code>) ，也会把对象视为 <code>base class</code> 类型。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Transaction</span>&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    Transaction()&#123;</span><br><span class="line">        <span class="built_in">cout</span>&lt;&lt;<span class="keyword">typeid</span>(<span class="keyword">this</span>).name()&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BuyTransaction</span>:</span> <span class="keyword">public</span> Transaction&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    BuyTransaction()&#123;</span><br><span class="line">        <span class="built_in">cout</span>&lt;&lt;<span class="keyword">typeid</span>(<span class="keyword">this</span>).name()&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    BuyTransaction b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">P11Transaction</span><br><span class="line">P14BuyTransaction</span><br></pre></td></tr></table></figure>
+
+<p><strong>相同道理也适用于析构函数.</strong></p>
+]]></content>
+      <categories>
+        <category>Effective-C++</category>
+      </categories>
+      <tags>
+        <tag>Effective-C++</tag>
+        <tag>C++</tag>
+      </tags>
+  </entry>
 </search>
