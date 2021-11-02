@@ -306,7 +306,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-11-02 08:48:44" itemprop="dateModified" datetime="2021-11-02T08:48:44+00:00">2021-11-02</time>
+        <time title="修改时间：2021-11-02 09:01:07" itemprop="dateModified" datetime="2021-11-02T09:01:07+00:00">2021-11-02</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -356,7 +356,7 @@
 <p>既不自我赋值安全性也不异常安全性, 当 rhs == *this时，delete pb使得rhs.pb成为空值，接下来 new 的数据便是空的。</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Widget&amp; Widget::<span class="keyword">operator</span>=(<span class="keyword">const</span> Widget&amp; rhs) &#123;</span><br><span class="line">    <span class="keyword">delete</span> pb;</span><br><span class="line">    pb = <span class="keyword">new</span> Bitmap(*rhs.pb);</span><br><span class="line">    <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>加入证同测试，如果是自我赋值，就不做任何事。但开始就delete pb， 但 new y出现异常， pb就会置空出现风险。  </p>
+<p>判断两个地址是否相同，如果是自我赋值，就不做任何事。但开始就delete pb， 但 new 出现异常， pb就会置空出现风险。  </p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Widget&amp; Widget::<span class="keyword">operator</span>=(<span class="keyword">const</span> Widget&amp; rhs) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span> == &amp;rhs) <span class="keyword">return</span> <span class="keyword">this</span>;  <span class="comment">// 证同测试</span></span><br><span class="line">    <span class="keyword">delete</span> pb;</span><br><span class="line">    pb = <span class="keyword">new</span> Bitmap(*rhs.pb);</span><br><span class="line">    <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>在C++中<strong>仔细地排列语句顺序</strong>通常可以达到异常安全， 比如我们可以先申请空间，最后再delete：</p>
@@ -420,7 +420,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-11-02 08:48:44" itemprop="dateModified" datetime="2021-11-02T08:48:44+00:00">2021-11-02</time>
+        <time title="修改时间：2021-11-02 09:01:07" itemprop="dateModified" datetime="2021-11-02T09:01:07+00:00">2021-11-02</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -526,7 +526,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-11-02 08:48:44" itemprop="dateModified" datetime="2021-11-02T08:48:44+00:00">2021-11-02</time>
+        <time title="修改时间：2021-11-02 09:01:07" itemprop="dateModified" datetime="2021-11-02T09:01:07+00:00">2021-11-02</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
