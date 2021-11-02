@@ -23,14 +23,14 @@
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"yngty.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}};
   </script>
-<meta name="description" content="Item 10：Have assignment operators return a reference to *this.  赋值运算符要返回自己的引用只是个协议，并无强制性。这份协议被所有内置类型和标准程序库提供的类型如string, vector, complex std::shared_ptr等共同遵守。可以用来支持链式的赋值语句。 12int x, y, z;x &#x3D; y &#x3D; z &#x3D; 1">
+<meta name="description" content="Item 12: Copy all parts of an object  正确拷贝函数实现： 123456789class Customer&amp;#123;  string name;public:  Customer(const Customer&amp; rhs): name(rhs.name)&amp;#123;&amp;#125;  Customer&amp; operator&#x3D;(const Custom">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Effective C++ 10：赋值运算符要返回自己的引用">
-<meta property="og:url" content="https://yngty.github.io/2021/11/01/effective-cpp-10/index.html">
+<meta property="og:title" content="Effective C++ 12：复制对象时勿忘其每一个成分">
+<meta property="og:url" content="https://yngty.github.io/2021/11/02/effective-cpp-12/index.html">
 <meta property="og:site_name" content="瓜地">
-<meta property="og:description" content="Item 10：Have assignment operators return a reference to *this.  赋值运算符要返回自己的引用只是个协议，并无强制性。这份协议被所有内置类型和标准程序库提供的类型如string, vector, complex std::shared_ptr等共同遵守。可以用来支持链式的赋值语句。 12int x, y, z;x &#x3D; y &#x3D; z &#x3D; 1">
+<meta property="og:description" content="Item 12: Copy all parts of an object  正确拷贝函数实现： 123456789class Customer&amp;#123;  string name;public:  Customer(const Customer&amp; rhs): name(rhs.name)&amp;#123;&amp;#125;  Customer&amp; operator&#x3D;(const Custom">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-11-01T12:59:28.000Z">
+<meta property="article:published_time" content="2021-11-02T17:36:33.000Z">
 <meta property="article:modified_time" content="2021-11-02T09:47:21.456Z">
 <meta property="article:author" content="yngty">
 <meta property="article:tag" content="Effective-C++">
@@ -38,7 +38,7 @@
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://yngty.github.io/2021/11/01/effective-cpp-10/">
+<link rel="canonical" href="https://yngty.github.io/2021/11/02/effective-cpp-12/">
 
 
 <script class="page-configurations">
@@ -50,7 +50,7 @@
     lang   : 'zh-CN'
   };
 </script>
-<title>Effective C++ 10：赋值运算符要返回自己的引用 | 瓜地</title>
+<title>Effective C++ 12：复制对象时勿忘其每一个成分 | 瓜地</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-5F9JL1V3HN"></script>
     <script>
@@ -184,7 +184,7 @@
 
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -197,6 +197,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%83%85%E5%BD%A2%E4%B8%80%EF%BC%9A-%E6%96%B0%E6%B7%BB%E5%8A%A0%E4%BA%86%E4%B8%80%E4%B8%AA%E6%95%B0%E6%8D%AE%E6%88%90%E5%91%98%EF%BC%8C%E5%BF%98%E8%AE%B0%E4%BA%86%E6%9B%B4%E6%96%B0%E6%8B%B7%E8%B4%9D%E5%87%BD%E6%95%B0"><span class="nav-number">1.</span> <span class="nav-text">情形一： 新添加了一个数据成员，忘记了更新拷贝函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%83%85%E5%BD%A2%E4%BA%8C%EF%BC%9A-%E7%BB%A7%E6%89%BF%E7%88%B6%E7%B1%BB%E5%BF%98%E8%AE%B0%E4%BA%86%E6%8B%B7%E8%B4%9D%E7%88%B6%E7%B1%BB%E7%9A%84%E9%83%A8%E5%88%86"><span class="nav-number">2.</span> <span class="nav-text">情形二： 继承父类忘记了拷贝父类的部分</span></a></li></ol></div>
         </section>
         <!--/noindex-->
 
@@ -280,7 +281,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2021/11/01/effective-cpp-10/">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2021/11/02/effective-cpp-12/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -293,7 +294,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Effective C++ 10：赋值运算符要返回自己的引用
+          Effective C++ 12：复制对象时勿忘其每一个成分
         </h1>
 
         <div class="post-meta-container">
@@ -303,16 +304,10 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
+      
 
-      <time title="创建时间：2021-11-01 12:59:28" itemprop="dateCreated datePublished" datetime="2021-11-01T12:59:28+00:00">2021-11-01</time>
+      <time title="创建时间：2021-11-02 17:36:33 / 修改时间：09:47:21" itemprop="dateCreated datePublished" datetime="2021-11-02T17:36:33+00:00">2021-11-02</time>
     </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-11-02 09:47:21" itemprop="dateModified" datetime="2021-11-02T09:47:21+00:00">2021-11-02</time>
-      </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
@@ -338,7 +333,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>465</span>
+      <span>1.2k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -357,17 +352,18 @@
     
     <div class="post-body" itemprop="articleBody">
         <blockquote>
-<p>Item 10：Have assignment operators return a reference to *this.</p>
+<p>Item 12: Copy all parts of an object</p>
 </blockquote>
-<p>赋值运算符要返回自己的引用只是个协议，并无强制性。这份协议被所有内置类型和标准程序库提供的类型如<code>string</code>, <code>vector</code>, <code>complex</code> <code>std::shared_ptr</code>等共同遵守。可以用来支持链式的赋值语句。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> x, y, z;</span><br><span class="line">x = y = z = <span class="number">15</span>; <span class="comment">//赋值连锁形式</span></span><br></pre></td></tr></table></figure>
+<p>正确拷贝函数实现：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Customer</span>&#123;</span></span><br><span class="line">  <span class="built_in">string</span> name;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  Customer(<span class="keyword">const</span> Customer&amp; rhs): name(rhs.name)&#123;&#125;</span><br><span class="line">  Customer&amp; <span class="keyword">operator</span>=(<span class="keyword">const</span> Customer&amp; rhs)&#123;</span><br><span class="line">    name = rhs.name;                     <span class="comment">// copy rhs&#x27;s data</span></span><br><span class="line">    <span class="keyword">return</span> *<span class="keyword">this</span>;                        <span class="comment">// see Item 10</span></span><br><span class="line">  &#125;  </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
-<p>相当于:</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">x = ( y = ( z = <span class="number">15</span> ) );</span><br></pre></td></tr></table></figure>
+<h3 id="情形一：-新添加了一个数据成员，忘记了更新拷贝函数"><a href="#情形一：-新添加了一个数据成员，忘记了更新拷贝函数" class="headerlink" title="情形一： 新添加了一个数据成员，忘记了更新拷贝函数"></a>情形一： 新添加了一个数据成员，忘记了更新拷贝函数</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Customer</span>&#123;</span></span><br><span class="line">  <span class="built_in">string</span> name;</span><br><span class="line">  Date lastTransaction;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  Customer(<span class="keyword">const</span> Customer&amp; rhs): name(rhs.name)&#123;&#125;</span><br><span class="line">  Customer&amp; <span class="keyword">operator</span>=(<span class="keyword">const</span> Customer&amp; rhs)&#123;</span><br><span class="line">    name = rhs.name;                     <span class="comment">// copy rhs&#x27;s data</span></span><br><span class="line">    <span class="keyword">return</span> *<span class="keyword">this</span>;                        <span class="comment">// see Item 10</span></span><br><span class="line">  &#125;  </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
-<p>我们自定义的对象最好也能支持链式的赋值，这需要重载=运算符时返回当前对象的引用：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Widget</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    Widget&amp; <span class="keyword">operator</span>=(<span class="keyword">const</span> Widget&amp; rhs)&#123;   </span><br><span class="line">      <span class="keyword">return</span> *<span class="keyword">this</span>;                         </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//这个协议不仅适用于以上的标准赋值形式，也适用于所有赋值相关运算 +=, -=, *=, etc.</span></span><br><span class="line">    Widget&amp; <span class="keyword">operator</span>+=(<span class="keyword">const</span> Widget&amp; rhs)&#123;  </span><br><span class="line">       <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>这时 <code>lastTransaction</code> 便被你忽略了，编译器也不会给出任何警告（即使在最高警告级别）</p>
+<h3 id="情形二：-继承父类忘记了拷贝父类的部分"><a href="#情形二：-继承父类忘记了拷贝父类的部分" class="headerlink" title="情形二： 继承父类忘记了拷贝父类的部分"></a>情形二： 继承父类忘记了拷贝父类的部分</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PriorityCustomer</span>:</span> <span class="keyword">public</span> Customer &#123;</span><br><span class="line">    <span class="keyword">int</span> priority;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  PriorityCustomer(<span class="keyword">const</span> PriorityCustomer&amp; rhs)</span><br><span class="line">  : priority(rhs.priority)&#123;&#125;</span><br><span class="line">  </span><br><span class="line">  PriorityCustomer&amp; </span><br><span class="line">  <span class="keyword">operator</span>=(<span class="keyword">const</span> PriorityCustomer&amp; rhs)&#123;</span><br><span class="line">    priority = rhs.priority;</span><br><span class="line">  &#125;  </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
+<p>正确写法:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PriorityCustomer</span>:</span> <span class="keyword">public</span> Customer &#123;</span><br><span class="line">    <span class="keyword">int</span> priority;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  PriorityCustomer(<span class="keyword">const</span> PriorityCustomer&amp; rhs)</span><br><span class="line">  : Customer(rhs), priority(rhs.priority)&#123;&#125;</span><br><span class="line">  </span><br><span class="line">  PriorityCustomer&amp; </span><br><span class="line">  <span class="keyword">operator</span>=(<span class="keyword">const</span> PriorityCustomer&amp; rhs)&#123;</span><br><span class="line">    Customer::<span class="keyword">operator</span>=(rhs);</span><br><span class="line">    priority = rhs.priority;</span><br><span class="line">  &#125;  </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
     </div>
 
     
@@ -384,7 +380,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://yngty.github.io/2021/11/01/effective-cpp-10/" title="Effective C++ 10：赋值运算符要返回自己的引用">https://yngty.github.io/2021/11/01/effective-cpp-10/</a>
+      <a href="https://yngty.github.io/2021/11/02/effective-cpp-12/" title="Effective C++ 12：复制对象时勿忘其每一个成分">https://yngty.github.io/2021/11/02/effective-cpp-12/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -401,14 +397,11 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2021/11/01/effective-cpp-9/" rel="prev" title="Effective C++ 9：绝不在构造和析构过程中调用 virtual 函数">
-                  <i class="fa fa-chevron-left"></i> Effective C++ 9：绝不在构造和析构过程中调用 virtual 函数
+                <a href="/2021/11/01/effective-cpp-11/" rel="prev" title="Effective C++ 11：赋值运算符需要考虑自我赋值问题">
+                  <i class="fa fa-chevron-left"></i> Effective C++ 11：赋值运算符需要考虑自我赋值问题
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2021/11/01/effective-cpp-11/" rel="next" title="Effective C++ 11：赋值运算符需要考虑自我赋值问题">
-                  Effective C++ 11：赋值运算符需要考虑自我赋值问题 <i class="fa fa-chevron-right"></i>
-                </a>
             </div>
           </div>
     </footer>
@@ -512,7 +505,7 @@ NexT.utils.loadComments('#gitalk-container', () => {
       repo        : 'gitalk',
       owner       : 'yngty',
       admin       : ['yngty'],
-      id          : '6e27ddd82e2e69452cf509fcd8d14e8e',
+      id          : '4804b5bcc4123822a6824b54baae5de2',
         language: '',
       distractionFreeMode: true
     });

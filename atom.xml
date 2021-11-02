@@ -6,7 +6,7 @@
   <link href="https://yngty.github.io/atom.xml" rel="self"/>
   
   <link href="https://yngty.github.io/"/>
-  <updated>2021-11-02T09:01:07.112Z</updated>
+  <updated>2021-11-02T09:47:21.456Z</updated>
   <id>https://yngty.github.io/</id>
   
   <author>
@@ -17,11 +17,42 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Effective C++ 12：复制对象时勿忘其每一个成分</title>
+    <link href="https://yngty.github.io/2021/11/02/effective-cpp-12/"/>
+    <id>https://yngty.github.io/2021/11/02/effective-cpp-12/</id>
+    <published>2021-11-02T17:36:33.000Z</published>
+    <updated>2021-11-02T09:47:21.456Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;Item 12: Copy all parts of an object&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;正确拷贝函数实现：&lt;/p&gt;
+&lt;figure class=&quot;highlight c++&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td</summary>
+        
+      
+    
+    
+    
+    <category term="Effective-C++" scheme="https://yngty.github.io/categories/Effective-C/"/>
+    
+    
+    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
+    
+    <category term="C++" scheme="https://yngty.github.io/tags/C/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Effective C++ 11：赋值运算符需要考虑自我赋值问题</title>
     <link href="https://yngty.github.io/2021/11/01/effective-cpp-11/"/>
     <id>https://yngty.github.io/2021/11/01/effective-cpp-11/</id>
     <published>2021-11-01T13:12:55.000Z</published>
-    <updated>2021-11-02T09:01:07.112Z</updated>
+    <updated>2021-11-02T09:47:21.456Z</updated>
     
     
       
@@ -49,7 +80,7 @@
     <link href="https://yngty.github.io/2021/11/01/effective-cpp-10/"/>
     <id>https://yngty.github.io/2021/11/01/effective-cpp-10/</id>
     <published>2021-11-01T12:59:28.000Z</published>
-    <updated>2021-11-02T09:01:07.112Z</updated>
+    <updated>2021-11-02T09:47:21.456Z</updated>
     
     
       
@@ -77,7 +108,7 @@
     <link href="https://yngty.github.io/2021/11/01/effective-cpp-9/"/>
     <id>https://yngty.github.io/2021/11/01/effective-cpp-9/</id>
     <published>2021-11-01T12:03:51.000Z</published>
-    <updated>2021-11-02T09:01:07.112Z</updated>
+    <updated>2021-11-02T09:47:21.456Z</updated>
     
     
       

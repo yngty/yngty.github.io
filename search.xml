@@ -329,4 +329,28 @@
         <tag>C++</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Effective C++ 12：复制对象时勿忘其每一个成分</title>
+    <url>/2021/11/02/effective-cpp-12/</url>
+    <content><![CDATA[<blockquote>
+<p>Item 12: Copy all parts of an object</p>
+</blockquote>
+<p>正确拷贝函数实现：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Customer</span>&#123;</span></span><br><span class="line">  <span class="built_in">string</span> name;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  Customer(<span class="keyword">const</span> Customer&amp; rhs): name(rhs.name)&#123;&#125;</span><br><span class="line">  Customer&amp; <span class="keyword">operator</span>=(<span class="keyword">const</span> Customer&amp; rhs)&#123;</span><br><span class="line">    name = rhs.name;                     <span class="comment">// copy rhs&#x27;s data</span></span><br><span class="line">    <span class="keyword">return</span> *<span class="keyword">this</span>;                        <span class="comment">// see Item 10</span></span><br><span class="line">  &#125;  </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="情形一：-新添加了一个数据成员，忘记了更新拷贝函数"><a href="#情形一：-新添加了一个数据成员，忘记了更新拷贝函数" class="headerlink" title="情形一： 新添加了一个数据成员，忘记了更新拷贝函数"></a>情形一： 新添加了一个数据成员，忘记了更新拷贝函数</h3><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Customer</span>&#123;</span></span><br><span class="line">  <span class="built_in">string</span> name;</span><br><span class="line">  Date lastTransaction;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  Customer(<span class="keyword">const</span> Customer&amp; rhs): name(rhs.name)&#123;&#125;</span><br><span class="line">  Customer&amp; <span class="keyword">operator</span>=(<span class="keyword">const</span> Customer&amp; rhs)&#123;</span><br><span class="line">    name = rhs.name;                     <span class="comment">// copy rhs&#x27;s data</span></span><br><span class="line">    <span class="keyword">return</span> *<span class="keyword">this</span>;                        <span class="comment">// see Item 10</span></span><br><span class="line">  &#125;  </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>这时 <code>lastTransaction</code> 便被你忽略了，编译器也不会给出任何警告（即使在最高警告级别）</p>
+<h3 id="情形二：-继承父类忘记了拷贝父类的部分"><a href="#情形二：-继承父类忘记了拷贝父类的部分" class="headerlink" title="情形二： 继承父类忘记了拷贝父类的部分"></a>情形二： 继承父类忘记了拷贝父类的部分</h3><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PriorityCustomer</span>:</span> <span class="keyword">public</span> Customer &#123;</span><br><span class="line">    <span class="keyword">int</span> priority;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  PriorityCustomer(<span class="keyword">const</span> PriorityCustomer&amp; rhs)</span><br><span class="line">  : priority(rhs.priority)&#123;&#125;</span><br><span class="line">  </span><br><span class="line">  PriorityCustomer&amp; </span><br><span class="line">  <span class="keyword">operator</span>=(<span class="keyword">const</span> PriorityCustomer&amp; rhs)&#123;</span><br><span class="line">    priority = rhs.priority;</span><br><span class="line">  &#125;  </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>正确写法:</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PriorityCustomer</span>:</span> <span class="keyword">public</span> Customer &#123;</span><br><span class="line">    <span class="keyword">int</span> priority;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  PriorityCustomer(<span class="keyword">const</span> PriorityCustomer&amp; rhs)</span><br><span class="line">  : Customer(rhs), priority(rhs.priority)&#123;&#125;</span><br><span class="line">  </span><br><span class="line">  PriorityCustomer&amp; </span><br><span class="line">  <span class="keyword">operator</span>=(<span class="keyword">const</span> PriorityCustomer&amp; rhs)&#123;</span><br><span class="line">    Customer::<span class="keyword">operator</span>=(rhs);</span><br><span class="line">    priority = rhs.priority;</span><br><span class="line">  &#125;  </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>Effective-C++</category>
+      </categories>
+      <tags>
+        <tag>Effective-C++</tag>
+        <tag>C++</tag>
+      </tags>
+  </entry>
 </search>
