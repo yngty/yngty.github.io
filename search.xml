@@ -298,4 +298,35 @@
         <tag>C++</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Effective C++ 11：赋值运算符需要考虑自我赋值问题</title>
+    <url>/2021/11/01/effective-cpp-11/</url>
+    <content><![CDATA[<blockquote>
+<p>Item 11: Handle assignment to self in operator=</p>
+</blockquote>
+<p>我们在重载一个类的赋值运算符时要考虑自我赋值的问题。有了指针和引用自我赋值不总是第一时间能够识别出来。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">a[i] = a[j];</span><br><span class="line"></span><br><span class="line">*px = *py;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Base</span> &#123;</span> ... &#125;;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Derived</span>:</span> <span class="keyword">public</span> Base &#123; ... &#125;;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">doSomething</span><span class="params">(<span class="keyword">const</span> Base&amp; rb, Derived* pd)</span></span>;<span class="comment">// rb和女pd 有可能其实是同一对象</span></span><br><span class="line">rb = pd;</span><br></pre></td></tr></table></figure>
+
+<p>自我赋值主要考虑到 <strong>自我赋值安全性</strong> 和 <strong>异常安全性</strong></p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Bitmap</span> &#123;</span> ... &#125;;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Widget</span> &#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    Bitmap* pb; <span class="comment">//指针，指向一个从heap 分配而得的对象</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>既不自我赋值安全性也不异常安全性, 当 rhs == *this时，delete pb使得rhs.pb成为空值，接下来 new 的数据便是空的。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">Widget&amp; Widget::<span class="keyword">operator</span>=(<span class="keyword">const</span> Widget&amp; rhs) &#123;</span><br><span class="line">    <span class="keyword">delete</span> pb;</span><br><span class="line">    pb = <span class="keyword">new</span> Bitmap(*rhs.pb);</span><br><span class="line">    <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>加入证同测试，如果是自我赋值，就不做任何事。但开始就delete pb， 但 new y出现异常， pb就会置空出现风险。  </p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">Widget&amp; Widget::<span class="keyword">operator</span>=(<span class="keyword">const</span> Widget&amp; rhs) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span> == &amp;rhs) <span class="keyword">return</span> <span class="keyword">this</span>;  <span class="comment">// 证同测试</span></span><br><span class="line">    <span class="keyword">delete</span> pb;</span><br><span class="line">    pb = <span class="keyword">new</span> Bitmap(*rhs.pb);</span><br><span class="line">    <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在C++中<strong>仔细地排列语句顺序</strong>通常可以达到异常安全， 比如我们可以先申请空间，最后再delete：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">Widget&amp; Widget::<span class="keyword">operator</span>=(<span class="keyword">const</span> Widget&amp; rhs) &#123;</span><br><span class="line">    Bitmap *pOrig = pb;  </span><br><span class="line">    pb = <span class="keyword">new</span> Bitmap(*rhs.pb);</span><br><span class="line">    <span class="keyword">delete</span> pOrig;</span><br><span class="line">    <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>一个更加通用的技术便是复制和交换（copy and swap）：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Widget</span> &#123;</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">swap</span><span class="params">(Widget&amp; rhs)</span></span>; <span class="comment">// 交换*this rhs 的数据</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">Widget&amp; Widget::<span class="keyword">operator</span>=(<span class="keyword">const</span> Widget&amp; rhs)</span><br><span class="line">&#123;</span><br><span class="line">    Widget temp(rhs); <span class="comment">//rhs 数据制作一份复件(副本)</span></span><br><span class="line">    swap (temp); <span class="comment">//*this 数据和上述复件的数据交换</span></span><br><span class="line">    <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>Effective-C++</category>
+      </categories>
+      <tags>
+        <tag>Effective-C++</tag>
+        <tag>C++</tag>
+      </tags>
+  </entry>
 </search>
