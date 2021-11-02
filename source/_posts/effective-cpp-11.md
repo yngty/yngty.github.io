@@ -44,7 +44,7 @@ Widget& Widget::operator=(const Widget& rhs) {
 }
 ```
 
-加入证同测试，如果是自我赋值，就不做任何事。但开始就delete pb， 但 new y出现异常， pb就会置空出现风险。  
+判断两个地址是否相同，如果是自我赋值，就不做任何事。但开始就delete pb， 但 new 出现异常， pb就会置空出现风险。  
 
 ```c++
 Widget& Widget::operator=(const Widget& rhs) {
