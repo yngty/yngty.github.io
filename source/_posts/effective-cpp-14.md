@@ -51,7 +51,7 @@ Lock ml2(&ml1)
         ...
     }
     ```
-- **引用计数**，采用shared_ptr的逻辑。shared_ptr构造函数提供了第二个参数deleter，当引用计数到0时被调用。 所以Lock可以通过聚合一个shared_ptr成员来实现引用计数：
+- **引用计数**，采用 `shared_ptr` 的逻辑。`shared_ptr` 构造函数提供了第二个参数 `deleter`，当引用计数到 `0` 时被调用。 所以 `Lock` 可以通过聚合一个 `shared_ptr` 成员来实现引用计数：
     ```c++
     class Lock{
     public: 
