@@ -6,7 +6,7 @@
   <link href="https://yngty.github.io/atom.xml" rel="self"/>
   
   <link href="https://yngty.github.io/"/>
-  <updated>2021-11-02T12:34:02.555Z</updated>
+  <updated>2021-11-04T16:28:41.882Z</updated>
   <id>https://yngty.github.io/</id>
   
   <author>
@@ -17,11 +17,41 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Effective C++ 14：在资源管理类中小心 copying 行为</title>
+    <link href="https://yngty.github.io/2021/11/04/effective-cpp-14/"/>
+    <id>https://yngty.github.io/2021/11/04/effective-cpp-14/</id>
+    <published>2021-11-04T16:00:01.000Z</published>
+    <updated>2021-11-04T16:28:41.882Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;Item 14: Think carefully about copying behavior in resource-managing classes.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;设计一个</summary>
+        
+      
+    
+    
+    
+    <category term="Effective-C++" scheme="https://yngty.github.io/categories/Effective-C/"/>
+    
+    
+    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
+    
+    <category term="C++" scheme="https://yngty.github.io/tags/C/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Effective C++ 13：以对象管理资源</title>
     <link href="https://yngty.github.io/2021/11/02/effective-cpp-13/"/>
     <id>https://yngty.github.io/2021/11/02/effective-cpp-13/</id>
-    <published>2021-11-02T20:30:45.000Z</published>
-    <updated>2021-11-02T12:34:02.555Z</updated>
+    <published>2021-11-02T12:30:45.000Z</published>
+    <updated>2021-11-02T12:32:55.585Z</updated>
     
     
       
@@ -48,8 +78,8 @@
     <title>Effective C++ 12：复制对象时勿忘其每一个成分</title>
     <link href="https://yngty.github.io/2021/11/02/effective-cpp-12/"/>
     <id>https://yngty.github.io/2021/11/02/effective-cpp-12/</id>
-    <published>2021-11-02T17:36:33.000Z</published>
-    <updated>2021-11-02T12:34:02.555Z</updated>
+    <published>2021-11-02T09:36:33.000Z</published>
+    <updated>2021-11-02T09:45:34.385Z</updated>
     
     
       
@@ -79,8 +109,8 @@
     <title>Effective C++ 11：赋值运算符需要考虑自我赋值问题</title>
     <link href="https://yngty.github.io/2021/11/01/effective-cpp-11/"/>
     <id>https://yngty.github.io/2021/11/01/effective-cpp-11/</id>
-    <published>2021-11-01T13:12:55.000Z</published>
-    <updated>2021-11-02T12:34:02.555Z</updated>
+    <published>2021-11-01T05:12:55.000Z</published>
+    <updated>2021-11-02T08:59:39.536Z</updated>
     
     
       
@@ -107,8 +137,8 @@
     <title>Effective C++ 10：赋值运算符要返回自己的引用</title>
     <link href="https://yngty.github.io/2021/11/01/effective-cpp-10/"/>
     <id>https://yngty.github.io/2021/11/01/effective-cpp-10/</id>
-    <published>2021-11-01T12:59:28.000Z</published>
-    <updated>2021-11-02T12:34:02.555Z</updated>
+    <published>2021-11-01T04:59:28.000Z</published>
+    <updated>2021-11-01T05:05:33.855Z</updated>
     
     
       
@@ -135,8 +165,8 @@
     <title>Effective C++ 9：绝不在构造和析构过程中调用 virtual 函数</title>
     <link href="https://yngty.github.io/2021/11/01/effective-cpp-9/"/>
     <id>https://yngty.github.io/2021/11/01/effective-cpp-9/</id>
-    <published>2021-11-01T12:03:51.000Z</published>
-    <updated>2021-11-02T12:34:02.555Z</updated>
+    <published>2021-11-01T04:03:51.000Z</published>
+    <updated>2021-11-01T04:57:51.747Z</updated>
     
     
       
