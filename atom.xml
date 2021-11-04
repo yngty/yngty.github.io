@@ -6,7 +6,7 @@
   <link href="https://yngty.github.io/atom.xml" rel="self"/>
   
   <link href="https://yngty.github.io/"/>
-  <updated>2021-11-04T16:28:41.882Z</updated>
+  <updated>2021-11-04T16:34:57.957Z</updated>
   <id>https://yngty.github.io/</id>
   
   <author>
@@ -18,10 +18,10 @@
   
   <entry>
     <title>Effective C++ 14：在资源管理类中小心 copying 行为</title>
-    <link href="https://yngty.github.io/2021/11/04/effective-cpp-14/"/>
-    <id>https://yngty.github.io/2021/11/04/effective-cpp-14/</id>
-    <published>2021-11-04T16:00:01.000Z</published>
-    <updated>2021-11-04T16:28:41.882Z</updated>
+    <link href="https://yngty.github.io/2021/11/05/effective-cpp-14/"/>
+    <id>https://yngty.github.io/2021/11/05/effective-cpp-14/</id>
+    <published>2021-11-05T00:00:01.000Z</published>
+    <updated>2021-11-04T16:34:57.957Z</updated>
     
     
       

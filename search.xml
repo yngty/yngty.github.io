@@ -355,7 +355,7 @@
   </entry>
   <entry>
     <title>Effective C++ 14：在资源管理类中小心 copying 行为</title>
-    <url>/2021/11/04/effective-cpp-14/</url>
+    <url>/2021/11/05/effective-cpp-14/</url>
     <content><![CDATA[<blockquote>
 <p>Item 14: Think carefully about copying behavior in resource-managing classes.</p>
 </blockquote>
@@ -371,7 +371,7 @@
 <ul>
 <li><p><strong>禁止复制</strong>。参考<a href="/2021/10/25/effective-cpp-6/" title="若不想使用编译器自动生成的函数，就该明确拒绝">若不想使用编译器自动生成的函数，就该明确拒绝</a>。对Lock而言看起来是这样：</p>
   <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Lock</span> :</span> <span class="keyword">private</span> Uncopyable &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-<li><p><strong>引用计数</strong>，采用shared_ptr的逻辑。shared_ptr构造函数提供了第二个参数deleter，当引用计数到0时被调用。 所以Lock可以通过聚合一个shared_ptr成员来实现引用计数：</p>
+<li><p><strong>引用计数</strong>，采用 <code>shared_ptr</code> 的逻辑。<code>shared_ptr</code> 构造函数提供了第二个参数 <code>deleter</code>，当引用计数到 <code>0</code> 时被调用。 所以 <code>Lock</code> 可以通过聚合一个 <code>shared_ptr</code> 成员来实现引用计数：</p>
   <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Lock</span>&#123;</span></span><br><span class="line"><span class="keyword">public</span>: </span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">Lock</span><span class="params">(Mutex *pm)</span>: <span class="title">mutexPtr</span><span class="params">(pm, unlock)</span></span>&#123;</span><br><span class="line">        lock(mutexPtr.get());</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">private</span>: </span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;Mutex&gt; mutexPtr; <span class="comment">//shared_ptr替换 raw pointer</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 <p>   <code>Lock</code> 的析构会引起 <code>mutexPtr</code> 的析构，而 <code>mutexPtr</code> 计数到0时<code>unlock(mutexPtr.get())</code> 会被调用。</p>
 </li>
