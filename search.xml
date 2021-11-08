@@ -476,7 +476,7 @@
     <content><![CDATA[<blockquote>
 <p>Item 17: Store newed objects in smart pointers in standalone statements.</p>
 </blockquote>
-<p><strong>以单独的语句将 <code>new</code> 的对象放入智能指针内。这是为了由于其他表达式抛出异常而导致的资源泄漏</strong>。</p>
+<p><strong>以单独的语句将 <code>new</code> 的对象放入智能指针内。这是为了防止由于其他表达式抛出异常而导致的资源泄漏</strong>。</p>
 <p>举个栗子：</p>
 <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">processWidget(<span class="built_in">shared_ptr</span>&lt;Widget&gt;(<span class="keyword">new</span> Widget), priority());</span><br></pre></td></tr></table></figure>
 
@@ -486,7 +486,7 @@
 <li>构造 <code>shared_ptr&lt;Widget&gt;</code></li>
 <li>调用 <code>priority()</code></li>
 </ol>
-<p><strong>因为C++不同于其他语言，函数参数的计算顺序很大程度上决定于编译器</strong>编译器认为顺序应当是1, 3, 2，即：</p>
+<p><strong>因为C++不同于其他语言，函数参数的计算顺序很大程度上决定于编译器</strong>，编译器认为顺序应当是1, 3, 2，即：</p>
 <ol>
 <li>执行 <code>new Widget</code></li>
 <li>调用 <code>priority()</code></li>

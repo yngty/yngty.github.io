@@ -300,7 +300,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2021-11-08 09:53:13 / 修改时间：02:08:35" itemprop="dateCreated datePublished" datetime="2021-11-08T09:53:13+00:00">2021-11-08</time>
+      <time title="创建时间：2021-11-08 09:53:13 / 修改时间：02:12:22" itemprop="dateCreated datePublished" datetime="2021-11-08T09:53:13+00:00">2021-11-08</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -320,7 +320,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>559</span>
+      <span>562</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -341,7 +341,7 @@
           <blockquote>
 <p>Item 17: Store newed objects in smart pointers in standalone statements.</p>
 </blockquote>
-<p><strong>以单独的语句将 <code>new</code> 的对象放入智能指针内。这是为了由于其他表达式抛出异常而导致的资源泄漏</strong>。</p>
+<p><strong>以单独的语句将 <code>new</code> 的对象放入智能指针内。这是为了防止由于其他表达式抛出异常而导致的资源泄漏</strong>。</p>
 <p>举个栗子：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">processWidget(<span class="built_in">shared_ptr</span>&lt;Widget&gt;(<span class="keyword">new</span> Widget), priority());</span><br></pre></td></tr></table></figure>
 
@@ -351,7 +351,7 @@
 <li>构造 <code>shared_ptr&lt;Widget&gt;</code></li>
 <li>调用 <code>priority()</code></li>
 </ol>
-<p><strong>因为C++不同于其他语言，函数参数的计算顺序很大程度上决定于编译器</strong>编译器认为顺序应当是1, 3, 2，即：</p>
+<p><strong>因为C++不同于其他语言，函数参数的计算顺序很大程度上决定于编译器</strong>，编译器认为顺序应当是1, 3, 2，即：</p>
 <ol>
 <li>执行 <code>new Widget</code></li>
 <li>调用 <code>priority()</code></li>
@@ -410,7 +410,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2021-11-08 09:23:53 / 修改时间：02:08:35" itemprop="dateCreated datePublished" datetime="2021-11-08T09:23:53+00:00">2021-11-08</time>
+      <time title="创建时间：2021-11-08 09:23:53 / 修改时间：02:12:22" itemprop="dateCreated datePublished" datetime="2021-11-08T09:23:53+00:00">2021-11-08</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
