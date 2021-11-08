@@ -444,6 +444,81 @@
       </tags>
   </entry>
   <entry>
+    <title>C++ 中 malloc 和 new 的区别</title>
+    <url>/2021/11/08/C-%E4%B8%ADmalloc%E5%92%8Cnew%E7%9A%84%E5%8C%BA%E5%88%AB/</url>
+    <content><![CDATA[<table>
+<thead>
+<tr>
+<th align="center">特征</th>
+<th align="center">new</th>
+<th align="center">malloc</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">类型</td>
+<td align="center">关键字</td>
+<td align="center">标准库函数</td>
+</tr>
+<tr>
+<td align="center">支持语言</td>
+<td align="center"><code>C/C++</code></td>
+<td align="center">只在 <code>C++</code></td>
+</tr>
+<tr>
+<td align="center">申请内存的位置</td>
+<td align="center">自由存储区 <code>free store</code></td>
+<td align="center">堆</td>
+</tr>
+<tr>
+<td align="center">分配内存的大小</td>
+<td align="center">编译器根据类型信息自行计算</td>
+<td align="center">显示指定字节数</td>
+</tr>
+<tr>
+<td align="center">内存分配失败</td>
+<td align="center">抛出 <code>bac_alloc</code> 异常, 不会返回 <code>NULL</code></td>
+<td align="center">返回 <code>NULL</code></td>
+</tr>
+<tr>
+<td align="center">返回类型</td>
+<td align="center">返回对象类型的指针</td>
+<td align="center">返回<code>void</code> 指针，需要转换</td>
+</tr>
+<tr>
+<td align="center">是否调用构造函数/析构函数</td>
+<td align="center">调用</td>
+<td align="center">不调用</td>
+</tr>
+<tr>
+<td align="center">处理数组</td>
+<td align="center"><code>new[]</code></td>
+<td align="center">手动指定数组的大小</td>
+</tr>
+<tr>
+<td align="center">是否支持重载</td>
+<td align="center">支持</td>
+<td align="center">不支持</td>
+</tr>
+<tr>
+<td align="center">是否支持内存扩充</td>
+<td align="center">不支持</td>
+<td align="center"><code>realloc</code></td>
+</tr>
+<tr>
+<td align="center">内存释放方式</td>
+<td align="center"><code>new/delete</code>, <code>new[]/delete[]</code></td>
+<td align="center"><code>malloc/free</code></td>
+</tr>
+</tbody></table>
+]]></content>
+      <categories>
+        <category>C/C++</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Effective C++ 16：使用同样的形式来new和delete</title>
     <url>/2021/11/08/effective-cpp-16/</url>
     <content><![CDATA[<blockquote>

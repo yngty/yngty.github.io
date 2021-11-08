@@ -6,7 +6,7 @@
   <link href="https://yngty.github.io/atom.xml" rel="self"/>
   
   <link href="https://yngty.github.io/"/>
-  <updated>2021-11-08T02:14:30.577Z</updated>
+  <updated>2021-11-08T15:21:57.380Z</updated>
   <id>https://yngty.github.io/</id>
   
   <author>
@@ -17,11 +17,45 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>C++ 中 malloc 和 new 的区别</title>
+    <link href="https://yngty.github.io/2021/11/08/C-%E4%B8%ADmalloc%E5%92%8Cnew%E7%9A%84%E5%8C%BA%E5%88%AB/"/>
+    <id>https://yngty.github.io/2021/11/08/C-%E4%B8%ADmalloc%E5%92%8Cnew%E7%9A%84%E5%8C%BA%E5%88%AB/</id>
+    <published>2021-11-08T22:44:44.000Z</published>
+    <updated>2021-11-08T15:21:57.380Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th align=&quot;center&quot;&gt;特征&lt;/th&gt;
+&lt;th align=&quot;center&quot;&gt;new&lt;/th&gt;
+&lt;th align=&quot;center&quot;&gt;malloc&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td</summary>
+        
+      
+    
+    
+    
+    <category term="C/C++" scheme="https://yngty.github.io/categories/C-C/"/>
+    
+    
+    <category term="C++" scheme="https://yngty.github.io/tags/C/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Effective C++ 17：在单独的语句中将 new 的对象放入智能指针</title>
     <link href="https://yngty.github.io/2021/11/08/effective-cpp-17/"/>
     <id>https://yngty.github.io/2021/11/08/effective-cpp-17/</id>
     <published>2021-11-08T09:53:13.000Z</published>
-    <updated>2021-11-08T02:14:30.577Z</updated>
+    <updated>2021-11-08T15:21:57.380Z</updated>
     
     
       
@@ -51,7 +85,7 @@
     <link href="https://yngty.github.io/2021/11/08/effective-cpp-16/"/>
     <id>https://yngty.github.io/2021/11/08/effective-cpp-16/</id>
     <published>2021-11-08T09:23:53.000Z</published>
-    <updated>2021-11-08T02:14:30.577Z</updated>
+    <updated>2021-11-08T15:21:57.380Z</updated>
     
     
       
