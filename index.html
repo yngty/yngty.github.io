@@ -306,7 +306,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-11-08 01:11:37" itemprop="dateModified" datetime="2021-11-08T01:11:37+00:00">2021-11-08</time>
+        <time title="修改时间：2021-11-08 01:21:08" itemprop="dateModified" datetime="2021-11-08T01:21:08+00:00">2021-11-08</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -326,7 +326,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>1.2k</span>
+      <span>1.1k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -351,25 +351,23 @@
 <ul>
 <li><strong>显示获取</strong></li>
 </ul>
-<p>shared_ptr提供了get方法来得到资源。</p>
+<p><code>shared_ptr</code> 提供了 <code>get</code> 方法来得到资源。</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">shared_ptr</span>&lt;Investment&gt; pInv;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">daysHeld</span><span class="params">(Investment *pi)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> days = daysHeld(pInv.get());</span><br></pre></td></tr></table></figure>
 
 <p>为了让 <code>pInv</code> 表现地更像一个指针，<code>shared_ptr</code>还重载了解引用运算符（<code>dereferencing operator</code>） <code>operator-&gt;</code>和 <code>operator*</code>：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Investment</span>&#123;</span></span><br><span class="line"><span class="keyword">public</span>: </span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">isTaxFree</span><span class="params">()</span> <span class="keyword">const</span></span>;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="built_in">shared_ptr</span>&lt;Investment&gt; <span class="title">pi1</span><span class="params">(createInvestment())</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">bool</span> taxable1 = !(pi1-&gt;isTaxFree());</span><br><span class="line"><span class="keyword">bool</span> texable2 = !((*pi1).isTaxFree());</span><br></pre></td></tr></table></figure>
 
-<ul>
-<li><strong>隐式地获取</strong></li>
-</ul>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">FontHandle <span class="title">getFont</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">releaseFont</span><span class="params">(FontHandle fh)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">changeFontSize</span><span class="params">(FontHandle f, <span class="keyword">int</span> newSize)</span></span>;</span><br></pre></td></tr></table></figure>
-
 <p>我们封装了Font来管理资源：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Font</span>&#123;</span></span><br><span class="line">FontHandle f;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">Font</span><span class="params">(FontHandle fh)</span>: <span class="title">f</span><span class="params">(fh)</span></span>&#123;&#125;</span><br><span class="line">    ~Font()&#123; releaseFont(f); &#125;;</span><br><span class="line">    <span class="function">FontHandle <span class="title">get</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> f; &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
 <p>通过get方法来访问FontHandle：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Font <span class="title">f</span><span class="params">(getFont())</span></span>;</span><br><span class="line"><span class="keyword">int</span> newFontSize;</span><br><span class="line">changeFontSize(f.get(), newFontSize);</span><br></pre></td></tr></table></figure>
 
-<p>可以<strong>隐式类型转换运算符</strong>将 <code>Font</code> 转换为 <code>FontHandle</code>:</p>
+<ul>
+<li><strong>隐式地获取</strong></li>
+</ul>
+<p>可以隐式类型转换运算符将 <code>Font</code> 转换为 <code>FontHandle</code>:</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Font</span>&#123;</span></span><br><span class="line">    <span class="function"><span class="keyword">operator</span> <span class="title">FontHandle</span><span class="params">()</span> <span class="keyword">const</span></span>&#123; <span class="keyword">return</span> f;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">changeFontSize(f, newFontSize);</span><br></pre></td></tr></table></figure>
+
 <p>然而问题也随之出现：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">FontHandle h2 = f1;</span><br></pre></td></tr></table></figure>
 <p>无意间 <code>h2</code> 并没有被资源管理起来，这将会引发意外的资源泄漏。所以隐式转换在提供便利的同时， 也引起了资源泄漏的风险。 </p>
