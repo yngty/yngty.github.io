@@ -6,7 +6,7 @@
   <link href="https://yngty.github.io/atom.xml" rel="self"/>
   
   <link href="https://yngty.github.io/"/>
-  <updated>2021-11-08T01:52:39.205Z</updated>
+  <updated>2021-11-08T02:08:35.296Z</updated>
   <id>https://yngty.github.io/</id>
   
   <author>
@@ -17,11 +17,41 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Effective C++ 17：在单独的语句中将 new 的对象放入智能指针</title>
+    <link href="https://yngty.github.io/2021/11/08/effective-cpp-17/"/>
+    <id>https://yngty.github.io/2021/11/08/effective-cpp-17/</id>
+    <published>2021-11-08T09:53:13.000Z</published>
+    <updated>2021-11-08T02:08:35.296Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;Item 17: Store newed objects in smart pointers in standalone statements.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;以单独的语句将</summary>
+        
+      
+    
+    
+    
+    <category term="Effective-C++" scheme="https://yngty.github.io/categories/Effective-C/"/>
+    
+    
+    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
+    
+    <category term="C++" scheme="https://yngty.github.io/tags/C/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Effective C++ 16：使用同样的形式来new和delete</title>
     <link href="https://yngty.github.io/2021/11/08/effective-cpp-16/"/>
     <id>https://yngty.github.io/2021/11/08/effective-cpp-16/</id>
     <published>2021-11-08T09:23:53.000Z</published>
-    <updated>2021-11-08T01:52:39.205Z</updated>
+    <updated>2021-11-08T02:08:35.296Z</updated>
     
     
       

@@ -23,18 +23,22 @@
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"yngty.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}};
   </script>
-<meta name="description" content="预测未来的最好方式就是实现它">
-<meta property="og:type" content="website">
-<meta property="og:title" content="瓜地">
-<meta property="og:url" content="https://yngty.github.io/tags/Effective-C/index.html">
+<meta name="description" content="Item 17: Store newed objects in smart pointers in standalone statements.  以单独的语句将 new 的对象放入智能指针内。这是为了由于其他表达式抛出异常而导致的资源泄漏。 举个栗子： 1processWidget(shared_ptr&lt;Widget&gt;(new Widget), priority());  上述代码">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Effective C++ 17：在单独的语句中将 new 的对象放入智能指针">
+<meta property="og:url" content="https://yngty.github.io/2021/11/08/effective-cpp-17/index.html">
 <meta property="og:site_name" content="瓜地">
-<meta property="og:description" content="预测未来的最好方式就是实现它">
+<meta property="og:description" content="Item 17: Store newed objects in smart pointers in standalone statements.  以单独的语句将 new 的对象放入智能指针内。这是为了由于其他表达式抛出异常而导致的资源泄漏。 举个栗子： 1processWidget(shared_ptr&lt;Widget&gt;(new Widget), priority());  上述代码">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-11-08T09:53:13.000Z">
+<meta property="article:modified_time" content="2021-11-08T02:08:35.296Z">
 <meta property="article:author" content="yngty">
+<meta property="article:tag" content="Effective-C++">
+<meta property="article:tag" content="C++">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://yngty.github.io/tags/Effective-C/">
+<link rel="canonical" href="https://yngty.github.io/2021/11/08/effective-cpp-17/">
 
 
 <script class="page-configurations">
@@ -42,11 +46,11 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
-<title>标签: Effective-C++ | 瓜地</title>
+<title>Effective C++ 17：在单独的语句中将 new 的对象放入智能指针 | 瓜地</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-5F9JL1V3HN"></script>
     <script>
@@ -265,234 +269,159 @@
 </noscript>
 
 
-    <div class="main-inner tag posts-collapse">
+    <div class="main-inner post posts-expand">
 
 
   
-  
-  
-  <div class="post-block">
-    <div class="post-content">
-      <div class="collection-title">
-        <h2 class="collection-header">Effective-C++
-          <small>标签</small>
-        </h2>
-      </div>
 
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2021/11/08/effective-cpp-17/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="瓜地">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Effective C++ 17：在单独的语句中将 new 的对象放入智能指针
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
       
-    <div class="collection-year">
-      <span class="collection-header">2021</span>
+
+      <time title="创建时间：2021-11-08 09:53:13 / 修改时间：02:08:35" itemprop="dateCreated datePublished" datetime="2021-11-08T09:53:13+00:00">2021-11-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Effective-C/" itemprop="url" rel="index"><span itemprop="name">Effective-C++</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+      </div>
+      <div class="post-meta">
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>559</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>1 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <blockquote>
+<p>Item 17: Store newed objects in smart pointers in standalone statements.</p>
+</blockquote>
+<p><strong>以单独的语句将 <code>new</code> 的对象放入智能指针内。这是为了由于其他表达式抛出异常而导致的资源泄漏</strong>。</p>
+<p>举个栗子：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">processWidget(<span class="built_in">shared_ptr</span>&lt;Widget&gt;(<span class="keyword">new</span> Widget), priority());</span><br></pre></td></tr></table></figure>
+
+<p>上述代码中，在 <code>processWidget</code> 函数被调用之前参数会首先得到计算。可以认为包括三部分的过程：</p>
+<ol>
+<li>执行 <code>new Widget</code></li>
+<li>构造 <code>shared_ptr&lt;Widget&gt;</code></li>
+<li>调用 <code>priority()</code></li>
+</ol>
+<p><strong>因为C++不同于其他语言，函数参数的计算顺序很大程度上决定于编译器</strong>编译器认为顺序应当是1, 3, 2，即：</p>
+<ol>
+<li>执行 <code>new Widget</code></li>
+<li>调用 <code>priority()</code></li>
+<li>构造 <code>shared_ptr&lt;Widget&gt;</code></li>
+</ol>
+<p>那么如果 <code>priority</code>抛出了异常，新的 <code>Widget</code> 便永远地找不回来了。虽然我们使用了智能指针，但资源还是泄漏了！</p>
+<p>于是更加健壮的实现中，应当将创建资源和初始化智能指针的语句独立出来：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">shared_ptr</span>&lt;Widget&gt; pw = <span class="built_in">shared_ptr</span>&lt;Widget&gt;(<span class="keyword">new</span> Widget);</span><br><span class="line">processWidget(pw, priority());</span><br></pre></td></tr></table></figure>
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2021-11-08T09:53:13+00:00"
-              content="2021-11-08">
-          11-08
-        </time>
-      </div>
+    
+    
+    
 
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/11/08/effective-cpp-17/" itemprop="url">
-            <span itemprop="name">Effective C++ 17：在单独的语句中将 new 的对象放入智能指针</span>
-          </a>
-      </div>
+    <footer class="post-footer">
+          
 
-      
-    </header>
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>yngty
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://yngty.github.io/2021/11/08/effective-cpp-17/" title="Effective C++ 17：在单独的语句中将 new 的对象放入智能指针">https://yngty.github.io/2021/11/08/effective-cpp-17/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Effective-C/" rel="tag"># Effective-C++</a>
+              <a href="/tags/C/" rel="tag"># C++</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/11/08/effective-cpp-16/" rel="prev" title="Effective C++ 16：使用同样的形式来new和delete">
+                  <i class="fa fa-chevron-left"></i> Effective C++ 16：使用同样的形式来new和delete
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
   </article>
+</div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2021-11-08T09:23:53+00:00"
-              content="2021-11-08">
-          11-08
-        </time>
-      </div>
 
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/11/08/effective-cpp-16/" itemprop="url">
-            <span itemprop="name">Effective C++ 16：使用同样的形式来new和delete</span>
-          </a>
-      </div>
 
-      
-    </header>
-  </article>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2021-11-05T07:58:35+00:00"
-              content="2021-11-05">
-          11-05
-        </time>
-      </div>
 
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/11/05/effective-cpp-15/" itemprop="url">
-            <span itemprop="name">Effective C++ 15：在资源管理类中提供对原始资源的访问</span>
-          </a>
-      </div>
 
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2021-11-04T16:00:01+00:00"
-              content="2021-11-04">
-          11-04
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/11/04/effective-cpp-14/" itemprop="url">
-            <span itemprop="name">Effective C++ 14：在资源管理类中小心 copying 行为</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2021-11-02T12:30:45+00:00"
-              content="2021-11-02">
-          11-02
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/11/02/effective-cpp-13/" itemprop="url">
-            <span itemprop="name">Effective C++ 13：以对象管理资源</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2021-11-02T09:36:33+00:00"
-              content="2021-11-02">
-          11-02
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/11/02/effective-cpp-12/" itemprop="url">
-            <span itemprop="name">Effective C++ 12：复制对象时勿忘其每一个成分</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2021-11-01T05:12:55+00:00"
-              content="2021-11-01">
-          11-01
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/11/01/effective-cpp-11/" itemprop="url">
-            <span itemprop="name">Effective C++ 11：赋值运算符需要考虑自我赋值问题</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2021-11-01T04:59:28+00:00"
-              content="2021-11-01">
-          11-01
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/11/01/effective-cpp-10/" itemprop="url">
-            <span itemprop="name">Effective C++ 10：赋值运算符要返回自己的引用</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2021-11-01T04:03:51+00:00"
-              content="2021-11-01">
-          11-01
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/11/01/effective-cpp-9/" itemprop="url">
-            <span itemprop="name">Effective C++ 9：绝不在构造和析构过程中调用 virtual 函数</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2021-10-25T05:29:41+00:00"
-              content="2021-10-25">
-          10-25
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/10/25/effective-cpp-8/" itemprop="url">
-            <span itemprop="name">Effective C++ 8：析构函数不要抛出异常</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-    </div>
-  </div>
-  
-  
-  
-  <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/tags/Effective-C/page/2/">2</a><a class="extend next" rel="next" href="/tags/Effective-C/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
-  </nav>
-
+    <div class="comments" id="gitalk-container"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -573,6 +502,25 @@
 
 
 
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.css">
+
+<script>
+NexT.utils.loadComments('#gitalk-container', () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '236d3753e62ad995e8ca',
+      clientSecret: '761e4f5e4a5f77352510c5c951accc840e73019a',
+      repo        : 'gitalk',
+      owner       : 'yngty',
+      admin       : ['yngty'],
+      id          : 'c6f652fd944ad24cc2d0234a7e62ea00',
+        language: '',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
 
 </body>
 </html>

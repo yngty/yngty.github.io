@@ -470,4 +470,37 @@
         <tag>C++</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Effective C++ 17：在单独的语句中将 new 的对象放入智能指针</title>
+    <url>/2021/11/08/effective-cpp-17/</url>
+    <content><![CDATA[<blockquote>
+<p>Item 17: Store newed objects in smart pointers in standalone statements.</p>
+</blockquote>
+<p><strong>以单独的语句将 <code>new</code> 的对象放入智能指针内。这是为了由于其他表达式抛出异常而导致的资源泄漏</strong>。</p>
+<p>举个栗子：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">processWidget(<span class="built_in">shared_ptr</span>&lt;Widget&gt;(<span class="keyword">new</span> Widget), priority());</span><br></pre></td></tr></table></figure>
+
+<p>上述代码中，在 <code>processWidget</code> 函数被调用之前参数会首先得到计算。可以认为包括三部分的过程：</p>
+<ol>
+<li>执行 <code>new Widget</code></li>
+<li>构造 <code>shared_ptr&lt;Widget&gt;</code></li>
+<li>调用 <code>priority()</code></li>
+</ol>
+<p><strong>因为C++不同于其他语言，函数参数的计算顺序很大程度上决定于编译器</strong>编译器认为顺序应当是1, 3, 2，即：</p>
+<ol>
+<li>执行 <code>new Widget</code></li>
+<li>调用 <code>priority()</code></li>
+<li>构造 <code>shared_ptr&lt;Widget&gt;</code></li>
+</ol>
+<p>那么如果 <code>priority</code>抛出了异常，新的 <code>Widget</code> 便永远地找不回来了。虽然我们使用了智能指针，但资源还是泄漏了！</p>
+<p>于是更加健壮的实现中，应当将创建资源和初始化智能指针的语句独立出来：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="built_in">shared_ptr</span>&lt;Widget&gt; pw = <span class="built_in">shared_ptr</span>&lt;Widget&gt;(<span class="keyword">new</span> Widget);</span><br><span class="line">processWidget(pw, priority());</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>Effective-C++</category>
+      </categories>
+      <tags>
+        <tag>Effective-C++</tag>
+        <tag>C++</tag>
+      </tags>
+  </entry>
 </search>
