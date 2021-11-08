@@ -6,7 +6,7 @@
   <link href="https://yngty.github.io/atom.xml" rel="self"/>
   
   <link href="https://yngty.github.io/"/>
-  <updated>2021-11-08T01:21:08.089Z</updated>
+  <updated>2021-11-08T01:52:39.205Z</updated>
   <id>https://yngty.github.io/</id>
   
   <author>
@@ -17,11 +17,39 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Effective C++ 16：使用同样的形式来new和delete</title>
+    <link href="https://yngty.github.io/2021/11/08/effective-cpp-16/"/>
+    <id>https://yngty.github.io/2021/11/08/effective-cpp-16/</id>
+    <published>2021-11-08T09:23:53.000Z</published>
+    <updated>2021-11-08T01:52:39.205Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;Item 16: Use the same form in corresponding uses of new and</summary>
+        
+      
+    
+    
+    
+    <category term="Effective-C++" scheme="https://yngty.github.io/categories/Effective-C/"/>
+    
+    
+    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
+    
+    <category term="C++" scheme="https://yngty.github.io/tags/C/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Effective C++ 15：在资源管理类中提供对原始资源的访问</title>
     <link href="https://yngty.github.io/2021/11/05/effective-cpp-15/"/>
     <id>https://yngty.github.io/2021/11/05/effective-cpp-15/</id>
-    <published>2021-11-05T15:58:35.000Z</published>
-    <updated>2021-11-08T01:21:08.089Z</updated>
+    <published>2021-11-05T07:58:35.000Z</published>
+    <updated>2021-11-08T01:19:40.600Z</updated>
     
     
       
