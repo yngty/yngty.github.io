@@ -6,7 +6,7 @@
   <link href="https://yngty.github.io/atom.xml" rel="self"/>
   
   <link href="https://yngty.github.io/"/>
-  <updated>2021-11-08T02:12:22.001Z</updated>
+  <updated>2021-11-08T02:14:30.577Z</updated>
   <id>https://yngty.github.io/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://yngty.github.io/2021/11/08/effective-cpp-17/"/>
     <id>https://yngty.github.io/2021/11/08/effective-cpp-17/</id>
     <published>2021-11-08T09:53:13.000Z</published>
-    <updated>2021-11-08T02:12:22.001Z</updated>
+    <updated>2021-11-08T02:14:30.577Z</updated>
     
     
       
@@ -51,7 +51,7 @@
     <link href="https://yngty.github.io/2021/11/08/effective-cpp-16/"/>
     <id>https://yngty.github.io/2021/11/08/effective-cpp-16/</id>
     <published>2021-11-08T09:23:53.000Z</published>
-    <updated>2021-11-08T02:12:22.001Z</updated>
+    <updated>2021-11-08T02:14:30.577Z</updated>
     
     
       
@@ -59,7 +59,9 @@
         
         
     <summary type="html">&lt;blockquote&gt;
-&lt;p&gt;Item 16: Use the same form in corresponding uses of new and</summary>
+&lt;p&gt;Item 16: Use the same form in corresponding uses of new and delete.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;如果你用 &lt;code&gt;new&lt;/code&gt;</summary>
         
       
     

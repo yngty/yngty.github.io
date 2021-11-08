@@ -449,8 +449,9 @@
     <content><![CDATA[<blockquote>
 <p>Item 16: Use the same form in corresponding uses of new and delete.</p>
 </blockquote>
-<p><strong>如果你用new申请了动态内存，请用delete来销毁；如果你用new xx[]申请了动态内存，请用delete[]来销毁</strong>: </p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="built_in">std</span>::<span class="built_in">string</span>* stringPtrl = <span class="keyword">new</span> <span class="built_in">std</span>::<span class="built_in">string</span>;</span><br><span class="line"><span class="built_in">std</span>::<span class="built_in">string</span>* stringPtr2 = <span class="keyword">new</span> <span class="built_in">std</span>::<span class="built_in">string</span>[lOO];</span><br><span class="line">...</span><br><span class="line"><span class="keyword">delete</span> stringptrl;      <span class="comment">// 删除一个对象</span></span><br><span class="line"><span class="keyword">delete</span> [ ] stringPtr2;  <span class="comment">// 删除一个由对象组成的数组</span></span><br></pre></td></tr></table></figure>
+<p><strong>如果你用 <code>new</code> 申请了动态内存，请用 <code>delete</code> 来销毁；如果你用 <code>new xx[]</code> 申请了动态内存，请用 <code>delete[]</code> 来销毁</strong>: </p>
+<p>举个栗子：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="built_in">std</span>::<span class="built_in">string</span>* stringPtrl = <span class="keyword">new</span> <span class="built_in">std</span>::<span class="built_in">string</span>;</span><br><span class="line"><span class="built_in">std</span>::<span class="built_in">string</span>* stringPtr2 = <span class="keyword">new</span> <span class="built_in">std</span>::<span class="built_in">string</span>[lOO];</span><br><span class="line">...</span><br><span class="line"><span class="keyword">delete</span> stringptrl;      <span class="comment">// 删除一个对象</span></span><br><span class="line"><span class="keyword">delete</span> [] stringPtr2;  <span class="comment">// 删除一个由对象组成的数组</span></span><br></pre></td></tr></table></figure>
 
 <p>上面很容易理解但需要注意<code>typedef</code>:</p>
 <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="built_in">std</span>::<span class="built_in">string</span> AddressLines[<span class="number">4</span>];    <span class="comment">//每个人的地址有四行，</span></span><br><span class="line">                                        <span class="comment">//每行是一个string</span></span><br></pre></td></tr></table></figure>
@@ -458,7 +459,7 @@
 <p>由于 <code>AddressLines</code> 是个数组，如果这样使用 <code>new</code>:</p>
 <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="built_in">std</span>::<span class="built_in">string</span> *pal = <span class="keyword">new</span> AddressLines;     <span class="comment">//注意. &quot;new AddressLines&quot; 返回</span></span><br><span class="line">                                         <span class="comment">//一个 string*，就像 &quot;new string[4]&quot; 一样</span></span><br></pre></td></tr></table></figure>
 <p>那就必须匹配 “<strong>数组形式</strong>“的 <code>delete</code>:</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">delete</span> pal;         <span class="comment">//行为未有定义!</span></span><br><span class="line"><span class="keyword">delete</span> [ ] pal;     <span class="comment">//很好。</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">delete</span> pal;         <span class="comment">//行为未有定义!</span></span><br><span class="line"><span class="keyword">delete</span> [] pal;     <span class="comment">//很好。</span></span><br></pre></td></tr></table></figure>
 
 <p>为避免诸如此类的错误，最好尽量不要对数组形式做 <code>typedefs</code> 动作。可以使用更加面向对象的<code>vector</code>、<code>string</code>等对象。</p>
 ]]></content>
