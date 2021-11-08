@@ -134,7 +134,7 @@
 <nav class="site-nav">
   <ul class="main-menu menu">
         <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
-        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">14</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">15</span></a></li>
         <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">1</span></a></li>
         <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">2</span></a></li>
       <li class="menu-item menu-item-search">
@@ -208,7 +208,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-count">15</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -275,7 +275,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2021/11/05/effective-cpp-14/">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2021/11/05/effective-cpp-15/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -288,7 +288,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/11/05/effective-cpp-14/" class="post-title-link" itemprop="url">Effective C++ 14：在资源管理类中小心 copying 行为</a>
+          <a href="/2021/11/05/effective-cpp-15/" class="post-title-link" itemprop="url">Effective C++ 15：在资源管理类中提供对原始资源的访问</a>
         </h2>
 
         <div class="post-meta-container">
@@ -299,15 +299,133 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2021-11-05 00:00:01" itemprop="dateCreated datePublished" datetime="2021-11-05T00:00:01+00:00">2021-11-05</time>
+      <time title="创建时间：2021-11-05 15:58:35" itemprop="dateCreated datePublished" datetime="2021-11-05T15:58:35+00:00">2021-11-05</time>
     </span>
       <span class="post-meta-item">
         <span class="post-meta-item-icon">
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-11-04 16:34:57" itemprop="dateModified" datetime="2021-11-04T16:34:57+00:00">2021-11-04</time>
+        <time title="修改时间：2021-11-08 01:11:37" itemprop="dateModified" datetime="2021-11-08T01:11:37+00:00">2021-11-08</time>
       </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Effective-C/" itemprop="url" rel="index"><span itemprop="name">Effective-C++</span></a>
+        </span>
+    </span>
+
+  
+      </div>
+      <div class="post-meta">
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>1 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <blockquote>
+<p>Item 15: Provide access to raw resources in resource-managing classes.</p>
+</blockquote>
+<p><code>APIs</code> 往往要求访问原始资源(<code>raw resources</code>)，所以每一个RAII class 应该<strong>提供提供对原始资源访问的方法。获取资源的方式有两类：隐式地获取和显式地获取。</strong> 显式的资源获取会更安全，它最小化了无意中进行类型转换的机会。</p>
+<ul>
+<li><strong>显示获取</strong></li>
+</ul>
+<p>shared_ptr提供了get方法来得到资源。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">shared_ptr</span>&lt;Investment&gt; pInv;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">daysHeld</span><span class="params">(Investment *pi)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> days = daysHeld(pInv.get());</span><br></pre></td></tr></table></figure>
+
+<p>为了让 <code>pInv</code> 表现地更像一个指针，<code>shared_ptr</code>还重载了解引用运算符（<code>dereferencing operator</code>） <code>operator-&gt;</code>和 <code>operator*</code>：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Investment</span>&#123;</span></span><br><span class="line"><span class="keyword">public</span>: </span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">isTaxFree</span><span class="params">()</span> <span class="keyword">const</span></span>;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="built_in">shared_ptr</span>&lt;Investment&gt; <span class="title">pi1</span><span class="params">(createInvestment())</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">bool</span> taxable1 = !(pi1-&gt;isTaxFree());</span><br><span class="line"><span class="keyword">bool</span> texable2 = !((*pi1).isTaxFree());</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>隐式地获取</strong></li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">FontHandle <span class="title">getFont</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">releaseFont</span><span class="params">(FontHandle fh)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">changeFontSize</span><span class="params">(FontHandle f, <span class="keyword">int</span> newSize)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>我们封装了Font来管理资源：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Font</span>&#123;</span></span><br><span class="line">FontHandle f;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">Font</span><span class="params">(FontHandle fh)</span>: <span class="title">f</span><span class="params">(fh)</span></span>&#123;&#125;</span><br><span class="line">    ~Font()&#123; releaseFont(f); &#125;;</span><br><span class="line">    <span class="function">FontHandle <span class="title">get</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> f; &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>通过get方法来访问FontHandle：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Font <span class="title">f</span><span class="params">(getFont())</span></span>;</span><br><span class="line"><span class="keyword">int</span> newFontSize;</span><br><span class="line">changeFontSize(f.get(), newFontSize);</span><br></pre></td></tr></table></figure>
+
+<p>可以<strong>隐式类型转换运算符</strong>将 <code>Font</code> 转换为 <code>FontHandle</code>:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Font</span>&#123;</span></span><br><span class="line">    <span class="function"><span class="keyword">operator</span> <span class="title">FontHandle</span><span class="params">()</span> <span class="keyword">const</span></span>&#123; <span class="keyword">return</span> f;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">changeFontSize(f, newFontSize);</span><br></pre></td></tr></table></figure>
+<p>然而问题也随之出现：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">FontHandle h2 = f1;</span><br></pre></td></tr></table></figure>
+<p>无意间 <code>h2</code> 并没有被资源管理起来，这将会引发意外的资源泄漏。所以隐式转换在提供便利的同时， 也引起了资源泄漏的风险。 </p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2021/11/04/effective-cpp-14/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="瓜地">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/11/04/effective-cpp-14/" class="post-title-link" itemprop="url">Effective C++ 14：在资源管理类中小心 copying 行为</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-11-04 16:00:01 / 修改时间：16:33:29" itemprop="dateCreated datePublished" datetime="2021-11-04T16:00:01+00:00">2021-11-04</time>
+    </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
@@ -1216,105 +1334,6 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2021/10/24/effective-cpp-5/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="yngty">
-      <meta itemprop="description" content="预测未来的最好方式就是实现它">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="瓜地">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/10/24/effective-cpp-5/" class="post-title-link" itemprop="url">Effective C++ 5：了解c++默默编写并调用哪些函数</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2021-10-24 12:17:05 / 修改时间：12:47:55" itemprop="dateCreated datePublished" datetime="2021-10-24T12:17:05+00:00">2021-10-24</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Effective-C/" itemprop="url" rel="index"><span itemprop="name">Effective-C++</span></a>
-        </span>
-    </span>
-
-  
-      </div>
-      <div class="post-meta">
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>923</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>1 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <blockquote>
-<p>Item 5: Know what functions C++ silently writes and calls</p>
-</blockquote>
-<h1 id="默认函数"><a href="#默认函数" class="headerlink" title="默认函数"></a>默认函数</h1><p>在 <code>C++</code> 中，一个类有八个默认函数：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Empty</span> &#123;</span></span><br><span class="line">    Empty () &#123;&#125; <span class="comment">//默认构造函数    </span></span><br><span class="line">    Empty (<span class="keyword">const</span> Empty &amp;) &#123;&#125; <span class="comment">// 默认拷贝构造函数</span></span><br><span class="line">    Empty (<span class="keyword">const</span> Empty &amp;&amp;) &#123;&#125; <span class="comment">// 默认移动构造函数(`C++11`)</span></span><br><span class="line">    ~Empty() &#123;&#125; <span class="comment">// 默认析构函数</span></span><br><span class="line">    Empty&amp; <span class="keyword">operator</span>=(<span class="keyword">const</span> Empty&amp;) &#123;&#125; <span class="comment">// 默认重载赋值运算符函数</span></span><br><span class="line">    Empty&amp; <span class="keyword">operator</span>=(<span class="keyword">const</span> Empty&amp;&amp;)&#123;&#125; <span class="comment">// 默认重载移动赋值操作符函数函数</span></span><br><span class="line">    Empty* <span class="keyword">operator</span> &amp;() &#123;&#125; <span class="comment">// 默认重载取址运算符函数</span></span><br><span class="line">    <span class="keyword">const</span> Empty* <span class="keyword">operator</span> &amp;() <span class="keyword">const</span> &#123;&#125; <span class="comment">// 默认重载取址运算符 `const` 函数</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<h1 id="调用时机"><a href="#调用时机" class="headerlink" title="调用时机"></a>调用时机</h1><p>只有你需要用到这些函数并且你又没有显示的声明这些函数的时候，编译器才会贴心的自动声明相应的函数。</p>
-<h1 id="引用成员"><a href="#引用成员" class="headerlink" title="引用成员"></a>引用成员</h1><p>如果你打算在一个“内含引用成员”或者“内含<code>const</code>成员”的类内支持赋值操作，就必须定义自己的默认拷贝赋值操作符。因为 <code>C++</code> 本身不允许引用改指不同的对象，也不允许更改 <code>const</code> 成员。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">string</span> &amp; name;</span><br><span class="line">    Person(<span class="built_in">string</span> &amp;str):name(str) &#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="built_in">string</span> s1 = <span class="string">&quot;hello&quot;</span>, s2 = <span class="string">&quot;world&quot;</span>;</span><br><span class="line">Person p1(s1), p2(s2);</span><br><span class="line">p1 = p2;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">error: object of type &#39;Person&#39; cannot be assigned because its copy assignment operator is implicitly deleted</span><br></pre></td></tr></table></figure>
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
@@ -1361,13 +1380,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">15k</span>
+    <span title="站点总字数">16k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">14 分钟</span>
+    <span title="站点阅读时长">15 分钟</span>
   </span>
 </div>
 <div class="busuanzi-count">

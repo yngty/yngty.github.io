@@ -23,22 +23,22 @@
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"yngty.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}};
   </script>
-<meta name="description" content="Item 13: Use objects to manage resources.">
+<meta name="description" content="Item 15: Provide access to raw resources in resource-managing classes.  APIs 往往要求访问原始资源(raw resources)，所以每一个RAII class 应该提供提供对原始资源访问的方法。获取资源的方式有两类：隐式地获取和显式地获取。 显式的资源获取会更安全，它最小化了无意中进行类型转换的机会。  显示获取  s">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Effective C++ 13：以对象管理资源">
-<meta property="og:url" content="https://yngty.github.io/2021/11/02/effective-cpp-13/index.html">
+<meta property="og:title" content="Effective C++ 15：在资源管理类中提供对原始资源的访问">
+<meta property="og:url" content="https://yngty.github.io/2021/11/05/effective-cpp-15/index.html">
 <meta property="og:site_name" content="瓜地">
-<meta property="og:description" content="Item 13: Use objects to manage resources.">
+<meta property="og:description" content="Item 15: Provide access to raw resources in resource-managing classes.  APIs 往往要求访问原始资源(raw resources)，所以每一个RAII class 应该提供提供对原始资源访问的方法。获取资源的方式有两类：隐式地获取和显式地获取。 显式的资源获取会更安全，它最小化了无意中进行类型转换的机会。  显示获取  s">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-11-02T12:30:45.000Z">
-<meta property="article:modified_time" content="2021-11-02T12:32:55.585Z">
+<meta property="article:published_time" content="2021-11-05T15:58:35.000Z">
+<meta property="article:modified_time" content="2021-11-08T01:11:37.156Z">
 <meta property="article:author" content="yngty">
 <meta property="article:tag" content="Effective-C++">
 <meta property="article:tag" content="C++">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://yngty.github.io/2021/11/02/effective-cpp-13/">
+<link rel="canonical" href="https://yngty.github.io/2021/11/05/effective-cpp-15/">
 
 
 <script class="page-configurations">
@@ -50,7 +50,7 @@
     lang   : 'zh-CN'
   };
 </script>
-<title>Effective C++ 13：以对象管理资源 | 瓜地</title>
+<title>Effective C++ 15：在资源管理类中提供对原始资源的访问 | 瓜地</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-5F9JL1V3HN"></script>
     <script>
@@ -280,7 +280,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2021/11/02/effective-cpp-13/">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2021/11/05/effective-cpp-15/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -293,7 +293,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Effective C++ 13：以对象管理资源
+          Effective C++ 15：在资源管理类中提供对原始资源的访问
         </h1>
 
         <div class="post-meta-container">
@@ -303,10 +303,16 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2021-11-02 12:30:45 / 修改时间：12:32:55" itemprop="dateCreated datePublished" datetime="2021-11-02T12:30:45+00:00">2021-11-02</time>
+      <time title="创建时间：2021-11-05 15:58:35" itemprop="dateCreated datePublished" datetime="2021-11-05T15:58:35+00:00">2021-11-05</time>
     </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-11-08 01:11:37" itemprop="dateModified" datetime="2021-11-08T01:11:37+00:00">2021-11-08</time>
+      </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
@@ -332,7 +338,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>35</span>
+      <span>1.2k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -351,8 +357,34 @@
     
     <div class="post-body" itemprop="articleBody">
         <blockquote>
-<p>Item 13: Use objects to manage resources.</p>
+<p>Item 15: Provide access to raw resources in resource-managing classes.</p>
 </blockquote>
+<p><code>APIs</code> 往往要求访问原始资源(<code>raw resources</code>)，所以每一个RAII class 应该<strong>提供提供对原始资源访问的方法。获取资源的方式有两类：隐式地获取和显式地获取。</strong> 显式的资源获取会更安全，它最小化了无意中进行类型转换的机会。</p>
+<ul>
+<li><strong>显示获取</strong></li>
+</ul>
+<p>shared_ptr提供了get方法来得到资源。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">shared_ptr</span>&lt;Investment&gt; pInv;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">daysHeld</span><span class="params">(Investment *pi)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> days = daysHeld(pInv.get());</span><br></pre></td></tr></table></figure>
+
+<p>为了让 <code>pInv</code> 表现地更像一个指针，<code>shared_ptr</code>还重载了解引用运算符（<code>dereferencing operator</code>） <code>operator-&gt;</code>和 <code>operator*</code>：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Investment</span>&#123;</span></span><br><span class="line"><span class="keyword">public</span>: </span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">isTaxFree</span><span class="params">()</span> <span class="keyword">const</span></span>;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="built_in">shared_ptr</span>&lt;Investment&gt; <span class="title">pi1</span><span class="params">(createInvestment())</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">bool</span> taxable1 = !(pi1-&gt;isTaxFree());</span><br><span class="line"><span class="keyword">bool</span> texable2 = !((*pi1).isTaxFree());</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>隐式地获取</strong></li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">FontHandle <span class="title">getFont</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">releaseFont</span><span class="params">(FontHandle fh)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">changeFontSize</span><span class="params">(FontHandle f, <span class="keyword">int</span> newSize)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>我们封装了Font来管理资源：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Font</span>&#123;</span></span><br><span class="line">FontHandle f;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">Font</span><span class="params">(FontHandle fh)</span>: <span class="title">f</span><span class="params">(fh)</span></span>&#123;&#125;</span><br><span class="line">    ~Font()&#123; releaseFont(f); &#125;;</span><br><span class="line">    <span class="function">FontHandle <span class="title">get</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> f; &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>通过get方法来访问FontHandle：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Font <span class="title">f</span><span class="params">(getFont())</span></span>;</span><br><span class="line"><span class="keyword">int</span> newFontSize;</span><br><span class="line">changeFontSize(f.get(), newFontSize);</span><br></pre></td></tr></table></figure>
+
+<p>可以<strong>隐式类型转换运算符</strong>将 <code>Font</code> 转换为 <code>FontHandle</code>:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Font</span>&#123;</span></span><br><span class="line">    <span class="function"><span class="keyword">operator</span> <span class="title">FontHandle</span><span class="params">()</span> <span class="keyword">const</span></span>&#123; <span class="keyword">return</span> f;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">changeFontSize(f, newFontSize);</span><br></pre></td></tr></table></figure>
+<p>然而问题也随之出现：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">FontHandle h2 = f1;</span><br></pre></td></tr></table></figure>
+<p>无意间 <code>h2</code> 并没有被资源管理起来，这将会引发意外的资源泄漏。所以隐式转换在提供便利的同时， 也引起了资源泄漏的风险。 </p>
 
     </div>
 
@@ -370,7 +402,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://yngty.github.io/2021/11/02/effective-cpp-13/" title="Effective C++ 13：以对象管理资源">https://yngty.github.io/2021/11/02/effective-cpp-13/</a>
+      <a href="https://yngty.github.io/2021/11/05/effective-cpp-15/" title="Effective C++ 15：在资源管理类中提供对原始资源的访问">https://yngty.github.io/2021/11/05/effective-cpp-15/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -387,14 +419,11 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2021/11/02/effective-cpp-12/" rel="prev" title="Effective C++ 12：复制对象时勿忘其每一个成分">
-                  <i class="fa fa-chevron-left"></i> Effective C++ 12：复制对象时勿忘其每一个成分
+                <a href="/2021/11/04/effective-cpp-14/" rel="prev" title="Effective C++ 14：在资源管理类中小心 copying 行为">
+                  <i class="fa fa-chevron-left"></i> Effective C++ 14：在资源管理类中小心 copying 行为
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2021/11/04/effective-cpp-14/" rel="next" title="Effective C++ 14：在资源管理类中小心 copying 行为">
-                  Effective C++ 14：在资源管理类中小心 copying 行为 <i class="fa fa-chevron-right"></i>
-                </a>
             </div>
           </div>
     </footer>
@@ -498,7 +527,7 @@ NexT.utils.loadComments('#gitalk-container', () => {
       repo        : 'gitalk',
       owner       : 'yngty',
       admin       : ['yngty'],
-      id          : 'cb5e16a6770f8d971c18880faf2e2e57',
+      id          : '51347568f20bc111ba16e40745feabf6',
         language: '',
       distractionFreeMode: true
     });
