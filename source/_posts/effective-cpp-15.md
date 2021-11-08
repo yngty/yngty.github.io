@@ -14,7 +14,7 @@ categories:
 
 - **显示获取**
 
-shared_ptr提供了get方法来得到资源。
+`shared_ptr` 提供了 `get` 方法来得到资源。
 
 ```c++
 shared_ptr<Investment> pInv;
@@ -36,14 +36,6 @@ bool taxable1 = !(pi1->isTaxFree());
 bool texable2 = !((*pi1).isTaxFree());
 ```
 
-- **隐式地获取**
-
-```c++
-FontHandle getFont();
-void releaseFont(FontHandle fh);
-void changeFontSize(FontHandle f, int newSize);
-```
-
 我们封装了Font来管理资源：
 
 ```c++
@@ -55,7 +47,6 @@ public:
     FontHandle get() const { return f; }
 };
 ```
-
 通过get方法来访问FontHandle：
 
 ```c++
@@ -64,7 +55,9 @@ int newFontSize;
 changeFontSize(f.get(), newFontSize);
 ```
 
-可以**隐式类型转换运算符**将 `Font` 转换为 `FontHandle`:
+- **隐式地获取**
+
+可以隐式类型转换运算符将 `Font` 转换为 `FontHandle`:
 
 ```c++
 class Font{
@@ -73,6 +66,7 @@ class Font{
 
 changeFontSize(f, newFontSize);
 ```
+
 然而问题也随之出现：
 
 ```c++
