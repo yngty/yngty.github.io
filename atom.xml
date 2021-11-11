@@ -6,7 +6,7 @@
   <link href="https://yngty.github.io/atom.xml" rel="self"/>
   
   <link href="https://yngty.github.io/"/>
-  <updated>2021-11-08T15:21:57.380Z</updated>
+  <updated>2021-11-11T05:24:55.517Z</updated>
   <id>https://yngty.github.io/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://yngty.github.io/2021/11/08/C-%E4%B8%ADmalloc%E5%92%8Cnew%E7%9A%84%E5%8C%BA%E5%88%AB/"/>
     <id>https://yngty.github.io/2021/11/08/C-%E4%B8%ADmalloc%E5%92%8Cnew%E7%9A%84%E5%8C%BA%E5%88%AB/</id>
     <published>2021-11-08T22:44:44.000Z</published>
-    <updated>2021-11-08T15:21:57.380Z</updated>
+    <updated>2021-11-11T05:24:55.517Z</updated>
     
     
       
@@ -51,11 +51,39 @@
   </entry>
   
   <entry>
+    <title>Effective C++ 18：让接口容易被正确使用，不易被误用</title>
+    <link href="https://yngty.github.io/2021/11/08/effective-cpp-18/"/>
+    <id>https://yngty.github.io/2021/11/08/effective-cpp-18/</id>
+    <published>2021-11-08T15:48:13.000Z</published>
+    <updated>2021-11-11T05:24:55.517Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;Item 18: Make interfaces easy to use correctly and hard to use</summary>
+        
+      
+    
+    
+    
+    <category term="Effective-C++" scheme="https://yngty.github.io/categories/Effective-C/"/>
+    
+    
+    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
+    
+    <category term="C++" scheme="https://yngty.github.io/tags/C/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Effective C++ 17：在单独的语句中将 new 的对象放入智能指针</title>
     <link href="https://yngty.github.io/2021/11/08/effective-cpp-17/"/>
     <id>https://yngty.github.io/2021/11/08/effective-cpp-17/</id>
     <published>2021-11-08T09:53:13.000Z</published>
-    <updated>2021-11-08T15:21:57.380Z</updated>
+    <updated>2021-11-11T05:24:55.517Z</updated>
     
     
       
@@ -85,7 +113,7 @@
     <link href="https://yngty.github.io/2021/11/08/effective-cpp-16/"/>
     <id>https://yngty.github.io/2021/11/08/effective-cpp-16/</id>
     <published>2021-11-08T09:23:53.000Z</published>
-    <updated>2021-11-08T15:21:57.380Z</updated>
+    <updated>2021-11-11T05:24:55.517Z</updated>
     
     
       
