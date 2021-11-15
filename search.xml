@@ -96,8 +96,8 @@
         <category>Effective-C++</category>
       </categories>
       <tags>
-        <tag>Effective-C++</tag>
         <tag>C++</tag>
+        <tag>Effective-C++</tag>
       </tags>
   </entry>
   <entry>
@@ -119,8 +119,8 @@
         <category>Effective-C++</category>
       </categories>
       <tags>
-        <tag>Effective-C++</tag>
         <tag>C++</tag>
+        <tag>Effective-C++</tag>
       </tags>
   </entry>
   <entry>
@@ -150,8 +150,8 @@
         <category>Effective-C++</category>
       </categories>
       <tags>
-        <tag>Effective-C++</tag>
         <tag>C++</tag>
+        <tag>Effective-C++</tag>
       </tags>
   </entry>
   <entry>
@@ -174,8 +174,8 @@
         <category>Effective-C++</category>
       </categories>
       <tags>
-        <tag>Effective-C++</tag>
         <tag>C++</tag>
+        <tag>Effective-C++</tag>
       </tags>
   </entry>
   <entry>
@@ -189,13 +189,13 @@
         <category>Effective-C++</category>
       </categories>
       <tags>
-        <tag>Effective-C++</tag>
         <tag>C++</tag>
+        <tag>Effective-C++</tag>
       </tags>
   </entry>
   <entry>
     <title>Effective C++ 14：在资源管理类中小心 copying 行为</title>
-    <url>/2021/11/05/effecitve-cpp/effective-cpp-14/</url>
+    <url>/2021/11/04/effecitve-cpp/effective-cpp-14/</url>
     <content><![CDATA[<blockquote>
 <p>Item 14: Think carefully about copying behavior in resource-managing classes.</p>
 </blockquote>
@@ -225,8 +225,8 @@
         <category>Effective-C++</category>
       </categories>
       <tags>
-        <tag>Effective-C++</tag>
         <tag>C++</tag>
+        <tag>Effective-C++</tag>
       </tags>
   </entry>
   <entry>
@@ -264,8 +264,8 @@
         <category>Effective-C++</category>
       </categories>
       <tags>
-        <tag>Effective-C++</tag>
         <tag>C++</tag>
+        <tag>Effective-C++</tag>
       </tags>
   </entry>
   <entry>
@@ -292,8 +292,8 @@
         <category>Effective-C++</category>
       </categories>
       <tags>
-        <tag>Effective-C++</tag>
         <tag>C++</tag>
+        <tag>Effective-C++</tag>
       </tags>
   </entry>
   <entry>
@@ -325,8 +325,8 @@
         <category>Effective-C++</category>
       </categories>
       <tags>
-        <tag>Effective-C++</tag>
         <tag>C++</tag>
+        <tag>Effective-C++</tag>
       </tags>
   </entry>
   <entry>
@@ -340,8 +340,8 @@
         <category>Effective-C++</category>
       </categories>
       <tags>
-        <tag>Effective-C++</tag>
         <tag>C++</tag>
+        <tag>Effective-C++</tag>
       </tags>
   </entry>
   <entry>
@@ -378,8 +378,8 @@
         <category>Effective-C++</category>
       </categories>
       <tags>
-        <tag>Effective-C++</tag>
         <tag>C++</tag>
+        <tag>Effective-C++</tag>
       </tags>
   </entry>
   <entry>
@@ -424,8 +424,8 @@
         <category>Effective-C++</category>
       </categories>
       <tags>
-        <tag>Effective-C++</tag>
         <tag>C++</tag>
+        <tag>Effective-C++</tag>
       </tags>
   </entry>
   <entry>
@@ -459,8 +459,8 @@
         <category>Effective-C++</category>
       </categories>
       <tags>
-        <tag>Effective-C++</tag>
         <tag>C++</tag>
+        <tag>Effective-C++</tag>
       </tags>
   </entry>
   <entry>
@@ -481,8 +481,8 @@
         <category>Effective-C++</category>
       </categories>
       <tags>
-        <tag>Effective-C++</tag>
         <tag>C++</tag>
+        <tag>Effective-C++</tag>
       </tags>
   </entry>
   <entry>
@@ -503,8 +503,8 @@
         <category>Effective-C++</category>
       </categories>
       <tags>
-        <tag>Effective-C++</tag>
         <tag>C++</tag>
+        <tag>Effective-C++</tag>
       </tags>
   </entry>
   <entry>
@@ -525,8 +525,8 @@
         <category>Effective-C++</category>
       </categories>
       <tags>
-        <tag>Effective-C++</tag>
         <tag>C++</tag>
+        <tag>Effective-C++</tag>
       </tags>
   </entry>
   <entry>
@@ -564,8 +564,8 @@
         <category>Effective-C++</category>
       </categories>
       <tags>
-        <tag>Effective-C++</tag>
         <tag>C++</tag>
+        <tag>Effective-C++</tag>
       </tags>
   </entry>
   <entry>
@@ -590,8 +590,23 @@
         <category>Effective-C++</category>
       </categories>
       <tags>
-        <tag>Effective-C++</tag>
         <tag>C++</tag>
+        <tag>Effective-C++</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Effective C++ 19：设计 class 犹如设计 type</title>
+    <url>/2021/11/11/effecitve-cpp/effective-cpp-19/</url>
+    <content><![CDATA[<blockquote>
+<p>Item 19: Teat class design as type design.</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>Effective-C++</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>Effective-C++</tag>
       </tags>
   </entry>
 </search>

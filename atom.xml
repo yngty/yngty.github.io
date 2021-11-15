@@ -6,7 +6,7 @@
   <link href="https://yngty.github.io/atom.xml" rel="self"/>
   
   <link href="https://yngty.github.io/"/>
-  <updated>2021-11-11T05:31:00.764Z</updated>
+  <updated>2021-11-15T03:47:49.684Z</updated>
   <id>https://yngty.github.io/</id>
   
   <author>
@@ -17,11 +17,39 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Effective C++ 19：设计 class 犹如设计 type</title>
+    <link href="https://yngty.github.io/2021/11/11/effecitve-cpp/effective-cpp-19/"/>
+    <id>https://yngty.github.io/2021/11/11/effecitve-cpp/effective-cpp-19/</id>
+    <published>2021-11-11T16:36:55.000Z</published>
+    <updated>2021-11-15T03:47:49.684Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;Item 19: Teat class design as type</summary>
+        
+      
+    
+    
+    
+    <category term="Effective-C++" scheme="https://yngty.github.io/categories/Effective-C/"/>
+    
+    
+    <category term="C++" scheme="https://yngty.github.io/tags/C/"/>
+    
+    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
+    
+  </entry>
+  
+  <entry>
     <title>C++ 中 malloc 和 new 的区别</title>
     <link href="https://yngty.github.io/2021/11/08/c++/C-%E4%B8%ADmalloc%E5%92%8Cnew%E7%9A%84%E5%8C%BA%E5%88%AB/"/>
     <id>https://yngty.github.io/2021/11/08/c++/C-%E4%B8%ADmalloc%E5%92%8Cnew%E7%9A%84%E5%8C%BA%E5%88%AB/</id>
-    <published>2021-11-08T22:44:44.000Z</published>
-    <updated>2021-11-11T05:31:00.764Z</updated>
+    <published>2021-11-08T14:44:44.000Z</published>
+    <updated>2021-11-08T15:18:56.769Z</updated>
     
     
       
@@ -54,8 +82,8 @@
     <title>Effective C++ 18：让接口容易被正确使用，不易被误用</title>
     <link href="https://yngty.github.io/2021/11/08/effecitve-cpp/effective-cpp-18/"/>
     <id>https://yngty.github.io/2021/11/08/effecitve-cpp/effective-cpp-18/</id>
-    <published>2021-11-08T15:48:13.000Z</published>
-    <updated>2021-11-11T05:31:00.764Z</updated>
+    <published>2021-11-08T07:48:13.000Z</published>
+    <updated>2021-11-08T07:50:34.187Z</updated>
     
     
       
@@ -72,9 +100,9 @@
     <category term="Effective-C++" scheme="https://yngty.github.io/categories/Effective-C/"/>
     
     
-    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
-    
     <category term="C++" scheme="https://yngty.github.io/tags/C/"/>
+    
+    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
     
   </entry>
   
@@ -82,8 +110,8 @@
     <title>Effective C++ 17：在单独的语句中将 new 的对象放入智能指针</title>
     <link href="https://yngty.github.io/2021/11/08/effecitve-cpp/effective-cpp-17/"/>
     <id>https://yngty.github.io/2021/11/08/effecitve-cpp/effective-cpp-17/</id>
-    <published>2021-11-08T09:53:13.000Z</published>
-    <updated>2021-11-11T05:31:00.764Z</updated>
+    <published>2021-11-08T01:53:13.000Z</published>
+    <updated>2021-11-08T02:11:23.841Z</updated>
     
     
       
@@ -102,9 +130,9 @@
     <category term="Effective-C++" scheme="https://yngty.github.io/categories/Effective-C/"/>
     
     
-    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
-    
     <category term="C++" scheme="https://yngty.github.io/tags/C/"/>
+    
+    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
     
   </entry>
   
@@ -112,8 +140,8 @@
     <title>Effective C++ 16：使用同样的形式来new和delete</title>
     <link href="https://yngty.github.io/2021/11/08/effecitve-cpp/effective-cpp-16/"/>
     <id>https://yngty.github.io/2021/11/08/effecitve-cpp/effective-cpp-16/</id>
-    <published>2021-11-08T09:23:53.000Z</published>
-    <updated>2021-11-11T05:31:00.764Z</updated>
+    <published>2021-11-08T01:23:53.000Z</published>
+    <updated>2021-11-08T02:12:52.725Z</updated>
     
     
       
@@ -132,9 +160,9 @@
     <category term="Effective-C++" scheme="https://yngty.github.io/categories/Effective-C/"/>
     
     
-    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
-    
     <category term="C++" scheme="https://yngty.github.io/tags/C/"/>
+    
+    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
     
   </entry>
   
@@ -142,8 +170,8 @@
     <title>Effective C++ 15：在资源管理类中提供对原始资源的访问</title>
     <link href="https://yngty.github.io/2021/11/05/effecitve-cpp/effective-cpp-15/"/>
     <id>https://yngty.github.io/2021/11/05/effecitve-cpp/effective-cpp-15/</id>
-    <published>2021-11-05T15:58:35.000Z</published>
-    <updated>2021-11-11T05:31:00.764Z</updated>
+    <published>2021-11-05T07:58:35.000Z</published>
+    <updated>2021-11-08T01:19:40.600Z</updated>
     
     
       
@@ -162,18 +190,18 @@
     <category term="Effective-C++" scheme="https://yngty.github.io/categories/Effective-C/"/>
     
     
-    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
-    
     <category term="C++" scheme="https://yngty.github.io/tags/C/"/>
+    
+    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
     
   </entry>
   
   <entry>
     <title>Effective C++ 14：在资源管理类中小心 copying 行为</title>
-    <link href="https://yngty.github.io/2021/11/05/effecitve-cpp/effective-cpp-14/"/>
-    <id>https://yngty.github.io/2021/11/05/effecitve-cpp/effective-cpp-14/</id>
-    <published>2021-11-05T00:00:01.000Z</published>
-    <updated>2021-11-11T05:31:00.764Z</updated>
+    <link href="https://yngty.github.io/2021/11/04/effecitve-cpp/effective-cpp-14/"/>
+    <id>https://yngty.github.io/2021/11/04/effecitve-cpp/effective-cpp-14/</id>
+    <published>2021-11-04T16:00:01.000Z</published>
+    <updated>2021-11-04T16:33:29.494Z</updated>
     
     
       
@@ -192,9 +220,9 @@
     <category term="Effective-C++" scheme="https://yngty.github.io/categories/Effective-C/"/>
     
     
-    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
-    
     <category term="C++" scheme="https://yngty.github.io/tags/C/"/>
+    
+    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
     
   </entry>
   
@@ -202,8 +230,8 @@
     <title>Effective C++ 13：以对象管理资源</title>
     <link href="https://yngty.github.io/2021/11/02/effecitve-cpp/effective-cpp-13/"/>
     <id>https://yngty.github.io/2021/11/02/effecitve-cpp/effective-cpp-13/</id>
-    <published>2021-11-02T20:30:45.000Z</published>
-    <updated>2021-11-11T05:31:00.764Z</updated>
+    <published>2021-11-02T12:30:45.000Z</published>
+    <updated>2021-11-02T12:32:55.585Z</updated>
     
     
       
@@ -220,9 +248,9 @@
     <category term="Effective-C++" scheme="https://yngty.github.io/categories/Effective-C/"/>
     
     
-    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
-    
     <category term="C++" scheme="https://yngty.github.io/tags/C/"/>
+    
+    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
     
   </entry>
   
@@ -230,8 +258,8 @@
     <title>Effective C++ 12：复制对象时勿忘其每一个成分</title>
     <link href="https://yngty.github.io/2021/11/02/effecitve-cpp/effective-cpp-12/"/>
     <id>https://yngty.github.io/2021/11/02/effecitve-cpp/effective-cpp-12/</id>
-    <published>2021-11-02T17:36:33.000Z</published>
-    <updated>2021-11-11T05:31:00.764Z</updated>
+    <published>2021-11-02T09:36:33.000Z</published>
+    <updated>2021-11-02T09:45:34.385Z</updated>
     
     
       
@@ -251,9 +279,9 @@
     <category term="Effective-C++" scheme="https://yngty.github.io/categories/Effective-C/"/>
     
     
-    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
-    
     <category term="C++" scheme="https://yngty.github.io/tags/C/"/>
+    
+    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
     
   </entry>
   
@@ -261,8 +289,8 @@
     <title>Effective C++ 11：赋值运算符需要考虑自我赋值问题</title>
     <link href="https://yngty.github.io/2021/11/01/effecitve-cpp/effective-cpp-11/"/>
     <id>https://yngty.github.io/2021/11/01/effecitve-cpp/effective-cpp-11/</id>
-    <published>2021-11-01T13:12:55.000Z</published>
-    <updated>2021-11-11T05:31:00.764Z</updated>
+    <published>2021-11-01T05:12:55.000Z</published>
+    <updated>2021-11-02T08:59:39.536Z</updated>
     
     
       
@@ -279,9 +307,9 @@
     <category term="Effective-C++" scheme="https://yngty.github.io/categories/Effective-C/"/>
     
     
-    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
-    
     <category term="C++" scheme="https://yngty.github.io/tags/C/"/>
+    
+    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
     
   </entry>
   
@@ -289,8 +317,8 @@
     <title>Effective C++ 10：赋值运算符要返回自己的引用</title>
     <link href="https://yngty.github.io/2021/11/01/effecitve-cpp/effective-cpp-10/"/>
     <id>https://yngty.github.io/2021/11/01/effecitve-cpp/effective-cpp-10/</id>
-    <published>2021-11-01T12:59:28.000Z</published>
-    <updated>2021-11-11T05:31:00.764Z</updated>
+    <published>2021-11-01T04:59:28.000Z</published>
+    <updated>2021-11-01T05:05:33.855Z</updated>
     
     
       
@@ -307,9 +335,9 @@
     <category term="Effective-C++" scheme="https://yngty.github.io/categories/Effective-C/"/>
     
     
-    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
-    
     <category term="C++" scheme="https://yngty.github.io/tags/C/"/>
+    
+    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
     
   </entry>
   
@@ -317,8 +345,8 @@
     <title>Effective C++ 9：绝不在构造和析构过程中调用 virtual 函数</title>
     <link href="https://yngty.github.io/2021/11/01/effecitve-cpp/effective-cpp-9/"/>
     <id>https://yngty.github.io/2021/11/01/effecitve-cpp/effective-cpp-9/</id>
-    <published>2021-11-01T12:03:51.000Z</published>
-    <updated>2021-11-11T05:31:00.764Z</updated>
+    <published>2021-11-01T04:03:51.000Z</published>
+    <updated>2021-11-01T04:57:51.747Z</updated>
     
     
       
@@ -337,9 +365,9 @@
     <category term="Effective-C++" scheme="https://yngty.github.io/categories/Effective-C/"/>
     
     
-    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
-    
     <category term="C++" scheme="https://yngty.github.io/tags/C/"/>
+    
+    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
     
   </entry>
   
@@ -347,8 +375,8 @@
     <title>Effective C++ 8：析构函数不要抛出异常</title>
     <link href="https://yngty.github.io/2021/10/25/effecitve-cpp/effective-cpp-8/"/>
     <id>https://yngty.github.io/2021/10/25/effecitve-cpp/effective-cpp-8/</id>
-    <published>2021-10-25T13:29:41.000Z</published>
-    <updated>2021-11-11T05:31:00.764Z</updated>
+    <published>2021-10-25T05:29:41.000Z</published>
+    <updated>2021-11-01T04:04:20.395Z</updated>
     
     
       
@@ -367,9 +395,9 @@
     <category term="Effective-C++" scheme="https://yngty.github.io/categories/Effective-C/"/>
     
     
-    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
-    
     <category term="C++" scheme="https://yngty.github.io/tags/C/"/>
+    
+    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
     
   </entry>
   
@@ -377,8 +405,8 @@
     <title>Effective C++ 7：为多态基类声明 virtual 析构函数</title>
     <link href="https://yngty.github.io/2021/10/25/effecitve-cpp/effective-cpp-7/"/>
     <id>https://yngty.github.io/2021/10/25/effecitve-cpp/effective-cpp-7/</id>
-    <published>2021-10-25T13:09:45.000Z</published>
-    <updated>2021-11-11T05:31:00.764Z</updated>
+    <published>2021-10-25T05:09:45.000Z</published>
+    <updated>2021-10-25T08:28:07.665Z</updated>
     
     
       
@@ -395,9 +423,9 @@
     <category term="Effective-C++" scheme="https://yngty.github.io/categories/Effective-C/"/>
     
     
-    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
-    
     <category term="C++" scheme="https://yngty.github.io/tags/C/"/>
+    
+    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
     
   </entry>
   
@@ -405,8 +433,8 @@
     <title>Effective C++ 6：若不想使用编译器自动生成的函数，就该明确拒绝</title>
     <link href="https://yngty.github.io/2021/10/25/effecitve-cpp/effective-cpp-6/"/>
     <id>https://yngty.github.io/2021/10/25/effecitve-cpp/effective-cpp-6/</id>
-    <published>2021-10-25T11:32:26.000Z</published>
-    <updated>2021-11-11T05:31:00.764Z</updated>
+    <published>2021-10-25T03:32:26.000Z</published>
+    <updated>2021-10-25T03:58:31.727Z</updated>
     
     
       
@@ -423,9 +451,9 @@
     <category term="Effective-C++" scheme="https://yngty.github.io/categories/Effective-C/"/>
     
     
-    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
-    
     <category term="C++" scheme="https://yngty.github.io/tags/C/"/>
+    
+    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
     
   </entry>
   
@@ -433,8 +461,8 @@
     <title>Effective C++ 5：了解c++默默编写并调用哪些函数</title>
     <link href="https://yngty.github.io/2021/10/24/effecitve-cpp/effective-cpp-5/"/>
     <id>https://yngty.github.io/2021/10/24/effecitve-cpp/effective-cpp-5/</id>
-    <published>2021-10-24T20:17:05.000Z</published>
-    <updated>2021-11-11T05:31:00.764Z</updated>
+    <published>2021-10-24T12:17:05.000Z</published>
+    <updated>2021-10-24T12:47:55.753Z</updated>
     
     
       
@@ -453,9 +481,9 @@
     <category term="Effective-C++" scheme="https://yngty.github.io/categories/Effective-C/"/>
     
     
-    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
-    
     <category term="C++" scheme="https://yngty.github.io/tags/C/"/>
+    
+    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
     
   </entry>
   
@@ -463,8 +491,8 @@
     <title>Effective C++ 4：确定对象被使用前已先被初始化</title>
     <link href="https://yngty.github.io/2021/01/13/effecitve-cpp/effective-cpp-4/"/>
     <id>https://yngty.github.io/2021/01/13/effecitve-cpp/effective-cpp-4/</id>
-    <published>2021-01-13T22:41:25.000Z</published>
-    <updated>2021-11-11T05:31:00.764Z</updated>
+    <published>2021-01-13T14:41:25.000Z</published>
+    <updated>2021-10-24T12:19:49.547Z</updated>
     
     
       
@@ -483,9 +511,9 @@
     <category term="Effective-C++" scheme="https://yngty.github.io/categories/Effective-C/"/>
     
     
-    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
-    
     <category term="C++" scheme="https://yngty.github.io/tags/C/"/>
+    
+    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
     
   </entry>
   
@@ -493,8 +521,8 @@
     <title>Effective C++ 3：尽可能使用 const</title>
     <link href="https://yngty.github.io/2021/01/05/effecitve-cpp/effective-cpp-3/"/>
     <id>https://yngty.github.io/2021/01/05/effecitve-cpp/effective-cpp-3/</id>
-    <published>2021-01-05T22:04:32.000Z</published>
-    <updated>2021-11-11T05:31:00.764Z</updated>
+    <published>2021-01-05T14:04:32.000Z</published>
+    <updated>2021-10-24T11:46:00.678Z</updated>
     
     
       
@@ -513,9 +541,9 @@
     <category term="Effective-C++" scheme="https://yngty.github.io/categories/Effective-C/"/>
     
     
-    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
-    
     <category term="C++" scheme="https://yngty.github.io/tags/C/"/>
+    
+    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
     
   </entry>
   
@@ -523,8 +551,8 @@
     <title>Effective C++ 2：尽量以const, enum, inline 替换 &amp;#35;define</title>
     <link href="https://yngty.github.io/2020/12/14/effecitve-cpp/effective-cpp-2/"/>
     <id>https://yngty.github.io/2020/12/14/effecitve-cpp/effective-cpp-2/</id>
-    <published>2020-12-14T12:36:49.000Z</published>
-    <updated>2021-11-11T05:31:00.764Z</updated>
+    <published>2020-12-14T04:36:49.000Z</published>
+    <updated>2021-10-24T11:46:00.678Z</updated>
     
     
       
@@ -544,9 +572,9 @@
     <category term="Effective-C++" scheme="https://yngty.github.io/categories/Effective-C/"/>
     
     
-    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
-    
     <category term="C++" scheme="https://yngty.github.io/tags/C/"/>
+    
+    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
     
   </entry>
   
@@ -554,8 +582,8 @@
     <title>Effective C++ 1：将C++视作一系列的语言</title>
     <link href="https://yngty.github.io/2020/12/07/effecitve-cpp/effective-cpp-1/"/>
     <id>https://yngty.github.io/2020/12/07/effecitve-cpp/effective-cpp-1/</id>
-    <published>2020-12-07T20:40:56.000Z</published>
-    <updated>2021-11-11T05:31:00.764Z</updated>
+    <published>2020-12-07T12:40:56.000Z</published>
+    <updated>2021-10-24T11:46:00.678Z</updated>
     
     
       
@@ -574,9 +602,9 @@
     <category term="Effective-C++" scheme="https://yngty.github.io/categories/Effective-C/"/>
     
     
-    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
-    
     <category term="C++" scheme="https://yngty.github.io/tags/C/"/>
+    
+    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
     
   </entry>
   
