@@ -6,7 +6,7 @@
   <link href="https://yngty.github.io/atom.xml" rel="self"/>
   
   <link href="https://yngty.github.io/"/>
-  <updated>2021-11-17T04:10:58.097Z</updated>
+  <updated>2021-11-17T05:17:09.108Z</updated>
   <id>https://yngty.github.io/</id>
   
   <author>
@@ -21,17 +21,13 @@
     <link href="https://yngty.github.io/2021/11/17/linux/Linux%E5%91%BD%E4%BB%A4%E4%B9%8Btr/"/>
     <id>https://yngty.github.io/2021/11/17/linux/Linux%E5%91%BD%E4%BB%A4%E4%B9%8Btr/</id>
     <published>2021-11-17T11:08:28.000Z</published>
-    <updated>2021-11-17T04:10:58.097Z</updated>
+    <updated>2021-11-17T05:17:09.108Z</updated>
     
     
-      
-      
-        
-        
     <summary type="html">&lt;p&gt;&lt;code&gt;Linux&lt;/code&gt; 中 &lt;code&gt;tr&lt;/code&gt; 命令用于转换或删除文件中的字符。&lt;/p&gt;
-&lt;h3 id=&quot;语法&quot;&gt;&lt;a href=&quot;#语法&quot; class=&quot;headerlink&quot; title=&quot;语法&quot;&gt;&lt;/a&gt;语法&lt;/h3&gt;&lt;figure</summary>
-        
-      
+&lt;h3 id=&quot;语法&quot;&gt;&lt;a href=&quot;#语法&quot; class=&quot;headerlink&quot; title=&quot;语法&quot;&gt;&lt;/a&gt;语法&lt;/h3&gt;&lt;figure class=&quot;highlight shell&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;bash&quot;&gt; tr [OPTION] SET1 [SET2]&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h3 id=&quot;选项&quot;&gt;&lt;a href=&quot;#选项&quot; class=&quot;headerlink&quot; title=&quot;选项&quot;&gt;&lt;/a&gt;选项&lt;/h3&gt;&lt;figure class=&quot;highlight shell&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;-c, --complerment：反选设定字符。也就是符合 SET1 的部份不做处理，不符合的剩余部份才进行转换;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;-d, --delete：删除所有属于第一字符集的字符；&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;-s, --squeeze-repeats：把连续重复的字符以单独一个字符表示；&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;-t, --truncate-set1：先删除第一字符集较第二字符集多出的字符;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
     
     
     
@@ -47,7 +43,7 @@
     <link href="https://yngty.github.io/2021/11/11/effecitve-cpp/effective-cpp-19/"/>
     <id>https://yngty.github.io/2021/11/11/effecitve-cpp/effective-cpp-19/</id>
     <published>2021-11-11T16:36:55.000Z</published>
-    <updated>2021-11-17T04:10:58.097Z</updated>
+    <updated>2021-11-17T05:17:09.108Z</updated>
     
     
       

@@ -616,7 +616,7 @@
 <h3 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> tr [OPTION] SET1 [SET2]</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="选项"><a href="#选项" class="headerlink" title="选项"></a>选项</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">-c, --complerment：反选设定字符。也就是符合 SET1 的部份不做处理，不符合的剩余部份才进行转换;</span><br><span class="line">-d, --delete：删除所有属于第一字符集的字符；</span><br><span class="line">-s, --squeeze-repeats：把连续重复的字符以单独一个字符表示；</span><br><span class="line">-t, --truncate-set1：先删除第一字符集较第二字符集多出的字符;</span><br></pre></td></tr></table></figure>
-
+<a id="more"></a>
 <h3 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h3><ul>
 <li>字符集1(<code>SET1</code>)：指定要转换或删除的原字符集。当执行转换操作时，必须使用参数 “字符集2”指定转换的目标字符集。但执行删除操作时，不需要参数“字符集2”；</li>
 <li>字符集2(<code>SET2</code>)：指定要转换成的目标字符集。</li>
