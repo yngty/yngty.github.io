@@ -26,7 +26,7 @@
 <meta name="description" content="预测未来的最好方式就是实现它">
 <meta property="og:type" content="website">
 <meta property="og:title" content="瓜地">
-<meta property="og:url" content="https://yngty.github.io/archives/2021/11/page/2/index.html">
+<meta property="og:url" content="https://yngty.github.io/page/3/index.html">
 <meta property="og:site_name" content="瓜地">
 <meta property="og:description" content="预测未来的最好方式就是实现它">
 <meta property="og:locale" content="zh_CN">
@@ -34,19 +34,19 @@
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://yngty.github.io/archives/2021/11/page/2/">
+<link rel="canonical" href="https://yngty.github.io/page/3/">
 
 
 <script class="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : false,
+    isHome : true,
     isPost : false,
     lang   : 'zh-CN'
   };
 </script>
-<title>归档 | 瓜地</title>
+<title>瓜地</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-5F9JL1V3HN"></script>
     <script>
@@ -265,91 +265,118 @@
 </noscript>
 
 
-    <div class="main-inner archive posts-collapse">
+    <div class="main-inner index posts-expand">
+
+    
 
 
+<div class="post-block">
   
   
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2020/12/07/effecitve-cpp/effective-cpp-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="瓜地">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2020/12/07/effecitve-cpp/effective-cpp-1/" class="post-title-link" itemprop="url">Effective C++ 1：将C++视作一系列的语言</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-12-07 12:40:56" itemprop="dateCreated datePublished" datetime="2020-12-07T12:40:56+00:00">2020-12-07</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-10-24 11:46:00" itemprop="dateModified" datetime="2021-10-24T11:46:00+00:00">2021-10-24</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Effective-C/" itemprop="url" rel="index"><span itemprop="name">Effective-C++</span></a>
+        </span>
+    </span>
+
   
-  <div class="post-block">
-    <div class="post-content">
-      <div class="collection-title">
-        <span class="collection-header">嗯..! 目前共计 21 篇日志。 继续努力。</span>
       </div>
+      <div class="post-meta">
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>773</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>1 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <blockquote>
+<p>Item 1: View C++ as a federation of languages</p>
+</blockquote>
+<p>一开始，<code>Ｃ++</code> 只是 <code>Ｃ</code> 加上一些面向对象特性，<code>Ｃ++</code> 最初的名称 <code>Ｃ with Classes</code> 也反映了这个血缘关系。现在这个语言逐渐成熟，已经是一个<strong>多重泛型编程语言</strong>(<code>multiparadigm programming language</code>)。同时支持过程形式(<code>procedural</code>)、面向对象形式(<code>object-oriented</code>)、函数形式(<code>functional</code>)、泛型形式(<code>generic</code>)、元编程形式(<code>metaprogramming</code>)</p>
+<p>将 <code>C++</code> 视为一个由相关语言组成的联邦而非单一的语言。</p>
+<p><code>C++</code> 主要４个子语言：</p>
+<ul>
+<li><code>C</code>。说到底Ｃ++仍是以Ｃ为基础。许多时候Ｃ++对问题的解法其实不过就是较高级的Ｃ的解法如<code>item2</code>、<code>item13</code>。当只使用<code>C++</code>中<code>C</code>的那部分语法，　会发现<code>C</code>语言的缺陷：没有模板、没有异常、没有重载。</li>
+<li><code>Object-Oriented</code>。面向对象程序设计也是<code>C++</code>的设计初衷：构造与析构、封装与继承、多态、动态绑定的虚函数。</li>
+<li><code>Template C++</code>。这是C++的泛型编程部分，大多数程序员经验最少的部分。<strong>TMP模板元编程</strong>（<code>template metaprogramming</code>）也是一个新兴的程序设计范式。</li>
+<li><code>STL</code>。<code>STL</code>是一个特殊的模板库，它将容器、迭代器和算法优雅地结合在一起。</li>
+</ul>
+<p><code>C++</code> 程序设计的惯例并非一成不变，而是取决于你使用 <code>C++</code> 语言的哪一部分。例如， 在基于C语言的程序设计中，基本类型传参时传值比传引用更有效率。 然而当你接触 <code>Object-Oriented C++</code> 时会发现，传常量指针是更好的选择。运用<code>Template C++</code>时尤其如此，因为彼时你甚至不知道所处理的对象的类型。 但是你如果又碰到了<code>STL</code>，其中的迭代器和函数对象都是基于<code>C</code>语言的指针而设计的， 这时又回到了原来的规则：传值比传引用更好。</p>
 
       
-    <div class="collection-year">
-      <span class="collection-header">2021</span>
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2021-11-01T05:12:55+00:00"
-              content="2021-11-01">
-          11-01
-        </time>
-      </div>
+    
+    
+    
 
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/11/01/effecitve-cpp/effective-cpp-11/" itemprop="url">
-            <span itemprop="name">Effective C++ 11：赋值运算符需要考虑自我赋值问题</span>
-          </a>
-      </div>
-
+    <footer class="post-footer">
+        <div class="post-eof"></div>
       
-    </header>
+    </footer>
   </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2021-11-01T04:59:28+00:00"
-              content="2021-11-01">
-          11-01
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/11/01/effecitve-cpp/effective-cpp-10/" itemprop="url">
-            <span itemprop="name">Effective C++ 10：赋值运算符要返回自己的引用</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2021-11-01T04:03:51+00:00"
-              content="2021-11-01">
-          11-01
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/11/01/effecitve-cpp/effective-cpp-9/" itemprop="url">
-            <span itemprop="name">Effective C++ 9：绝不在构造和析构过程中调用 virtual 函数</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
+</div>
 
 
-    </div>
-  </div>
-  
-  
-  
+
+
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/archives/2021/11/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/archives/2021/11/">1</a><span class="page-number current">2</span>
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span>
   </nav>
 
 

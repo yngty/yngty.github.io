@@ -6,7 +6,7 @@
   <link href="https://yngty.github.io/atom.xml" rel="self"/>
   
   <link href="https://yngty.github.io/"/>
-  <updated>2021-11-15T03:47:49.684Z</updated>
+  <updated>2021-11-17T04:10:58.097Z</updated>
   <id>https://yngty.github.io/</id>
   
   <author>
@@ -17,11 +17,37 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Linux命令之tr</title>
+    <link href="https://yngty.github.io/2021/11/17/linux/Linux%E5%91%BD%E4%BB%A4%E4%B9%8Btr/"/>
+    <id>https://yngty.github.io/2021/11/17/linux/Linux%E5%91%BD%E4%BB%A4%E4%B9%8Btr/</id>
+    <published>2021-11-17T11:08:28.000Z</published>
+    <updated>2021-11-17T04:10:58.097Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;&lt;code&gt;Linux&lt;/code&gt; 中 &lt;code&gt;tr&lt;/code&gt; 命令用于转换或删除文件中的字符。&lt;/p&gt;
+&lt;h3 id=&quot;语法&quot;&gt;&lt;a href=&quot;#语法&quot; class=&quot;headerlink&quot; title=&quot;语法&quot;&gt;&lt;/a&gt;语法&lt;/h3&gt;&lt;figure</summary>
+        
+      
+    
+    
+    
+    <category term="Linux" scheme="https://yngty.github.io/categories/Linux/"/>
+    
+    
+    <category term="Linux" scheme="https://yngty.github.io/tags/Linux/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Effective C++ 19：设计 class 犹如设计 type</title>
     <link href="https://yngty.github.io/2021/11/11/effecitve-cpp/effective-cpp-19/"/>
     <id>https://yngty.github.io/2021/11/11/effecitve-cpp/effective-cpp-19/</id>
     <published>2021-11-11T16:36:55.000Z</published>
-    <updated>2021-11-15T03:47:49.684Z</updated>
+    <updated>2021-11-17T04:10:58.097Z</updated>
     
     
       
@@ -564,36 +590,6 @@
 &lt;/blockquote&gt;
 &lt;p&gt;我们先看看&lt;code&gt;#deifne&lt;/code&gt; 有哪些的问题:&lt;/p&gt;
 &lt;h1</summary>
-        
-      
-    
-    
-    
-    <category term="Effective-C++" scheme="https://yngty.github.io/categories/Effective-C/"/>
-    
-    
-    <category term="C++" scheme="https://yngty.github.io/tags/C/"/>
-    
-    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Effective C++ 1：将C++视作一系列的语言</title>
-    <link href="https://yngty.github.io/2020/12/07/effecitve-cpp/effective-cpp-1/"/>
-    <id>https://yngty.github.io/2020/12/07/effecitve-cpp/effective-cpp-1/</id>
-    <published>2020-12-07T12:40:56.000Z</published>
-    <updated>2021-10-24T11:46:00.678Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;blockquote&gt;
-&lt;p&gt;Item 1: View C++ as a federation of languages&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;一开始，&lt;code&gt;Ｃ++&lt;/code&gt; 只是 &lt;code&gt;Ｃ&lt;/code&gt;</summary>
         
       
     
