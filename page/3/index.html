@@ -134,9 +134,9 @@
 <nav class="site-nav">
   <ul class="main-menu menu">
         <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
-        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">21</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">22</span></a></li>
         <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">3</span></a></li>
-        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">3</span></a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">4</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -208,7 +208,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">21</span>
+          <span class="site-state-item-count">22</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -221,7 +221,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-count">4</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -266,6 +266,127 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2020/12/14/effecitve-cpp/effective-cpp-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="瓜地">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2020/12/14/effecitve-cpp/effective-cpp-2/" class="post-title-link" itemprop="url">Effective C++ 2：尽量以const, enum, inline 替换 &#35;define</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-12-14 04:36:49" itemprop="dateCreated datePublished" datetime="2020-12-14T04:36:49+00:00">2020-12-14</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-10-24 11:46:00" itemprop="dateModified" datetime="2021-10-24T11:46:00+00:00">2021-10-24</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Effective-C/" itemprop="url" rel="index"><span itemprop="name">Effective-C++</span></a>
+        </span>
+    </span>
+
+  
+      </div>
+      <div class="post-meta">
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>1 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <blockquote>
+<p>Item 2: Prefer consts, enums, and inlines to #defines</p>
+</blockquote>
+<p>我们先看看<code>#deifne</code> 有哪些的问题:</p>
+<h1 id="不利于调试"><a href="#不利于调试" class="headerlink" title="不利于调试"></a>不利于调试</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define ASPECT_RATION 1.653</span><br></pre></td></tr></table></figure>
+<p>在预处理时候 <code>ASPECT_RATION</code> 可能就被移走了,<code>ASPECT_RATION</code> 没有进入 符号表, 运行此常量获得编译错误信息时, 可能会疑惑。因为这个错误信息总是提到 <code>1.653</code>，而不是<code>ASPECT_RATION</code> ， 如果 <code>ASPECT_RATION</code> 定义不是自己写的头文件中，可能对 <code>1.653</code> 的来源毫无概念，将因追踪它浪费时间，解决之道是以一个常量替换上述宏 。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">double</span> AspectRatio = <span class="number">1.653</span> <span class="comment">//大写名称通常用于宏</span></span><br><span class="line">                                 <span class="comment">//因此这里改变名称写法</span></span><br></pre></td></tr></table></figure>
+<p>作为一个语言常量，<code>ASPECT_RATION</code> 肯定会被编译器看到，当然会进入记号表内。此外对于浮点常量(<code>floating point constant</code>)而言，使用常量可能比使用<code>#define</code> 导致较少量的码。</p>
+<h1 id="不重视scope"><a href="#不重视scope" class="headerlink" title="不重视scope"></a>不重视scope</h1><p>无法利用 <code>#define</code> 创建<code>class</code>专属常量。一旦宏定义，它就在其后的编译过程中有效（除非在某处 <code>#undef</code> ）。而 <code>const</code> 可以。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">GamePlayer</span> &#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">int</span> NumTurns; <span class="comment">//常量声明式</span></span><br><span class="line">    <span class="keyword">int</span> scores[NumTurns];      <span class="comment">//使用该常量</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="enum-比-const-更好用"><a href="#enum-比-const-更好用" class="headerlink" title="enum 比 const 更好用"></a>enum 比 const 更好用</h2><p>旧式编译器也许不支持上述语法，　它们不允许static在声明式上获得初值，此外所谓的“<code>in-classs　初值设定</code>”也只运行对<strong>整数常量</strong>进行，　如果编译器不支持上述语法，可以将初值放在定义式</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CostEstimate</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">double</span> FudgeFactor;  <span class="comment">//staitc class　常量声明位于头文件内</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">double</span> CostEstimate::FudgeFactor = <span class="number">1.35</span>; <span class="comment">//staitc class　常量定义位于实现文件内</span></span><br></pre></td></tr></table></figure>
+<p>如果使用<code>emnu</code>就很简单：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">GamePlayer</span> &#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="class"><span class="keyword">enum</span> &#123;</span> NumTurns = <span class="number">5</span> &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> scores[NumTurns];　<span class="comment">//the enum hack</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>　</p>
+<h1 id="不易理解"><a href="#不易理解" class="headerlink" title="不易理解"></a>不易理解</h1><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CALL_WITH_MAX(a, b)  f((a) &gt; (b) ? (a) : (b))</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> a = <span class="number">5</span>, b =<span class="number">0</span>;</span><br><span class="line">CALL_WITH_MAX(++a, b);     　<span class="comment">//ａ被累加二次</span></span><br><span class="line">CALL_WITH_MAX(++a, b + <span class="number">10</span>);　<span class="comment">//ａ被累加一次</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>必须记住为宏的所有实参加上小括号</li>
+<li>在这里调用ｆ之前，ａ的递增次取决与“它被拿来与谁比较”</li>
+</ul>
+<p>更好的做法是使用　<code>template inline</code>　函数。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">callWithMax</span><span class="params">(<span class="keyword">const</span> T &amp;a, <span class="keyword">const</span> T &amp;b)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (a &gt; b ? a : b);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -421,13 +542,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">19k</span>
+    <span title="站点总字数">21k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">17 分钟</span>
+    <span title="站点阅读时长">19 分钟</span>
   </span>
 </div>
 <div class="busuanzi-count">

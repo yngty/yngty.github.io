@@ -6,7 +6,7 @@
   <link href="https://yngty.github.io/atom.xml" rel="self"/>
   
   <link href="https://yngty.github.io/"/>
-  <updated>2021-11-17T05:17:09.108Z</updated>
+  <updated>2021-11-23T13:01:39.959Z</updated>
   <id>https://yngty.github.io/</id>
   
   <author>
@@ -17,11 +17,36 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>文件MIME类型</title>
+    <link href="https://yngty.github.io/2021/11/23/linux/%E6%96%87%E4%BB%B6MIME%E7%B1%BB%E5%9E%8B/"/>
+    <id>https://yngty.github.io/2021/11/23/linux/%E6%96%87%E4%BB%B6MIME%E7%B1%BB%E5%9E%8B/</id>
+    <published>2021-11-23T12:14:31.000Z</published>
+    <updated>2021-11-23T13:01:39.959Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;什么是-MIME-类型？&quot;&gt;&lt;a href=&quot;#什么是-MIME-类型？&quot; class=&quot;headerlink&quot; title=&quot;什么是 MIME 类型？&quot;&gt;&lt;/a&gt;什么是 MIME 类型？&lt;/h1&gt;&lt;p&gt;&lt;code&gt;MIME&lt;/code&gt;（多用途 &lt;code&gt;Internet&lt;/code&gt; 邮件扩展）的类型来识别文件格式。 &lt;code&gt;MIME&lt;/code&gt; 类型构成了 &lt;code&gt;Internet&lt;/code&gt; 上对文件类型进行分类的标准方法。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;MIME Type&lt;/code&gt;是用于描述文件的类型的一种表述方法，其将文件划分为多种类型，方便对其进行统一的管理。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;MIME Type&lt;/code&gt;指定了文件的类型名称、描述、图标信息，同时通过与.desktop应用程序描述文件整合，指定了文件的打开方式。&lt;/li&gt;
+&lt;/ul&gt;</summary>
+    
+    
+    
+    <category term="Linux" scheme="https://yngty.github.io/categories/Linux/"/>
+    
+    
+    <category term="Linux" scheme="https://yngty.github.io/tags/Linux/"/>
+    
+    <category term="mime" scheme="https://yngty.github.io/tags/mime/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Linux命令之tr</title>
     <link href="https://yngty.github.io/2021/11/17/linux/Linux%E5%91%BD%E4%BB%A4%E4%B9%8Btr/"/>
     <id>https://yngty.github.io/2021/11/17/linux/Linux%E5%91%BD%E4%BB%A4%E4%B9%8Btr/</id>
-    <published>2021-11-17T11:08:28.000Z</published>
-    <updated>2021-11-17T05:17:09.108Z</updated>
+    <published>2021-11-17T03:08:28.000Z</published>
+    <updated>2021-11-17T05:11:41.987Z</updated>
     
     
     <summary type="html">&lt;p&gt;&lt;code&gt;Linux&lt;/code&gt; 中 &lt;code&gt;tr&lt;/code&gt; 命令用于转换或删除文件中的字符。&lt;/p&gt;
@@ -42,8 +67,8 @@
     <title>Effective C++ 19：设计 class 犹如设计 type</title>
     <link href="https://yngty.github.io/2021/11/11/effecitve-cpp/effective-cpp-19/"/>
     <id>https://yngty.github.io/2021/11/11/effecitve-cpp/effective-cpp-19/</id>
-    <published>2021-11-11T16:36:55.000Z</published>
-    <updated>2021-11-17T05:17:09.108Z</updated>
+    <published>2021-11-11T08:36:55.000Z</published>
+    <updated>2021-11-15T04:55:20.253Z</updated>
     
     
       
@@ -555,37 +580,6 @@
 &lt;p&gt;Item3: Use const whenever possible.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;h1 id=&quot;常量的声明&quot;&gt;&lt;a href=&quot;#常量的声明&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="Effective-C++" scheme="https://yngty.github.io/categories/Effective-C/"/>
-    
-    
-    <category term="C++" scheme="https://yngty.github.io/tags/C/"/>
-    
-    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Effective C++ 2：尽量以const, enum, inline 替换 &amp;#35;define</title>
-    <link href="https://yngty.github.io/2020/12/14/effecitve-cpp/effective-cpp-2/"/>
-    <id>https://yngty.github.io/2020/12/14/effecitve-cpp/effective-cpp-2/</id>
-    <published>2020-12-14T04:36:49.000Z</published>
-    <updated>2021-10-24T11:46:00.678Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;blockquote&gt;
-&lt;p&gt;Item 2: Prefer consts, enums, and inlines to #defines&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;我们先看看&lt;code&gt;#deifne&lt;/code&gt; 有哪些的问题:&lt;/p&gt;
-&lt;h1</summary>
         
       
     
