@@ -6,7 +6,7 @@
   <link href="https://yngty.github.io/atom.xml" rel="self"/>
   
   <link href="https://yngty.github.io/"/>
-  <updated>2022-03-23T03:20:21.032Z</updated>
+  <updated>2022-03-23T05:19:40.455Z</updated>
   <id>https://yngty.github.io/</id>
   
   <author>
@@ -17,22 +17,21 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>Effective C++ 20：传常量引用比传值更好</title>
-    <link href="https://yngty.github.io/2022/03/23/effecitve-cpp/effective-cpp-20/"/>
-    <id>https://yngty.github.io/2022/03/23/effecitve-cpp/effective-cpp-20/</id>
-    <published>2022-03-23T10:29:27.000Z</published>
-    <updated>2022-03-23T03:20:21.032Z</updated>
+    <title>Effective C++ 22：将成员变量声明为private</title>
+    <link href="https://yngty.github.io/2022/03/23/effecitve-cpp/effective-cpp-22/"/>
+    <id>https://yngty.github.io/2022/03/23/effecitve-cpp/effective-cpp-22/</id>
+    <published>2022-03-23T11:22:04.000Z</published>
+    <updated>2022-03-23T05:19:40.455Z</updated>
     
     
+      
+      
+        
+        
     <summary type="html">&lt;blockquote&gt;
-&lt;p&gt;Item 20: Prefer pass-by-reference-to-const to pass-by-value.&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;缺省情况下&lt;code&gt;C++&lt;/code&gt; 用传值得方式(一个继承自&lt;code&gt;C&lt;/code&gt;的方式)传递对象至(或来自)函数。除非你另外指定，否则函数参数都是以实际实参的复件(副本)为初值，而调用端所获得的亦是函数返回值的一个复件。这些复件(副本)系由对象的&lt;code&gt;copy&lt;/code&gt;构造函数产出。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;尽量以传常量引用替换传值前者通常比较高效，并可避免切割问题 (&lt;code&gt;slicing problem&lt;/code&gt;)，但是内置类型和 &lt;code&gt;STL&lt;/code&gt; 迭代器，还是传值更加合适。&lt;/strong&gt;。&lt;/p&gt;
-&lt;h2 id=&quot;性能问题&quot;&gt;&lt;a href=&quot;#性能问题&quot; class=&quot;headerlink&quot; title=&quot;性能问题:&quot;&gt;&lt;/a&gt;性能问题:&lt;/h2&gt;&lt;figure class=&quot;highlight c++&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;Person&lt;/span&gt; &amp;#123;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;public&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    Person ();&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;virtual&lt;/span&gt; -Person();&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;private&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;built_in&quot;&gt;std&lt;/span&gt;::&lt;span class=&quot;built_in&quot;&gt;string&lt;/span&gt; name;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;built_in&quot;&gt;std&lt;/span&gt;::&lt;span class=&quot;built_in&quot;&gt;string&lt;/span&gt; address;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;Student&lt;/span&gt;:&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;public&lt;/span&gt; Person &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;public&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    Student();&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    -Student();&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;private&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;built_in&quot;&gt;std&lt;/span&gt;::&lt;span class=&quot;built_in&quot;&gt;string&lt;/span&gt; schoolName;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-
-&lt;p&gt;现在考虑以下代码，其中调用函数 &lt;code&gt;validateStudent&lt;/code&gt; ，后者需要一个 &lt;code&gt;Student&lt;/code&gt;&lt;br&gt;(&lt;code&gt;by value&lt;/code&gt;) 并返回它是否有效:&lt;/p&gt;
-&lt;figure class=&quot;highlight c++&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;bool&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;validateStudent&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(Student s)&lt;/span&gt;&lt;/span&gt;;           &lt;span class=&quot;comment&quot;&gt;// function taking a Student by value&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Student plato;                             &lt;span class=&quot;comment&quot;&gt;// Plato studied under Socrates&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;bool&lt;/span&gt; platoIsOK = validateStudent(plato);   &lt;span class=&quot;comment&quot;&gt;// call the functio&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
+&lt;p&gt;Declare data members</summary>
+        
+      
     
     
     
@@ -49,24 +48,39 @@
     <title>Effective C++ 21：需要返回对象时，不要返回引用</title>
     <link href="https://yngty.github.io/2022/03/23/effecitve-cpp/effective-cpp-21/"/>
     <id>https://yngty.github.io/2022/03/23/effecitve-cpp/effective-cpp-21/</id>
-    <published>2022-03-23T02:43:36.000Z</published>
-    <updated>2022-03-23T03:17:01.032Z</updated>
+    <published>2022-03-23T10:43:36.000Z</published>
+    <updated>2022-03-23T05:19:40.455Z</updated>
     
     
     <summary type="html">&lt;blockquote&gt;
 &lt;p&gt;Don’t to return a reference when you must return an object.&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;p&gt;Item 20 中提到，多数情况下传引用比传值更好。但不要无脑追求这一点，一定不要返回空引用或指针。&lt;/p&gt;
-&lt;p&gt;举个栗子：&lt;/p&gt;
-&lt;figure class=&quot;highlight c++&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;Rational&lt;/span&gt;&amp;#123;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; n, d;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;public&lt;/span&gt;:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  Raitonal(&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; numerator=&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; denominator=&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;// 返回值为什么是const请参考Item 3&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;friend&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; Rational &lt;span class=&quot;keyword&quot;&gt;operator&lt;/span&gt;*(&lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; Rational&amp;amp; lhs, &lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; Rational&amp;amp; rhs);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Rational a, b;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Rational c = a*b;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;p&gt;这个版本的 &lt;code&gt;operator*&lt;/code&gt; 返回的是一个实例，&lt;code&gt;a*b&lt;/code&gt;时便会调用&lt;code&gt;operator*()&lt;/code&gt;， 返回值被拷贝后用来初始化&lt;code&gt;c&lt;/code&gt;。&lt;/p&gt;
-&lt;p&gt;不考虑编译器优化和 &lt;code&gt;C11&lt;/code&gt; 的 &lt;code&gt;move&lt;/code&gt; ,这个过程涉及到多个构造和析构过程：&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;code&gt;operator*&lt;/code&gt;调用结束前，返回值被拷贝，调用拷贝构造函数&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;operator*&lt;/code&gt;调用结束后，返回值被析构&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;c&lt;/code&gt; 被初始化，调用拷贝构造函数&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;我们能否通过传递引用的方式来避免这些函数调用？这要求在函数中创建那个要被返回给调用者的对象，而函数只有两种办法来创建对象：在栈空间中创建、或者在堆中创建。&lt;/p&gt;</summary>
+&lt;p&gt;Item 20 中提到，多数情况下传引用比传值更好。但不要无脑追求这一点，一定不要返回空引用或指针。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="Effective-C++" scheme="https://yngty.github.io/categories/Effective-C/"/>
+    
+    
+    <category term="C++" scheme="https://yngty.github.io/tags/C/"/>
+    
+    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Effective C++ 20：传常量引用比传值更好</title>
+    <link href="https://yngty.github.io/2022/03/23/effecitve-cpp/effective-cpp-20/"/>
+    <id>https://yngty.github.io/2022/03/23/effecitve-cpp/effective-cpp-20/</id>
+    <published>2022-03-23T10:29:27.000Z</published>
+    <updated>2022-03-23T05:19:40.455Z</updated>
+    
+    
+    <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;Item 20: Prefer pass-by-reference-to-const to pass-by-value.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;缺省情况下&lt;code&gt;C++&lt;/code&gt; 用传值得方式(一个继承自&lt;code&gt;C&lt;/code&gt;的方式)传递对象至(或来自)函数。除非你另外指定，否则函数参数都是以实际实参的复件(副本)为初值，而调用端所获得的亦是函数返回值的一个复件。这些复件(副本)系由对象的&lt;code&gt;copy&lt;/code&gt;构造函数产出。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;尽量以传常量引用替换传值前者通常比较高效，并可避免切割问题 (&lt;code&gt;slicing problem&lt;/code&gt;)，但是内置类型和 &lt;code&gt;STL&lt;/code&gt; 迭代器，还是传值更加合适。&lt;/strong&gt;。&lt;/p&gt;</summary>
     
     
     
@@ -553,36 +567,6 @@
         
     <summary type="html">&lt;blockquote&gt;
 &lt;p&gt;Item 6: Explicitly disallow the use of compiler-generated functions you do not</summary>
-        
-      
-    
-    
-    
-    <category term="Effective-C++" scheme="https://yngty.github.io/categories/Effective-C/"/>
-    
-    
-    <category term="C++" scheme="https://yngty.github.io/tags/C/"/>
-    
-    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Effective C++ 5：了解c++默默编写并调用哪些函数</title>
-    <link href="https://yngty.github.io/2021/10/24/effecitve-cpp/effective-cpp-5/"/>
-    <id>https://yngty.github.io/2021/10/24/effecitve-cpp/effective-cpp-5/</id>
-    <published>2021-10-24T12:17:05.000Z</published>
-    <updated>2021-10-24T12:47:55.753Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;blockquote&gt;
-&lt;p&gt;Item 5: Know what functions C++ silently writes and calls&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;h1 id=&quot;默认函数&quot;&gt;&lt;a href=&quot;#默认函数&quot;</summary>
         
       
     

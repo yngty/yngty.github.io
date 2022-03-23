@@ -23,15 +23,15 @@
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"yngty.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}};
   </script>
-<meta name="description" content="Don’t to return a reference when you must return an object.  Item 20 中提到，多数情况下传引用比传值更好。但不要无脑追求这一点，一定不要返回空引用或指针。 举个栗子： 1234567891011class Rational&amp;#123;  int n, d;public:  Raitonal(int numerator&#x3D;0, in">
+<meta name="description" content="Don’t to return a reference when you must return an object.  Item 20 中提到，多数情况下传引用比传值更好。但不要无脑追求这一点，一定不要返回空引用或指针。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Effective C++ 21：需要返回对象时，不要返回引用">
 <meta property="og:url" content="https://yngty.github.io/2022/03/23/effecitve-cpp/effective-cpp-21/index.html">
 <meta property="og:site_name" content="瓜地">
-<meta property="og:description" content="Don’t to return a reference when you must return an object.  Item 20 中提到，多数情况下传引用比传值更好。但不要无脑追求这一点，一定不要返回空引用或指针。 举个栗子： 1234567891011class Rational&amp;#123;  int n, d;public:  Raitonal(int numerator&#x3D;0, in">
+<meta property="og:description" content="Don’t to return a reference when you must return an object.  Item 20 中提到，多数情况下传引用比传值更好。但不要无脑追求这一点，一定不要返回空引用或指针。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-03-23T02:43:36.000Z">
-<meta property="article:modified_time" content="2022-03-23T03:17:01.032Z">
+<meta property="article:published_time" content="2022-03-23T10:43:36.000Z">
+<meta property="article:modified_time" content="2022-03-23T05:19:40.455Z">
 <meta property="article:author" content="yngty">
 <meta property="article:tag" content="C++">
 <meta property="article:tag" content="Effective-C++">
@@ -138,7 +138,7 @@
 <nav class="site-nav">
   <ul class="main-menu menu">
         <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
-        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">24</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">25</span></a></li>
         <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">3</span></a></li>
         <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">4</span></a></li>
       <li class="menu-item menu-item-search">
@@ -212,7 +212,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-count">25</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -305,7 +305,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2022-03-23 02:43:36 / 修改时间：03:17:01" itemprop="dateCreated datePublished" datetime="2022-03-23T02:43:36+00:00">2022-03-23</time>
+      <time title="创建时间：2022-03-23 10:43:36 / 修改时间：05:19:40" itemprop="dateCreated datePublished" datetime="2022-03-23T10:43:36+00:00">2022-03-23</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -354,6 +354,8 @@
 <p>Don’t to return a reference when you must return an object.</p>
 </blockquote>
 <p>Item 20 中提到，多数情况下传引用比传值更好。但不要无脑追求这一点，一定不要返回空引用或指针。</p>
+<a id="more"></a>
+
 <p>举个栗子：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Rational</span>&#123;</span></span><br><span class="line">  <span class="keyword">int</span> n, d;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  Raitonal(<span class="keyword">int</span> numerator=<span class="number">0</span>, <span class="keyword">int</span> denominator=<span class="number">1</span>);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 返回值为什么是const请参考Item 3</span></span><br><span class="line"><span class="keyword">friend</span> <span class="keyword">const</span> Rational <span class="keyword">operator</span>*(<span class="keyword">const</span> Rational&amp; lhs, <span class="keyword">const</span> Rational&amp; rhs);</span><br><span class="line"></span><br><span class="line">Rational a, b;</span><br><span class="line">Rational c = a*b;</span><br></pre></td></tr></table></figure>
 <p>这个版本的 <code>operator*</code> 返回的是一个实例，<code>a*b</code>时便会调用<code>operator*()</code>， 返回值被拷贝后用来初始化<code>c</code>。</p>
@@ -364,8 +366,6 @@
 <li><code>c</code> 被初始化，调用拷贝构造函数</li>
 </ol>
 <p>我们能否通过传递引用的方式来避免这些函数调用？这要求在函数中创建那个要被返回给调用者的对象，而函数只有两种办法来创建对象：在栈空间中创建、或者在堆中创建。</p>
-<a id="more"></a>
-
 <p>在栈空间中创建显然是错误的：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> Rational&amp; <span class="keyword">operator</span>*(<span class="keyword">const</span> Rational&amp; lhs, <span class="keyword">const</span> Rational&amp; rhs)&#123;</span><br><span class="line">  <span class="function">Rational <span class="title">result</span><span class="params">(lhs.n*rhs.n, lhs.d*rhs.d)</span></span>;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>我们的目标是要避免调用构造函数，而 <code>result</code> 却必须像任何对象一样地由构造函数构造起, 而且得到的 <code>result</code> 永远是空。因为 <code>result</code> 是一个 <code>local</code> 对象，当函数调用结束后 <code>result</code>即被销毁。</p>
@@ -418,13 +418,13 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2021/11/23/linux/%E6%96%87%E4%BB%B6MIME%E7%B1%BB%E5%9E%8B/" rel="prev" title="文件MIME类型">
-                  <i class="fa fa-chevron-left"></i> 文件MIME类型
+                <a href="/2022/03/23/effecitve-cpp/effective-cpp-20/" rel="prev" title="Effective C++ 20：传常量引用比传值更好">
+                  <i class="fa fa-chevron-left"></i> Effective C++ 20：传常量引用比传值更好
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2022/03/23/effecitve-cpp/effective-cpp-20/" rel="next" title="Effective C++ 20：传常量引用比传值更好">
-                  Effective C++ 20：传常量引用比传值更好 <i class="fa fa-chevron-right"></i>
+                <a href="/2022/03/23/effecitve-cpp/effective-cpp-22/" rel="next" title="Effective C++ 22：将成员变量声明为private">
+                  Effective C++ 22：将成员变量声明为private <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
