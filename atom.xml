@@ -64,6 +64,36 @@
   </entry>
   
   <entry>
+    <title>Effective C++ 20：传常量引用比传值更好</title>
+    <link href="https://yngty.github.io/2021/11/11/effecitve-cpp/effective-cpp-20/"/>
+    <id>https://yngty.github.io/2021/11/11/effecitve-cpp/effective-cpp-20/</id>
+    <published>2021-11-11T16:36:55.000Z</published>
+    <updated>2022-03-23T02:30:28.143Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;Item 20: Prefer pass-by-reference-to-const to pass-by-value.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;缺省情况下&lt;code&gt;C++&lt;/code&gt;</summary>
+        
+      
+    
+    
+    
+    <category term="Effective-C++" scheme="https://yngty.github.io/categories/Effective-C/"/>
+    
+    
+    <category term="C++" scheme="https://yngty.github.io/tags/C/"/>
+    
+    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Effective C++ 19：设计 class 犹如设计 type</title>
     <link href="https://yngty.github.io/2021/11/11/effecitve-cpp/effective-cpp-19/"/>
     <id>https://yngty.github.io/2021/11/11/effecitve-cpp/effective-cpp-19/</id>
@@ -481,7 +511,7 @@
     <link href="https://yngty.github.io/2021/10/25/effecitve-cpp/effective-cpp-6/"/>
     <id>https://yngty.github.io/2021/10/25/effecitve-cpp/effective-cpp-6/</id>
     <published>2021-10-25T03:32:26.000Z</published>
-    <updated>2021-10-25T03:58:31.727Z</updated>
+    <updated>2022-03-23T02:20:35.821Z</updated>
     
     
       
@@ -550,36 +580,6 @@
 &lt;p&gt;Item 4: Make sure that objects are initialized before they’re used.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;h1 id=&quot;手工初始化内置对象&quot;&gt;&lt;a</summary>
-        
-      
-    
-    
-    
-    <category term="Effective-C++" scheme="https://yngty.github.io/categories/Effective-C/"/>
-    
-    
-    <category term="C++" scheme="https://yngty.github.io/tags/C/"/>
-    
-    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Effective C++ 3：尽可能使用 const</title>
-    <link href="https://yngty.github.io/2021/01/05/effecitve-cpp/effective-cpp-3/"/>
-    <id>https://yngty.github.io/2021/01/05/effecitve-cpp/effective-cpp-3/</id>
-    <published>2021-01-05T14:04:32.000Z</published>
-    <updated>2021-10-24T11:46:00.678Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;blockquote&gt;
-&lt;p&gt;Item3: Use const whenever possible.&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;h1 id=&quot;常量的声明&quot;&gt;&lt;a href=&quot;#常量的声明&quot; class=&quot;headerlink&quot;</summary>
         
       
     

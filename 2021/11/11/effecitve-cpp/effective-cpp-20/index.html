@@ -23,22 +23,22 @@
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"yngty.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}};
   </script>
-<meta name="description" content="Item 1: View C++ as a federation of languages  一开始，Ｃ++ 只是 Ｃ 加上一些面向对象特性，Ｃ++ 最初的名称 Ｃ with Classes 也反映了这个血缘关系。现在这个语言逐渐成熟，已经是一个多重泛型编程语言(multiparadigm programming language)。同时支持过程形式(procedural)、面向对象形式(obj">
+<meta name="description" content="Item 20: Prefer pass-by-reference-to-const to pass-by-value.  缺省情况下C++ 用传值得方式(一个继承自C的方式)传递对象至(或来自)函数。除非你另外指定，否则函数参数都是以实际实参的复件(副本)为初值，而调用端所获得的亦是函数返回值的一个复件。这些复件(副本)系由对象的copy构造函数产出。 尽量以传常量引用替换传值前者通常比较高效">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Effective C++ 1：将C++视作一系列的语言">
-<meta property="og:url" content="https://yngty.github.io/2020/12/07/effecitve-cpp/effective-cpp-1/index.html">
+<meta property="og:title" content="Effective C++ 20：传常量引用比传值更好">
+<meta property="og:url" content="https://yngty.github.io/2021/11/11/effecitve-cpp/effective-cpp-20/index.html">
 <meta property="og:site_name" content="瓜地">
-<meta property="og:description" content="Item 1: View C++ as a federation of languages  一开始，Ｃ++ 只是 Ｃ 加上一些面向对象特性，Ｃ++ 最初的名称 Ｃ with Classes 也反映了这个血缘关系。现在这个语言逐渐成熟，已经是一个多重泛型编程语言(multiparadigm programming language)。同时支持过程形式(procedural)、面向对象形式(obj">
+<meta property="og:description" content="Item 20: Prefer pass-by-reference-to-const to pass-by-value.  缺省情况下C++ 用传值得方式(一个继承自C的方式)传递对象至(或来自)函数。除非你另外指定，否则函数参数都是以实际实参的复件(副本)为初值，而调用端所获得的亦是函数返回值的一个复件。这些复件(副本)系由对象的copy构造函数产出。 尽量以传常量引用替换传值前者通常比较高效">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-12-07T12:40:56.000Z">
-<meta property="article:modified_time" content="2021-10-24T11:46:00.678Z">
+<meta property="article:published_time" content="2021-11-11T16:36:55.000Z">
+<meta property="article:modified_time" content="2022-03-23T02:30:28.143Z">
 <meta property="article:author" content="yngty">
 <meta property="article:tag" content="C++">
 <meta property="article:tag" content="Effective-C++">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://yngty.github.io/2020/12/07/effecitve-cpp/effective-cpp-1/">
+<link rel="canonical" href="https://yngty.github.io/2021/11/11/effecitve-cpp/effective-cpp-20/">
 
 
 <script class="page-configurations">
@@ -50,7 +50,7 @@
     lang   : 'zh-CN'
   };
 </script>
-<title>Effective C++ 1：将C++视作一系列的语言 | 瓜地</title>
+<title>Effective C++ 20：传常量引用比传值更好 | 瓜地</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-5F9JL1V3HN"></script>
     <script>
@@ -184,7 +184,7 @@
 
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -197,6 +197,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E9%97%AE%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">性能问题:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%88%AA%E6%96%AD%E9%97%AE%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">截断问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%B9%E6%AE%8A%E6%83%85%E5%86%B5"><span class="nav-number">3.</span> <span class="nav-text">特殊情况</span></a></li></ol></div>
         </section>
         <!--/noindex-->
 
@@ -280,7 +281,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2020/12/07/effecitve-cpp/effective-cpp-1/">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2021/11/11/effecitve-cpp/effective-cpp-20/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -293,7 +294,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Effective C++ 1：将C++视作一系列的语言
+          Effective C++ 20：传常量引用比传值更好
         </h1>
 
         <div class="post-meta-container">
@@ -304,14 +305,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2020-12-07 12:40:56" itemprop="dateCreated datePublished" datetime="2020-12-07T12:40:56+00:00">2020-12-07</time>
+      <time title="创建时间：2021-11-11 16:36:55" itemprop="dateCreated datePublished" datetime="2021-11-11T16:36:55+00:00">2021-11-11</time>
     </span>
       <span class="post-meta-item">
         <span class="post-meta-item-icon">
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-10-24 11:46:00" itemprop="dateModified" datetime="2021-10-24T11:46:00+00:00">2021-10-24</time>
+        <time title="修改时间：2022-03-23 02:30:28" itemprop="dateModified" datetime="2022-03-23T02:30:28+00:00">2022-03-23</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -338,14 +339,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>773</span>
+      <span>1.8k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>1 分钟</span>
+      <span>2 分钟</span>
     </span>
 </div>
 
@@ -357,18 +358,35 @@
     
     <div class="post-body" itemprop="articleBody">
         <blockquote>
-<p>Item 1: View C++ as a federation of languages</p>
+<p>Item 20: Prefer pass-by-reference-to-const to pass-by-value.</p>
 </blockquote>
-<p>一开始，<code>Ｃ++</code> 只是 <code>Ｃ</code> 加上一些面向对象特性，<code>Ｃ++</code> 最初的名称 <code>Ｃ with Classes</code> 也反映了这个血缘关系。现在这个语言逐渐成熟，已经是一个<strong>多重泛型编程语言</strong>(<code>multiparadigm programming language</code>)。同时支持过程形式(<code>procedural</code>)、面向对象形式(<code>object-oriented</code>)、函数形式(<code>functional</code>)、泛型形式(<code>generic</code>)、元编程形式(<code>metaprogramming</code>)</p>
-<p>将 <code>C++</code> 视为一个由相关语言组成的联邦而非单一的语言。</p>
-<p><code>C++</code> 主要４个子语言：</p>
-<ul>
-<li><code>C</code>。说到底Ｃ++仍是以Ｃ为基础。许多时候Ｃ++对问题的解法其实不过就是较高级的Ｃ的解法如<code>item2</code>、<code>item13</code>。当只使用<code>C++</code>中<code>C</code>的那部分语法，　会发现<code>C</code>语言的缺陷：没有模板、没有异常、没有重载。</li>
-<li><code>Object-Oriented</code>。面向对象程序设计也是<code>C++</code>的设计初衷：构造与析构、封装与继承、多态、动态绑定的虚函数。</li>
-<li><code>Template C++</code>。这是C++的泛型编程部分，大多数程序员经验最少的部分。<strong>TMP模板元编程</strong>（<code>template metaprogramming</code>）也是一个新兴的程序设计范式。</li>
-<li><code>STL</code>。<code>STL</code>是一个特殊的模板库，它将容器、迭代器和算法优雅地结合在一起。</li>
-</ul>
-<p><code>C++</code> 程序设计的惯例并非一成不变，而是取决于你使用 <code>C++</code> 语言的哪一部分。例如， 在基于C语言的程序设计中，基本类型传参时传值比传引用更有效率。 然而当你接触 <code>Object-Oriented C++</code> 时会发现，传常量指针是更好的选择。运用<code>Template C++</code>时尤其如此，因为彼时你甚至不知道所处理的对象的类型。 但是你如果又碰到了<code>STL</code>，其中的迭代器和函数对象都是基于<code>C</code>语言的指针而设计的， 这时又回到了原来的规则：传值比传引用更好。</p>
+<p>缺省情况下<code>C++</code> 用传值得方式(一个继承自<code>C</code>的方式)传递对象至(或来自)函数。除非你另外指定，否则函数参数都是以实际实参的复件(副本)为初值，而调用端所获得的亦是函数返回值的一个复件。这些复件(副本)系由对象的<code>copy</code>构造函数产出。</p>
+<p><strong>尽量以传常量引用替换传值前者通常比较高效，并可避免切割问题 (<code>slicing problem</code>)，但是内置类型和 <code>STL</code> 迭代器，还是传值更加合适。</strong>。</p>
+<h2 id="性能问题"><a href="#性能问题" class="headerlink" title="性能问题:"></a>性能问题:</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    Person ();</span><br><span class="line">    <span class="keyword">virtual</span> -Person();</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> name;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> address;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Student</span>:</span> <span class="keyword">public</span> Person &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    Student();</span><br><span class="line">    -Student();</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> schoolName;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>现在考虑以下代码，其中调用函数 <code>validateStudent</code> ，后者需要一个 <code>Student</code><br>(<code>by value</code>) 并返回它是否有效:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">validateStudent</span><span class="params">(Student s)</span></span>;           <span class="comment">// function taking a Student by value</span></span><br><span class="line"></span><br><span class="line">Student plato;                             <span class="comment">// Plato studied under Socrates</span></span><br><span class="line"><span class="keyword">bool</span> platoIsOK = validateStudent(plato);   <span class="comment">// call the functio</span></span><br></pre></td></tr></table></figure>
+
+<p>在调用 <code>validateStudent(</code>) 时进行了 <strong>6</strong> 个函数调用：</p>
+<ol>
+<li><code>Person</code> 的拷贝构造函数，为什么 <code>Student</code> 的拷贝构造一定要调用 <code>Person</code> 的拷贝构造请参见：<a href="/2021/11/02/effecitve-cpp/effective-cpp-12/" title="Item:12 复制对象时勿忘其每一个成分">Item:12 复制对象时勿忘其每一个成分</a></li>
+<li><code>Student</code> 的拷贝构造函数</li>
+<li><code>name</code>, <code>address</code>, <code>schoolName</code>, <code>schoolAddress</code> 的拷贝构造函数</li>
+</ol>
+<p>解决办法便是传递常量引用：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">validateStudent</span><span class="params">(<span class="keyword">const</span> Student&amp; s)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>首先以引用的方式传递，不会构造新的对象，避免了上述例子中 <strong>6</strong> 个构造函数的调用。 同时 const 也是必须的：传值的方式保证了该函数调用不会改变原来的 <code>Student</code>， 而传递引用后为了达到同样的效果，需要使用 <code>const</code> 声明来声明这一点，让编译器去进行检查!</p>
+<h2 id="截断问题"><a href="#截断问题" class="headerlink" title="截断问题"></a>截断问题</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Window</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">...</span><br><span class="line"><span class="function"><span class="built_in">std</span>::<span class="built_in">string</span> <span class="title">name</span><span class="params">()</span> <span class="keyword">const</span></span>;           <span class="comment">// return name of window</span></span><br><span class="line"><span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">display</span><span class="params">()</span> <span class="keyword">const</span></span>;       <span class="comment">// draw window and contents</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">WindowWithScrollBars</span>:</span> <span class="keyword">public</span> Window &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">...</span><br><span class="line"><span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">display</span><span class="params">()</span> <span class="keyword">const</span></span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>现在假设你希望写个函数打印窗口名称，然后显示该窗口:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">printNameAndDisplay</span><span class="params">(Window w)</span></span></span><br><span class="line">    std::cout &lt;&lt; w.name();</span><br><span class="line">    w.display() ;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">WindowWithScrollBars wwsb;</span><br><span class="line">printNameAndDisplay(wwsb);</span><br></pre></td></tr></table></figure>
+
+<p>当调用 <code>printNameAndDisplay</code> 时参数类型从 <code>WindowWithScrollBars</code> 被隐式转换为 <code>Window</code>。 该转换过程通过调用 <code>Window</code> 的拷贝构造函数来进行。 导致的结果便是函数中的 <code>w</code> 事实上是一个 <code>Window</code> 对象， 并不会调用多态子类 <code>WindowWithScrollBars</code> 的 <code>display()</code>。</p>
+<p>正确做法：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// fine, parameter won&#x27;t be sliced</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">printNameAndDisplay</span><span class="params">(<span class="keyword">const</span> Window&amp; w)</span></span>&#123; </span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; w.name();</span><br><span class="line">    w.display();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="特殊情况"><a href="#特殊情况" class="headerlink" title="特殊情况"></a>特殊情况</h2><p>一般情况下相比于传递值，传递常量引用是更好的选择。但也有例外情况，比如 <strong>内置类型</strong> 和 <strong>STL 迭代器</strong>和<strong>函数对象</strong>。</p>
 
     </div>
 
@@ -386,7 +404,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://yngty.github.io/2020/12/07/effecitve-cpp/effective-cpp-1/" title="Effective C++ 1：将C++视作一系列的语言">https://yngty.github.io/2020/12/07/effecitve-cpp/effective-cpp-1/</a>
+      <a href="https://yngty.github.io/2021/11/11/effecitve-cpp/effective-cpp-20/" title="Effective C++ 20：传常量引用比传值更好">https://yngty.github.io/2021/11/11/effecitve-cpp/effective-cpp-20/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -403,10 +421,13 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
+                <a href="/2021/11/11/effecitve-cpp/effective-cpp-19/" rel="prev" title="Effective C++ 19：设计 class 犹如设计 type">
+                  <i class="fa fa-chevron-left"></i> Effective C++ 19：设计 class 犹如设计 type
+                </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2020/12/14/effecitve-cpp/effective-cpp-2/" rel="next" title="Effective C++ 2：尽量以const, enum, inline 替换 &#35;define">
-                  Effective C++ 2：尽量以const, enum, inline 替换 &#35;define <i class="fa fa-chevron-right"></i>
+                <a href="/2021/11/17/linux/Linux%E5%91%BD%E4%BB%A4%E4%B9%8Btr/" rel="next" title="Linux命令之tr">
+                  Linux命令之tr <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
@@ -511,7 +532,7 @@ NexT.utils.loadComments('#gitalk-container', () => {
       repo        : 'gitalk',
       owner       : 'yngty',
       admin       : ['yngty'],
-      id          : '0d6bc4810e4e679c7f72033213c05886',
+      id          : 'ba7e1437ecf7842516f7c26797cafa0c',
         language: '',
       distractionFreeMode: true
     });
