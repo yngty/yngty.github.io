@@ -134,7 +134,7 @@
 <nav class="site-nav">
   <ul class="main-menu menu">
         <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
-        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">23</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">24</span></a></li>
         <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">3</span></a></li>
         <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">4</span></a></li>
       <li class="menu-item menu-item-search">
@@ -208,7 +208,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-count">24</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -266,6 +266,221 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2022/03/23/effecitve-cpp/effective-cpp-20/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="瓜地">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/03/23/effecitve-cpp/effective-cpp-20/" class="post-title-link" itemprop="url">Effective C++ 20：传常量引用比传值更好</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-03-23 10:29:27 / 修改时间：03:20:21" itemprop="dateCreated datePublished" datetime="2022-03-23T10:29:27+00:00">2022-03-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Effective-C/" itemprop="url" rel="index"><span itemprop="name">Effective-C++</span></a>
+        </span>
+    </span>
+
+  
+      </div>
+      <div class="post-meta">
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.8k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>2 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <blockquote>
+<p>Item 20: Prefer pass-by-reference-to-const to pass-by-value.</p>
+</blockquote>
+<p>缺省情况下<code>C++</code> 用传值得方式(一个继承自<code>C</code>的方式)传递对象至(或来自)函数。除非你另外指定，否则函数参数都是以实际实参的复件(副本)为初值，而调用端所获得的亦是函数返回值的一个复件。这些复件(副本)系由对象的<code>copy</code>构造函数产出。</p>
+<p><strong>尽量以传常量引用替换传值前者通常比较高效，并可避免切割问题 (<code>slicing problem</code>)，但是内置类型和 <code>STL</code> 迭代器，还是传值更加合适。</strong>。</p>
+<h2 id="性能问题"><a href="#性能问题" class="headerlink" title="性能问题:"></a>性能问题:</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    Person ();</span><br><span class="line">    <span class="keyword">virtual</span> -Person();</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> name;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> address;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Student</span>:</span> <span class="keyword">public</span> Person &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    Student();</span><br><span class="line">    -Student();</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> schoolName;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>现在考虑以下代码，其中调用函数 <code>validateStudent</code> ，后者需要一个 <code>Student</code><br>(<code>by value</code>) 并返回它是否有效:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">validateStudent</span><span class="params">(Student s)</span></span>;           <span class="comment">// function taking a Student by value</span></span><br><span class="line"></span><br><span class="line">Student plato;                             <span class="comment">// Plato studied under Socrates</span></span><br><span class="line"><span class="keyword">bool</span> platoIsOK = validateStudent(plato);   <span class="comment">// call the functio</span></span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/03/23/effecitve-cpp/effective-cpp-20/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2022/03/23/effecitve-cpp/effective-cpp-21/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="瓜地">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/03/23/effecitve-cpp/effective-cpp-21/" class="post-title-link" itemprop="url">Effective C++ 21：需要返回对象时，不要返回引用</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-03-23 02:43:36 / 修改时间：03:17:01" itemprop="dateCreated datePublished" datetime="2022-03-23T02:43:36+00:00">2022-03-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Effective-C/" itemprop="url" rel="index"><span itemprop="name">Effective-C++</span></a>
+        </span>
+    </span>
+
+  
+      </div>
+      <div class="post-meta">
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.5k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>1 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <blockquote>
+<p>Don’t to return a reference when you must return an object.</p>
+</blockquote>
+<p>Item 20 中提到，多数情况下传引用比传值更好。但不要无脑追求这一点，一定不要返回空引用或指针。</p>
+<p>举个栗子：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Rational</span>&#123;</span></span><br><span class="line">  <span class="keyword">int</span> n, d;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  Raitonal(<span class="keyword">int</span> numerator=<span class="number">0</span>, <span class="keyword">int</span> denominator=<span class="number">1</span>);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 返回值为什么是const请参考Item 3</span></span><br><span class="line"><span class="keyword">friend</span> <span class="keyword">const</span> Rational <span class="keyword">operator</span>*(<span class="keyword">const</span> Rational&amp; lhs, <span class="keyword">const</span> Rational&amp; rhs);</span><br><span class="line"></span><br><span class="line">Rational a, b;</span><br><span class="line">Rational c = a*b;</span><br></pre></td></tr></table></figure>
+<p>这个版本的 <code>operator*</code> 返回的是一个实例，<code>a*b</code>时便会调用<code>operator*()</code>， 返回值被拷贝后用来初始化<code>c</code>。</p>
+<p>不考虑编译器优化和 <code>C11</code> 的 <code>move</code> ,这个过程涉及到多个构造和析构过程：</p>
+<ol>
+<li><code>operator*</code>调用结束前，返回值被拷贝，调用拷贝构造函数</li>
+<li><code>operator*</code>调用结束后，返回值被析构</li>
+<li><code>c</code> 被初始化，调用拷贝构造函数</li>
+</ol>
+<p>我们能否通过传递引用的方式来避免这些函数调用？这要求在函数中创建那个要被返回给调用者的对象，而函数只有两种办法来创建对象：在栈空间中创建、或者在堆中创建。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/03/23/effecitve-cpp/effective-cpp-21/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -451,131 +666,6 @@
             </div>
           <!--/noindex-->
         
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2021/11/11/effecitve-cpp/effective-cpp-20/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="yngty">
-      <meta itemprop="description" content="预测未来的最好方式就是实现它">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="瓜地">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/11/11/effecitve-cpp/effective-cpp-20/" class="post-title-link" itemprop="url">Effective C++ 20：传常量引用比传值更好</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2021-11-11 16:36:55" itemprop="dateCreated datePublished" datetime="2021-11-11T16:36:55+00:00">2021-11-11</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2022-03-23 02:30:28" itemprop="dateModified" datetime="2022-03-23T02:30:28+00:00">2022-03-23</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Effective-C/" itemprop="url" rel="index"><span itemprop="name">Effective-C++</span></a>
-        </span>
-    </span>
-
-  
-      </div>
-      <div class="post-meta">
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>1.8k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>2 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <blockquote>
-<p>Item 20: Prefer pass-by-reference-to-const to pass-by-value.</p>
-</blockquote>
-<p>缺省情况下<code>C++</code> 用传值得方式(一个继承自<code>C</code>的方式)传递对象至(或来自)函数。除非你另外指定，否则函数参数都是以实际实参的复件(副本)为初值，而调用端所获得的亦是函数返回值的一个复件。这些复件(副本)系由对象的<code>copy</code>构造函数产出。</p>
-<p><strong>尽量以传常量引用替换传值前者通常比较高效，并可避免切割问题 (<code>slicing problem</code>)，但是内置类型和 <code>STL</code> 迭代器，还是传值更加合适。</strong>。</p>
-<h2 id="性能问题"><a href="#性能问题" class="headerlink" title="性能问题:"></a>性能问题:</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    Person ();</span><br><span class="line">    <span class="keyword">virtual</span> -Person();</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> name;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> address;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Student</span>:</span> <span class="keyword">public</span> Person &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    Student();</span><br><span class="line">    -Student();</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> schoolName;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>现在考虑以下代码，其中调用函数 <code>validateStudent</code> ，后者需要一个 <code>Student</code><br>(<code>by value</code>) 并返回它是否有效:</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">validateStudent</span><span class="params">(Student s)</span></span>;           <span class="comment">// function taking a Student by value</span></span><br><span class="line"></span><br><span class="line">Student plato;                             <span class="comment">// Plato studied under Socrates</span></span><br><span class="line"><span class="keyword">bool</span> platoIsOK = validateStudent(plato);   <span class="comment">// call the functio</span></span><br></pre></td></tr></table></figure>
-
-<p>在调用 <code>validateStudent(</code>) 时进行了 <strong>6</strong> 个函数调用：</p>
-<ol>
-<li><code>Person</code> 的拷贝构造函数，为什么 <code>Student</code> 的拷贝构造一定要调用 <code>Person</code> 的拷贝构造请参见：<a href="/2021/11/02/effecitve-cpp/effective-cpp-12/" title="Item:12 复制对象时勿忘其每一个成分">Item:12 复制对象时勿忘其每一个成分</a></li>
-<li><code>Student</code> 的拷贝构造函数</li>
-<li><code>name</code>, <code>address</code>, <code>schoolName</code>, <code>schoolAddress</code> 的拷贝构造函数</li>
-</ol>
-<p>解决办法便是传递常量引用：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">validateStudent</span><span class="params">(<span class="keyword">const</span> Student&amp; s)</span></span>;</span><br></pre></td></tr></table></figure>
-
-<p>首先以引用的方式传递，不会构造新的对象，避免了上述例子中 <strong>6</strong> 个构造函数的调用。 同时 const 也是必须的：传值的方式保证了该函数调用不会改变原来的 <code>Student</code>， 而传递引用后为了达到同样的效果，需要使用 <code>const</code> 声明来声明这一点，让编译器去进行检查!</p>
-<h2 id="截断问题"><a href="#截断问题" class="headerlink" title="截断问题"></a>截断问题</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Window</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">...</span><br><span class="line"><span class="function"><span class="built_in">std</span>::<span class="built_in">string</span> <span class="title">name</span><span class="params">()</span> <span class="keyword">const</span></span>;           <span class="comment">// return name of window</span></span><br><span class="line"><span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">display</span><span class="params">()</span> <span class="keyword">const</span></span>;       <span class="comment">// draw window and contents</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">WindowWithScrollBars</span>:</span> <span class="keyword">public</span> Window &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">...</span><br><span class="line"><span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">display</span><span class="params">()</span> <span class="keyword">const</span></span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>现在假设你希望写个函数打印窗口名称，然后显示该窗口:</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">printNameAndDisplay</span><span class="params">(Window w)</span></span></span><br><span class="line">    std::cout &lt;&lt; w.name();</span><br><span class="line">    w.display() ;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">WindowWithScrollBars wwsb;</span><br><span class="line">printNameAndDisplay(wwsb);</span><br></pre></td></tr></table></figure>
-
-<p>当调用 <code>printNameAndDisplay</code> 时参数类型从 <code>WindowWithScrollBars</code> 被隐式转换为 <code>Window</code>。 该转换过程通过调用 <code>Window</code> 的拷贝构造函数来进行。 导致的结果便是函数中的 <code>w</code> 事实上是一个 <code>Window</code> 对象， 并不会调用多态子类 <code>WindowWithScrollBars</code> 的 <code>display()</code>。</p>
-<p>正确做法：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// fine, parameter won&#x27;t be sliced</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">printNameAndDisplay</span><span class="params">(<span class="keyword">const</span> Window&amp; w)</span></span>&#123; </span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; w.name();</span><br><span class="line">    w.display();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="特殊情况"><a href="#特殊情况" class="headerlink" title="特殊情况"></a>特殊情况</h2><p>一般情况下相比于传递值，传递常量引用是更好的选择。但也有例外情况，比如 <strong>内置类型</strong> 和 <strong>STL 迭代器</strong>和<strong>函数对象</strong>。</p>
-
       
     </div>
 
@@ -1273,119 +1363,6 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2021/11/04/effecitve-cpp/effective-cpp-14/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="yngty">
-      <meta itemprop="description" content="预测未来的最好方式就是实现它">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="瓜地">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/11/04/effecitve-cpp/effective-cpp-14/" class="post-title-link" itemprop="url">Effective C++ 14：在资源管理类中小心 copying 行为</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2021-11-04 16:00:01 / 修改时间：16:33:29" itemprop="dateCreated datePublished" datetime="2021-11-04T16:00:01+00:00">2021-11-04</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Effective-C/" itemprop="url" rel="index"><span itemprop="name">Effective-C++</span></a>
-        </span>
-    </span>
-
-  
-      </div>
-      <div class="post-meta">
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>998</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>1 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <blockquote>
-<p>Item 14: Think carefully about copying behavior in resource-managing classes.</p>
-</blockquote>
-<p>设计一个 <strong><code>RAII</code></strong> 对象：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Lock</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">Lock</span><span class="params">(Mutex *pm)</span>:<span class="title">mutexPtr</span><span class="params">(pm)</span></span>&#123;</span><br><span class="line">        lock(mutexPtr);</span><br><span class="line">    &#125;</span><br><span class="line">    ~Lock()&#123; unlock(mutexPtr); &#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    Mutex *mutexPtr;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>客户对<code>Lock</code>的使用：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Mutex m;</span><br><span class="line">...</span><br><span class="line">&#123;</span><br><span class="line">    <span class="function">Lock <span class="title">ml</span><span class="params">(&amp;m)</span></span>;    </span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>当一个 <strong><code>RAII</code></strong> 对象被复制，会发生什么事？ 不确定？</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Lock <span class="title">ml1</span><span class="params">(&amp;m)</span></span>;</span><br><span class="line"><span class="function">Lock <span class="title">ml2</span><span class="params">(&amp;ml1)</span></span></span><br></pre></td></tr></table></figure>
-
-<p>记住<strong>资源管理对象的拷贝行为取决于资源本身的拷贝行为，同时资源管理对象也可以根据业务需要来决定自己的拷贝行为</strong>。一般有如下四种方式：</p>
-<ul>
-<li><p><strong>禁止复制</strong>。参考<a href="#">Post not found: effective-cpp-6 若不想使用编译器自动生成的函数，就该明确拒绝</a>。对Lock而言看起来是这样：</p>
-  <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Lock</span> :</span> <span class="keyword">private</span> Uncopyable &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-<li><p><strong>引用计数</strong>，采用 <code>shared_ptr</code> 的逻辑。<code>shared_ptr</code> 构造函数提供了第二个参数 <code>deleter</code>，当引用计数到 <code>0</code> 时被调用。 所以 <code>Lock</code> 可以通过聚合一个 <code>shared_ptr</code> 成员来实现引用计数：</p>
-  <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Lock</span>&#123;</span></span><br><span class="line"><span class="keyword">public</span>: </span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">Lock</span><span class="params">(Mutex *pm)</span>: <span class="title">mutexPtr</span><span class="params">(pm, unlock)</span></span>&#123;</span><br><span class="line">        lock(mutexPtr.get());</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">private</span>: </span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;Mutex&gt; mutexPtr; <span class="comment">//shared_ptr替换 raw pointer</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>   <code>Lock</code> 的析构会引起 <code>mutexPtr</code> 的析构，而 <code>mutexPtr</code> 计数到0时<code>unlock(mutexPtr.get())</code> 会被调用。</p>
-</li>
-<li><p><strong>拷贝底部资源</strong>。复制资源管理对象时，进行的是<strong>深拷贝</strong>。比如 <code>string</code> 的行为：内存存有指向对空间的指针，当它被复制时会复制那片空间。</p>
-</li>
-<li><p><strong>转移底部资源的拥有权</strong>。<code>auto_ptr</code> 就是这样做的，把资源移交给另一个资源管理对象，自己的资源置空。</p>
-</li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
@@ -1432,13 +1409,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">23k</span>
+    <span title="站点总字数">24k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">21 分钟</span>
+    <span title="站点阅读时长">22 分钟</span>
   </span>
 </div>
 <div class="busuanzi-count">
