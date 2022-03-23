@@ -1,6 +1,6 @@
 ---
 title: Effective C++ 20：传常量引用比传值更好
-date: 2021-11-11 16:36:55
+date: 2022-03-23 10:29:27
 tags:
 - Effective-C++
 - C++
@@ -45,6 +45,8 @@ bool validateStudent(Student s);           // function taking a Student by value
 Student plato;                             // Plato studied under Socrates
 bool platoIsOK = validateStudent(plato);   // call the functio
 ```
+
+<!--more-->
 
 在调用 `validateStudent(`) 时进行了 **6** 个函数调用：
 
