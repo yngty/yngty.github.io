@@ -14,6 +14,7 @@ categories:
 
 **尽量以传常量引用替换传值前者通常比较高效，并可避免切割问题 (`slicing problem`)，但是内置类型和 `STL` 迭代器，还是传值更加合适。**。
 
+<!--more-->
 
 ## 性能问题:
 
@@ -45,8 +46,6 @@ bool validateStudent(Student s);           // function taking a Student by value
 Student plato;                             // Plato studied under Socrates
 bool platoIsOK = validateStudent(plato);   // call the functio
 ```
-
-<!--more-->
 
 在调用 `validateStudent(`) 时进行了 **6** 个函数调用：
 
