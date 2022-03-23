@@ -10,7 +10,7 @@ categories:
 
 > Item 6: Explicitly disallow the use of compiler-generated functions you do not want.
 
-在C++中，编译器会自动生成一些你没有显式定义的函数。可以参考:{% post_link effective-cpp-5 了解c++默默编写并调用哪些函数 %}
+在C++中，编译器会自动生成一些你没有显式定义的函数。可以参考:{% post_link effecitve-cpp/effective-cpp-5 了解c++默默编写并调用哪些函数 %}
 然而有时候我们希望禁用掉这些函数，可以通过把自动生成的函数设为 `private` 来禁用它或者在 `c++11` 中使用 `delete` 关键字。
 
 比如我们禁用拷贝的功能：
