@@ -1080,4 +1080,55 @@
         <tag>UOS</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Effective C++ 23：用非成员函数、非友元函数替换成员函数</title>
+    <url>/2022/04/09/effecitve-cpp/effective-cpp-23/</url>
+    <content><![CDATA[<blockquote>
+<p>Prefer non-member non-friend functions to member functions</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>Effective-C++</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>Effective-C++</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Effective C++ 24：若所有参数皆需类型转换，请采用非成员函数</title>
+    <url>/2022/04/09/effecitve-cpp/effective-cpp-24/</url>
+    <content><![CDATA[<blockquote>
+<p>Declare non-member functions when type conversions should apply all parameters.</p>
+</blockquote>
+<p>令 <code>classes</code> 支持隐式转换通常是糟糕的设计，但也有例外，最常见的是在建立数值类型时。 比如设计一个有理数 <code>class</code> 允许整数隐式转换。</p>
+<a id="more"></a>
+
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Rational</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    Rational(<span class="keyword">int</span> numerator = <span class="number">0</span>, <span class="keyword">int</span> denominator = <span class="number">1</span>); <span class="comment">//构造函数刻意不使用 explicit; 允许 int-to-Rational 隐式转换。</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">numerator</span><span class="params">()</span> <span class="keyword">const</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">denominator</span><span class="params">()</span> <span class="keyword">const</span></span>;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>这时我们想设计一个乘法，该使用 <code>member</code> 函数，还是 <code>non-member</code> 函数， 还是 <code>non-member-friend</code> 函数？</p>
+<p>我们先采用 <code>member</code> 函数看有什么问题？</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Rational</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> Rational <span class="keyword">operator</span>* (<span class="keyword">const</span> Rational&amp; rhs) <span class="keyword">const</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>我们使用如下没有什么问题：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">Rational <span class="title">oneEighth</span><span class="params">(<span class="number">1</span>, <span class="number">8</span>)</span></span>;</span><br><span class="line"><span class="function">Rational <span class="title">oneHalf</span><span class="params">(<span class="number">1</span>, <span class="number">2</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">Rational result = oneEighth * oneHalf; <span class="comment">//ok</span></span><br><span class="line">result = result * oneEighth;  <span class="comment">// ok</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>但当我们想支持混合运算，那 <code>Rational</code> 和 <code>ints</code> 相乘, 就只有一半行的通。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">result = oneHalf * <span class="number">2</span>; <span class="comment">//ok  隐式转换</span></span><br><span class="line">result = <span class="number">2</span> * oneHalf;  <span class="comment">// no</span></span><br></pre></td></tr></table></figure>
+
+<p>当我们设计成 <code>non-member</code> 函数就都支持：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Rational</span> &#123;</span></span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> Rational <span class="keyword">operator</span>* (<span class="keyword">const</span> Rational&amp; lhs, <span class="keyword">const</span> Rational&amp; rhs) &#123;</span><br><span class="line">    <span class="keyword">return</span> Rational(lhs.numerator() * rhs.numerator(), lhs.denominator(), rhs.denominator());</span><br><span class="line">&#125;</span><br><span class="line">    </span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">Rational <span class="title">oneFourth</span><span class="params">(<span class="number">1</span>, <span class="number">4</span>)</span></span>;</span><br><span class="line">Rational result;</span><br><span class="line">result = oneFourth * <span class="number">2</span>;  <span class="comment">// ok</span></span><br><span class="line">result = <span class="number">2</span> * oneFourth;  <span class="comment">// ok </span></span><br></pre></td></tr></table></figure>
+
+<p><strong>如果需要为某个函数的所有参数进行类型转换，那这个函数必须是 <code>non-member</code></strong></p>
+]]></content>
+      <categories>
+        <category>Effective-C++</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>Effective-C++</tag>
+      </tags>
+  </entry>
 </search>
