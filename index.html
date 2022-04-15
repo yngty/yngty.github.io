@@ -134,7 +134,7 @@
 <nav class="site-nav">
   <ul class="main-menu menu">
         <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
-        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">29</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">30</span></a></li>
         <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">3</span></a></li>
         <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">5</span></a></li>
       <li class="menu-item menu-item-search">
@@ -208,7 +208,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-count">30</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -275,6 +275,128 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2022/04/15/effecitve-cpp/effective-cpp-26/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="瓜地">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/04/15/effecitve-cpp/effective-cpp-26/" class="post-title-link" itemprop="url">Effective C++ 26：尽可能推迟变量的定义</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-04-15 10:38:20 / 修改时间：03:10:23" itemprop="dateCreated datePublished" datetime="2022-04-15T10:38:20+00:00">2022-04-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Effective-C/" itemprop="url" rel="index"><span itemprop="name">Effective-C++</span></a>
+        </span>
+    </span>
+
+  
+      </div>
+      <div class="post-meta">
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>1 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <blockquote>
+<p>Item 26:Postpone variable definitions as long as possible.</p>
+</blockquote>
+<p>推迟变量的定义有两个好处：</p>
+<ul>
+<li>改善程序效率，减少无用的构造和析构。</li>
+<li>增加程序流程清晰度。</li>
+</ul>
+<p>这条规则看似简单，但存在流程控制语句的时候容易疏忽。如：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="built_in">string</span> <span class="title">encryptPassword</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span>&amp; password)</span></span>&#123;</span><br><span class="line">    <span class="built_in">string</span> encrypted;</span><br><span class="line">    <span class="keyword">if</span> (password.length() &lt; MinimumPasswordLength) &#123;</span><br><span class="line">        <span class="keyword">throw</span> logic_error(<span class="string">&quot;Password is too short&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    encrypted = password;</span><br><span class="line">    encrypt(encrypted);</span><br><span class="line">    <span class="keyword">return</span> encrypted;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="推迟到需要构造时执行"><a href="#推迟到需要构造时执行" class="headerlink" title="推迟到需要构造时执行"></a>推迟到需要构造时执行</h2><p>当 <code>encryptPassword</code> 抛出异常时，<code>encrypted</code> 是无用的, 根本不需要构造它。所以更好的写法是推迟 <code>encrypted</code> 的构造：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="built_in">string</span> <span class="title">encryptPassword</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span>&amp; password)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (password.length() &lt; MinimumPasswordLength) &#123;</span><br><span class="line">        <span class="keyword">throw</span> logic_error(<span class="string">&quot;Password is too short&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">string</span> encrypted;       <span class="comment">// 默认构造函数</span></span><br><span class="line">    encrypted = password;   <span class="comment">// 赋值运算符</span></span><br><span class="line">    encrypt(encrypted);</span><br><span class="line">    <span class="keyword">return</span> encrypted;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="推迟到有构造参数时"><a href="#推迟到有构造参数时" class="headerlink" title="推迟到有构造参数时"></a>推迟到有构造参数时</h2><p> <strong>“尽可能延后”</strong> 的真正意义。你不只应该延后变量的定义，直到非得使用该变量的前一刻为止，甚至<strong>应该尝试延后这份定义直到能够给它初值实参为止</strong>。如果这样，不仅能够避免构造(和析构)非必要对象，还可以避免无意义的 <code>default</code> 构造行为。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="built_in">string</span> <span class="title">encryptPassword</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span>&amp; password)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (password.length() &lt; MinimumPasswordLength) &#123;</span><br><span class="line">       <span class="keyword">throw</span> logic_error(<span class="string">&quot;Password is too short&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="built_in">string</span> <span class="title">encrypted</span><span class="params">(password)</span></span>;     <span class="comment">// 拷贝构造函数</span></span><br><span class="line">    encrypt(encrypted);</span><br><span class="line">    <span class="keyword">return</span> encrypted;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="循环中的变量"><a href="#循环中的变量" class="headerlink" title="循环中的变量"></a>循环中的变量</h2><p>循环中的变量定义也是一个常见的争论点。常有两种写法：</p>
+<p>写法 <code>A</code>，在循环外定义：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Widget w;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++i)&#123; </span><br><span class="line">  w = some value dependent on i;</span><br><span class="line">  ...                           </span><br><span class="line">&#125;                  </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>写法 <code>B</code> ，在循环内定义：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++i) &#123;</span><br><span class="line">    <span class="function">Widget <span class="title">w</span><span class="params">(some value dependent on i)</span></span>;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>A</code>：<code>1</code> 个构造函数，<code>1</code> 个析构函数，<code>n</code> 个赋值运算符</li>
+<li><code>B</code>：<code>n</code> 个构造函数，<code>n</code> 个析构函数</li>
+</ul>
+<p>但 <code>A</code> 使得循环内才使用的变量进入外部的作用域，不利于程序的理解和维护。软件工程中倾向于认为人的效率比机器的效率更加难得， 所以推荐采用 <code>B</code> 来实现。除非：</p>
+<ul>
+<li>这段代码是性能的关键.</li>
+<li>赋值比一对构造/析构更加廉价。</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2022/04/09/effecitve-cpp/effective-cpp-25/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -306,7 +428,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2022-04-15 02:37:16" itemprop="dateModified" datetime="2022-04-15T02:37:16+00:00">2022-04-15</time>
+        <time title="修改时间：2022-04-15 03:10:23" itemprop="dateModified" datetime="2022-04-15T03:10:23+00:00">2022-04-15</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -443,7 +565,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2022-04-15 02:37:16" itemprop="dateModified" datetime="2022-04-15T02:37:16+00:00">2022-04-15</time>
+        <time title="修改时间：2022-04-15 03:10:23" itemprop="dateModified" datetime="2022-04-15T03:10:23+00:00">2022-04-15</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -549,7 +671,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2022-04-15 02:37:16" itemprop="dateModified" datetime="2022-04-15T02:37:16+00:00">2022-04-15</time>
+        <time title="修改时间：2022-04-15 03:10:23" itemprop="dateModified" datetime="2022-04-15T03:10:23+00:00">2022-04-15</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -647,7 +769,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2022-04-15 02:37:16" itemprop="dateModified" datetime="2022-04-15T02:37:16+00:00">2022-04-15</time>
+        <time title="修改时间：2022-04-15 03:10:23" itemprop="dateModified" datetime="2022-04-15T03:10:23+00:00">2022-04-15</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1233,104 +1355,6 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2021/11/11/effecitve-cpp/effective-cpp-19/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="yngty">
-      <meta itemprop="description" content="预测未来的最好方式就是实现它">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="瓜地">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/11/11/effecitve-cpp/effective-cpp-19/" class="post-title-link" itemprop="url">Effective C++ 19：设计 class 犹如设计 type</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2021-11-11 08:36:55" itemprop="dateCreated datePublished" datetime="2021-11-11T08:36:55+00:00">2021-11-11</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-11-15 04:55:20" itemprop="dateModified" datetime="2021-11-15T04:55:20+00:00">2021-11-15</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Effective-C/" itemprop="url" rel="index"><span itemprop="name">Effective-C++</span></a>
-        </span>
-    </span>
-
-  
-      </div>
-      <div class="post-meta">
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>35</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>1 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <blockquote>
-<p>Item 19: Teat class design as type design.</p>
-</blockquote>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
@@ -1377,13 +1401,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">38k</span>
+    <span title="站点总字数">39k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">34 分钟</span>
+    <span title="站点阅读时长">36 分钟</span>
   </span>
 </div>
 <div class="busuanzi-count">

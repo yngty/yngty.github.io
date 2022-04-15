@@ -1185,4 +1185,49 @@
         <tag>Effective-C++</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Effective C++ 26：尽可能推迟变量的定义</title>
+    <url>/2022/04/15/effecitve-cpp/effective-cpp-26/</url>
+    <content><![CDATA[<blockquote>
+<p>Item 26:Postpone variable definitions as long as possible.</p>
+</blockquote>
+<p>推迟变量的定义有两个好处：</p>
+<ul>
+<li>改善程序效率，减少无用的构造和析构。</li>
+<li>增加程序流程清晰度。</li>
+</ul>
+<p>这条规则看似简单，但存在流程控制语句的时候容易疏忽。如：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="built_in">string</span> <span class="title">encryptPassword</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span>&amp; password)</span></span>&#123;</span><br><span class="line">    <span class="built_in">string</span> encrypted;</span><br><span class="line">    <span class="keyword">if</span> (password.length() &lt; MinimumPasswordLength) &#123;</span><br><span class="line">        <span class="keyword">throw</span> logic_error(<span class="string">&quot;Password is too short&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    encrypted = password;</span><br><span class="line">    encrypt(encrypted);</span><br><span class="line">    <span class="keyword">return</span> encrypted;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="推迟到需要构造时执行"><a href="#推迟到需要构造时执行" class="headerlink" title="推迟到需要构造时执行"></a>推迟到需要构造时执行</h2><p>当 <code>encryptPassword</code> 抛出异常时，<code>encrypted</code> 是无用的, 根本不需要构造它。所以更好的写法是推迟 <code>encrypted</code> 的构造：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="built_in">string</span> <span class="title">encryptPassword</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span>&amp; password)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (password.length() &lt; MinimumPasswordLength) &#123;</span><br><span class="line">        <span class="keyword">throw</span> logic_error(<span class="string">&quot;Password is too short&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">string</span> encrypted;       <span class="comment">// 默认构造函数</span></span><br><span class="line">    encrypted = password;   <span class="comment">// 赋值运算符</span></span><br><span class="line">    encrypt(encrypted);</span><br><span class="line">    <span class="keyword">return</span> encrypted;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="推迟到有构造参数时"><a href="#推迟到有构造参数时" class="headerlink" title="推迟到有构造参数时"></a>推迟到有构造参数时</h2><p> <strong>“尽可能延后”</strong> 的真正意义。你不只应该延后变量的定义，直到非得使用该变量的前一刻为止，甚至<strong>应该尝试延后这份定义直到能够给它初值实参为止</strong>。如果这样，不仅能够避免构造(和析构)非必要对象，还可以避免无意义的 <code>default</code> 构造行为。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="built_in">string</span> <span class="title">encryptPassword</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span>&amp; password)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (password.length() &lt; MinimumPasswordLength) &#123;</span><br><span class="line">       <span class="keyword">throw</span> logic_error(<span class="string">&quot;Password is too short&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="built_in">string</span> <span class="title">encrypted</span><span class="params">(password)</span></span>;     <span class="comment">// 拷贝构造函数</span></span><br><span class="line">    encrypt(encrypted);</span><br><span class="line">    <span class="keyword">return</span> encrypted;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="循环中的变量"><a href="#循环中的变量" class="headerlink" title="循环中的变量"></a>循环中的变量</h2><p>循环中的变量定义也是一个常见的争论点。常有两种写法：</p>
+<p>写法 <code>A</code>，在循环外定义：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">Widget w;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++i)&#123; </span><br><span class="line">  w = some value dependent on i;</span><br><span class="line">  ...                           </span><br><span class="line">&#125;                  </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>写法 <code>B</code> ，在循环内定义：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++i) &#123;</span><br><span class="line">    <span class="function">Widget <span class="title">w</span><span class="params">(some value dependent on i)</span></span>;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>A</code>：<code>1</code> 个构造函数，<code>1</code> 个析构函数，<code>n</code> 个赋值运算符</li>
+<li><code>B</code>：<code>n</code> 个构造函数，<code>n</code> 个析构函数</li>
+</ul>
+<p>但 <code>A</code> 使得循环内才使用的变量进入外部的作用域，不利于程序的理解和维护。软件工程中倾向于认为人的效率比机器的效率更加难得， 所以推荐采用 <code>B</code> 来实现。除非：</p>
+<ul>
+<li>这段代码是性能的关键.</li>
+<li>赋值比一对构造/析构更加廉价。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Effective-C++</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>Effective-C++</tag>
+      </tags>
+  </entry>
 </search>
