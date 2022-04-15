@@ -26,10 +26,8 @@ namespace std {
         b = temp;
     }
 }
-
-<!--more-->
-
 ```
+<!--more-->
 
 ## 类的 swap
 
