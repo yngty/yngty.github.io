@@ -27,6 +27,8 @@ namespace std {
     }
 }
 
+<!--more-->
+
 ```
 
 ## 类的 swap

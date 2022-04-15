@@ -30,6 +30,8 @@ string encryptPassword(const string& password){
 }
 ```
 
+<!--more-->
+
 ## 推迟到需要构造时执行
 
 当 `encryptPassword` 抛出异常时，`encrypted` 是无用的, 根本不需要构造它。所以更好的写法是推迟 `encrypted` 的构造：
