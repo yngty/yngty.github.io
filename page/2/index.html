@@ -134,7 +134,7 @@
 <nav class="site-nav">
   <ul class="main-menu menu">
         <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
-        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">28</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">29</span></a></li>
         <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">3</span></a></li>
         <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">5</span></a></li>
       <li class="menu-item menu-item-search">
@@ -208,7 +208,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">28</span>
+          <span class="site-state-item-count">29</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -266,6 +266,159 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2021/11/08/c++/C-%E4%B8%ADmalloc%E5%92%8Cnew%E7%9A%84%E5%8C%BA%E5%88%AB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="瓜地">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/11/08/c++/C-%E4%B8%ADmalloc%E5%92%8Cnew%E7%9A%84%E5%8C%BA%E5%88%AB/" class="post-title-link" itemprop="url">C++ 中 malloc 和 new 的区别</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-11-08 14:44:44 / 修改时间：15:18:56" itemprop="dateCreated datePublished" datetime="2021-11-08T14:44:44+00:00">2021-11-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/C-C/" itemprop="url" rel="index"><span itemprop="name">C/C++</span></a>
+        </span>
+    </span>
+
+  
+      </div>
+      <div class="post-meta">
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>251</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>1 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <table>
+<thead>
+<tr>
+<th align="center">特征</th>
+<th align="center">new</th>
+<th align="center">malloc</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">类型</td>
+<td align="center">关键字</td>
+<td align="center">标准库函数</td>
+</tr>
+<tr>
+<td align="center">支持语言</td>
+<td align="center"><code>C/C++</code></td>
+<td align="center">只在 <code>C++</code></td>
+</tr>
+<tr>
+<td align="center">申请内存的位置</td>
+<td align="center">自由存储区 <code>free store</code></td>
+<td align="center">堆</td>
+</tr>
+<tr>
+<td align="center">分配内存的大小</td>
+<td align="center">编译器根据类型信息自行计算</td>
+<td align="center">显示指定字节数</td>
+</tr>
+<tr>
+<td align="center">内存分配失败</td>
+<td align="center">抛出 <code>bac_alloc</code> 异常, 不会返回 <code>NULL</code></td>
+<td align="center">返回 <code>NULL</code></td>
+</tr>
+<tr>
+<td align="center">返回类型</td>
+<td align="center">返回对象类型的指针</td>
+<td align="center">返回<code>void</code> 指针，需要转换</td>
+</tr>
+<tr>
+<td align="center">是否调用构造函数/析构函数</td>
+<td align="center">调用</td>
+<td align="center">不调用</td>
+</tr>
+<tr>
+<td align="center">处理数组</td>
+<td align="center"><code>new[]</code></td>
+<td align="center">手动指定数组的大小</td>
+</tr>
+<tr>
+<td align="center">是否支持重载</td>
+<td align="center">支持</td>
+<td align="center">不支持</td>
+</tr>
+<tr>
+<td align="center">是否支持内存扩充</td>
+<td align="center">不支持</td>
+<td align="center"><code>realloc</code></td>
+</tr>
+<tr>
+<td align="center">内存释放方式</td>
+<td align="center"><code>new/delete</code>, <code>new[]/delete[]</code></td>
+<td align="center"><code>malloc/free</code></td>
+</tr>
+</tbody></table>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1216,109 +1369,6 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2021/11/01/effecitve-cpp/effective-cpp-9/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="yngty">
-      <meta itemprop="description" content="预测未来的最好方式就是实现它">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="瓜地">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/11/01/effecitve-cpp/effective-cpp-9/" class="post-title-link" itemprop="url">Effective C++ 9：绝不在构造和析构过程中调用 virtual 函数</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2021-11-01 04:03:51 / 修改时间：04:57:51" itemprop="dateCreated datePublished" datetime="2021-11-01T04:03:51+00:00">2021-11-01</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Effective-C/" itemprop="url" rel="index"><span itemprop="name">Effective-C++</span></a>
-        </span>
-    </span>
-
-  
-      </div>
-      <div class="post-meta">
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>1.1k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>1 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <blockquote>
-<p>Item 9: Never call virtual functions during construction or destruction.</p>
-</blockquote>
-<p>在构造和析构期间不要调用 <code>virtual</code> 函数，因为这类调用不会下降至 <code>derived class</code><br>(比起当前执行构造函数和析构函数的那层)。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Transaction</span> &#123;</span>                               <span class="comment">// base class for all</span></span><br><span class="line"><span class="keyword">public</span>:                                           <span class="comment">// transactions</span></span><br><span class="line">    Transaction()&#123;                                <span class="comment">// base class ctor           </span></span><br><span class="line">        logTransaction();                         <span class="comment">// as final action, log this               </span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">logTransaction</span><span class="params">()</span> <span class="keyword">const</span> </span>= <span class="number">0</span>;      <span class="comment">// make type-dependent</span></span><br><span class="line">&#125;;</span><br><span class="line">  </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BuyTransaction</span>:</span> <span class="keyword">public</span> Transaction &#123;        <span class="comment">// derived class</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">logTransaction</span><span class="params">()</span> <span class="keyword">const</span></span>;          <span class="comment">// how to log trans-</span></span><br><span class="line">&#125;;</span><br><span class="line">...</span><br><span class="line">BuyTransaction b;</span><br></pre></td></tr></table></figure>
-
-<p><code>b</code> 在构造时，调用到父类Transaction的构造函数，其中对 <code>logTransaction</code> 的调用会被解析到 <code>Transaction</code> 类。 那是一个纯虚函数，因此程序会非正常退出。</p>
-<p>在<code>derived class</code> 对象的 <code>base class</code> 构造期间，对象的类型是 <code>base class</code> 而不是 <code>derived classo</code> 不只 <code>virtual</code> 函数会被编译器解析至(resolve to) <code>base class</code> ，若使用运行期类型信息 <code>RTTI</code>(runtime type information, 例如 <code>dynamic_cast</code>  <code>typeid</code>) ，也会把对象视为 <code>base class</code> 类型。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Transaction</span>&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    Transaction()&#123;</span><br><span class="line">        <span class="built_in">cout</span>&lt;&lt;<span class="keyword">typeid</span>(<span class="keyword">this</span>).name()&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BuyTransaction</span>:</span> <span class="keyword">public</span> Transaction&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    BuyTransaction()&#123;</span><br><span class="line">        <span class="built_in">cout</span>&lt;&lt;<span class="keyword">typeid</span>(<span class="keyword">this</span>).name()&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    BuyTransaction b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>输出</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">P11Transaction</span><br><span class="line">P14BuyTransaction</span><br></pre></td></tr></table></figure>
-
-<p><strong>相同道理也适用于析构函数.</strong></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
@@ -1365,13 +1415,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">35k</span>
+    <span title="站点总字数">38k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">32 分钟</span>
+    <span title="站点阅读时长">34 分钟</span>
   </span>
 </div>
 <div class="busuanzi-count">

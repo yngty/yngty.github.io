@@ -1131,4 +1131,58 @@
         <tag>Effective-C++</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Effective C++ 25：设计一个不抛异常的 swap 函数</title>
+    <url>/2022/04/09/effecitve-cpp/effective-cpp-25/</url>
+    <content><![CDATA[<blockquote>
+<p>Consider support for a non-throwing swap.</p>
+</blockquote>
+<p><code>swap</code> 函数能置换两对象值，功能很重要!</p>
+<ul>
+<li>异常安全性编程</li>
+<li>处理自我赋值可能性：<a href="/2021/11/01/effecitve-cpp/effective-cpp-11/" title="赋值运算符需要考虑自我赋值问题">赋值运算符需要考虑自我赋值问题</a></li>
+</ul>
+<p><code>std</code> 的缺省基本实现如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">namespace</span> <span class="built_in">std</span> &#123;</span><br><span class="line">    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">swap</span><span class="params">(T&amp; a, T&amp; b)</span> </span>&#123;</span><br><span class="line">        <span class="function">T <span class="title">temp</span><span class="params">(a)</span></span>;</span><br><span class="line">        a = b;</span><br><span class="line">        b = temp;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="类的-swap"><a href="#类的-swap" class="headerlink" title="类的 swap"></a>类的 swap</h2><p>只要类型 <code>T</code> 支持 <code>copying</code>运算(拷贝构造和拷贝赋值运算)就能使用。 但缺省实现会有多次拷贝，在某些情况下不是性能最好的实现。比如针对 <code>pimpl</code> 手法实现的 <code>class</code>, 不仅要复制三次 <code>Widget</code> 还需要复制三次 <code>WdigetImpl</code>, 非常缺乏效率。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">WidgetImpl</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">int</span> a, b, c;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">double</span>&gt; v;</span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Widget</span> &#123;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    Widget(<span class="keyword">const</span> Widget&amp;);</span><br><span class="line"></span><br><span class="line">    Widget&amp; <span class="keyword">operator</span>= (<span class="keyword">const</span> Widget&amp; rhs) &#123;</span><br><span class="line">        ...</span><br><span class="line">        *pImpl = *(rhs.pImpl);</span><br><span class="line">        ...</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    WidgetImpl *pImpl;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>其实我们发现这种情况只需要将 <code>pImpl</code> 指针交换就好， 我们可以将 <code>std::swap</code> 对 <code>Widget</code> 的特化来实现.</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">namespace</span> <span class="built_in">std</span> &#123;</span><br><span class="line">    <span class="keyword">template</span> &lt;&gt;</span><br><span class="line">    <span class="keyword">void</span> swap&lt;Widget&gt; (Widget&amp; a, Widget&amp; b) &#123;</span><br><span class="line">        swap(a.pImpl, b.pImpl);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>但上述代码不能通过编译， 因为 <code>pImpl</code> 是私有变量， 所以，<code>Widget</code> 应当提供一个 <code>swap</code> 成员函数或友元函数。 惯例上会提供一个成员函数：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Widget</span> &#123;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    ...</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">swap</span><span class="params">(Widget&amp; other)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">using</span> <span class="built_in">std</span>::swap; <span class="comment">// 为何要这样？请看下文</span></span><br><span class="line">        swap(pImpl, other.pImpl);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="built_in">std</span> &#123;</span><br><span class="line">  <span class="keyword">template</span>&lt;&gt;</span><br><span class="line">  <span class="keyword">void</span> swap&lt;Widget&gt;(Widget&amp; a, Widget&amp; b)&#123;</span><br><span class="line">      a.swap(b);              <span class="comment">// 调用成员函数</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上述实现与 STL 容器是一致的：<strong>提供公有 <code>swap</code> 成员函数， 并特化 <code>std::swap</code> 来调用那个成员函数</strong>。</p>
+<h2 id="类模板的-swap"><a href="#类模板的-swap" class="headerlink" title="类模板的 swap"></a>类模板的 swap</h2><p>如果 <code>Widget</code> 和 <code>WidgetImpl</code> 是 <code>class templates</code> 而非 <code>classes</code>, 按照上面的 <code>swap</code> 实现方式，你可能会这样写：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Widget</span>&#123;</span>  ... &#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">WidgetImpl</span>&#123;</span> ... &#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="built_in">std</span> &#123;</span><br><span class="line">    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line">    <span class="keyword">void</span> swap&lt;Widget&lt;T&gt;&gt;(Widget&lt;T&gt;&amp; a, Widget&lt;T&gt;&amp; b) &#123;</span><br><span class="line">        a.swap(b);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>但上述代码不能通过编译， <code>c++</code> 允许偏特化类模版，却不允许偏特化函数模版(虽然有的编译器中可以编译)。那我们继续尝试重载 <code>std::swap</code>  函数：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">namespace</span> <span class="built_in">std</span>&#123;</span><br><span class="line">    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">swap</span><span class="params">(Widget&lt;T&gt;&amp; a, Widget&lt;T&gt;&amp; b)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> a.swap(b);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里我们重载了 <code>std::swap</code>，相当于在 <code>std</code> 命名空间添加了一个函数模板。但这在 <code>C++</code> 标准中是不允许的！ <code>C++</code> 标准中，客户只能特化 <code>std</code> 中的模板，但不允许在 <code>std</code> 命名空间中添加任何新的模板。 上述代码虽然在有些编译器中可以编译，但会引发未定义的行为，所以不要这么做。所以我们最终可以把 <code>swap</code> 定义在 <code>Widget</code> 所在的命名空间中：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">namespace</span> WidgetStuff &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt; </span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Widget</span> &#123;</span> ... &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">swap</span><span class="params">(Widget&lt;T&gt;&amp; a, Widget&lt;T&gt;&amp; b)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> a.swap(b);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>任何地方在两个 <code>Widget</code> 上调用 <code>swap</code> 时，<code>C++</code> 根据其 <code>argument-dependent lookup</code>（又称 <code>Koenig lookup</code>） 会找到 <code>WidgetStuff</code> 命名空间下的具有 <code>Widget</code> 参数的 <code>swap</code>。</p>
+<p>其实类的 <code>swap</code> 也可以在同一命名空间下定义 <code>swap</code> 函数，而不必特化 <code>std::swap</code>。 但有人可能直接写 <code>std::swap(w1, w2)</code>，特化 <code>std::swap</code> 可以让你的类更加健壮。</p>
+<p><strong>在成员函数中不要直接调用 <code>swap(pImpl, other.pImpl);</code> 因为指定了调用 <code>std::swap</code>，<code>argument-dependent lookup</code> 便失效了，<code>WidgetStuff::swap</code> 不会得到调用</strong>。</p>
+<p>如果希望优先调用 <code>WidgetStuff::swap</code>，如果未定义则取调用 <code>std::swap</code>，那么应该如何写呢？ 看代码：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">doSomething</span><span class="params">(T&amp; obj1, T&amp; obj2)</span></span>&#123;</span><br><span class="line">  <span class="keyword">using</span> <span class="built_in">std</span>::swap;           <span class="comment">// 使得 std::swap 在该作用域内可见</span></span><br><span class="line">  swap(obj1, obj2);          <span class="comment">// 现在，编译器会帮你选最好的 swap</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>此时，<code>C++</code> 编译器还是会优先调用指定了 <code>T</code> 的 <code>std::swap</code>，其次是 <code>obj1</code> 的类型 <code>T</code> 所在命名空间下的对应 <code>swap</code> 函数， 最后才会匹配 <code>std::swap</code> 的默认实现。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>如何实现 <code>swap</code> 呢？</p>
+<ul>
+<li>提供一个更加高效的，不抛异常的公有成员函数（比如 <code>Widget::swap</code>）。</li>
+<li>在你类（或类模板）的同一命名空间下提供非成员函数 <code>swap</code>，调用你的成员函数。</li>
+<li>如果你写的是类而不是类模板，也可以特化 <code>std::swap</code>，同样地在里面调用你的成员函数。</li>
+<li>调用时，请首先用 <code>using</code> 使 <code>std::swap</code> 可见，然后直接调用 <code>swap</code>。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Effective-C++</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>Effective-C++</tag>
+      </tags>
+  </entry>
 </search>

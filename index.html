@@ -134,7 +134,7 @@
 <nav class="site-nav">
   <ul class="main-menu menu">
         <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
-        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">28</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">29</span></a></li>
         <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">3</span></a></li>
         <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">5</span></a></li>
       <li class="menu-item menu-item-search">
@@ -208,7 +208,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">28</span>
+          <span class="site-state-item-count">29</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -275,6 +275,143 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2022/04/09/effecitve-cpp/effective-cpp-25/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="瓜地">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/04/09/effecitve-cpp/effective-cpp-25/" class="post-title-link" itemprop="url">Effective C++ 25：设计一个不抛异常的 swap 函数</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-04-09 23:12:46" itemprop="dateCreated datePublished" datetime="2022-04-09T23:12:46+00:00">2022-04-09</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-04-15 02:37:16" itemprop="dateModified" datetime="2022-04-15T02:37:16+00:00">2022-04-15</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Effective-C/" itemprop="url" rel="index"><span itemprop="name">Effective-C++</span></a>
+        </span>
+    </span>
+
+  
+      </div>
+      <div class="post-meta">
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.9k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>3 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <blockquote>
+<p>Consider support for a non-throwing swap.</p>
+</blockquote>
+<p><code>swap</code> 函数能置换两对象值，功能很重要!</p>
+<ul>
+<li>异常安全性编程</li>
+<li>处理自我赋值可能性：<a href="/2021/11/01/effecitve-cpp/effective-cpp-11/" title="赋值运算符需要考虑自我赋值问题">赋值运算符需要考虑自我赋值问题</a></li>
+</ul>
+<p><code>std</code> 的缺省基本实现如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">namespace</span> <span class="built_in">std</span> &#123;</span><br><span class="line">    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">swap</span><span class="params">(T&amp; a, T&amp; b)</span> </span>&#123;</span><br><span class="line">        <span class="function">T <span class="title">temp</span><span class="params">(a)</span></span>;</span><br><span class="line">        a = b;</span><br><span class="line">        b = temp;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="类的-swap"><a href="#类的-swap" class="headerlink" title="类的 swap"></a>类的 swap</h2><p>只要类型 <code>T</code> 支持 <code>copying</code>运算(拷贝构造和拷贝赋值运算)就能使用。 但缺省实现会有多次拷贝，在某些情况下不是性能最好的实现。比如针对 <code>pimpl</code> 手法实现的 <code>class</code>, 不仅要复制三次 <code>Widget</code> 还需要复制三次 <code>WdigetImpl</code>, 非常缺乏效率。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">WidgetImpl</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">int</span> a, b, c;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">double</span>&gt; v;</span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Widget</span> &#123;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    Widget(<span class="keyword">const</span> Widget&amp;);</span><br><span class="line"></span><br><span class="line">    Widget&amp; <span class="keyword">operator</span>= (<span class="keyword">const</span> Widget&amp; rhs) &#123;</span><br><span class="line">        ...</span><br><span class="line">        *pImpl = *(rhs.pImpl);</span><br><span class="line">        ...</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    WidgetImpl *pImpl;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>其实我们发现这种情况只需要将 <code>pImpl</code> 指针交换就好， 我们可以将 <code>std::swap</code> 对 <code>Widget</code> 的特化来实现.</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">namespace</span> <span class="built_in">std</span> &#123;</span><br><span class="line">    <span class="keyword">template</span> &lt;&gt;</span><br><span class="line">    <span class="keyword">void</span> swap&lt;Widget&gt; (Widget&amp; a, Widget&amp; b) &#123;</span><br><span class="line">        swap(a.pImpl, b.pImpl);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>但上述代码不能通过编译， 因为 <code>pImpl</code> 是私有变量， 所以，<code>Widget</code> 应当提供一个 <code>swap</code> 成员函数或友元函数。 惯例上会提供一个成员函数：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Widget</span> &#123;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    ...</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">swap</span><span class="params">(Widget&amp; other)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">using</span> <span class="built_in">std</span>::swap; <span class="comment">// 为何要这样？请看下文</span></span><br><span class="line">        swap(pImpl, other.pImpl);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="built_in">std</span> &#123;</span><br><span class="line">  <span class="keyword">template</span>&lt;&gt;</span><br><span class="line">  <span class="keyword">void</span> swap&lt;Widget&gt;(Widget&amp; a, Widget&amp; b)&#123;</span><br><span class="line">      a.swap(b);              <span class="comment">// 调用成员函数</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上述实现与 STL 容器是一致的：<strong>提供公有 <code>swap</code> 成员函数， 并特化 <code>std::swap</code> 来调用那个成员函数</strong>。</p>
+<h2 id="类模板的-swap"><a href="#类模板的-swap" class="headerlink" title="类模板的 swap"></a>类模板的 swap</h2><p>如果 <code>Widget</code> 和 <code>WidgetImpl</code> 是 <code>class templates</code> 而非 <code>classes</code>, 按照上面的 <code>swap</code> 实现方式，你可能会这样写：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Widget</span>&#123;</span>  ... &#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">WidgetImpl</span>&#123;</span> ... &#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="built_in">std</span> &#123;</span><br><span class="line">    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line">    <span class="keyword">void</span> swap&lt;Widget&lt;T&gt;&gt;(Widget&lt;T&gt;&amp; a, Widget&lt;T&gt;&amp; b) &#123;</span><br><span class="line">        a.swap(b);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>但上述代码不能通过编译， <code>c++</code> 允许偏特化类模版，却不允许偏特化函数模版(虽然有的编译器中可以编译)。那我们继续尝试重载 <code>std::swap</code>  函数：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">namespace</span> <span class="built_in">std</span>&#123;</span><br><span class="line">    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">swap</span><span class="params">(Widget&lt;T&gt;&amp; a, Widget&lt;T&gt;&amp; b)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> a.swap(b);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里我们重载了 <code>std::swap</code>，相当于在 <code>std</code> 命名空间添加了一个函数模板。但这在 <code>C++</code> 标准中是不允许的！ <code>C++</code> 标准中，客户只能特化 <code>std</code> 中的模板，但不允许在 <code>std</code> 命名空间中添加任何新的模板。 上述代码虽然在有些编译器中可以编译，但会引发未定义的行为，所以不要这么做。所以我们最终可以把 <code>swap</code> 定义在 <code>Widget</code> 所在的命名空间中：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">namespace</span> WidgetStuff &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt; </span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Widget</span> &#123;</span> ... &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">swap</span><span class="params">(Widget&lt;T&gt;&amp; a, Widget&lt;T&gt;&amp; b)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> a.swap(b);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>任何地方在两个 <code>Widget</code> 上调用 <code>swap</code> 时，<code>C++</code> 根据其 <code>argument-dependent lookup</code>（又称 <code>Koenig lookup</code>） 会找到 <code>WidgetStuff</code> 命名空间下的具有 <code>Widget</code> 参数的 <code>swap</code>。</p>
+<p>其实类的 <code>swap</code> 也可以在同一命名空间下定义 <code>swap</code> 函数，而不必特化 <code>std::swap</code>。 但有人可能直接写 <code>std::swap(w1, w2)</code>，特化 <code>std::swap</code> 可以让你的类更加健壮。</p>
+<p><strong>在成员函数中不要直接调用 <code>swap(pImpl, other.pImpl);</code> 因为指定了调用 <code>std::swap</code>，<code>argument-dependent lookup</code> 便失效了，<code>WidgetStuff::swap</code> 不会得到调用</strong>。</p>
+<p>如果希望优先调用 <code>WidgetStuff::swap</code>，如果未定义则取调用 <code>std::swap</code>，那么应该如何写呢？ 看代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">doSomething</span><span class="params">(T&amp; obj1, T&amp; obj2)</span></span>&#123;</span><br><span class="line">  <span class="keyword">using</span> <span class="built_in">std</span>::swap;           <span class="comment">// 使得 std::swap 在该作用域内可见</span></span><br><span class="line">  swap(obj1, obj2);          <span class="comment">// 现在，编译器会帮你选最好的 swap</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>此时，<code>C++</code> 编译器还是会优先调用指定了 <code>T</code> 的 <code>std::swap</code>，其次是 <code>obj1</code> 的类型 <code>T</code> 所在命名空间下的对应 <code>swap</code> 函数， 最后才会匹配 <code>std::swap</code> 的默认实现。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>如何实现 <code>swap</code> 呢？</p>
+<ul>
+<li>提供一个更加高效的，不抛异常的公有成员函数（比如 <code>Widget::swap</code>）。</li>
+<li>在你类（或类模板）的同一命名空间下提供非成员函数 <code>swap</code>，调用你的成员函数。</li>
+<li>如果你写的是类而不是类模板，也可以特化 <code>std::swap</code>，同样地在里面调用你的成员函数。</li>
+<li>调用时，请首先用 <code>using</code> 使 <code>std::swap</code> 可见，然后直接调用 <code>swap</code>。</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2022/04/09/effecitve-cpp/effective-cpp-24/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -298,10 +435,16 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2022-04-09 22:39:25 / 修改时间：15:20:30" itemprop="dateCreated datePublished" datetime="2022-04-09T22:39:25+00:00">2022-04-09</time>
+      <time title="创建时间：2022-04-09 22:39:25" itemprop="dateCreated datePublished" datetime="2022-04-09T22:39:25+00:00">2022-04-09</time>
     </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-04-15 02:37:16" itemprop="dateModified" datetime="2022-04-15T02:37:16+00:00">2022-04-15</time>
+      </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
@@ -398,10 +541,16 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2022-04-09 22:30:35 / 修改时间：15:20:30" itemprop="dateCreated datePublished" datetime="2022-04-09T22:30:35+00:00">2022-04-09</time>
+      <time title="创建时间：2022-04-09 22:30:35" itemprop="dateCreated datePublished" datetime="2022-04-09T22:30:35+00:00">2022-04-09</time>
     </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-04-15 02:37:16" itemprop="dateModified" datetime="2022-04-15T02:37:16+00:00">2022-04-15</time>
+      </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
@@ -498,7 +647,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2022-04-09 15:20:30" itemprop="dateModified" datetime="2022-04-09T15:20:30+00:00">2022-04-09</time>
+        <time title="修改时间：2022-04-15 02:37:16" itemprop="dateModified" datetime="2022-04-15T02:37:16+00:00">2022-04-15</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1182,159 +1331,6 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2021/11/08/c++/C-%E4%B8%ADmalloc%E5%92%8Cnew%E7%9A%84%E5%8C%BA%E5%88%AB/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="yngty">
-      <meta itemprop="description" content="预测未来的最好方式就是实现它">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="瓜地">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/11/08/c++/C-%E4%B8%ADmalloc%E5%92%8Cnew%E7%9A%84%E5%8C%BA%E5%88%AB/" class="post-title-link" itemprop="url">C++ 中 malloc 和 new 的区别</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2021-11-08 14:44:44 / 修改时间：15:18:56" itemprop="dateCreated datePublished" datetime="2021-11-08T14:44:44+00:00">2021-11-08</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/C-C/" itemprop="url" rel="index"><span itemprop="name">C/C++</span></a>
-        </span>
-    </span>
-
-  
-      </div>
-      <div class="post-meta">
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>251</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>1 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <table>
-<thead>
-<tr>
-<th align="center">特征</th>
-<th align="center">new</th>
-<th align="center">malloc</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">类型</td>
-<td align="center">关键字</td>
-<td align="center">标准库函数</td>
-</tr>
-<tr>
-<td align="center">支持语言</td>
-<td align="center"><code>C/C++</code></td>
-<td align="center">只在 <code>C++</code></td>
-</tr>
-<tr>
-<td align="center">申请内存的位置</td>
-<td align="center">自由存储区 <code>free store</code></td>
-<td align="center">堆</td>
-</tr>
-<tr>
-<td align="center">分配内存的大小</td>
-<td align="center">编译器根据类型信息自行计算</td>
-<td align="center">显示指定字节数</td>
-</tr>
-<tr>
-<td align="center">内存分配失败</td>
-<td align="center">抛出 <code>bac_alloc</code> 异常, 不会返回 <code>NULL</code></td>
-<td align="center">返回 <code>NULL</code></td>
-</tr>
-<tr>
-<td align="center">返回类型</td>
-<td align="center">返回对象类型的指针</td>
-<td align="center">返回<code>void</code> 指针，需要转换</td>
-</tr>
-<tr>
-<td align="center">是否调用构造函数/析构函数</td>
-<td align="center">调用</td>
-<td align="center">不调用</td>
-</tr>
-<tr>
-<td align="center">处理数组</td>
-<td align="center"><code>new[]</code></td>
-<td align="center">手动指定数组的大小</td>
-</tr>
-<tr>
-<td align="center">是否支持重载</td>
-<td align="center">支持</td>
-<td align="center">不支持</td>
-</tr>
-<tr>
-<td align="center">是否支持内存扩充</td>
-<td align="center">不支持</td>
-<td align="center"><code>realloc</code></td>
-</tr>
-<tr>
-<td align="center">内存释放方式</td>
-<td align="center"><code>new/delete</code>, <code>new[]/delete[]</code></td>
-<td align="center"><code>malloc/free</code></td>
-</tr>
-</tbody></table>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
@@ -1381,13 +1377,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">35k</span>
+    <span title="站点总字数">38k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">32 分钟</span>
+    <span title="站点阅读时长">34 分钟</span>
   </span>
 </div>
 <div class="busuanzi-count">
