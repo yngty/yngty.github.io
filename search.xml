@@ -1233,4 +1233,19 @@
         <tag>Effective-C++</tag>
       </tags>
   </entry>
+  <entry>
+    <title>解决 由于没有公钥，无法验证下列签名 :NO_PUBKEY</title>
+    <url>/2022/04/19/linux/NO_PUBKEY/</url>
+    <content><![CDATA[<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ sudo apt update </span><br><span class="line">命中:1 https://pro-driver-packages.uniontech.com eagle InRelease</span><br><span class="line">获取:2 http://mirrors.tuna.tsinghua.edu.cn/ubuntu hirsute InRelease [269 kB]                                 </span><br><span class="line">命中:3 http://packages.microsoft.com/repos/code stable InRelease                                             </span><br><span class="line">命中:4 https://home-packages.chinauos.com/home plum InRelease                                                </span><br><span class="line">命中:5 https://home-packages.chinauos.com/home plum/beta InRelease   </span><br><span class="line">命中:6 https://home-packages.chinauos.com/printer eagle InRelease</span><br><span class="line">错误:2 http://mirrors.tuna.tsinghua.edu.cn/ubuntu hirsute InRelease</span><br><span class="line">  由于没有公钥，无法验证下列签名： NO_PUBKEY 871920D1991BC93C</span><br><span class="line">命中:7 https://home-store-img.uniontech.com/appstore eagle InRelease</span><br><span class="line">正在读取软件包列表... 完成</span><br><span class="line">W: GPG 错误：http://mirrors.tuna.tsinghua.edu.cn/ubuntu hirsute InRelease: 由于没有公钥，无法验证下列签名： NO_PUBKEY 871920D1991BC93C</span><br><span class="line">E: 仓库 “http://mirrors.tuna.tsinghua.edu.cn/ubuntu hirsute InRelease” 没有数字签名。</span><br><span class="line">N: 无法安全地用该源进行更新，所以默认禁用该源。</span><br><span class="line">N: 参见 apt-secure(8) 手册以了解仓库创建和用户配置方面的细节。</span><br></pre></td></tr></table></figure>
+
+<p>执行：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 871920D1991BC93C</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>Linux</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+        <tag>apt</tag>
+      </tags>
+  </entry>
 </search>

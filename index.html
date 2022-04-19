@@ -134,9 +134,9 @@
 <nav class="site-nav">
   <ul class="main-menu menu">
         <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
-        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">30</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">31</span></a></li>
         <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">3</span></a></li>
-        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">5</span></a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">6</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -208,7 +208,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">30</span>
+          <span class="site-state-item-count">31</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -221,7 +221,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -275,6 +275,98 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2022/04/19/linux/NO_PUBKEY/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="瓜地">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/04/19/linux/NO_PUBKEY/" class="post-title-link" itemprop="url">解决 由于没有公钥，无法验证下列签名 :NO_PUBKEY</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-04-19 22:41:41 / 修改时间：14:50:29" itemprop="dateCreated datePublished" datetime="2022-04-19T22:41:41+00:00">2022-04-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+        </span>
+    </span>
+
+  
+      </div>
+      <div class="post-meta">
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>900</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>1 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">➜ sudo apt update </span><br><span class="line">命中:1 https://pro-driver-packages.uniontech.com eagle InRelease</span><br><span class="line">获取:2 http://mirrors.tuna.tsinghua.edu.cn/ubuntu hirsute InRelease [269 kB]                                 </span><br><span class="line">命中:3 http://packages.microsoft.com/repos/code stable InRelease                                             </span><br><span class="line">命中:4 https://home-packages.chinauos.com/home plum InRelease                                                </span><br><span class="line">命中:5 https://home-packages.chinauos.com/home plum/beta InRelease   </span><br><span class="line">命中:6 https://home-packages.chinauos.com/printer eagle InRelease</span><br><span class="line">错误:2 http://mirrors.tuna.tsinghua.edu.cn/ubuntu hirsute InRelease</span><br><span class="line">  由于没有公钥，无法验证下列签名： NO_PUBKEY 871920D1991BC93C</span><br><span class="line">命中:7 https://home-store-img.uniontech.com/appstore eagle InRelease</span><br><span class="line">正在读取软件包列表... 完成</span><br><span class="line">W: GPG 错误：http://mirrors.tuna.tsinghua.edu.cn/ubuntu hirsute InRelease: 由于没有公钥，无法验证下列签名： NO_PUBKEY 871920D1991BC93C</span><br><span class="line">E: 仓库 “http://mirrors.tuna.tsinghua.edu.cn/ubuntu hirsute InRelease” 没有数字签名。</span><br><span class="line">N: 无法安全地用该源进行更新，所以默认禁用该源。</span><br><span class="line">N: 参见 apt-secure(8) 手册以了解仓库创建和用户配置方面的细节。</span><br></pre></td></tr></table></figure>
+
+<p>执行：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">➜ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 871920D1991BC93C</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2022/04/15/effecitve-cpp/effective-cpp-26/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -298,10 +390,16 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2022-04-15 10:38:20 / 修改时间：05:43:30" itemprop="dateCreated datePublished" datetime="2022-04-15T10:38:20+00:00">2022-04-15</time>
+      <time title="创建时间：2022-04-15 10:38:20" itemprop="dateCreated datePublished" datetime="2022-04-15T10:38:20+00:00">2022-04-15</time>
     </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-04-19 14:50:29" itemprop="dateModified" datetime="2022-04-19T14:50:29+00:00">2022-04-19</time>
+      </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
@@ -412,7 +510,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2022-04-15 05:43:30" itemprop="dateModified" datetime="2022-04-15T05:43:30+00:00">2022-04-15</time>
+        <time title="修改时间：2022-04-19 14:50:29" itemprop="dateModified" datetime="2022-04-19T14:50:29+00:00">2022-04-19</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -524,7 +622,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2022-04-15 05:43:30" itemprop="dateModified" datetime="2022-04-15T05:43:30+00:00">2022-04-15</time>
+        <time title="修改时间：2022-04-19 14:50:29" itemprop="dateModified" datetime="2022-04-19T14:50:29+00:00">2022-04-19</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -630,7 +728,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2022-04-15 05:43:30" itemprop="dateModified" datetime="2022-04-15T05:43:30+00:00">2022-04-15</time>
+        <time title="修改时间：2022-04-19 14:50:29" itemprop="dateModified" datetime="2022-04-19T14:50:29+00:00">2022-04-19</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -728,7 +826,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2022-04-15 05:43:31" itemprop="dateModified" datetime="2022-04-15T05:43:31+00:00">2022-04-15</time>
+        <time title="修改时间：2022-04-19 14:50:29" itemprop="dateModified" datetime="2022-04-19T14:50:29+00:00">2022-04-19</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1214,108 +1312,8 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2021/11/17/linux/Linux%E5%91%BD%E4%BB%A4%E4%B9%8Btr/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="yngty">
-      <meta itemprop="description" content="预测未来的最好方式就是实现它">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="瓜地">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/11/17/linux/Linux%E5%91%BD%E4%BB%A4%E4%B9%8Btr/" class="post-title-link" itemprop="url">Linux命令之tr</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2021-11-17 03:08:28 / 修改时间：05:11:41" itemprop="dateCreated datePublished" datetime="2021-11-17T03:08:28+00:00">2021-11-17</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
-        </span>
-    </span>
-
-  
-      </div>
-      <div class="post-meta">
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>864</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>1 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p><code>Linux</code> 中 <code>tr</code> 命令用于转换或删除文件中的字符。</p>
-<h3 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> tr [OPTION] SET1 [SET2]</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="选项"><a href="#选项" class="headerlink" title="选项"></a>选项</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">-c, --complerment：反选设定字符。也就是符合 SET1 的部份不做处理，不符合的剩余部份才进行转换;</span><br><span class="line">-d, --delete：删除所有属于第一字符集的字符；</span><br><span class="line">-s, --squeeze-repeats：把连续重复的字符以单独一个字符表示；</span><br><span class="line">-t, --truncate-set1：先删除第一字符集较第二字符集多出的字符;</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/11/17/linux/Linux%E5%91%BD%E4%BB%A4%E4%B9%8Btr/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1360,13 +1358,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">39k</span>
+    <span title="站点总字数">40k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">36 分钟</span>
+    <span title="站点阅读时长">37 分钟</span>
   </span>
 </div>
 <div class="busuanzi-count">
