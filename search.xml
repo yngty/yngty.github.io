@@ -1234,6 +1234,42 @@
       </tags>
   </entry>
   <entry>
+    <title>Effective C++ 28：避免返回 handles 指向对象内部成分</title>
+    <url>/2022/04/16/effecitve-cpp/effective-cpp-28/</url>
+    <content><![CDATA[<blockquote>
+<p>Item28: Avoid returning “handles” to object internals.</p>
+</blockquote>
+<p>避免返回 <code>handles</code> (包括 <code>references</code> 、指针、迭代器)指向对象内部。</p>
+<a id="more"></a>
+
+<h2 id="破坏封装性"><a href="#破坏封装性" class="headerlink" title="破坏封装性"></a>破坏封装性</h2><p><code>const</code> 函数不再是 <code>const</code>, 修改了私有成员变量。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Point</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    Point(<span class="keyword">int</span> x, <span class="keyword">int</span> y);</span><br><span class="line">    ...</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">setX</span><span class="params">(<span class="keyword">int</span> x)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">setY</span><span class="params">(<span class="keyword">int</span> y)</span></span>;</span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">RectData</span> &#123;</span></span><br><span class="line">    Point ulhc;</span><br><span class="line">    Point lrhc;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Rectangle</span> &#123;</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="function">Point&amp; <span class="title">upperLeft</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> pData-&gt;ulhc; &#125;</span><br><span class="line">    <span class="function">Point&amp; <span class="title">lowerRight</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> pData-&gt;lrhc; &#125;</span><br><span class="line">    ...</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;RectData&gt; pData;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>虽然这样的设计可通过编译，但却是错误的。<code>upperLeft</code> 和 <code>lowerRight</code> 被声明为 <code>const</code> 成员函数，但是可以更改内部数据。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">Point <span class="title">coord1</span><span class="params">(<span class="number">0</span>, <span class="number">0</span>)</span></span>;</span><br><span class="line"><span class="function">Point <span class="title">coord2</span><span class="params">(<span class="number">100</span>, <span class="number">100</span>)</span></span>; </span><br><span class="line"><span class="function"><span class="keyword">const</span> Rectangle <span class="title">rec</span><span class="params">(coord1, coord2)</span></span>; <span class="comment">// rec是个const矩形, 从 (0 ，0) 到 (100 ， 100)</span></span><br><span class="line"></span><br><span class="line">rec.upperLeft( ) .setX(<span class="number">50</span>);  <span class="comment">// 现在rec却变成从 (50 ， 0) 到 (100 ， 100)</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>成员变量的封装性最多只等于”返回其 <code>reference</code>“ 的函数的访问级别。</li>
+<li>如果 <code>const</code> 成员函数传出一个 <code>reference</code>，后者所指数据与对象自身有关联，而它又被存储于对象之外，那么这个函数的调用者可以修改那笔数据。(<code>bitwise constness</code>原因)</li>
+</ul>
+<h2 id="悬空问题"><a href="#悬空问题" class="headerlink" title="悬空问题"></a>悬空问题</h2><p>虽然我们可以修改函数，达到不能修改私有成员变量。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">const</span> Point&amp; <span class="title">upperLeft</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> pData-&gt;ulhc; &#125;</span><br></pre></td></tr></table></figure>
+<p>但也不能解决悬空问题。如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">GUIObject</span> &#123;</span> ... &#125;;</span><br><span class="line"><span class="function"><span class="keyword">const</span> Rectangle <span class="title">boundingBox</span><span class="params">(<span class="keyword">const</span> GUIObject&amp; obj)</span></span>; <span class="comment">//以 by value 方式返回一个矩形</span></span><br></pre></td></tr></table></figure>
+
+<p>现在，客户有可能这么使用这个函数:</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">GUIObject* pgo; <span class="comment">// 让pgo指向某个GUIObject</span></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> Point* pUpperLeft = &amp;(boundingBox(*pgo) .upperLeft()); <span class="comment">// 取得一个指针指向外框左上点</span></span><br></pre></td></tr></table></figure>
+
+<p><code>pUpperLeft</code> 被悬空了，<code>boundingBox(*pgo)</code> 返回的是一个临时变量，在语句执行结束后就会销毁，导致 <code>pUpperLeft</code> 指针失效。</p>
+]]></content>
+      <categories>
+        <category>Effective-C++</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>Effective-C++</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>解决 由于没有公钥，无法验证下列签名 :NO_PUBKEY</title>
     <url>/2022/04/19/linux/NO_PUBKEY/</url>
     <content><![CDATA[<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ sudo apt update </span><br><span class="line">命中:1 https://pro-driver-packages.uniontech.com eagle InRelease</span><br><span class="line">获取:2 http://mirrors.tuna.tsinghua.edu.cn/ubuntu hirsute InRelease [269 kB]                                 </span><br><span class="line">命中:3 http://packages.microsoft.com/repos/code stable InRelease                                             </span><br><span class="line">命中:4 https://home-packages.chinauos.com/home plum InRelease                                                </span><br><span class="line">命中:5 https://home-packages.chinauos.com/home plum/beta InRelease   </span><br><span class="line">命中:6 https://home-packages.chinauos.com/printer eagle InRelease</span><br><span class="line">错误:2 http://mirrors.tuna.tsinghua.edu.cn/ubuntu hirsute InRelease</span><br><span class="line">  由于没有公钥，无法验证下列签名： NO_PUBKEY 871920D1991BC93C</span><br><span class="line">命中:7 https://home-store-img.uniontech.com/appstore eagle InRelease</span><br><span class="line">正在读取软件包列表... 完成</span><br><span class="line">W: GPG 错误：http://mirrors.tuna.tsinghua.edu.cn/ubuntu hirsute InRelease: 由于没有公钥，无法验证下列签名： NO_PUBKEY 871920D1991BC93C</span><br><span class="line">E: 仓库 “http://mirrors.tuna.tsinghua.edu.cn/ubuntu hirsute InRelease” 没有数字签名。</span><br><span class="line">N: 无法安全地用该源进行更新，所以默认禁用该源。</span><br><span class="line">N: 参见 apt-secure(8) 手册以了解仓库创建和用户配置方面的细节。</span><br></pre></td></tr></table></figure>
