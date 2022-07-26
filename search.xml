@@ -1291,11 +1291,11 @@
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.xcarchive</span><br><span class="line">--dSYMs</span><br><span class="line">  |--Your.app.dSYM</span><br><span class="line">    |--Contents</span><br><span class="line">      |--Resources</span><br><span class="line">        |--DWARF</span><br></pre></td></tr></table></figure>
 <a id="more"></a>
 <p>如果在XCode中设置了带有 <code>dSYM</code> 文件的 <code>DWARF</code> 选项，则编译器会生成 <code>dSYM</code> 文件，并将其存储在您的构建中。<br><img src="/images/dsym.png"></p>
-<h1 id="确定符号表和崩溃日志的一致性"><a href="#确定符号表和崩溃日志的一致性" class="headerlink" title="确定符号表和崩溃日志的一致性"></a>确定符号表和崩溃日志的一致性</h1><h2 id="崩溃日志中获取UUID"><a href="#崩溃日志中获取UUID" class="headerlink" title="崩溃日志中获取UUID"></a>崩溃日志中获取UUID</h2><p>崩溃日志比较靠下的位置有个Binary Images模块，其第一行内容如下：</p>
+<h1 id="确定符号表和崩溃日志的一致性"><a href="#确定符号表和崩溃日志的一致性" class="headerlink" title="确定符号表和崩溃日志的一致性"></a>确定符号表和崩溃日志的一致性</h1><h2 id="崩溃日志中获取UUID"><a href="#崩溃日志中获取UUID" class="headerlink" title="崩溃日志中获取UUID"></a>崩溃日志中获取UUID</h2><p>崩溃日志比较靠下的位置有个 <code>Binary Images</code> 模块，其第一行内容如下：</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Binary Images:</span><br><span class="line">0x109724000 - 0x109cf7fff Your &lt;19a667b1-8910-3890-a0b0-03befee8876e&gt; &#x2F;Library&#x2F;Application Support&#x2F;YourApp&#x2F;*&#x2F;YourApp.app&#x2F;Contents&#x2F;MacOS&#x2F;YourApp</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <ul>
-<li>代码段的起终地址: 0x109724000 - 0x109cf7fff</li>
-<li>应用的UUID：19a667b1-8910-3890-a0b0-03befee8876e（不区分大小写）</li>
+<li>代码段的起终地址: <code>0x109724000 - 0x109cf7fff</code></li>
+<li>应用的UUID：<code>19a667b1-8910-3890-a0b0-03befee8876e</code>（不区分大小写）</li>
 </ul>
 <h2 id="从符号表中获取UUID"><a href="#从符号表中获取UUID" class="headerlink" title="从符号表中获取UUID"></a>从符号表中获取UUID</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ dwarfdump --uuid Your.app.dSYM</span><br></pre></td></tr></table></figure>
 <p>或者：</p>
@@ -1318,7 +1318,7 @@
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ otool -l Your.app.dSYM/Contents/Resources/DWARF/Your</span><br></pre></td></tr></table></figure>
 
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Load command 4</span><br><span class="line">      cmd LC_SEGMENT_64</span><br><span class="line">  cmdsize 232</span><br><span class="line">  segname __TEXT</span><br><span class="line">   vmaddr 0x0000000100000000·</span><br><span class="line">   vmsize 0x0000000000004000</span><br><span class="line">  fileoff 0</span><br><span class="line"> filesize 0</span><br><span class="line">  maxprot 0x00000005</span><br><span class="line"> initprot 0x00000005</span><br><span class="line">   nsects 2</span><br><span class="line">    flags 0x0</span><br></pre></td></tr></table></figure>
-<p>其中的<code>vmaddr 0x00004000</code>字段即为TEXT段的起始地址。</p>
+<p>其中的<code>vmaddr 0x0000000100000000</code>字段即为TEXT段的起始地址。</p>
 <h1 id="使用-LLDB-进行符号化"><a href="#使用-LLDB-进行符号化" class="headerlink" title="使用 LLDB 进行符号化"></a>使用 <code>LLDB</code> 进行符号化</h1><h2 id="crashlog"><a href="#crashlog" class="headerlink" title="crashlog"></a>crashlog</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ xcrun lldb</span><br><span class="line"></span><br><span class="line">(lldb) command script import lldb.macosx.crashlog</span><br><span class="line"></span><br><span class="line">(lldb) crashlog &lt;path/to/crashlog.crash&gt;</span><br></pre></td></tr></table></figure>
 <h2 id="Target"><a href="#Target" class="headerlink" title="Target"></a>Target</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">(lldb) target create --no-dependents --arch &lt;architecture&gt; &lt;path/to/dSYMs/App.app.dSYM/Contents/Resources/DWARF/App&gt;</span><br><span class="line"></span><br><span class="line">(lldb) image lookup --address &lt;symboladdress&gt;</span><br></pre></td></tr></table></figure>
 
