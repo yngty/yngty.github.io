@@ -27,15 +27,15 @@ categories:
 # 确定符号表和崩溃日志的一致性
 
 ## 崩溃日志中获取UUID
-崩溃日志比较靠下的位置有个Binary Images模块，其第一行内容如下：
+崩溃日志比较靠下的位置有个 `Binary Images` 模块，其第一行内容如下：
 
 ```
 Binary Images:
 0x109724000 - 0x109cf7fff Your <19a667b1-8910-3890-a0b0-03befee8876e> /Library/Application Support/YourApp/*/YourApp.app/Contents/MacOS/YourApp
 
 ```
-- 代码段的起终地址: 0x109724000 - 0x109cf7fff
-- 应用的UUID：19a667b1-8910-3890-a0b0-03befee8876e（不区分大小写）
+- 代码段的起终地址: `0x109724000 - 0x109cf7fff`
+- 应用的UUID：`19a667b1-8910-3890-a0b0-03befee8876e`（不区分大小写）
 
 ## 从符号表中获取UUID
 
@@ -96,7 +96,7 @@ Load command 4
    nsects 2
     flags 0x0
 ```
-其中的`vmaddr 0x00004000`字段即为TEXT段的起始地址。
+其中的`vmaddr 0x0000000100000000`字段即为TEXT段的起始地址。
 
 # 使用 `LLDB` 进行符号化
 
