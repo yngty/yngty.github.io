@@ -1284,4 +1284,55 @@
         <tag>apt</tag>
       </tags>
   </entry>
+  <entry>
+    <title>在MacOS平台上符号化崩溃报告</title>
+    <url>/2022/07/26/macos/%E5%9C%A8MacOS%E5%B9%B3%E5%8F%B0%E4%B8%8A%E7%AC%A6%E5%8F%B7%E5%8C%96%E5%B4%A9%E6%BA%83%E6%8A%A5%E5%91%8A/</url>
+    <content><![CDATA[<h1 id="dSYM"><a href="#dSYM" class="headerlink" title=".dSYM"></a><code>.dSYM</code></h1><p><code>.dSYM</code> (<code>debugging SYMbols</code>) 又称为调试符号表，是苹果为了方便调试和定位问题而使用的一种调试方案，本质上使用的是起源于贝尔实验室的 <code>DWARF</code>（<code>Debugging With Attributed Record Formats</code>），其在.xcarchive目录中的层次结构为：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.xcarchive</span><br><span class="line">--dSYMs</span><br><span class="line">  |--Your.app.dSYM</span><br><span class="line">    |--Contents</span><br><span class="line">      |--Resources</span><br><span class="line">        |--DWARF</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<p>如果在XCode中设置了带有 <code>dSYM</code> 文件的 <code>DWARF</code> 选项，则编译器会生成 <code>dSYM</code> 文件，并将其存储在您的构建中。<br><img src="/images/dsym.png"></p>
+<h1 id="确定符号表和崩溃日志的一致性"><a href="#确定符号表和崩溃日志的一致性" class="headerlink" title="确定符号表和崩溃日志的一致性"></a>确定符号表和崩溃日志的一致性</h1><h2 id="崩溃日志中获取UUID"><a href="#崩溃日志中获取UUID" class="headerlink" title="崩溃日志中获取UUID"></a>崩溃日志中获取UUID</h2><p>崩溃日志比较靠下的位置有个Binary Images模块，其第一行内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Binary Images:</span><br><span class="line">0x109724000 - 0x109cf7fff Your &lt;19a667b1-8910-3890-a0b0-03befee8876e&gt; &#x2F;Library&#x2F;Application Support&#x2F;YourApp&#x2F;*&#x2F;YourApp.app&#x2F;Contents&#x2F;MacOS&#x2F;YourApp</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ul>
+<li>代码段的起终地址: 0x109724000 - 0x109cf7fff</li>
+<li>应用的UUID：19a667b1-8910-3890-a0b0-03befee8876e（不区分大小写）</li>
+</ul>
+<h2 id="从符号表中获取UUID"><a href="#从符号表中获取UUID" class="headerlink" title="从符号表中获取UUID"></a>从符号表中获取UUID</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ dwarfdump --uuid Your.app.dSYM</span><br></pre></td></tr></table></figure>
+<p>或者：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ dwarfdump --uuid Your.app.dSYM/Contents/Resources/DWARF/Your</span><br></pre></td></tr></table></figure>
+
+<p><strong>崩溃日志中和符号表中的UUID一致，才能正确解析</strong></p>
+<h1 id="计算崩溃符号表地址"><a href="#计算崩溃符号表地址" class="headerlink" title="计算崩溃符号表地址"></a>计算崩溃符号表地址</h1><h2 id="符号表堆栈地址计算方式"><a href="#符号表堆栈地址计算方式" class="headerlink" title="符号表堆栈地址计算方式"></a>符号表堆栈地址计算方式</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Thread 0::  Dispatch queue: com.apple.main-thread</span><br><span class="line">0   libsystem_kernel.dylib        	    0x7ff8159e775e write + 10</span><br><span class="line">1   libapr-1.0.dylib              	    0x10a6c1cee apr_file_write + 286</span><br><span class="line">2   liblog4cxx.10.0.0.dylib       	    0x10a369531 log4cxx::helpers::FileOutputStream::write(log4cxx::helpers::ByteBuffer&amp;, log4cxx::helpers::Pool&amp;) + 81</span><br><span class="line">3   Your      	                        0x10a3ae877❶  0x10a340000❷ + 452727❸</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>❶ 运行时堆栈地址 </li>
+<li>❷ 运行时起始地址</li>
+<li>❸ 偏移量</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">运行时堆栈地址 &#x3D; 运行时起始地址 + 偏移量</span><br></pre></td></tr></table></figure>
+
+<p>崩溃堆栈中的起始地址和崩溃地址均为运行时地址，根据虚拟内存偏移量不变原理，只要提供了符号表TEXT段的起始地址，再加上偏移量就能得到符号表中的堆栈地址，即：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">符号表堆栈地址 &#x3D; 符号表起始地址 + 偏移量</span><br></pre></td></tr></table></figure>
+
+<h2 id="符号表中TEXT段的起始地址可以通过以下命令获得："><a href="#符号表中TEXT段的起始地址可以通过以下命令获得：" class="headerlink" title="符号表中TEXT段的起始地址可以通过以下命令获得："></a>符号表中TEXT段的起始地址可以通过以下命令获得：</h2><p>使用 <code>otool</code> 查找 <code>LC_SEGMENT_64</code> 段和 <code>vmaddr</code> 条目</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ otool -l Your.app.dSYM/Contents/Resources/DWARF/Your</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Load command 4</span><br><span class="line">      cmd LC_SEGMENT_64</span><br><span class="line">  cmdsize 232</span><br><span class="line">  segname __TEXT</span><br><span class="line">   vmaddr 0x0000000100000000·</span><br><span class="line">   vmsize 0x0000000000004000</span><br><span class="line">  fileoff 0</span><br><span class="line"> filesize 0</span><br><span class="line">  maxprot 0x00000005</span><br><span class="line"> initprot 0x00000005</span><br><span class="line">   nsects 2</span><br><span class="line">    flags 0x0</span><br></pre></td></tr></table></figure>
+<p>其中的<code>vmaddr 0x00004000</code>字段即为TEXT段的起始地址。</p>
+<h1 id="使用-LLDB-进行符号化"><a href="#使用-LLDB-进行符号化" class="headerlink" title="使用 LLDB 进行符号化"></a>使用 <code>LLDB</code> 进行符号化</h1><h2 id="crashlog"><a href="#crashlog" class="headerlink" title="crashlog"></a>crashlog</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ xcrun lldb</span><br><span class="line"></span><br><span class="line">(lldb) command script import lldb.macosx.crashlog</span><br><span class="line"></span><br><span class="line">(lldb) crashlog &lt;path/to/crashlog.crash&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="Target"><a href="#Target" class="headerlink" title="Target"></a>Target</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">(lldb) target create --no-dependents --arch &lt;architecture&gt; &lt;path/to/dSYMs/App.app.dSYM/Contents/Resources/DWARF/App&gt;</span><br><span class="line"></span><br><span class="line">(lldb) image lookup --address &lt;symboladdress&gt;</span><br></pre></td></tr></table></figure>
+
+<h1 id="使用-ATOS-符号化"><a href="#使用-ATOS-符号化" class="headerlink" title="使用 ATOS 符号化"></a>使用 <code>ATOS</code> 符号化</h1><h2 id="符号表崩溃地址的解析方式"><a href="#符号表崩溃地址的解析方式" class="headerlink" title="符号表崩溃地址的解析方式"></a>符号表崩溃地址的解析方式</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ atos -arch &lt;architecture&gt; -o &lt;binary filename&gt; -l &lt;load address&gt; &lt;stack address 1&gt; &lt;stack address 2&gt; ...</span><br></pre></td></tr></table></figure>
+
+<h2 id="无需符号表崩溃地址的解析方式"><a href="#无需符号表崩溃地址的解析方式" class="headerlink" title="无需符号表崩溃地址的解析方式"></a>无需符号表崩溃地址的解析方式</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ atos -arch &lt;architecture&gt; -o &lt;binary filename&gt; &lt;symboladdress&gt;</span><br></pre></td></tr></table></figure>
+
+<h1 id="使用-Dwarfdump-符号化"><a href="#使用-Dwarfdump-符号化" class="headerlink" title="使用 Dwarfdump 符号化"></a>使用 <code>Dwarfdump</code> 符号化</h1><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ dwarfdump --arch x86_64 Your.app.dSYM --lookup symboladdress</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>MacOS</category>
+      </categories>
+      <tags>
+        <tag>MacOS</tag>
+        <tag>Creash</tag>
+      </tags>
+  </entry>
 </search>

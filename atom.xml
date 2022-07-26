@@ -6,7 +6,7 @@
   <link href="https://yngty.github.io/atom.xml" rel="self"/>
   
   <link href="https://yngty.github.io/"/>
-  <updated>2022-04-19T14:51:49.123Z</updated>
+  <updated>2022-07-26T09:19:30.947Z</updated>
   <id>https://yngty.github.io/</id>
   
   <author>
@@ -17,11 +17,33 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>在MacOS平台上符号化崩溃报告</title>
+    <link href="https://yngty.github.io/2022/07/26/macos/%E5%9C%A8MacOS%E5%B9%B3%E5%8F%B0%E4%B8%8A%E7%AC%A6%E5%8F%B7%E5%8C%96%E5%B4%A9%E6%BA%83%E6%8A%A5%E5%91%8A/"/>
+    <id>https://yngty.github.io/2022/07/26/macos/%E5%9C%A8MacOS%E5%B9%B3%E5%8F%B0%E4%B8%8A%E7%AC%A6%E5%8F%B7%E5%8C%96%E5%B4%A9%E6%BA%83%E6%8A%A5%E5%91%8A/</id>
+    <published>2022-07-26T15:41:02.000Z</published>
+    <updated>2022-07-26T09:19:30.947Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;dSYM&quot;&gt;&lt;a href=&quot;#dSYM&quot; class=&quot;headerlink&quot; title=&quot;.dSYM&quot;&gt;&lt;/a&gt;&lt;code&gt;.dSYM&lt;/code&gt;&lt;/h1&gt;&lt;p&gt;&lt;code&gt;.dSYM&lt;/code&gt; (&lt;code&gt;debugging SYMbols&lt;/code&gt;) 又称为调试符号表，是苹果为了方便调试和定位问题而使用的一种调试方案，本质上使用的是起源于贝尔实验室的 &lt;code&gt;DWARF&lt;/code&gt;（&lt;code&gt;Debugging With Attributed Record Formats&lt;/code&gt;），其在.xcarchive目录中的层次结构为：&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;.xcarchive&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;--dSYMs&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  |--Your.app.dSYM&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    |--Contents&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;      |--Resources&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        |--DWARF&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
+    
+    
+    
+    <category term="MacOS" scheme="https://yngty.github.io/categories/MacOS/"/>
+    
+    
+    <category term="MacOS" scheme="https://yngty.github.io/tags/MacOS/"/>
+    
+    <category term="Creash" scheme="https://yngty.github.io/tags/Creash/"/>
+    
+  </entry>
+  
+  <entry>
     <title>解决 由于没有公钥，无法验证下列签名 :NO_PUBKEY</title>
     <link href="https://yngty.github.io/2022/04/19/linux/NO_PUBKEY/"/>
     <id>https://yngty.github.io/2022/04/19/linux/NO_PUBKEY/</id>
     <published>2022-04-19T22:41:41.000Z</published>
-    <updated>2022-04-19T14:51:49.123Z</updated>
+    <updated>2022-07-26T09:19:30.947Z</updated>
     
     
       
@@ -48,7 +70,7 @@
     <link href="https://yngty.github.io/2022/04/16/effecitve-cpp/effective-cpp-28/"/>
     <id>https://yngty.github.io/2022/04/16/effecitve-cpp/effective-cpp-28/</id>
     <published>2022-04-16T21:42:47.000Z</published>
-    <updated>2022-04-19T14:51:49.123Z</updated>
+    <updated>2022-07-26T09:19:30.947Z</updated>
     
     
     <summary type="html">&lt;blockquote&gt;
@@ -72,7 +94,7 @@
     <link href="https://yngty.github.io/2022/04/15/effecitve-cpp/effective-cpp-26/"/>
     <id>https://yngty.github.io/2022/04/15/effecitve-cpp/effective-cpp-26/</id>
     <published>2022-04-15T10:38:20.000Z</published>
-    <updated>2022-04-19T14:51:49.123Z</updated>
+    <updated>2022-07-26T09:19:30.947Z</updated>
     
     
     <summary type="html">&lt;blockquote&gt;
@@ -102,7 +124,7 @@
     <link href="https://yngty.github.io/2022/04/09/effecitve-cpp/effective-cpp-25/"/>
     <id>https://yngty.github.io/2022/04/09/effecitve-cpp/effective-cpp-25/</id>
     <published>2022-04-09T23:12:46.000Z</published>
-    <updated>2022-04-19T14:51:49.123Z</updated>
+    <updated>2022-07-26T09:19:30.947Z</updated>
     
     
     <summary type="html">&lt;blockquote&gt;
@@ -132,7 +154,7 @@
     <link href="https://yngty.github.io/2022/04/09/effecitve-cpp/effective-cpp-24/"/>
     <id>https://yngty.github.io/2022/04/09/effecitve-cpp/effective-cpp-24/</id>
     <published>2022-04-09T22:39:25.000Z</published>
-    <updated>2022-04-19T14:51:49.123Z</updated>
+    <updated>2022-07-26T09:19:30.947Z</updated>
     
     
     <summary type="html">&lt;blockquote&gt;
@@ -156,7 +178,7 @@
     <link href="https://yngty.github.io/2022/04/09/effecitve-cpp/effective-cpp-23/"/>
     <id>https://yngty.github.io/2022/04/09/effecitve-cpp/effective-cpp-23/</id>
     <published>2022-04-09T22:30:35.000Z</published>
-    <updated>2022-04-19T14:51:49.123Z</updated>
+    <updated>2022-07-26T09:19:30.947Z</updated>
     
     
       
@@ -184,7 +206,7 @@
     <link href="https://yngty.github.io/2022/03/23/linux/%E5%9C%A8UOS%E4%B8%AD%E6%96%87%E4%BB%B6%E7%AE%A1%E7%90%86%E5%99%A8%E5%8C%BF%E5%90%8D%E8%AE%BF%E9%97%AE%E5%85%B1%E4%BA%AB%E4%BF%AE%E6%94%B9%E6%96%87%E4%BB%B6%E5%AF%BC%E8%87%B4%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90%E6%9B%B4%E6%94%B9%E6%A0%B9%E5%9B%A0%E5%88%86%E6%9E%90%E6%8A%A5%E5%91%8A/"/>
     <id>https://yngty.github.io/2022/03/23/linux/%E5%9C%A8UOS%E4%B8%AD%E6%96%87%E4%BB%B6%E7%AE%A1%E7%90%86%E5%99%A8%E5%8C%BF%E5%90%8D%E8%AE%BF%E9%97%AE%E5%85%B1%E4%BA%AB%E4%BF%AE%E6%94%B9%E6%96%87%E4%BB%B6%E5%AF%BC%E8%87%B4%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90%E6%9B%B4%E6%94%B9%E6%A0%B9%E5%9B%A0%E5%88%86%E6%9E%90%E6%8A%A5%E5%91%8A/</id>
     <published>2022-03-23T13:30:28.000Z</published>
-    <updated>2022-04-19T14:51:49.123Z</updated>
+    <updated>2022-07-26T09:19:30.947Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;在UOS中文件管理器匿名访问共享修改文件导致文件变成只读根因分析报告&quot;&gt;&lt;a href=&quot;#在UOS中文件管理器匿名访问共享修改文件导致文件变成只读根因分析报告&quot; class=&quot;headerlink&quot; title=&quot;在UOS中文件管理器匿名访问共享修改文件导致文件变成只读根因分析报告&quot;&gt;&lt;/a&gt;在UOS中文件管理器匿名访问共享修改文件导致文件变成只读根因分析报告&lt;/h1&gt;&lt;h2 id=&quot;一、相关术语&quot;&gt;&lt;a href=&quot;#一、相关术语&quot; class=&quot;headerlink&quot; title=&quot;一、相关术语&quot;&gt;&lt;/a&gt;一、相关术语&lt;/h2&gt;&lt;table&gt;
@@ -548,34 +570,6 @@
 &lt;p&gt;Item 14: Think carefully about copying behavior in resource-managing classes.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;设计一个</summary>
-        
-      
-    
-    
-    
-    <category term="Effective-C++" scheme="https://yngty.github.io/categories/Effective-C/"/>
-    
-    
-    <category term="C++" scheme="https://yngty.github.io/tags/C/"/>
-    
-    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Effective C++ 13：以对象管理资源</title>
-    <link href="https://yngty.github.io/2021/11/02/effecitve-cpp/effective-cpp-13/"/>
-    <id>https://yngty.github.io/2021/11/02/effecitve-cpp/effective-cpp-13/</id>
-    <published>2021-11-02T12:30:45.000Z</published>
-    <updated>2021-11-02T12:32:55.585Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;blockquote&gt;
-&lt;p&gt;Item 13: Use objects to manage</summary>
         
       
     
