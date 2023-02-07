@@ -76,6 +76,65 @@
       </tags>
   </entry>
   <entry>
+    <title>std::make_shared vs. new</title>
+    <url>/2023/02/07/c++/std-make-shared-vs-new/</url>
+    <content><![CDATA[<h1 id="内存分配"><a href="#内存分配" class="headerlink" title="内存分配"></a>内存分配</h1><p><code>std::make_shared</code> 执行<strong>一次</strong>堆分配，而调用<code>std::shared_ptr</code> 构造函数执行<strong>两次</strong>。</p>
+<p>在一个典型的实现中 <code>std::shared_ptr</code> 管理两个实体：</p>
+<ul>
+<li>控制块（存储元数据，如引用计数、类型擦除删除器等）</li>
+<li>被管理的对象</li>
+</ul>
+<p>控制块是一个动态分配的对象，它包含：</p>
+<ul>
+<li>指向托管对象的指针或托管对象本身；</li>
+<li>删除器 (类型擦除)</li>
+<li>分配器 (类型擦除)</li>
+<li>拥有被管理对象的 <code>shared_ptr</code>的数量</li>
+<li>引用托管对象的 <code>weak_ptr</code> 的数量 </li>
+</ul>
+<p><code>std::make_shared</code>执行一次堆分配，计算控制块和数据所需的总空间。在另一种情况 <code>std::shared_ptr&lt;Obj&gt;(new Obj(&quot;foo&quot;))</code>下执行两次, <code>new Obj(&quot;foo&quot;)</code>为托管数据调用堆分配，<code>std::shared_ptr</code>构造函数为控制块执行另一个堆分配。</p>
+<a id="more"></a>
+
+<h1 id="异常安全"><a href="#异常安全" class="headerlink" title="异常安全"></a>异常安全</h1><p><strong>自 <code>C++17</code> 以来，这不是问题，因为函数参数的评估顺序发生了变化。具体来说，函数的每个参数都需要在评估其他参数之前完全执行</strong>。</p>
+<p>考虑这个例子:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">f(std::shared_ptr&lt;int&gt;(new int(42)), g())</span><br></pre></td></tr></table></figure>
+<p>因为 C++ 允许对子表达式进行任意顺序的计算，所以一种可能的顺序是：</p>
+<ol>
+<li><code>new int(42)</code></li>
+<li><code>g()</code></li>
+<li><code>std::shared_ptr&lt;int&gt;</code></li>
+</ol>
+<p>现在，假设我们在第 <code>2</code> 步抛出一个异常。然后我们丢失了在步骤 <code>1</code> 分配的内存，因为没有将原始指针传给 <code>std::shared_ptr</code>, 后面没有任何东西有机会清理它。</p>
+<p>解决这个问题的一种方法是在不同的行上执行它们，这样就不会发生这种任意排序。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">auto ptr &#x3D; std::shared_ptr&lt;int&gt;(new int(42));</span><br><span class="line">f(ptr, g());</span><br></pre></td></tr></table></figure>
+
+<p>更方便的的是采用 <code>std::make_shared</code>.</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">f(std::make_shared&lt;int&gt;(42), g())</span><br></pre></td></tr></table></figure>
+
+<h1 id="std-make-shared-的一些缺点"><a href="#std-make-shared-的一些缺点" class="headerlink" title="std::make_shared 的一些缺点"></a><code>std::make_shared</code> 的一些缺点</h1><h2 id="weak-ptr内存保活"><a href="#weak-ptr内存保活" class="headerlink" title="weak_ptr内存保活"></a><code>weak_ptr</code>内存保活</h2><ul>
+<li> 通过 <code>std::make_shared</code> 构造的智能指针, 当没有 <code>shared_ptr</code> 引用计数为 <code>0</code> 时只调用析构函数，<code>weak_ptr</code>引用计数为 <code>0</code> 时才释放内存块。</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">bool</span> logging = <span class="literal">false</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span>* <span class="keyword">operator</span> <span class="title">new</span><span class="params">(<span class="built_in">std</span>::<span class="keyword">size_t</span> size)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">auto</span> ptr = <span class="built_in">std</span>::<span class="built_in">malloc</span>(size);</span><br><span class="line">    <span class="keyword">if</span> (logging) &#123;</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Allocated: &quot;</span> &lt;&lt; (<span class="keyword">uintptr_t</span>)ptr &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ptr;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="keyword">operator</span> <span class="title">delete</span><span class="params">(<span class="keyword">void</span> *ptr)</span> <span class="keyword">noexcept</span>  </span>&#123;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">free</span>(ptr);</span><br><span class="line">    <span class="keyword">if</span> (logging) &#123;</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Deallocated: &quot;</span> &lt;&lt; (<span class="keyword">uintptr_t</span>)ptr &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Widget</span> &#123;</span></span><br><span class="line">    ~Widget() &#123;</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Widget::~Widget()&quot;</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> data;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>*argv[])</span> </span>&#123;</span><br><span class="line">    logging = <span class="literal">true</span>;</span><br><span class="line">    test(<span class="literal">true</span>);</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;---------------------\n&quot;</span>;</span><br><span class="line">    test(<span class="literal">false</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Allocated: 105553162522944 &#x2F;&#x2F;分配一次</span><br><span class="line">Widget::~Widget() &#x2F;&#x2F; 没有 shared_ptr 指针，只调用析构函数</span><br><span class="line">No std::shared_ptr&#39;s anymore.</span><br><span class="line">Deallocated: 105553162522944 &#x2F;&#x2F;没有 &#96;weak_ptr&#96; 释放整个内存块</span><br><span class="line">No std::weak_ptr&#39;s anymore.</span><br><span class="line">---------------------</span><br><span class="line">Allocated: 105553164599312</span><br><span class="line">Allocated: 105553162522944 &#x2F;&#x2F;分配两次</span><br><span class="line">Widget::~Widget()</span><br><span class="line">Deallocated: 105553164599312 &#x2F;&#x2F;立即释放</span><br><span class="line">No std::shared_ptr&#39;s anymore.</span><br><span class="line">Deallocated: 105553162522944</span><br><span class="line">No std::weak_ptr&#39;s anymore.</span><br></pre></td></tr></table></figure>
+
+<h2 id="无法访问公共构造函数"><a href="#无法访问公共构造函数" class="headerlink" title="无法访问公共构造函数"></a>无法访问公共构造函数</h2><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    A(): val(<span class="number">0</span>)&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// make_shared 无法调用 A(int) </span></span><br><span class="line">    <span class="comment">// std::shared_ptr&lt;A&gt; createNext()&#123; </span></span><br><span class="line">    <span class="comment">//     return std::make_shared&lt;A&gt;(val+1); </span></span><br><span class="line">    <span class="comment">//&#125;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 可以调用 A(int) </span></span><br><span class="line">    <span class="function"><span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;A&gt; <span class="title">createNext</span><span class="params">()</span></span>&#123; </span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;A&gt;(<span class="keyword">new</span> A(val+<span class="number">1</span>)); </span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">int</span> val;</span><br><span class="line">    A(<span class="keyword">int</span> v): val(v)&#123;&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ul>
+<li><a href="https://stackoverflow.com/questions/20895648/difference-in-make-shared-and-normal-shared-ptr-in-c">Difference in make_shared and normal shared_ptr in C++</a></li>
+<li><a href="https://www.gamedev.net/forums/topic/695796-stdmake_shared-vs-new/">std::make_shared 与 new</a></li>
+<li><a href="https://zh.cppreference.com/w/cpp/memory/shared_ptr/make_shared#Notes">make_shared#Notes</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>C/C++</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>智能指针</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Effective C++ 1：将C++视作一系列的语言</title>
     <url>/2020/12/07/effecitve-cpp/effective-cpp-1/</url>
     <content><![CDATA[<blockquote>
@@ -195,7 +254,7 @@
   </entry>
   <entry>
     <title>Effective C++ 14：在资源管理类中小心 copying 行为</title>
-    <url>/2021/11/04/effecitve-cpp/effective-cpp-14/</url>
+    <url>/2021/11/05/effecitve-cpp/effective-cpp-14/</url>
     <content><![CDATA[<blockquote>
 <p>Item 14: Think carefully about copying behavior in resource-managing classes.</p>
 </blockquote>
@@ -345,6 +404,21 @@
       </tags>
   </entry>
   <entry>
+    <title>Effective C++ 19：设计 class 犹如设计 type</title>
+    <url>/2021/11/11/effecitve-cpp/effective-cpp-19/</url>
+    <content><![CDATA[<blockquote>
+<p>Item 19: Teat class design as type design.</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>Effective-C++</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>Effective-C++</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Effective C++ 2：尽量以const, enum, inline 替换 &amp;#35;define</title>
     <url>/2020/12/14/effecitve-cpp/effective-cpp-2/</url>
     <content><![CDATA[<blockquote>
@@ -373,6 +447,300 @@
 <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">callWithMax</span><span class="params">(<span class="keyword">const</span> T &amp;a, <span class="keyword">const</span> T &amp;b)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (a &gt; b ? a : b);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 
+]]></content>
+      <categories>
+        <category>Effective-C++</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>Effective-C++</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Effective C++ 20：传常量引用比传值更好</title>
+    <url>/2022/03/23/effecitve-cpp/effective-cpp-20/</url>
+    <content><![CDATA[<blockquote>
+<p>Item 20: Prefer pass-by-reference-to-const to pass-by-value.</p>
+</blockquote>
+<p>缺省情况下<code>C++</code> 用传值得方式(一个继承自<code>C</code>的方式)传递对象至(或来自)函数。除非你另外指定，否则函数参数都是以实际实参的复件(副本)为初值，而调用端所获得的亦是函数返回值的一个复件。这些复件(副本)系由对象的<code>copy</code>构造函数产出。</p>
+<p><strong>尽量以传常量引用替换传值前者通常比较高效，并可避免切割问题 (<code>slicing problem</code>)，但是内置类型和 <code>STL</code> 迭代器，还是传值更加合适。</strong>。</p>
+<a id="more"></a>
+
+<h2 id="性能问题"><a href="#性能问题" class="headerlink" title="性能问题:"></a>性能问题:</h2><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    Person ();</span><br><span class="line">    <span class="keyword">virtual</span> -Person();</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> name;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> address;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Student</span>:</span> <span class="keyword">public</span> Person &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    Student();</span><br><span class="line">    -Student();</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> schoolName;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>现在考虑以下代码，其中调用函数 <code>validateStudent</code> ，后者需要一个 <code>Student</code><br>(<code>by value</code>) 并返回它是否有效:</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">validateStudent</span><span class="params">(Student s)</span></span>;           <span class="comment">// function taking a Student by value</span></span><br><span class="line"></span><br><span class="line">Student plato;                             <span class="comment">// Plato studied under Socrates</span></span><br><span class="line"><span class="keyword">bool</span> platoIsOK = validateStudent(plato);   <span class="comment">// call the functio</span></span><br></pre></td></tr></table></figure>
+
+<p>在调用 <code>validateStudent(</code>) 时进行了 <strong>6</strong> 个函数调用：</p>
+<ol>
+<li><code>Person</code> 的拷贝构造函数，为什么 <code>Student</code> 的拷贝构造一定要调用 <code>Person</code> 的拷贝构造请参见：<a href="/2021/11/02/effecitve-cpp/effective-cpp-12/" title="Item:12 复制对象时勿忘其每一个成分">Item:12 复制对象时勿忘其每一个成分</a></li>
+<li><code>Student</code> 的拷贝构造函数</li>
+<li><code>name</code>, <code>address</code>, <code>schoolName</code>, <code>schoolAddress</code> 的拷贝构造函数</li>
+</ol>
+<p>解决办法便是传递常量引用：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">validateStudent</span><span class="params">(<span class="keyword">const</span> Student&amp; s)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>首先以引用的方式传递，不会构造新的对象，避免了上述例子中 <strong>6</strong> 个构造函数的调用。 同时 const 也是必须的：传值的方式保证了该函数调用不会改变原来的 <code>Student</code>， 而传递引用后为了达到同样的效果，需要使用 <code>const</code> 声明来声明这一点，让编译器去进行检查!</p>
+<h2 id="截断问题"><a href="#截断问题" class="headerlink" title="截断问题"></a>截断问题</h2><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Window</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">...</span><br><span class="line"><span class="function"><span class="built_in">std</span>::<span class="built_in">string</span> <span class="title">name</span><span class="params">()</span> <span class="keyword">const</span></span>;           <span class="comment">// return name of window</span></span><br><span class="line"><span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">display</span><span class="params">()</span> <span class="keyword">const</span></span>;       <span class="comment">// draw window and contents</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">WindowWithScrollBars</span>:</span> <span class="keyword">public</span> Window &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">...</span><br><span class="line"><span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">display</span><span class="params">()</span> <span class="keyword">const</span></span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>现在假设你希望写个函数打印窗口名称，然后显示该窗口:</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">printNameAndDisplay</span><span class="params">(Window w)</span></span></span><br><span class="line">    std::cout &lt;&lt; w.name();</span><br><span class="line">    w.display() ;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">WindowWithScrollBars wwsb;</span><br><span class="line">printNameAndDisplay(wwsb);</span><br></pre></td></tr></table></figure>
+
+<p>当调用 <code>printNameAndDisplay</code> 时参数类型从 <code>WindowWithScrollBars</code> 被隐式转换为 <code>Window</code>。 该转换过程通过调用 <code>Window</code> 的拷贝构造函数来进行。 导致的结果便是函数中的 <code>w</code> 事实上是一个 <code>Window</code> 对象， 并不会调用多态子类 <code>WindowWithScrollBars</code> 的 <code>display()</code>。</p>
+<p>正确做法：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">// fine, parameter won&#x27;t be sliced</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">printNameAndDisplay</span><span class="params">(<span class="keyword">const</span> Window&amp; w)</span></span>&#123; </span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; w.name();</span><br><span class="line">    w.display();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="特殊情况"><a href="#特殊情况" class="headerlink" title="特殊情况"></a>特殊情况</h2><p>一般情况下相比于传递值，传递常量引用是更好的选择。但也有例外情况，比如 <strong>内置类型</strong> 和 <strong>STL 迭代器</strong>和<strong>函数对象</strong>。</p>
+]]></content>
+      <categories>
+        <category>Effective-C++</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>Effective-C++</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Effective C++ 21：需要返回对象时，不要返回引用</title>
+    <url>/2022/03/23/effecitve-cpp/effective-cpp-21/</url>
+    <content><![CDATA[<blockquote>
+<p>Don’t to return a reference when you must return an object.</p>
+</blockquote>
+<p>Item 20 中提到，多数情况下传引用比传值更好。但不要无脑追求这一点，一定不要返回空引用或指针。</p>
+<a id="more"></a>
+
+<p>举个栗子：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Rational</span>&#123;</span></span><br><span class="line">  <span class="keyword">int</span> n, d;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  Raitonal(<span class="keyword">int</span> numerator=<span class="number">0</span>, <span class="keyword">int</span> denominator=<span class="number">1</span>);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 返回值为什么是const请参考Item 3</span></span><br><span class="line"><span class="keyword">friend</span> <span class="keyword">const</span> Rational <span class="keyword">operator</span>*(<span class="keyword">const</span> Rational&amp; lhs, <span class="keyword">const</span> Rational&amp; rhs);</span><br><span class="line"></span><br><span class="line">Rational a, b;</span><br><span class="line">Rational c = a*b;</span><br></pre></td></tr></table></figure>
+<p>这个版本的 <code>operator*</code> 返回的是一个实例，<code>a*b</code>时便会调用<code>operator*()</code>， 返回值被拷贝后用来初始化<code>c</code>。</p>
+<p>不考虑编译器优化和 <code>C11</code> 的 <code>move</code> ,这个过程涉及到多个构造和析构过程：</p>
+<ol>
+<li><code>operator*</code>调用结束前，返回值被拷贝，调用拷贝构造函数</li>
+<li><code>operator*</code>调用结束后，返回值被析构</li>
+<li><code>c</code> 被初始化，调用拷贝构造函数</li>
+</ol>
+<p>我们能否通过传递引用的方式来避免这些函数调用？这要求在函数中创建那个要被返回给调用者的对象，而函数只有两种办法来创建对象：在栈空间中创建、或者在堆中创建。</p>
+<p>在栈空间中创建显然是错误的：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> Rational&amp; <span class="keyword">operator</span>*(<span class="keyword">const</span> Rational&amp; lhs, <span class="keyword">const</span> Rational&amp; rhs)&#123;</span><br><span class="line">  <span class="function">Rational <span class="title">result</span><span class="params">(lhs.n*rhs.n, lhs.d*rhs.d)</span></span>;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们的目标是要避免调用构造函数，而 <code>result</code> 却必须像任何对象一样地由构造函数构造起, 而且得到的 <code>result</code> 永远是空。因为 <code>result</code> 是一个 <code>local</code> 对象，当函数调用结束后 <code>result</code>即被销毁。</p>
+<p>在堆中创建也会问题:</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> Rational&amp; <span class="keyword">operator</span>*(<span class="keyword">const</span> Rational&amp; lhs, <span class="keyword">const</span> Rational&amp; rhs)&#123;</span><br><span class="line">  Rational *result  = <span class="keyword">new</span> Rational(lhs.n*rhs.n, lhs.d*rhs.d);</span><br><span class="line">  <span class="keyword">return</span> *result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>首先还是得必须付出一个”构造函数调用”代价， 并且谁去 <code>delete</code>?</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">Rational w, x, y, z;</span><br><span class="line">w = x*y*z;</span><br></pre></td></tr></table></figure>
+
+<p>上面这样合理的代码都会导致内存泄露。</p>
+<p>使用静态变量的方式：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> Rational&amp; <span class="keyword">operator</span>*(<span class="keyword">const</span> Rational&amp; lhs, <span class="keyword">const</span> Rational&amp; rhs)&#123;</span><br><span class="line">    <span class="keyword">static</span> Rational result; <span class="comment">// static 对象，此函数将返回</span></span><br><span class="line">    result = ... ; <span class="comment">// lhs 乘以 rhs. 并将结果置于 result 内。</span></span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>静态变量首先便面临着线程安全问题，除此之外当我们需要不止一个的返回值同时存在时也会产生问题：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span>((a*b) == (c*d))&#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果operator*的返回值是静态变量，那么上述条件判断恒成立，因为等号两边是同一个对象。所以我们还是老老实实返回对象实例就好，并且考虑到编译器优化和<code>move</code>语意，拷贝构造返回值带来的代价没那么高。</p>
+<p><strong>永远不要返回局部对象的引用或指针或堆空间的指针，如果需要多个返回对象时也不能是局部静态对象的指针或引用</strong>。<a href="/2021/01/13/effecitve-cpp/effective-cpp-4/" title="Item:4 确定对象被使用前已先被初始化">Item:4 确定对象被使用前已先被初始化</a>， 对于单例模式，返回局部静态对象的引用也是合理的。</p>
+]]></content>
+      <categories>
+        <category>Effective-C++</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>Effective-C++</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Effective C++ 22：将成员变量声明为private</title>
+    <url>/2022/03/23/effecitve-cpp/effective-cpp-22/</url>
+    <content><![CDATA[<blockquote>
+<p>Declare data members private.</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>Effective-C++</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>Effective-C++</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Effective C++ 23：用非成员函数、非友元函数替换成员函数</title>
+    <url>/2022/04/09/effecitve-cpp/effective-cpp-23/</url>
+    <content><![CDATA[<blockquote>
+<p>Prefer non-member non-friend functions to member functions</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>Effective-C++</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>Effective-C++</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Effective C++ 24：若所有参数皆需类型转换，请采用非成员函数</title>
+    <url>/2022/04/09/effecitve-cpp/effective-cpp-24/</url>
+    <content><![CDATA[<blockquote>
+<p>Declare non-member functions when type conversions should apply all parameters.</p>
+</blockquote>
+<p>令 <code>classes</code> 支持隐式转换通常是糟糕的设计，但也有例外，最常见的是在建立数值类型时。 比如设计一个有理数 <code>class</code> 允许整数隐式转换。</p>
+<a id="more"></a>
+
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Rational</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    Rational(<span class="keyword">int</span> numerator = <span class="number">0</span>, <span class="keyword">int</span> denominator = <span class="number">1</span>); <span class="comment">//构造函数刻意不使用 explicit; 允许 int-to-Rational 隐式转换。</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">numerator</span><span class="params">()</span> <span class="keyword">const</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">denominator</span><span class="params">()</span> <span class="keyword">const</span></span>;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>这时我们想设计一个乘法，该使用 <code>member</code> 函数，还是 <code>non-member</code> 函数， 还是 <code>non-member-friend</code> 函数？</p>
+<p>我们先采用 <code>member</code> 函数看有什么问题？</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Rational</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> Rational <span class="keyword">operator</span>* (<span class="keyword">const</span> Rational&amp; rhs) <span class="keyword">const</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>我们使用如下没有什么问题：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">Rational <span class="title">oneEighth</span><span class="params">(<span class="number">1</span>, <span class="number">8</span>)</span></span>;</span><br><span class="line"><span class="function">Rational <span class="title">oneHalf</span><span class="params">(<span class="number">1</span>, <span class="number">2</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">Rational result = oneEighth * oneHalf; <span class="comment">//ok</span></span><br><span class="line">result = result * oneEighth;  <span class="comment">// ok</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>但当我们想支持混合运算，那 <code>Rational</code> 和 <code>ints</code> 相乘, 就只有一半行的通。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">result = oneHalf * <span class="number">2</span>; <span class="comment">//ok  隐式转换</span></span><br><span class="line">result = <span class="number">2</span> * oneHalf;  <span class="comment">// no</span></span><br></pre></td></tr></table></figure>
+
+<p>当我们设计成 <code>non-member</code> 函数就都支持：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Rational</span> &#123;</span></span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> Rational <span class="keyword">operator</span>* (<span class="keyword">const</span> Rational&amp; lhs, <span class="keyword">const</span> Rational&amp; rhs) &#123;</span><br><span class="line">    <span class="keyword">return</span> Rational(lhs.numerator() * rhs.numerator(), lhs.denominator(), rhs.denominator());</span><br><span class="line">&#125;</span><br><span class="line">    </span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">Rational <span class="title">oneFourth</span><span class="params">(<span class="number">1</span>, <span class="number">4</span>)</span></span>;</span><br><span class="line">Rational result;</span><br><span class="line">result = oneFourth * <span class="number">2</span>;  <span class="comment">// ok</span></span><br><span class="line">result = <span class="number">2</span> * oneFourth;  <span class="comment">// ok </span></span><br></pre></td></tr></table></figure>
+
+<p><strong>如果需要为某个函数的所有参数进行类型转换，那这个函数必须是 <code>non-member</code></strong></p>
+]]></content>
+      <categories>
+        <category>Effective-C++</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>Effective-C++</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Effective C++ 25：设计一个不抛异常的 swap 函数</title>
+    <url>/2022/04/09/effecitve-cpp/effective-cpp-25/</url>
+    <content><![CDATA[<blockquote>
+<p>Consider support for a non-throwing swap.</p>
+</blockquote>
+<p><code>swap</code> 函数能置换两对象值，功能很重要!</p>
+<ul>
+<li>异常安全性编程</li>
+<li>处理自我赋值可能性：<a href="/2021/11/01/effecitve-cpp/effective-cpp-11/" title="赋值运算符需要考虑自我赋值问题">赋值运算符需要考虑自我赋值问题</a></li>
+</ul>
+<p><code>std</code> 的缺省基本实现如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">namespace</span> <span class="built_in">std</span> &#123;</span><br><span class="line">    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">swap</span><span class="params">(T&amp; a, T&amp; b)</span> </span>&#123;</span><br><span class="line">        <span class="function">T <span class="title">temp</span><span class="params">(a)</span></span>;</span><br><span class="line">        a = b;</span><br><span class="line">        b = temp;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+
+<h2 id="类的-swap"><a href="#类的-swap" class="headerlink" title="类的 swap"></a>类的 swap</h2><p>只要类型 <code>T</code> 支持 <code>copying</code>运算(拷贝构造和拷贝赋值运算)就能使用。 但缺省实现会有多次拷贝，在某些情况下不是性能最好的实现。比如针对 <code>pimpl</code> 手法实现的 <code>class</code>, 不仅要复制三次 <code>Widget</code> 还需要复制三次 <code>WdigetImpl</code>, 非常缺乏效率。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">WidgetImpl</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">int</span> a, b, c;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">double</span>&gt; v;</span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Widget</span> &#123;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    Widget(<span class="keyword">const</span> Widget&amp;);</span><br><span class="line"></span><br><span class="line">    Widget&amp; <span class="keyword">operator</span>= (<span class="keyword">const</span> Widget&amp; rhs) &#123;</span><br><span class="line">        ...</span><br><span class="line">        *pImpl = *(rhs.pImpl);</span><br><span class="line">        ...</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    WidgetImpl *pImpl;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>其实我们发现这种情况只需要将 <code>pImpl</code> 指针交换就好， 我们可以将 <code>std::swap</code> 对 <code>Widget</code> 的特化来实现.</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">namespace</span> <span class="built_in">std</span> &#123;</span><br><span class="line">    <span class="keyword">template</span> &lt;&gt;</span><br><span class="line">    <span class="keyword">void</span> swap&lt;Widget&gt; (Widget&amp; a, Widget&amp; b) &#123;</span><br><span class="line">        swap(a.pImpl, b.pImpl);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>但上述代码不能通过编译， 因为 <code>pImpl</code> 是私有变量， 所以，<code>Widget</code> 应当提供一个 <code>swap</code> 成员函数或友元函数。 惯例上会提供一个成员函数：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Widget</span> &#123;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    ...</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">swap</span><span class="params">(Widget&amp; other)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">using</span> <span class="built_in">std</span>::swap; <span class="comment">// 为何要这样？请看下文</span></span><br><span class="line">        swap(pImpl, other.pImpl);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="built_in">std</span> &#123;</span><br><span class="line">  <span class="keyword">template</span>&lt;&gt;</span><br><span class="line">  <span class="keyword">void</span> swap&lt;Widget&gt;(Widget&amp; a, Widget&amp; b)&#123;</span><br><span class="line">      a.swap(b);              <span class="comment">// 调用成员函数</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上述实现与 STL 容器是一致的：<strong>提供公有 <code>swap</code> 成员函数， 并特化 <code>std::swap</code> 来调用那个成员函数</strong>。</p>
+<h2 id="类模板的-swap"><a href="#类模板的-swap" class="headerlink" title="类模板的 swap"></a>类模板的 swap</h2><p>如果 <code>Widget</code> 和 <code>WidgetImpl</code> 是 <code>class templates</code> 而非 <code>classes</code>, 按照上面的 <code>swap</code> 实现方式，你可能会这样写：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Widget</span>&#123;</span>  ... &#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">WidgetImpl</span>&#123;</span> ... &#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="built_in">std</span> &#123;</span><br><span class="line">    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line">    <span class="keyword">void</span> swap&lt;Widget&lt;T&gt;&gt;(Widget&lt;T&gt;&amp; a, Widget&lt;T&gt;&amp; b) &#123;</span><br><span class="line">        a.swap(b);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>但上述代码不能通过编译， <code>c++</code> 允许偏特化类模版，却不允许偏特化函数模版(虽然有的编译器中可以编译)。那我们继续尝试重载 <code>std::swap</code>  函数：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">namespace</span> <span class="built_in">std</span>&#123;</span><br><span class="line">    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">swap</span><span class="params">(Widget&lt;T&gt;&amp; a, Widget&lt;T&gt;&amp; b)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> a.swap(b);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里我们重载了 <code>std::swap</code>，相当于在 <code>std</code> 命名空间添加了一个函数模板。但这在 <code>C++</code> 标准中是不允许的！ <code>C++</code> 标准中，客户只能特化 <code>std</code> 中的模板，但不允许在 <code>std</code> 命名空间中添加任何新的模板。 上述代码虽然在有些编译器中可以编译，但会引发未定义的行为，所以不要这么做。所以我们最终可以把 <code>swap</code> 定义在 <code>Widget</code> 所在的命名空间中：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">namespace</span> WidgetStuff &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt; </span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Widget</span> &#123;</span> ... &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">swap</span><span class="params">(Widget&lt;T&gt;&amp; a, Widget&lt;T&gt;&amp; b)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> a.swap(b);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>任何地方在两个 <code>Widget</code> 上调用 <code>swap</code> 时，<code>C++</code> 根据其 <code>argument-dependent lookup</code>（又称 <code>Koenig lookup</code>） 会找到 <code>WidgetStuff</code> 命名空间下的具有 <code>Widget</code> 参数的 <code>swap</code>。</p>
+<p>其实类的 <code>swap</code> 也可以在同一命名空间下定义 <code>swap</code> 函数，而不必特化 <code>std::swap</code>。 但有人可能直接写 <code>std::swap(w1, w2)</code>，特化 <code>std::swap</code> 可以让你的类更加健壮。</p>
+<p><strong>在成员函数中不要直接调用 <code>swap(pImpl, other.pImpl);</code> 因为指定了调用 <code>std::swap</code>，<code>argument-dependent lookup</code> 便失效了，<code>WidgetStuff::swap</code> 不会得到调用</strong>。</p>
+<p>如果希望优先调用 <code>WidgetStuff::swap</code>，如果未定义则取调用 <code>std::swap</code>，那么应该如何写呢？ 看代码：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">doSomething</span><span class="params">(T&amp; obj1, T&amp; obj2)</span></span>&#123;</span><br><span class="line">  <span class="keyword">using</span> <span class="built_in">std</span>::swap;           <span class="comment">// 使得 std::swap 在该作用域内可见</span></span><br><span class="line">  swap(obj1, obj2);          <span class="comment">// 现在，编译器会帮你选最好的 swap</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>此时，<code>C++</code> 编译器还是会优先调用指定了 <code>T</code> 的 <code>std::swap</code>，其次是 <code>obj1</code> 的类型 <code>T</code> 所在命名空间下的对应 <code>swap</code> 函数， 最后才会匹配 <code>std::swap</code> 的默认实现。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>如何实现 <code>swap</code> 呢？</p>
+<ul>
+<li>提供一个更加高效的，不抛异常的公有成员函数（比如 <code>Widget::swap</code>）。</li>
+<li>在你类（或类模板）的同一命名空间下提供非成员函数 <code>swap</code>，调用你的成员函数。</li>
+<li>如果你写的是类而不是类模板，也可以特化 <code>std::swap</code>，同样地在里面调用你的成员函数。</li>
+<li>调用时，请首先用 <code>using</code> 使 <code>std::swap</code> 可见，然后直接调用 <code>swap</code>。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Effective-C++</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>Effective-C++</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Effective C++ 26：尽可能推迟变量的定义</title>
+    <url>/2022/04/15/effecitve-cpp/effective-cpp-26/</url>
+    <content><![CDATA[<blockquote>
+<p>Item 26:Postpone variable definitions as long as possible.</p>
+</blockquote>
+<p>推迟变量的定义有两个好处：</p>
+<ul>
+<li>改善程序效率，减少无用的构造和析构。</li>
+<li>增加程序流程清晰度。</li>
+</ul>
+<p>这条规则看似简单，但存在流程控制语句的时候容易疏忽。如：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="built_in">string</span> <span class="title">encryptPassword</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span>&amp; password)</span></span>&#123;</span><br><span class="line">    <span class="built_in">string</span> encrypted;</span><br><span class="line">    <span class="keyword">if</span> (password.length() &lt; MinimumPasswordLength) &#123;</span><br><span class="line">        <span class="keyword">throw</span> logic_error(<span class="string">&quot;Password is too short&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    encrypted = password;</span><br><span class="line">    encrypt(encrypted);</span><br><span class="line">    <span class="keyword">return</span> encrypted;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<a id="more"></a>
+
+<h2 id="推迟到需要构造时执行"><a href="#推迟到需要构造时执行" class="headerlink" title="推迟到需要构造时执行"></a>推迟到需要构造时执行</h2><p>当 <code>encryptPassword</code> 抛出异常时，<code>encrypted</code> 是无用的, 根本不需要构造它。所以更好的写法是推迟 <code>encrypted</code> 的构造：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="built_in">string</span> <span class="title">encryptPassword</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span>&amp; password)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (password.length() &lt; MinimumPasswordLength) &#123;</span><br><span class="line">        <span class="keyword">throw</span> logic_error(<span class="string">&quot;Password is too short&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">string</span> encrypted;       <span class="comment">// 默认构造函数</span></span><br><span class="line">    encrypted = password;   <span class="comment">// 赋值运算符</span></span><br><span class="line">    encrypt(encrypted);</span><br><span class="line">    <span class="keyword">return</span> encrypted;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="推迟到有构造参数时"><a href="#推迟到有构造参数时" class="headerlink" title="推迟到有构造参数时"></a>推迟到有构造参数时</h2><p> <strong>“尽可能延后”</strong> 的真正意义。你不只应该延后变量的定义，直到非得使用该变量的前一刻为止，甚至<strong>应该尝试延后这份定义直到能够给它初值实参为止</strong>。如果这样，不仅能够避免构造(和析构)非必要对象，还可以避免无意义的 <code>default</code> 构造行为。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="built_in">string</span> <span class="title">encryptPassword</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span>&amp; password)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (password.length() &lt; MinimumPasswordLength) &#123;</span><br><span class="line">       <span class="keyword">throw</span> logic_error(<span class="string">&quot;Password is too short&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="built_in">string</span> <span class="title">encrypted</span><span class="params">(password)</span></span>;     <span class="comment">// 拷贝构造函数</span></span><br><span class="line">    encrypt(encrypted);</span><br><span class="line">    <span class="keyword">return</span> encrypted;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="循环中的变量"><a href="#循环中的变量" class="headerlink" title="循环中的变量"></a>循环中的变量</h2><p>循环中的变量定义也是一个常见的争论点。常有两种写法：</p>
+<p>写法 <code>A</code>，在循环外定义：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">Widget w;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++i)&#123; </span><br><span class="line">  w = some value dependent on i;</span><br><span class="line">  ...                           </span><br><span class="line">&#125;                  </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>写法 <code>B</code> ，在循环内定义：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++i) &#123;</span><br><span class="line">    <span class="function">Widget <span class="title">w</span><span class="params">(some value dependent on i)</span></span>;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>A</code>：<code>1</code> 个构造函数，<code>1</code> 个析构函数，<code>n</code> 个赋值运算符</li>
+<li><code>B</code>：<code>n</code> 个构造函数，<code>n</code> 个析构函数</li>
+</ul>
+<p>但 <code>A</code> 使得循环内才使用的变量进入外部的作用域，不利于程序的理解和维护。软件工程中倾向于认为人的效率比机器的效率更加难得， 所以推荐采用 <code>B</code> 来实现。除非：</p>
+<ul>
+<li>这段代码是性能的关键.</li>
+<li>赋值比一对构造/析构更加廉价。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Effective-C++</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>Effective-C++</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Effective C++ 28：避免返回 handles 指向对象内部成分</title>
+    <url>/2022/04/16/effecitve-cpp/effective-cpp-28/</url>
+    <content><![CDATA[<blockquote>
+<p>Item28: Avoid returning “handles” to object internals.</p>
+</blockquote>
+<p>避免返回 <code>handles</code> (包括 <code>references</code> 、指针、迭代器)指向对象内部。</p>
+<a id="more"></a>
+
+<h2 id="破坏封装性"><a href="#破坏封装性" class="headerlink" title="破坏封装性"></a>破坏封装性</h2><p><code>const</code> 函数不再是 <code>const</code>, 修改了私有成员变量。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Point</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    Point(<span class="keyword">int</span> x, <span class="keyword">int</span> y);</span><br><span class="line">    ...</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">setX</span><span class="params">(<span class="keyword">int</span> x)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">setY</span><span class="params">(<span class="keyword">int</span> y)</span></span>;</span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">RectData</span> &#123;</span></span><br><span class="line">    Point ulhc;</span><br><span class="line">    Point lrhc;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Rectangle</span> &#123;</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="function">Point&amp; <span class="title">upperLeft</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> pData-&gt;ulhc; &#125;</span><br><span class="line">    <span class="function">Point&amp; <span class="title">lowerRight</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> pData-&gt;lrhc; &#125;</span><br><span class="line">    ...</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;RectData&gt; pData;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>虽然这样的设计可通过编译，但却是错误的。<code>upperLeft</code> 和 <code>lowerRight</code> 被声明为 <code>const</code> 成员函数，但是可以更改内部数据。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">Point <span class="title">coord1</span><span class="params">(<span class="number">0</span>, <span class="number">0</span>)</span></span>;</span><br><span class="line"><span class="function">Point <span class="title">coord2</span><span class="params">(<span class="number">100</span>, <span class="number">100</span>)</span></span>; </span><br><span class="line"><span class="function"><span class="keyword">const</span> Rectangle <span class="title">rec</span><span class="params">(coord1, coord2)</span></span>; <span class="comment">// rec是个const矩形, 从 (0 ，0) 到 (100 ， 100)</span></span><br><span class="line"></span><br><span class="line">rec.upperLeft( ) .setX(<span class="number">50</span>);  <span class="comment">// 现在rec却变成从 (50 ， 0) 到 (100 ， 100)</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>成员变量的封装性最多只等于”返回其 <code>reference</code>“ 的函数的访问级别。</li>
+<li>如果 <code>const</code> 成员函数传出一个 <code>reference</code>，后者所指数据与对象自身有关联，而它又被存储于对象之外，那么这个函数的调用者可以修改那笔数据。(<code>bitwise constness</code>原因)</li>
+</ul>
+<h2 id="悬空问题"><a href="#悬空问题" class="headerlink" title="悬空问题"></a>悬空问题</h2><p>虽然我们可以修改函数，达到不能修改私有成员变量。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">const</span> Point&amp; <span class="title">upperLeft</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> pData-&gt;ulhc; &#125;</span><br></pre></td></tr></table></figure>
+<p>但也不能解决悬空问题。如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">GUIObject</span> &#123;</span> ... &#125;;</span><br><span class="line"><span class="function"><span class="keyword">const</span> Rectangle <span class="title">boundingBox</span><span class="params">(<span class="keyword">const</span> GUIObject&amp; obj)</span></span>; <span class="comment">//以 by value 方式返回一个矩形</span></span><br></pre></td></tr></table></figure>
+
+<p>现在，客户有可能这么使用这个函数:</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">GUIObject* pgo; <span class="comment">// 让pgo指向某个GUIObject</span></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> Point* pUpperLeft = &amp;(boundingBox(*pgo) .upperLeft()); <span class="comment">// 取得一个指针指向外框左上点</span></span><br></pre></td></tr></table></figure>
+
+<p><code>pUpperLeft</code> 被悬空了，<code>boundingBox(*pgo)</code> 返回的是一个临时变量，在语句执行结束后就会销毁，导致 <code>pUpperLeft</code> 指针失效。</p>
 ]]></content>
       <categories>
         <category>Effective-C++</category>
@@ -595,21 +963,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Effective C++ 19：设计 class 犹如设计 type</title>
-    <url>/2021/11/11/effecitve-cpp/effective-cpp-19/</url>
-    <content><![CDATA[<blockquote>
-<p>Item 19: Teat class design as type design.</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>Effective-C++</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
-        <tag>Effective-C++</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Linux命令之tr</title>
     <url>/2021/11/17/linux/Linux%E5%91%BD%E4%BB%A4%E4%B9%8Btr/</url>
     <content><![CDATA[<p><code>Linux</code> 中 <code>tr</code> 命令用于转换或删除文件中的字符。</p>
@@ -641,199 +994,18 @@
       </tags>
   </entry>
   <entry>
-    <title>文件MIME类型</title>
-    <url>/2021/11/23/linux/%E6%96%87%E4%BB%B6MIME%E7%B1%BB%E5%9E%8B/</url>
-    <content><![CDATA[<h1 id="什么是-MIME-类型？"><a href="#什么是-MIME-类型？" class="headerlink" title="什么是 MIME 类型？"></a>什么是 MIME 类型？</h1><p><code>MIME</code>（多用途 <code>Internet</code> 邮件扩展）的类型来识别文件格式。 <code>MIME</code> 类型构成了 <code>Internet</code> 上对文件类型进行分类的标准方法。</p>
-<ul>
-<li><code>MIME Type</code>是用于描述文件的类型的一种表述方法，其将文件划分为多种类型，方便对其进行统一的管理。</li>
-<li><code>MIME Type</code>指定了文件的类型名称、描述、图标信息，同时通过与.desktop应用程序描述文件整合，指定了文件的打开方式。</li>
-</ul>
-<a id="more"></a>
-<p><code>MIME</code> 类型名字遵循指定的格式：</p>
-<p>类型和子类型， 在 MIME 类型中，类型和子类型不区分大小写。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">media-type&#x2F;subtype-identifier</span><br></pre></td></tr></table></figure>
+    <title>解决 由于没有公钥，无法验证下列签名 :NO_PUBKEY</title>
+    <url>/2022/04/19/linux/NO_PUBKEY/</url>
+    <content><![CDATA[<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ sudo apt update </span><br><span class="line">命中:1 https://pro-driver-packages.uniontech.com eagle InRelease</span><br><span class="line">获取:2 http://mirrors.tuna.tsinghua.edu.cn/ubuntu hirsute InRelease [269 kB]                                 </span><br><span class="line">命中:3 http://packages.microsoft.com/repos/code stable InRelease                                             </span><br><span class="line">命中:4 https://home-packages.chinauos.com/home plum InRelease                                                </span><br><span class="line">命中:5 https://home-packages.chinauos.com/home plum/beta InRelease   </span><br><span class="line">命中:6 https://home-packages.chinauos.com/printer eagle InRelease</span><br><span class="line">错误:2 http://mirrors.tuna.tsinghua.edu.cn/ubuntu hirsute InRelease</span><br><span class="line">  由于没有公钥，无法验证下列签名： NO_PUBKEY 871920D1991BC93C</span><br><span class="line">命中:7 https://home-store-img.uniontech.com/appstore eagle InRelease</span><br><span class="line">正在读取软件包列表... 完成</span><br><span class="line">W: GPG 错误：http://mirrors.tuna.tsinghua.edu.cn/ubuntu hirsute InRelease: 由于没有公钥，无法验证下列签名： NO_PUBKEY 871920D1991BC93C</span><br><span class="line">E: 仓库 “http://mirrors.tuna.tsinghua.edu.cn/ubuntu hirsute InRelease” 没有数字签名。</span><br><span class="line">N: 无法安全地用该源进行更新，所以默认禁用该源。</span><br><span class="line">N: 参见 apt-secure(8) 手册以了解仓库创建和用户配置方面的细节。</span><br></pre></td></tr></table></figure>
 
-<p>目前，有十种注册类型：<code>application</code>，<code>audio</code>，<code>example</code>，<code>font</code>，<code>image</code>，<code>message</code>，<code>model</code>，<code>multipart</code>，<code>text</code>和<code>video</code>。</p>
-<p>例如：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">multipart&#x2F;form-data</span><br><span class="line">text&#x2F;xml</span><br><span class="line">text&#x2F;csv</span><br><span class="line">text&#x2F;plain</span><br><span class="line">application&#x2F;xml</span><br><span class="line">application&#x2F;zip</span><br><span class="line">application&#x2F;pdf</span><br></pre></td></tr></table></figure>
-
-<p>完整MIME 类型示例：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">application&#x2F;vnd.api+json</span><br></pre></td></tr></table></figure>
-
-<p><code>application</code>作为类型，<code>api</code>作为子类型，<code>vnd</code>是厂商前缀，<code>+json</code>是后缀，表示可以解析为<code>JSON</code>。</p>
-<h1 id="获取文件的-MIME-类型"><a href="#获取文件的-MIME-类型" class="headerlink" title="获取文件的 MIME 类型"></a>获取文件的 MIME 类型</h1><h2 id="xdg-mime命令"><a href="#xdg-mime命令" class="headerlink" title="xdg-mime命令"></a>xdg-mime命令</h2><ul>
-<li><p>显示文件的<code>MIME</code>类型：</p>
-  <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">xdg-mime query filetype &#123;file&#125;</span><br></pre></td></tr></table></figure>
-<p>  例如：</p>
-  <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ xdg-mime query filetype one.jpg </span><br><span class="line">image/jpeg</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>显示<code>MIME</code> 类型的默认应用程序</p>
-  <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">xdg-mime query default &#123;mimetype&#125;</span><br></pre></td></tr></table></figure>
-<p>  例如：</p>
-  <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ xdg-mime query default image/jpeg</span><br><span class="line">/usr/share/applications/deepin-image-viewer.desktop</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
-<li><p>显示文件默认应用程序的语法</p>
-  <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">xdg-mime query default &quot;$(xdg-mime query filetype &#123;file&#125;)&quot;</span><br></pre></td></tr></table></figure>
-
-<p>  例如：</p>
-  <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">xdg-mime query default \</span><br><span class="line">    `xdg-mime query filetype &quot;$(find ~ / -iname &#x27;*.png&#x27; -print -quit)&quot;`</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>设置<code>MIME</code> 类型的默认打开应用程序</p>
-  <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">xdg-mime default dekstop filetype</span><br></pre></td></tr></table></figure>
-
-<p>  例如：</p>
-  <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">xdg-mime default dde-file-manager.desktop inode/directtory</span><br></pre></td></tr></table></figure>
-
-</li>
-</ul>
-<h2 id="file-命令"><a href="#file-命令" class="headerlink" title="file 命令"></a>file 命令</h2><ul>
-<li><p>查询文件类型：</p>
-  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">file --mime-type INPUT_FILE</span><br></pre></td></tr></table></figure>
-
-<p>  例如：</p>
-  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">➜ file --mime-type one.jpg </span><br><span class="line">one.jpg: inode&#x2F;symlink</span><br></pre></td></tr></table></figure>
-
-
-</li>
-</ul>
-<h1 id="自定义的-MIME-类型"><a href="#自定义的-MIME-类型" class="headerlink" title="自定义的 MIME 类型"></a>自定义的 MIME 类型</h1><p>如需为系统上的所有用户添加一个自定义的 <code>MIME</code> 类型，并为该 <code>MIME</code> 类型注册一个默认的应用程序，您需要在 <code>/usr/share/mime/packages/</code> 目录下创建一个新的 <code>MIME</code> 类型说明文件，在 <code>/usr/share/applications/</code> 目录下创建一个 <code>.desktop</code> 文件。</p>
-<p>比如我们创建一个<code>application/x-newtype</code>类型：</p>
-<ol>
-<li><p>创建 /usr/share/mime/packages/application-x-newtype.xml 文件</p>
- <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;?xml version&#x3D;&quot;1.0&quot; encoding&#x3D;&quot;UTF-8&quot;?&gt;</span><br><span class="line">&lt;mime-info xmlns&#x3D;&quot;http:&#x2F;&#x2F;www.freedesktop.org&#x2F;standards&#x2F;shared-mime-info&quot;&gt;</span><br><span class="line">&lt;mime-type type&#x3D;&quot;application&#x2F;x-newtype&quot;&gt;</span><br><span class="line">    &lt;comment&gt;new mime type&lt;&#x2F;comment&gt;</span><br><span class="line">    &lt;glob pattern&#x3D;&quot;*.xyz&quot;&#x2F;&gt;</span><br><span class="line">&lt;&#x2F;mime-type&gt;</span><br><span class="line">&lt;&#x2F;mime-info&gt;</span><br></pre></td></tr></table></figure>
-<p> 上述 <code>application-x-newtype.xml</code> 文件定义了一种新的 <code>MIME</code> 类型<code>application/x-newtype</code>，并指定拓展名是 <code>.xyz</code> 的文件为该 <code>MIME</code> 类型。</p>
-</li>
-<li><p>创建一个名为例如 <code>myapplication1.desktop</code> 的新的 <code>.desktop</code> 文件，并将它放置在 <code>/usr/share/applications/</code> 目录下：</p>
- <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[Desktop Entry]</span><br><span class="line">Type&#x3D;Application</span><br><span class="line">MimeType&#x3D;application&#x2F;x-newtype</span><br><span class="line">Name&#x3D;My Application 1</span><br><span class="line">Exec&#x3D;myapplication1</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>请以 <code>root</code> 身份更新 <code>MIME</code> 数据库以使您的更改生效：</p>
- <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ update-mime-database /usr/share/mime</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>请以 <code>root</code> 身份更新应用程序数据库：</p>
- <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ update-desktop-database /usr/share/applications</span><br></pre></td></tr></table></figure>
-
-</li>
-</ol>
-<p>如需为个别用户添加自定义的 <code>MIME</code> 类型，并为该<code>MIME</code> 类型注册一个默认的应用程序，您需要在 <code>~/.local/share/mime/packages/</code> 目录下创建一个新的 <code>MIME</code> 类型说明文件，并在 <code>~/.local/share/applications/</code> 目录下创建一个 <code>.desktop</code> 文件。</p>
-<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ul>
-<li><p><a href="https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/7/html/desktop_migration_and_administration_guide/file_formats">配置文件关联</a></p>
-</li>
-<li><p><a href="https://www.baeldung.com/linux/file-mime-types">file-mime-types</a></p>
-</li>
-<li><p><a href="https://specifications.freedesktop.org/mime-apps-spec/mime-apps-spec-latest.html">mime-apps-spec</a></p>
-</li>
-</ul>
-]]></content>
+<p>执行：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 871920D1991BC93C</span><br></pre></td></tr></table></figure>]]></content>
       <categories>
         <category>Linux</category>
       </categories>
       <tags>
         <tag>Linux</tag>
-        <tag>mime</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Effective C++ 20：传常量引用比传值更好</title>
-    <url>/2022/03/23/effecitve-cpp/effective-cpp-20/</url>
-    <content><![CDATA[<blockquote>
-<p>Item 20: Prefer pass-by-reference-to-const to pass-by-value.</p>
-</blockquote>
-<p>缺省情况下<code>C++</code> 用传值得方式(一个继承自<code>C</code>的方式)传递对象至(或来自)函数。除非你另外指定，否则函数参数都是以实际实参的复件(副本)为初值，而调用端所获得的亦是函数返回值的一个复件。这些复件(副本)系由对象的<code>copy</code>构造函数产出。</p>
-<p><strong>尽量以传常量引用替换传值前者通常比较高效，并可避免切割问题 (<code>slicing problem</code>)，但是内置类型和 <code>STL</code> 迭代器，还是传值更加合适。</strong>。</p>
-<a id="more"></a>
-
-<h2 id="性能问题"><a href="#性能问题" class="headerlink" title="性能问题:"></a>性能问题:</h2><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    Person ();</span><br><span class="line">    <span class="keyword">virtual</span> -Person();</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> name;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> address;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Student</span>:</span> <span class="keyword">public</span> Person &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    Student();</span><br><span class="line">    -Student();</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> schoolName;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>现在考虑以下代码，其中调用函数 <code>validateStudent</code> ，后者需要一个 <code>Student</code><br>(<code>by value</code>) 并返回它是否有效:</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">validateStudent</span><span class="params">(Student s)</span></span>;           <span class="comment">// function taking a Student by value</span></span><br><span class="line"></span><br><span class="line">Student plato;                             <span class="comment">// Plato studied under Socrates</span></span><br><span class="line"><span class="keyword">bool</span> platoIsOK = validateStudent(plato);   <span class="comment">// call the functio</span></span><br></pre></td></tr></table></figure>
-
-<p>在调用 <code>validateStudent(</code>) 时进行了 <strong>6</strong> 个函数调用：</p>
-<ol>
-<li><code>Person</code> 的拷贝构造函数，为什么 <code>Student</code> 的拷贝构造一定要调用 <code>Person</code> 的拷贝构造请参见：<a href="/2021/11/02/effecitve-cpp/effective-cpp-12/" title="Item:12 复制对象时勿忘其每一个成分">Item:12 复制对象时勿忘其每一个成分</a></li>
-<li><code>Student</code> 的拷贝构造函数</li>
-<li><code>name</code>, <code>address</code>, <code>schoolName</code>, <code>schoolAddress</code> 的拷贝构造函数</li>
-</ol>
-<p>解决办法便是传递常量引用：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">validateStudent</span><span class="params">(<span class="keyword">const</span> Student&amp; s)</span></span>;</span><br></pre></td></tr></table></figure>
-
-<p>首先以引用的方式传递，不会构造新的对象，避免了上述例子中 <strong>6</strong> 个构造函数的调用。 同时 const 也是必须的：传值的方式保证了该函数调用不会改变原来的 <code>Student</code>， 而传递引用后为了达到同样的效果，需要使用 <code>const</code> 声明来声明这一点，让编译器去进行检查!</p>
-<h2 id="截断问题"><a href="#截断问题" class="headerlink" title="截断问题"></a>截断问题</h2><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Window</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">...</span><br><span class="line"><span class="function"><span class="built_in">std</span>::<span class="built_in">string</span> <span class="title">name</span><span class="params">()</span> <span class="keyword">const</span></span>;           <span class="comment">// return name of window</span></span><br><span class="line"><span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">display</span><span class="params">()</span> <span class="keyword">const</span></span>;       <span class="comment">// draw window and contents</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">WindowWithScrollBars</span>:</span> <span class="keyword">public</span> Window &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">...</span><br><span class="line"><span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">display</span><span class="params">()</span> <span class="keyword">const</span></span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>现在假设你希望写个函数打印窗口名称，然后显示该窗口:</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">printNameAndDisplay</span><span class="params">(Window w)</span></span></span><br><span class="line">    std::cout &lt;&lt; w.name();</span><br><span class="line">    w.display() ;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">WindowWithScrollBars wwsb;</span><br><span class="line">printNameAndDisplay(wwsb);</span><br></pre></td></tr></table></figure>
-
-<p>当调用 <code>printNameAndDisplay</code> 时参数类型从 <code>WindowWithScrollBars</code> 被隐式转换为 <code>Window</code>。 该转换过程通过调用 <code>Window</code> 的拷贝构造函数来进行。 导致的结果便是函数中的 <code>w</code> 事实上是一个 <code>Window</code> 对象， 并不会调用多态子类 <code>WindowWithScrollBars</code> 的 <code>display()</code>。</p>
-<p>正确做法：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">// fine, parameter won&#x27;t be sliced</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">printNameAndDisplay</span><span class="params">(<span class="keyword">const</span> Window&amp; w)</span></span>&#123; </span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; w.name();</span><br><span class="line">    w.display();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="特殊情况"><a href="#特殊情况" class="headerlink" title="特殊情况"></a>特殊情况</h2><p>一般情况下相比于传递值，传递常量引用是更好的选择。但也有例外情况，比如 <strong>内置类型</strong> 和 <strong>STL 迭代器</strong>和<strong>函数对象</strong>。</p>
-]]></content>
-      <categories>
-        <category>Effective-C++</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
-        <tag>Effective-C++</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Effective C++ 21：需要返回对象时，不要返回引用</title>
-    <url>/2022/03/23/effecitve-cpp/effective-cpp-21/</url>
-    <content><![CDATA[<blockquote>
-<p>Don’t to return a reference when you must return an object.</p>
-</blockquote>
-<p>Item 20 中提到，多数情况下传引用比传值更好。但不要无脑追求这一点，一定不要返回空引用或指针。</p>
-<a id="more"></a>
-
-<p>举个栗子：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Rational</span>&#123;</span></span><br><span class="line">  <span class="keyword">int</span> n, d;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  Raitonal(<span class="keyword">int</span> numerator=<span class="number">0</span>, <span class="keyword">int</span> denominator=<span class="number">1</span>);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 返回值为什么是const请参考Item 3</span></span><br><span class="line"><span class="keyword">friend</span> <span class="keyword">const</span> Rational <span class="keyword">operator</span>*(<span class="keyword">const</span> Rational&amp; lhs, <span class="keyword">const</span> Rational&amp; rhs);</span><br><span class="line"></span><br><span class="line">Rational a, b;</span><br><span class="line">Rational c = a*b;</span><br></pre></td></tr></table></figure>
-<p>这个版本的 <code>operator*</code> 返回的是一个实例，<code>a*b</code>时便会调用<code>operator*()</code>， 返回值被拷贝后用来初始化<code>c</code>。</p>
-<p>不考虑编译器优化和 <code>C11</code> 的 <code>move</code> ,这个过程涉及到多个构造和析构过程：</p>
-<ol>
-<li><code>operator*</code>调用结束前，返回值被拷贝，调用拷贝构造函数</li>
-<li><code>operator*</code>调用结束后，返回值被析构</li>
-<li><code>c</code> 被初始化，调用拷贝构造函数</li>
-</ol>
-<p>我们能否通过传递引用的方式来避免这些函数调用？这要求在函数中创建那个要被返回给调用者的对象，而函数只有两种办法来创建对象：在栈空间中创建、或者在堆中创建。</p>
-<p>在栈空间中创建显然是错误的：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> Rational&amp; <span class="keyword">operator</span>*(<span class="keyword">const</span> Rational&amp; lhs, <span class="keyword">const</span> Rational&amp; rhs)&#123;</span><br><span class="line">  <span class="function">Rational <span class="title">result</span><span class="params">(lhs.n*rhs.n, lhs.d*rhs.d)</span></span>;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>我们的目标是要避免调用构造函数，而 <code>result</code> 却必须像任何对象一样地由构造函数构造起, 而且得到的 <code>result</code> 永远是空。因为 <code>result</code> 是一个 <code>local</code> 对象，当函数调用结束后 <code>result</code>即被销毁。</p>
-<p>在堆中创建也会问题:</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> Rational&amp; <span class="keyword">operator</span>*(<span class="keyword">const</span> Rational&amp; lhs, <span class="keyword">const</span> Rational&amp; rhs)&#123;</span><br><span class="line">  Rational *result  = <span class="keyword">new</span> Rational(lhs.n*rhs.n, lhs.d*rhs.d);</span><br><span class="line">  <span class="keyword">return</span> *result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>首先还是得必须付出一个”构造函数调用”代价， 并且谁去 <code>delete</code>?</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">Rational w, x, y, z;</span><br><span class="line">w = x*y*z;</span><br></pre></td></tr></table></figure>
-
-<p>上面这样合理的代码都会导致内存泄露。</p>
-<p>使用静态变量的方式：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> Rational&amp; <span class="keyword">operator</span>*(<span class="keyword">const</span> Rational&amp; lhs, <span class="keyword">const</span> Rational&amp; rhs)&#123;</span><br><span class="line">    <span class="keyword">static</span> Rational result; <span class="comment">// static 对象，此函数将返回</span></span><br><span class="line">    result = ... ; <span class="comment">// lhs 乘以 rhs. 并将结果置于 result 内。</span></span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>静态变量首先便面临着线程安全问题，除此之外当我们需要不止一个的返回值同时存在时也会产生问题：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span>((a*b) == (c*d))&#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>如果operator*的返回值是静态变量，那么上述条件判断恒成立，因为等号两边是同一个对象。所以我们还是老老实实返回对象实例就好，并且考虑到编译器优化和<code>move</code>语意，拷贝构造返回值带来的代价没那么高。</p>
-<p><strong>永远不要返回局部对象的引用或指针或堆空间的指针，如果需要多个返回对象时也不能是局部静态对象的指针或引用</strong>。<a href="/2021/01/13/effecitve-cpp/effective-cpp-4/" title="Item:4 确定对象被使用前已先被初始化">Item:4 确定对象被使用前已先被初始化</a>， 对于单例模式，返回局部静态对象的引用也是合理的。</p>
-]]></content>
-      <categories>
-        <category>Effective-C++</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
-        <tag>Effective-C++</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Effective C++ 22：将成员变量声明为private</title>
-    <url>/2022/03/23/effecitve-cpp/effective-cpp-22/</url>
-    <content><![CDATA[<blockquote>
-<p>Declare data members private.</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>Effective-C++</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
-        <tag>Effective-C++</tag>
+        <tag>apt</tag>
       </tags>
   </entry>
   <entry>
@@ -1081,266 +1253,94 @@
       </tags>
   </entry>
   <entry>
-    <title>std::make_shared vs. new</title>
-    <url>/2023/02/07/c++/std-make-shared-vs-new/</url>
-    <content><![CDATA[<h1 id="内存分配"><a href="#内存分配" class="headerlink" title="内存分配"></a>内存分配</h1><p><code>std::make_shared</code> 执行<strong>一次</strong>堆分配，而调用<code>std::shared_ptr</code> 构造函数执行<strong>两次</strong>。</p>
-<p>在一个典型的实现中 <code>std::shared_ptr</code> 管理两个实体：</p>
+    <title>文件MIME类型</title>
+    <url>/2021/11/23/linux/%E6%96%87%E4%BB%B6MIME%E7%B1%BB%E5%9E%8B/</url>
+    <content><![CDATA[<h1 id="什么是-MIME-类型？"><a href="#什么是-MIME-类型？" class="headerlink" title="什么是 MIME 类型？"></a>什么是 MIME 类型？</h1><p><code>MIME</code>（多用途 <code>Internet</code> 邮件扩展）的类型来识别文件格式。 <code>MIME</code> 类型构成了 <code>Internet</code> 上对文件类型进行分类的标准方法。</p>
 <ul>
-<li>控制块（存储元数据，如引用计数、类型擦除删除器等）</li>
-<li>被管理的对象</li>
+<li><code>MIME Type</code>是用于描述文件的类型的一种表述方法，其将文件划分为多种类型，方便对其进行统一的管理。</li>
+<li><code>MIME Type</code>指定了文件的类型名称、描述、图标信息，同时通过与.desktop应用程序描述文件整合，指定了文件的打开方式。</li>
 </ul>
-<p>控制块是一个动态分配的对象，它包含：</p>
-<ul>
-<li>指向托管对象的指针或托管对象本身；</li>
-<li>删除器 (类型擦除)</li>
-<li>分配器 (类型擦除)</li>
-<li>拥有被管理对象的 <code>shared_ptr</code>的数量</li>
-<li>引用托管对象的 <code>weak_ptr</code> 的数量 </li>
-</ul>
-<p><code>std::make_shared</code>执行一次堆分配，计算控制块和数据所需的总空间。在另一种情况 <code>std::shared_ptr&lt;Obj&gt;(new Obj(&quot;foo&quot;))</code>下执行两次, <code>new Obj(&quot;foo&quot;)</code>为托管数据调用堆分配，<code>std::shared_ptr</code>构造函数为控制块执行另一个堆分配。</p>
 <a id="more"></a>
+<p><code>MIME</code> 类型名字遵循指定的格式：</p>
+<p>类型和子类型， 在 MIME 类型中，类型和子类型不区分大小写。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">media-type&#x2F;subtype-identifier</span><br></pre></td></tr></table></figure>
 
-<h1 id="异常安全"><a href="#异常安全" class="headerlink" title="异常安全"></a>异常安全</h1><p><strong>自 <code>C++17</code> 以来，这不是问题，因为函数参数的评估顺序发生了变化。具体来说，函数的每个参数都需要在评估其他参数之前完全执行</strong>。</p>
-<p>考虑这个例子:</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">f(std::shared_ptr&lt;int&gt;(new int(42)), g())</span><br></pre></td></tr></table></figure>
-<p>因为 C++ 允许对子表达式进行任意顺序的计算，所以一种可能的顺序是：</p>
+<p>目前，有十种注册类型：<code>application</code>，<code>audio</code>，<code>example</code>，<code>font</code>，<code>image</code>，<code>message</code>，<code>model</code>，<code>multipart</code>，<code>text</code>和<code>video</code>。</p>
+<p>例如：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">multipart&#x2F;form-data</span><br><span class="line">text&#x2F;xml</span><br><span class="line">text&#x2F;csv</span><br><span class="line">text&#x2F;plain</span><br><span class="line">application&#x2F;xml</span><br><span class="line">application&#x2F;zip</span><br><span class="line">application&#x2F;pdf</span><br></pre></td></tr></table></figure>
+
+<p>完整MIME 类型示例：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">application&#x2F;vnd.api+json</span><br></pre></td></tr></table></figure>
+
+<p><code>application</code>作为类型，<code>api</code>作为子类型，<code>vnd</code>是厂商前缀，<code>+json</code>是后缀，表示可以解析为<code>JSON</code>。</p>
+<h1 id="获取文件的-MIME-类型"><a href="#获取文件的-MIME-类型" class="headerlink" title="获取文件的 MIME 类型"></a>获取文件的 MIME 类型</h1><h2 id="xdg-mime命令"><a href="#xdg-mime命令" class="headerlink" title="xdg-mime命令"></a>xdg-mime命令</h2><ul>
+<li><p>显示文件的<code>MIME</code>类型：</p>
+  <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">xdg-mime query filetype &#123;file&#125;</span><br></pre></td></tr></table></figure>
+<p>  例如：</p>
+  <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ xdg-mime query filetype one.jpg </span><br><span class="line">image/jpeg</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>显示<code>MIME</code> 类型的默认应用程序</p>
+  <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">xdg-mime query default &#123;mimetype&#125;</span><br></pre></td></tr></table></figure>
+<p>  例如：</p>
+  <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ xdg-mime query default image/jpeg</span><br><span class="line">/usr/share/applications/deepin-image-viewer.desktop</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+<li><p>显示文件默认应用程序的语法</p>
+  <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">xdg-mime query default &quot;$(xdg-mime query filetype &#123;file&#125;)&quot;</span><br></pre></td></tr></table></figure>
+
+<p>  例如：</p>
+  <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">xdg-mime query default \</span><br><span class="line">    `xdg-mime query filetype &quot;$(find ~ / -iname &#x27;*.png&#x27; -print -quit)&quot;`</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>设置<code>MIME</code> 类型的默认打开应用程序</p>
+  <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">xdg-mime default dekstop filetype</span><br></pre></td></tr></table></figure>
+
+<p>  例如：</p>
+  <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">xdg-mime default dde-file-manager.desktop inode/directtory</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="file-命令"><a href="#file-命令" class="headerlink" title="file 命令"></a>file 命令</h2><ul>
+<li><p>查询文件类型：</p>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">file --mime-type INPUT_FILE</span><br></pre></td></tr></table></figure>
+
+<p>  例如：</p>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">➜ file --mime-type one.jpg </span><br><span class="line">one.jpg: inode&#x2F;symlink</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<h1 id="自定义的-MIME-类型"><a href="#自定义的-MIME-类型" class="headerlink" title="自定义的 MIME 类型"></a>自定义的 MIME 类型</h1><p>如需为系统上的所有用户添加一个自定义的 <code>MIME</code> 类型，并为该 <code>MIME</code> 类型注册一个默认的应用程序，您需要在 <code>/usr/share/mime/packages/</code> 目录下创建一个新的 <code>MIME</code> 类型说明文件，在 <code>/usr/share/applications/</code> 目录下创建一个 <code>.desktop</code> 文件。</p>
+<p>比如我们创建一个<code>application/x-newtype</code>类型：</p>
 <ol>
-<li><code>new int(42)</code></li>
-<li><code>g()</code></li>
-<li><code>std::shared_ptr&lt;int&gt;</code></li>
+<li><p>创建 /usr/share/mime/packages/application-x-newtype.xml 文件</p>
+ <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;?xml version&#x3D;&quot;1.0&quot; encoding&#x3D;&quot;UTF-8&quot;?&gt;</span><br><span class="line">&lt;mime-info xmlns&#x3D;&quot;http:&#x2F;&#x2F;www.freedesktop.org&#x2F;standards&#x2F;shared-mime-info&quot;&gt;</span><br><span class="line">&lt;mime-type type&#x3D;&quot;application&#x2F;x-newtype&quot;&gt;</span><br><span class="line">    &lt;comment&gt;new mime type&lt;&#x2F;comment&gt;</span><br><span class="line">    &lt;glob pattern&#x3D;&quot;*.xyz&quot;&#x2F;&gt;</span><br><span class="line">&lt;&#x2F;mime-type&gt;</span><br><span class="line">&lt;&#x2F;mime-info&gt;</span><br></pre></td></tr></table></figure>
+<p> 上述 <code>application-x-newtype.xml</code> 文件定义了一种新的 <code>MIME</code> 类型<code>application/x-newtype</code>，并指定拓展名是 <code>.xyz</code> 的文件为该 <code>MIME</code> 类型。</p>
+</li>
+<li><p>创建一个名为例如 <code>myapplication1.desktop</code> 的新的 <code>.desktop</code> 文件，并将它放置在 <code>/usr/share/applications/</code> 目录下：</p>
+ <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[Desktop Entry]</span><br><span class="line">Type&#x3D;Application</span><br><span class="line">MimeType&#x3D;application&#x2F;x-newtype</span><br><span class="line">Name&#x3D;My Application 1</span><br><span class="line">Exec&#x3D;myapplication1</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>请以 <code>root</code> 身份更新 <code>MIME</code> 数据库以使您的更改生效：</p>
+ <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ update-mime-database /usr/share/mime</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>请以 <code>root</code> 身份更新应用程序数据库：</p>
+ <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ update-desktop-database /usr/share/applications</span><br></pre></td></tr></table></figure>
+
+</li>
 </ol>
-<p>现在，假设我们在第 <code>2</code> 步抛出一个异常。然后我们丢失了在步骤 <code>1</code> 分配的内存，因为没有将原始指针传给 <code>std::shared_ptr</code>, 后面没有任何东西有机会清理它。</p>
-<p>解决这个问题的一种方法是在不同的行上执行它们，这样就不会发生这种任意排序。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">auto ptr &#x3D; std::shared_ptr&lt;int&gt;(new int(42));</span><br><span class="line">f(ptr, g());</span><br></pre></td></tr></table></figure>
-
-<p>更方便的的是采用 <code>std::make_shared</code>.</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">f(std::make_shared&lt;int&gt;(42), g())</span><br></pre></td></tr></table></figure>
-
-<h1 id="std-make-shared-的一些缺点"><a href="#std-make-shared-的一些缺点" class="headerlink" title="std::make_shared 的一些缺点"></a><code>std::make_shared</code> 的一些缺点</h1><h2 id="weak-ptr内存保活"><a href="#weak-ptr内存保活" class="headerlink" title="weak_ptr内存保活"></a><code>weak_ptr</code>内存保活</h2><ul>
-<li> 通过 <code>std::make_shared</code> 构造的智能指针, 当没有 <code>shared_ptr</code> 引用计数为 <code>0</code> 时只调用析构函数，<code>weak_ptr</code>引用计数为 <code>0</code> 时才释放内存块。</li>
-</ul>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">bool</span> logging = <span class="literal">false</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span>* <span class="keyword">operator</span> <span class="title">new</span><span class="params">(<span class="built_in">std</span>::<span class="keyword">size_t</span> size)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">auto</span> ptr = <span class="built_in">std</span>::<span class="built_in">malloc</span>(size);</span><br><span class="line">    <span class="keyword">if</span> (logging) &#123;</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Allocated: &quot;</span> &lt;&lt; (<span class="keyword">uintptr_t</span>)ptr &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ptr;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="keyword">operator</span> <span class="title">delete</span><span class="params">(<span class="keyword">void</span> *ptr)</span> <span class="keyword">noexcept</span>  </span>&#123;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">free</span>(ptr);</span><br><span class="line">    <span class="keyword">if</span> (logging) &#123;</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Deallocated: &quot;</span> &lt;&lt; (<span class="keyword">uintptr_t</span>)ptr &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Widget</span> &#123;</span></span><br><span class="line">    ~Widget() &#123;</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Widget::~Widget()&quot;</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> data;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>*argv[])</span> </span>&#123;</span><br><span class="line">    logging = <span class="literal">true</span>;</span><br><span class="line">    test(<span class="literal">true</span>);</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;---------------------\n&quot;</span>;</span><br><span class="line">    test(<span class="literal">false</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Allocated: 105553162522944 &#x2F;&#x2F;分配一次</span><br><span class="line">Widget::~Widget() &#x2F;&#x2F; 没有 shared_ptr 指针，只调用析构函数</span><br><span class="line">No std::shared_ptr&#39;s anymore.</span><br><span class="line">Deallocated: 105553162522944 &#x2F;&#x2F;没有 &#96;weak_ptr&#96; 释放整个内存块</span><br><span class="line">No std::weak_ptr&#39;s anymore.</span><br><span class="line">---------------------</span><br><span class="line">Allocated: 105553164599312</span><br><span class="line">Allocated: 105553162522944 &#x2F;&#x2F;分配两次</span><br><span class="line">Widget::~Widget()</span><br><span class="line">Deallocated: 105553164599312 &#x2F;&#x2F;立即释放</span><br><span class="line">No std::shared_ptr&#39;s anymore.</span><br><span class="line">Deallocated: 105553162522944</span><br><span class="line">No std::weak_ptr&#39;s anymore.</span><br></pre></td></tr></table></figure>
-
-<h2 id="无法访问公共构造函数"><a href="#无法访问公共构造函数" class="headerlink" title="无法访问公共构造函数"></a>无法访问公共构造函数</h2><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    A(): val(<span class="number">0</span>)&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// make_shared 无法调用 A(int) </span></span><br><span class="line">    <span class="comment">// std::shared_ptr&lt;A&gt; createNext()&#123; </span></span><br><span class="line">    <span class="comment">//     return std::make_shared&lt;A&gt;(val+1); </span></span><br><span class="line">    <span class="comment">//&#125;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 可以调用 A(int) </span></span><br><span class="line">    <span class="function"><span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;A&gt; <span class="title">createNext</span><span class="params">()</span></span>&#123; </span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;A&gt;(<span class="keyword">new</span> A(val+<span class="number">1</span>)); </span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">int</span> val;</span><br><span class="line">    A(<span class="keyword">int</span> v): val(v)&#123;&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
+<p>如需为个别用户添加自定义的 <code>MIME</code> 类型，并为该<code>MIME</code> 类型注册一个默认的应用程序，您需要在 <code>~/.local/share/mime/packages/</code> 目录下创建一个新的 <code>MIME</code> 类型说明文件，并在 <code>~/.local/share/applications/</code> 目录下创建一个 <code>.desktop</code> 文件。</p>
 <h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ul>
-<li><a href="https://stackoverflow.com/questions/20895648/difference-in-make-shared-and-normal-shared-ptr-in-c">Difference in make_shared and normal shared_ptr in C++</a></li>
-<li><a href="https://www.gamedev.net/forums/topic/695796-stdmake_shared-vs-new/">std::make_shared 与 new</a></li>
-<li><a href="https://zh.cppreference.com/w/cpp/memory/shared_ptr/make_shared#Notes">make_shared#Notes</a></li>
+<li><p><a href="https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/7/html/desktop_migration_and_administration_guide/file_formats">配置文件关联</a></p>
+</li>
+<li><p><a href="https://www.baeldung.com/linux/file-mime-types">file-mime-types</a></p>
+</li>
+<li><p><a href="https://specifications.freedesktop.org/mime-apps-spec/mime-apps-spec-latest.html">mime-apps-spec</a></p>
+</li>
 </ul>
 ]]></content>
-      <categories>
-        <category>C/C++</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
-        <tag>智能指针</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Effective C++ 23：用非成员函数、非友元函数替换成员函数</title>
-    <url>/2022/04/09/effecitve-cpp/effective-cpp-23/</url>
-    <content><![CDATA[<blockquote>
-<p>Prefer non-member non-friend functions to member functions</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>Effective-C++</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
-        <tag>Effective-C++</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Effective C++ 24：若所有参数皆需类型转换，请采用非成员函数</title>
-    <url>/2022/04/09/effecitve-cpp/effective-cpp-24/</url>
-    <content><![CDATA[<blockquote>
-<p>Declare non-member functions when type conversions should apply all parameters.</p>
-</blockquote>
-<p>令 <code>classes</code> 支持隐式转换通常是糟糕的设计，但也有例外，最常见的是在建立数值类型时。 比如设计一个有理数 <code>class</code> 允许整数隐式转换。</p>
-<a id="more"></a>
-
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Rational</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    Rational(<span class="keyword">int</span> numerator = <span class="number">0</span>, <span class="keyword">int</span> denominator = <span class="number">1</span>); <span class="comment">//构造函数刻意不使用 explicit; 允许 int-to-Rational 隐式转换。</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">numerator</span><span class="params">()</span> <span class="keyword">const</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">denominator</span><span class="params">()</span> <span class="keyword">const</span></span>;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>这时我们想设计一个乘法，该使用 <code>member</code> 函数，还是 <code>non-member</code> 函数， 还是 <code>non-member-friend</code> 函数？</p>
-<p>我们先采用 <code>member</code> 函数看有什么问题？</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Rational</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> Rational <span class="keyword">operator</span>* (<span class="keyword">const</span> Rational&amp; rhs) <span class="keyword">const</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>我们使用如下没有什么问题：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">Rational <span class="title">oneEighth</span><span class="params">(<span class="number">1</span>, <span class="number">8</span>)</span></span>;</span><br><span class="line"><span class="function">Rational <span class="title">oneHalf</span><span class="params">(<span class="number">1</span>, <span class="number">2</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">Rational result = oneEighth * oneHalf; <span class="comment">//ok</span></span><br><span class="line">result = result * oneEighth;  <span class="comment">// ok</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>但当我们想支持混合运算，那 <code>Rational</code> 和 <code>ints</code> 相乘, 就只有一半行的通。</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">result = oneHalf * <span class="number">2</span>; <span class="comment">//ok  隐式转换</span></span><br><span class="line">result = <span class="number">2</span> * oneHalf;  <span class="comment">// no</span></span><br></pre></td></tr></table></figure>
-
-<p>当我们设计成 <code>non-member</code> 函数就都支持：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Rational</span> &#123;</span></span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> Rational <span class="keyword">operator</span>* (<span class="keyword">const</span> Rational&amp; lhs, <span class="keyword">const</span> Rational&amp; rhs) &#123;</span><br><span class="line">    <span class="keyword">return</span> Rational(lhs.numerator() * rhs.numerator(), lhs.denominator(), rhs.denominator());</span><br><span class="line">&#125;</span><br><span class="line">    </span><br></pre></td></tr></table></figure>
-
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">Rational <span class="title">oneFourth</span><span class="params">(<span class="number">1</span>, <span class="number">4</span>)</span></span>;</span><br><span class="line">Rational result;</span><br><span class="line">result = oneFourth * <span class="number">2</span>;  <span class="comment">// ok</span></span><br><span class="line">result = <span class="number">2</span> * oneFourth;  <span class="comment">// ok </span></span><br></pre></td></tr></table></figure>
-
-<p><strong>如果需要为某个函数的所有参数进行类型转换，那这个函数必须是 <code>non-member</code></strong></p>
-]]></content>
-      <categories>
-        <category>Effective-C++</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
-        <tag>Effective-C++</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Effective C++ 25：设计一个不抛异常的 swap 函数</title>
-    <url>/2022/04/09/effecitve-cpp/effective-cpp-25/</url>
-    <content><![CDATA[<blockquote>
-<p>Consider support for a non-throwing swap.</p>
-</blockquote>
-<p><code>swap</code> 函数能置换两对象值，功能很重要!</p>
-<ul>
-<li>异常安全性编程</li>
-<li>处理自我赋值可能性：<a href="/2021/11/01/effecitve-cpp/effective-cpp-11/" title="赋值运算符需要考虑自我赋值问题">赋值运算符需要考虑自我赋值问题</a></li>
-</ul>
-<p><code>std</code> 的缺省基本实现如下：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">namespace</span> <span class="built_in">std</span> &#123;</span><br><span class="line">    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">swap</span><span class="params">(T&amp; a, T&amp; b)</span> </span>&#123;</span><br><span class="line">        <span class="function">T <span class="title">temp</span><span class="params">(a)</span></span>;</span><br><span class="line">        a = b;</span><br><span class="line">        b = temp;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<a id="more"></a>
-
-<h2 id="类的-swap"><a href="#类的-swap" class="headerlink" title="类的 swap"></a>类的 swap</h2><p>只要类型 <code>T</code> 支持 <code>copying</code>运算(拷贝构造和拷贝赋值运算)就能使用。 但缺省实现会有多次拷贝，在某些情况下不是性能最好的实现。比如针对 <code>pimpl</code> 手法实现的 <code>class</code>, 不仅要复制三次 <code>Widget</code> 还需要复制三次 <code>WdigetImpl</code>, 非常缺乏效率。</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">WidgetImpl</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">int</span> a, b, c;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">double</span>&gt; v;</span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Widget</span> &#123;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    Widget(<span class="keyword">const</span> Widget&amp;);</span><br><span class="line"></span><br><span class="line">    Widget&amp; <span class="keyword">operator</span>= (<span class="keyword">const</span> Widget&amp; rhs) &#123;</span><br><span class="line">        ...</span><br><span class="line">        *pImpl = *(rhs.pImpl);</span><br><span class="line">        ...</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    WidgetImpl *pImpl;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>其实我们发现这种情况只需要将 <code>pImpl</code> 指针交换就好， 我们可以将 <code>std::swap</code> 对 <code>Widget</code> 的特化来实现.</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">namespace</span> <span class="built_in">std</span> &#123;</span><br><span class="line">    <span class="keyword">template</span> &lt;&gt;</span><br><span class="line">    <span class="keyword">void</span> swap&lt;Widget&gt; (Widget&amp; a, Widget&amp; b) &#123;</span><br><span class="line">        swap(a.pImpl, b.pImpl);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>但上述代码不能通过编译， 因为 <code>pImpl</code> 是私有变量， 所以，<code>Widget</code> 应当提供一个 <code>swap</code> 成员函数或友元函数。 惯例上会提供一个成员函数：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Widget</span> &#123;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    ...</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">swap</span><span class="params">(Widget&amp; other)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">using</span> <span class="built_in">std</span>::swap; <span class="comment">// 为何要这样？请看下文</span></span><br><span class="line">        swap(pImpl, other.pImpl);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="built_in">std</span> &#123;</span><br><span class="line">  <span class="keyword">template</span>&lt;&gt;</span><br><span class="line">  <span class="keyword">void</span> swap&lt;Widget&gt;(Widget&amp; a, Widget&amp; b)&#123;</span><br><span class="line">      a.swap(b);              <span class="comment">// 调用成员函数</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>上述实现与 STL 容器是一致的：<strong>提供公有 <code>swap</code> 成员函数， 并特化 <code>std::swap</code> 来调用那个成员函数</strong>。</p>
-<h2 id="类模板的-swap"><a href="#类模板的-swap" class="headerlink" title="类模板的 swap"></a>类模板的 swap</h2><p>如果 <code>Widget</code> 和 <code>WidgetImpl</code> 是 <code>class templates</code> 而非 <code>classes</code>, 按照上面的 <code>swap</code> 实现方式，你可能会这样写：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Widget</span>&#123;</span>  ... &#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">WidgetImpl</span>&#123;</span> ... &#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="built_in">std</span> &#123;</span><br><span class="line">    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line">    <span class="keyword">void</span> swap&lt;Widget&lt;T&gt;&gt;(Widget&lt;T&gt;&amp; a, Widget&lt;T&gt;&amp; b) &#123;</span><br><span class="line">        a.swap(b);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>但上述代码不能通过编译， <code>c++</code> 允许偏特化类模版，却不允许偏特化函数模版(虽然有的编译器中可以编译)。那我们继续尝试重载 <code>std::swap</code>  函数：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">namespace</span> <span class="built_in">std</span>&#123;</span><br><span class="line">    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">swap</span><span class="params">(Widget&lt;T&gt;&amp; a, Widget&lt;T&gt;&amp; b)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> a.swap(b);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这里我们重载了 <code>std::swap</code>，相当于在 <code>std</code> 命名空间添加了一个函数模板。但这在 <code>C++</code> 标准中是不允许的！ <code>C++</code> 标准中，客户只能特化 <code>std</code> 中的模板，但不允许在 <code>std</code> 命名空间中添加任何新的模板。 上述代码虽然在有些编译器中可以编译，但会引发未定义的行为，所以不要这么做。所以我们最终可以把 <code>swap</code> 定义在 <code>Widget</code> 所在的命名空间中：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">namespace</span> WidgetStuff &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt; </span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Widget</span> &#123;</span> ... &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">swap</span><span class="params">(Widget&lt;T&gt;&amp; a, Widget&lt;T&gt;&amp; b)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> a.swap(b);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>任何地方在两个 <code>Widget</code> 上调用 <code>swap</code> 时，<code>C++</code> 根据其 <code>argument-dependent lookup</code>（又称 <code>Koenig lookup</code>） 会找到 <code>WidgetStuff</code> 命名空间下的具有 <code>Widget</code> 参数的 <code>swap</code>。</p>
-<p>其实类的 <code>swap</code> 也可以在同一命名空间下定义 <code>swap</code> 函数，而不必特化 <code>std::swap</code>。 但有人可能直接写 <code>std::swap(w1, w2)</code>，特化 <code>std::swap</code> 可以让你的类更加健壮。</p>
-<p><strong>在成员函数中不要直接调用 <code>swap(pImpl, other.pImpl);</code> 因为指定了调用 <code>std::swap</code>，<code>argument-dependent lookup</code> 便失效了，<code>WidgetStuff::swap</code> 不会得到调用</strong>。</p>
-<p>如果希望优先调用 <code>WidgetStuff::swap</code>，如果未定义则取调用 <code>std::swap</code>，那么应该如何写呢？ 看代码：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">doSomething</span><span class="params">(T&amp; obj1, T&amp; obj2)</span></span>&#123;</span><br><span class="line">  <span class="keyword">using</span> <span class="built_in">std</span>::swap;           <span class="comment">// 使得 std::swap 在该作用域内可见</span></span><br><span class="line">  swap(obj1, obj2);          <span class="comment">// 现在，编译器会帮你选最好的 swap</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>此时，<code>C++</code> 编译器还是会优先调用指定了 <code>T</code> 的 <code>std::swap</code>，其次是 <code>obj1</code> 的类型 <code>T</code> 所在命名空间下的对应 <code>swap</code> 函数， 最后才会匹配 <code>std::swap</code> 的默认实现。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>如何实现 <code>swap</code> 呢？</p>
-<ul>
-<li>提供一个更加高效的，不抛异常的公有成员函数（比如 <code>Widget::swap</code>）。</li>
-<li>在你类（或类模板）的同一命名空间下提供非成员函数 <code>swap</code>，调用你的成员函数。</li>
-<li>如果你写的是类而不是类模板，也可以特化 <code>std::swap</code>，同样地在里面调用你的成员函数。</li>
-<li>调用时，请首先用 <code>using</code> 使 <code>std::swap</code> 可见，然后直接调用 <code>swap</code>。</li>
-</ul>
-]]></content>
-      <categories>
-        <category>Effective-C++</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
-        <tag>Effective-C++</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Effective C++ 26：尽可能推迟变量的定义</title>
-    <url>/2022/04/15/effecitve-cpp/effective-cpp-26/</url>
-    <content><![CDATA[<blockquote>
-<p>Item 26:Postpone variable definitions as long as possible.</p>
-</blockquote>
-<p>推迟变量的定义有两个好处：</p>
-<ul>
-<li>改善程序效率，减少无用的构造和析构。</li>
-<li>增加程序流程清晰度。</li>
-</ul>
-<p>这条规则看似简单，但存在流程控制语句的时候容易疏忽。如：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="built_in">string</span> <span class="title">encryptPassword</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span>&amp; password)</span></span>&#123;</span><br><span class="line">    <span class="built_in">string</span> encrypted;</span><br><span class="line">    <span class="keyword">if</span> (password.length() &lt; MinimumPasswordLength) &#123;</span><br><span class="line">        <span class="keyword">throw</span> logic_error(<span class="string">&quot;Password is too short&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    encrypted = password;</span><br><span class="line">    encrypt(encrypted);</span><br><span class="line">    <span class="keyword">return</span> encrypted;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<a id="more"></a>
-
-<h2 id="推迟到需要构造时执行"><a href="#推迟到需要构造时执行" class="headerlink" title="推迟到需要构造时执行"></a>推迟到需要构造时执行</h2><p>当 <code>encryptPassword</code> 抛出异常时，<code>encrypted</code> 是无用的, 根本不需要构造它。所以更好的写法是推迟 <code>encrypted</code> 的构造：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="built_in">string</span> <span class="title">encryptPassword</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span>&amp; password)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (password.length() &lt; MinimumPasswordLength) &#123;</span><br><span class="line">        <span class="keyword">throw</span> logic_error(<span class="string">&quot;Password is too short&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">string</span> encrypted;       <span class="comment">// 默认构造函数</span></span><br><span class="line">    encrypted = password;   <span class="comment">// 赋值运算符</span></span><br><span class="line">    encrypt(encrypted);</span><br><span class="line">    <span class="keyword">return</span> encrypted;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="推迟到有构造参数时"><a href="#推迟到有构造参数时" class="headerlink" title="推迟到有构造参数时"></a>推迟到有构造参数时</h2><p> <strong>“尽可能延后”</strong> 的真正意义。你不只应该延后变量的定义，直到非得使用该变量的前一刻为止，甚至<strong>应该尝试延后这份定义直到能够给它初值实参为止</strong>。如果这样，不仅能够避免构造(和析构)非必要对象，还可以避免无意义的 <code>default</code> 构造行为。</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="built_in">string</span> <span class="title">encryptPassword</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span>&amp; password)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (password.length() &lt; MinimumPasswordLength) &#123;</span><br><span class="line">       <span class="keyword">throw</span> logic_error(<span class="string">&quot;Password is too short&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="built_in">string</span> <span class="title">encrypted</span><span class="params">(password)</span></span>;     <span class="comment">// 拷贝构造函数</span></span><br><span class="line">    encrypt(encrypted);</span><br><span class="line">    <span class="keyword">return</span> encrypted;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="循环中的变量"><a href="#循环中的变量" class="headerlink" title="循环中的变量"></a>循环中的变量</h2><p>循环中的变量定义也是一个常见的争论点。常有两种写法：</p>
-<p>写法 <code>A</code>，在循环外定义：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">Widget w;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++i)&#123; </span><br><span class="line">  w = some value dependent on i;</span><br><span class="line">  ...                           </span><br><span class="line">&#125;                  </span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>写法 <code>B</code> ，在循环内定义：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++i) &#123;</span><br><span class="line">    <span class="function">Widget <span class="title">w</span><span class="params">(some value dependent on i)</span></span>;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><code>A</code>：<code>1</code> 个构造函数，<code>1</code> 个析构函数，<code>n</code> 个赋值运算符</li>
-<li><code>B</code>：<code>n</code> 个构造函数，<code>n</code> 个析构函数</li>
-</ul>
-<p>但 <code>A</code> 使得循环内才使用的变量进入外部的作用域，不利于程序的理解和维护。软件工程中倾向于认为人的效率比机器的效率更加难得， 所以推荐采用 <code>B</code> 来实现。除非：</p>
-<ul>
-<li>这段代码是性能的关键.</li>
-<li>赋值比一对构造/析构更加廉价。</li>
-</ul>
-]]></content>
-      <categories>
-        <category>Effective-C++</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
-        <tag>Effective-C++</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Effective C++ 28：避免返回 handles 指向对象内部成分</title>
-    <url>/2022/04/16/effecitve-cpp/effective-cpp-28/</url>
-    <content><![CDATA[<blockquote>
-<p>Item28: Avoid returning “handles” to object internals.</p>
-</blockquote>
-<p>避免返回 <code>handles</code> (包括 <code>references</code> 、指针、迭代器)指向对象内部。</p>
-<a id="more"></a>
-
-<h2 id="破坏封装性"><a href="#破坏封装性" class="headerlink" title="破坏封装性"></a>破坏封装性</h2><p><code>const</code> 函数不再是 <code>const</code>, 修改了私有成员变量。</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Point</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    Point(<span class="keyword">int</span> x, <span class="keyword">int</span> y);</span><br><span class="line">    ...</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">setX</span><span class="params">(<span class="keyword">int</span> x)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">setY</span><span class="params">(<span class="keyword">int</span> y)</span></span>;</span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">RectData</span> &#123;</span></span><br><span class="line">    Point ulhc;</span><br><span class="line">    Point lrhc;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Rectangle</span> &#123;</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="function">Point&amp; <span class="title">upperLeft</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> pData-&gt;ulhc; &#125;</span><br><span class="line">    <span class="function">Point&amp; <span class="title">lowerRight</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> pData-&gt;lrhc; &#125;</span><br><span class="line">    ...</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;RectData&gt; pData;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>虽然这样的设计可通过编译，但却是错误的。<code>upperLeft</code> 和 <code>lowerRight</code> 被声明为 <code>const</code> 成员函数，但是可以更改内部数据。</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">Point <span class="title">coord1</span><span class="params">(<span class="number">0</span>, <span class="number">0</span>)</span></span>;</span><br><span class="line"><span class="function">Point <span class="title">coord2</span><span class="params">(<span class="number">100</span>, <span class="number">100</span>)</span></span>; </span><br><span class="line"><span class="function"><span class="keyword">const</span> Rectangle <span class="title">rec</span><span class="params">(coord1, coord2)</span></span>; <span class="comment">// rec是个const矩形, 从 (0 ，0) 到 (100 ， 100)</span></span><br><span class="line"></span><br><span class="line">rec.upperLeft( ) .setX(<span class="number">50</span>);  <span class="comment">// 现在rec却变成从 (50 ， 0) 到 (100 ， 100)</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>成员变量的封装性最多只等于”返回其 <code>reference</code>“ 的函数的访问级别。</li>
-<li>如果 <code>const</code> 成员函数传出一个 <code>reference</code>，后者所指数据与对象自身有关联，而它又被存储于对象之外，那么这个函数的调用者可以修改那笔数据。(<code>bitwise constness</code>原因)</li>
-</ul>
-<h2 id="悬空问题"><a href="#悬空问题" class="headerlink" title="悬空问题"></a>悬空问题</h2><p>虽然我们可以修改函数，达到不能修改私有成员变量。</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">const</span> Point&amp; <span class="title">upperLeft</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> pData-&gt;ulhc; &#125;</span><br></pre></td></tr></table></figure>
-<p>但也不能解决悬空问题。如下：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">GUIObject</span> &#123;</span> ... &#125;;</span><br><span class="line"><span class="function"><span class="keyword">const</span> Rectangle <span class="title">boundingBox</span><span class="params">(<span class="keyword">const</span> GUIObject&amp; obj)</span></span>; <span class="comment">//以 by value 方式返回一个矩形</span></span><br></pre></td></tr></table></figure>
-
-<p>现在，客户有可能这么使用这个函数:</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">GUIObject* pgo; <span class="comment">// 让pgo指向某个GUIObject</span></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> Point* pUpperLeft = &amp;(boundingBox(*pgo) .upperLeft()); <span class="comment">// 取得一个指针指向外框左上点</span></span><br></pre></td></tr></table></figure>
-
-<p><code>pUpperLeft</code> 被悬空了，<code>boundingBox(*pgo)</code> 返回的是一个临时变量，在语句执行结束后就会销毁，导致 <code>pUpperLeft</code> 指针失效。</p>
-]]></content>
-      <categories>
-        <category>Effective-C++</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
-        <tag>Effective-C++</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>解决 由于没有公钥，无法验证下列签名 :NO_PUBKEY</title>
-    <url>/2022/04/19/linux/NO_PUBKEY/</url>
-    <content><![CDATA[<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ sudo apt update </span><br><span class="line">命中:1 https://pro-driver-packages.uniontech.com eagle InRelease</span><br><span class="line">获取:2 http://mirrors.tuna.tsinghua.edu.cn/ubuntu hirsute InRelease [269 kB]                                 </span><br><span class="line">命中:3 http://packages.microsoft.com/repos/code stable InRelease                                             </span><br><span class="line">命中:4 https://home-packages.chinauos.com/home plum InRelease                                                </span><br><span class="line">命中:5 https://home-packages.chinauos.com/home plum/beta InRelease   </span><br><span class="line">命中:6 https://home-packages.chinauos.com/printer eagle InRelease</span><br><span class="line">错误:2 http://mirrors.tuna.tsinghua.edu.cn/ubuntu hirsute InRelease</span><br><span class="line">  由于没有公钥，无法验证下列签名： NO_PUBKEY 871920D1991BC93C</span><br><span class="line">命中:7 https://home-store-img.uniontech.com/appstore eagle InRelease</span><br><span class="line">正在读取软件包列表... 完成</span><br><span class="line">W: GPG 错误：http://mirrors.tuna.tsinghua.edu.cn/ubuntu hirsute InRelease: 由于没有公钥，无法验证下列签名： NO_PUBKEY 871920D1991BC93C</span><br><span class="line">E: 仓库 “http://mirrors.tuna.tsinghua.edu.cn/ubuntu hirsute InRelease” 没有数字签名。</span><br><span class="line">N: 无法安全地用该源进行更新，所以默认禁用该源。</span><br><span class="line">N: 参见 apt-secure(8) 手册以了解仓库创建和用户配置方面的细节。</span><br></pre></td></tr></table></figure>
-
-<p>执行：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 871920D1991BC93C</span><br></pre></td></tr></table></figure>]]></content>
       <categories>
         <category>Linux</category>
       </categories>
       <tags>
         <tag>Linux</tag>
-        <tag>apt</tag>
+        <tag>mime</tag>
       </tags>
   </entry>
   <entry>
