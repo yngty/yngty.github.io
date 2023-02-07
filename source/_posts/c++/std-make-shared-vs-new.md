@@ -27,6 +27,8 @@ categories:
 
 `std::make_shared`执行一次堆分配，计算控制块和数据所需的总空间。在另一种情况 `std::shared_ptr<Obj>(new Obj("foo"))`下执行两次, `new Obj("foo")`为托管数据调用堆分配，`std::shared_ptr`构造函数为控制块执行另一个堆分配。
 
+<!--more-->
+
 # 异常安全
 
 **自 `C++17` 以来，这不是问题，因为函数参数的评估顺序发生了变化。具体来说，函数的每个参数都需要在评估其他参数之前完全执行**。
@@ -56,9 +58,12 @@ f(ptr, g());
 f(std::make_shared<int>(42), g())
 ```
 
-# `std::make_shared` 的缺点
+# `std::make_shared` 的一些缺点
 
--  若任何 `std::weak_ptr` 在所有共享拥有者的生存期结束后引用 `std::make_shared` 所创建的控制块，则被管理对象(想`new`的对象)所占有的内存一直维持着，直至所有弱拥有者被销毁。
+## `weak_ptr`内存保活
+
+-  通过 `std::make_shared` 构造的智能指针, 当没有 `shared_ptr` 引用计数为 `0` 时只调用析构函数，`weak_ptr`引用计数为 `0` 时才释放内存块。
+
 
 ```c++
 bool logging = false;
@@ -107,8 +112,7 @@ Deallocated: 105553162522944
 No std::weak_ptr's anymore.
 ```
 
-
-- `make_shared` 无法访问公共构造函数
+##  无法访问公共构造函数
 
 ```c++
 class A
@@ -130,3 +134,9 @@ private:
     A(int v): val(v){}
 };
 ```
+
+# 参考资料
+
+* [Difference in make_shared and normal shared_ptr in C++](https://stackoverflow.com/questions/20895648/difference-in-make-shared-and-normal-shared-ptr-in-c)
+* [std::make_shared 与 new](https://www.gamedev.net/forums/topic/695796-stdmake_shared-vs-new/)
+* [make_shared#Notes](https://zh.cppreference.com/w/cpp/memory/shared_ptr/make_shared#Notes)
