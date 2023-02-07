@@ -6,7 +6,7 @@
   <link href="https://yngty.github.io/atom.xml" rel="self"/>
   
   <link href="https://yngty.github.io/"/>
-  <updated>2022-07-26T09:26:56.748Z</updated>
+  <updated>2023-02-07T04:46:35.526Z</updated>
   <id>https://yngty.github.io/</id>
   
   <author>
@@ -17,11 +17,46 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>std::make_shared vs. new</title>
+    <link href="https://yngty.github.io/2023/02/07/c++/std-make-shared-vs-new/"/>
+    <id>https://yngty.github.io/2023/02/07/c++/std-make-shared-vs-new/</id>
+    <published>2023-02-07T10:30:24.000Z</published>
+    <updated>2023-02-07T04:46:35.526Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;内存分配&quot;&gt;&lt;a href=&quot;#内存分配&quot; class=&quot;headerlink&quot; title=&quot;内存分配&quot;&gt;&lt;/a&gt;内存分配&lt;/h1&gt;&lt;p&gt;&lt;code&gt;std::make_shared&lt;/code&gt; 执行&lt;strong&gt;一次&lt;/strong&gt;堆分配，而调用&lt;code&gt;std::shared_ptr&lt;/code&gt; 构造函数执行&lt;strong&gt;两次&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;在一个典型的实现中 &lt;code&gt;std::shared_ptr&lt;/code&gt; 管理两个实体：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;控制块（存储元数据，如引用计数、类型擦除删除器等）&lt;/li&gt;
+&lt;li&gt;被管理的对象&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;控制块是一个动态分配的对象，它包含：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;指向托管对象的指针或托管对象本身；&lt;/li&gt;
+&lt;li&gt;删除器 (类型擦除)&lt;/li&gt;
+&lt;li&gt;分配器 (类型擦除)&lt;/li&gt;
+&lt;li&gt;拥有被管理对象的 &lt;code&gt;shared_ptr&lt;/code&gt;的数量&lt;/li&gt;
+&lt;li&gt;引用托管对象的 &lt;code&gt;weak_ptr&lt;/code&gt; 的数量 &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;code&gt;std::make_shared&lt;/code&gt;执行一次堆分配，计算控制块和数据所需的总空间。在另一种情况 &lt;code&gt;std::shared_ptr&amp;lt;Obj&amp;gt;(new Obj(&amp;quot;foo&amp;quot;))&lt;/code&gt;下执行两次, &lt;code&gt;new Obj(&amp;quot;foo&amp;quot;)&lt;/code&gt;为托管数据调用堆分配，&lt;code&gt;std::shared_ptr&lt;/code&gt;构造函数为控制块执行另一个堆分配。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="C/C++" scheme="https://yngty.github.io/categories/C-C/"/>
+    
+    
+    <category term="C++" scheme="https://yngty.github.io/tags/C/"/>
+    
+    <category term="智能指针" scheme="https://yngty.github.io/tags/%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88/"/>
+    
+  </entry>
+  
+  <entry>
     <title>在MacOS平台上符号化崩溃报告</title>
     <link href="https://yngty.github.io/2022/07/26/macos/%E5%9C%A8MacOS%E5%B9%B3%E5%8F%B0%E4%B8%8A%E7%AC%A6%E5%8F%B7%E5%8C%96%E5%B4%A9%E6%BA%83%E6%8A%A5%E5%91%8A/"/>
     <id>https://yngty.github.io/2022/07/26/macos/%E5%9C%A8MacOS%E5%B9%B3%E5%8F%B0%E4%B8%8A%E7%AC%A6%E5%8F%B7%E5%8C%96%E5%B4%A9%E6%BA%83%E6%8A%A5%E5%91%8A/</id>
     <published>2022-07-26T15:41:02.000Z</published>
-    <updated>2022-07-26T09:26:56.748Z</updated>
+    <updated>2023-02-07T04:46:35.530Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;dSYM&quot;&gt;&lt;a href=&quot;#dSYM&quot; class=&quot;headerlink&quot; title=&quot;.dSYM&quot;&gt;&lt;/a&gt;&lt;code&gt;.dSYM&lt;/code&gt;&lt;/h1&gt;&lt;p&gt;&lt;code&gt;.dSYM&lt;/code&gt; (&lt;code&gt;debugging SYMbols&lt;/code&gt;) 又称为调试符号表，是苹果为了方便调试和定位问题而使用的一种调试方案，本质上使用的是起源于贝尔实验室的 &lt;code&gt;DWARF&lt;/code&gt;（&lt;code&gt;Debugging With Attributed Record Formats&lt;/code&gt;），其在.xcarchive目录中的层次结构为：&lt;/p&gt;
@@ -43,7 +78,7 @@
     <link href="https://yngty.github.io/2022/04/19/linux/NO_PUBKEY/"/>
     <id>https://yngty.github.io/2022/04/19/linux/NO_PUBKEY/</id>
     <published>2022-04-19T22:41:41.000Z</published>
-    <updated>2022-07-26T09:26:56.744Z</updated>
+    <updated>2023-02-07T04:46:35.530Z</updated>
     
     
       
@@ -70,7 +105,7 @@
     <link href="https://yngty.github.io/2022/04/16/effecitve-cpp/effective-cpp-28/"/>
     <id>https://yngty.github.io/2022/04/16/effecitve-cpp/effective-cpp-28/</id>
     <published>2022-04-16T21:42:47.000Z</published>
-    <updated>2022-07-26T09:26:56.744Z</updated>
+    <updated>2023-02-07T04:46:35.530Z</updated>
     
     
     <summary type="html">&lt;blockquote&gt;
@@ -94,7 +129,7 @@
     <link href="https://yngty.github.io/2022/04/15/effecitve-cpp/effective-cpp-26/"/>
     <id>https://yngty.github.io/2022/04/15/effecitve-cpp/effective-cpp-26/</id>
     <published>2022-04-15T10:38:20.000Z</published>
-    <updated>2022-07-26T09:26:56.744Z</updated>
+    <updated>2023-02-07T04:46:35.526Z</updated>
     
     
     <summary type="html">&lt;blockquote&gt;
@@ -124,7 +159,7 @@
     <link href="https://yngty.github.io/2022/04/09/effecitve-cpp/effective-cpp-25/"/>
     <id>https://yngty.github.io/2022/04/09/effecitve-cpp/effective-cpp-25/</id>
     <published>2022-04-09T23:12:46.000Z</published>
-    <updated>2022-07-26T09:26:56.744Z</updated>
+    <updated>2023-02-07T04:46:35.526Z</updated>
     
     
     <summary type="html">&lt;blockquote&gt;
@@ -154,7 +189,7 @@
     <link href="https://yngty.github.io/2022/04/09/effecitve-cpp/effective-cpp-24/"/>
     <id>https://yngty.github.io/2022/04/09/effecitve-cpp/effective-cpp-24/</id>
     <published>2022-04-09T22:39:25.000Z</published>
-    <updated>2022-07-26T09:26:56.744Z</updated>
+    <updated>2023-02-07T04:46:35.526Z</updated>
     
     
     <summary type="html">&lt;blockquote&gt;
@@ -178,7 +213,7 @@
     <link href="https://yngty.github.io/2022/04/09/effecitve-cpp/effective-cpp-23/"/>
     <id>https://yngty.github.io/2022/04/09/effecitve-cpp/effective-cpp-23/</id>
     <published>2022-04-09T22:30:35.000Z</published>
-    <updated>2022-07-26T09:26:56.744Z</updated>
+    <updated>2023-02-07T04:46:35.526Z</updated>
     
     
       
@@ -206,7 +241,7 @@
     <link href="https://yngty.github.io/2022/03/23/linux/%E5%9C%A8UOS%E4%B8%AD%E6%96%87%E4%BB%B6%E7%AE%A1%E7%90%86%E5%99%A8%E5%8C%BF%E5%90%8D%E8%AE%BF%E9%97%AE%E5%85%B1%E4%BA%AB%E4%BF%AE%E6%94%B9%E6%96%87%E4%BB%B6%E5%AF%BC%E8%87%B4%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90%E6%9B%B4%E6%94%B9%E6%A0%B9%E5%9B%A0%E5%88%86%E6%9E%90%E6%8A%A5%E5%91%8A/"/>
     <id>https://yngty.github.io/2022/03/23/linux/%E5%9C%A8UOS%E4%B8%AD%E6%96%87%E4%BB%B6%E7%AE%A1%E7%90%86%E5%99%A8%E5%8C%BF%E5%90%8D%E8%AE%BF%E9%97%AE%E5%85%B1%E4%BA%AB%E4%BF%AE%E6%94%B9%E6%96%87%E4%BB%B6%E5%AF%BC%E8%87%B4%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90%E6%9B%B4%E6%94%B9%E6%A0%B9%E5%9B%A0%E5%88%86%E6%9E%90%E6%8A%A5%E5%91%8A/</id>
     <published>2022-03-23T13:30:28.000Z</published>
-    <updated>2022-07-26T09:26:56.748Z</updated>
+    <updated>2023-02-07T04:46:35.530Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;在UOS中文件管理器匿名访问共享修改文件导致文件变成只读根因分析报告&quot;&gt;&lt;a href=&quot;#在UOS中文件管理器匿名访问共享修改文件导致文件变成只读根因分析报告&quot; class=&quot;headerlink&quot; title=&quot;在UOS中文件管理器匿名访问共享修改文件导致文件变成只读根因分析报告&quot;&gt;&lt;/a&gt;在UOS中文件管理器匿名访问共享修改文件导致文件变成只读根因分析报告&lt;/h1&gt;&lt;h2 id=&quot;一、相关术语&quot;&gt;&lt;a href=&quot;#一、相关术语&quot; class=&quot;headerlink&quot; title=&quot;一、相关术语&quot;&gt;&lt;/a&gt;一、相关术语&lt;/h2&gt;&lt;table&gt;
@@ -540,36 +575,6 @@
 &lt;p&gt;Item 15: Provide access to raw resources in resource-managing classes.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;&lt;code&gt;APIs&lt;/code&gt;</summary>
-        
-      
-    
-    
-    
-    <category term="Effective-C++" scheme="https://yngty.github.io/categories/Effective-C/"/>
-    
-    
-    <category term="C++" scheme="https://yngty.github.io/tags/C/"/>
-    
-    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Effective C++ 14：在资源管理类中小心 copying 行为</title>
-    <link href="https://yngty.github.io/2021/11/04/effecitve-cpp/effective-cpp-14/"/>
-    <id>https://yngty.github.io/2021/11/04/effecitve-cpp/effective-cpp-14/</id>
-    <published>2021-11-04T16:00:01.000Z</published>
-    <updated>2021-11-04T16:33:29.494Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;blockquote&gt;
-&lt;p&gt;Item 14: Think carefully about copying behavior in resource-managing classes.&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;设计一个</summary>
         
       
     
