@@ -43,7 +43,7 @@ Lock ml2(&ml1)
 
 记住**资源管理对象的拷贝行为取决于资源本身的拷贝行为，同时资源管理对象也可以根据业务需要来决定自己的拷贝行为**。一般有如下四种方式：
 
-- **禁止复制**。参考{% post_link effective-cpp-6 若不想使用编译器自动生成的函数，就该明确拒绝 %}。对Lock而言看起来是这样：
+- **禁止复制**。参考{% post_link effecitve-cpp/effective-cpp-6 若不想使用编译器自动生成的函数，就该明确拒绝 %}。对Lock而言看起来是这样：
 
     ```c++
     class Lock : private Uncopyable {
