@@ -21,6 +21,7 @@ jobs:
           key: ${{ runner.OS }}-npm-cache
           restore-keys: |
             ${{ runner.OS }}-npm-cache
+          node-version: "v18.2.0"
       - name: Install Dependencies
         run: npm install
       - name: Build
