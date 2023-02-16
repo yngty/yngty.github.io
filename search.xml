@@ -969,13 +969,13 @@
 <p>Item9. Choose carefully among easing options.</p>
 </blockquote>
 <h1 id="一、删除特定值"><a href="#一、删除特定值" class="headerlink" title="一、删除特定值"></a>一、删除特定值</h1><ol>
-<li><p><code>vector</code>、 <code>string</code> 或 <code>deque</code></p>
+<li><p>对于 <code>vector</code>、 <code>string</code> 或 <code>deque</code></p>
 <p> 最好使用 <code>erase-remove</code>习惯用法: </p>
  <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">erase</span>(<span class="built_in">remove</span>(c.<span class="built_in">begin</span>(), c.<span class="built_in">end</span>(), <span class="number">1963</span>, c.<span class="built_in">end</span>()));</span><br></pre></td></tr></table></figure></li>
-<li><p><code>list</code></p>
+<li><p>对于 <code>list</code> 容器</p>
 <p> 直接使用 <code>remove</code> 方法:</p>
  <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">remove</span>(<span class="number">1963</span>);</span><br></pre></td></tr></table></figure></li>
-<li><p>标准关联容器</p>
+<li><p>对于标准关联容器</p>
 <p> 直接使用 <code>erase</code> 方法:</p>
  <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">erase</span>(<span class="number">1963</span>)</span><br></pre></td></tr></table></figure></li>
 </ol>
@@ -983,9 +983,9 @@
 <h1 id="二、删除满足特定判定条件的值"><a href="#二、删除满足特定判定条件的值" class="headerlink" title="二、删除满足特定判定条件的值"></a>二、删除满足特定判定条件的值</h1><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">bool</span> <span class="title">badValue</span><span class="params">(<span class="type">int</span>)</span> </span>&#123; <span class="keyword">return</span> <span class="literal">true</span>; &#125; <span class="comment">// 返回x是否为&quot;坏值&quot;</span></span><br></pre></td></tr></table></figure>
 
 <ol>
-<li><p>对于 <code>vector</code>、 <code>string</code> 或 <code>deque</code></p>
+<li><p>对于 <code>vector</code>、 <code>string</code> 或 <code>deque</code><br> 使用 <code>erase-remove-if</code>方法: </p>
  <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">erase</span>(<span class="built_in">remove_if</span>(c.<span class="built_in">begin</span>(), c.<span class="built_in">end</span>(), badValue, c.<span class="built_in">end</span>()));</span><br></pre></td></tr></table></figure></li>
-<li><p>对于 <code>list</code> 容器</p>
+<li><p>对于 <code>list</code> 容器<br> 直接使用 <code>remove_if</code> 方法:</p>
  <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">remove_if</span>(badValue);</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>对于标准关联容器</p>
@@ -994,7 +994,7 @@
 </ol>
 <h1 id="三、循环内部删除对象之外还要做某些事"><a href="#三、循环内部删除对象之外还要做某些事" class="headerlink" title="三、循环内部删除对象之外还要做某些事"></a>三、循环内部删除对象之外还要做某些事</h1><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">doSomething</span><span class="params">(<span class="type">int</span>)</span> </span>&#123; ... &#125;</span><br></pre></td></tr></table></figure>
 <ol>
-<li><p><code>vector</code>、 <code>string</code> 或 <code>deque</code></p>
+<li><p>对于 <code>vector</code>、 <code>string</code> 或 <code>deque</code></p>
 <p> <strong>接收 <code>erase</code>返回的迭代器值。</strong></p>
  <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (SeqContainer&lt;<span class="type">int</span>&gt;::iterator i = c.<span class="built_in">begin</span>(); i != c.<span class="built_in">end</span>();) &#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">badValue</span>(*i)) &#123;</span><br><span class="line">        <span class="built_in">doSomething</span>(*i);</span><br><span class="line">        i = c.<span class="built_in">rease</span>(i);</span><br><span class="line">    &#125; <span class="keyword">else</span> ++i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
 <li><p>对于 <code>list</code> 容器</p>
