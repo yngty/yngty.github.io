@@ -963,6 +963,57 @@
       </tags>
   </entry>
   <entry>
+    <title>Effective-STL 9：慎重选择删除元素的方法</title>
+    <url>/2023/02/16/effective-stl/effective-stl-9/</url>
+    <content><![CDATA[<blockquote>
+<p>Item9. Choose carefully among easing options.</p>
+</blockquote>
+<h1 id="一、删除特定值"><a href="#一、删除特定值" class="headerlink" title="一、删除特定值"></a>一、删除特定值</h1><ol>
+<li><p><code>vector</code>、 <code>string</code> 或 <code>deque</code></p>
+<p> 最好使用 <code>erase-remove</code>习惯用法: </p>
+ <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">erase</span>(<span class="built_in">remove</span>(c.<span class="built_in">begin</span>(), c.<span class="built_in">end</span>(), <span class="number">1963</span>, c.<span class="built_in">end</span>()));</span><br></pre></td></tr></table></figure></li>
+<li><p><code>list</code></p>
+<p> 直接使用 <code>remove</code> 方法:</p>
+ <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">remove</span>(<span class="number">1963</span>);</span><br></pre></td></tr></table></figure></li>
+<li><p>标准关联容器</p>
+<p> 直接使用 <code>erase</code> 方法:</p>
+ <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">erase</span>(<span class="number">1963</span>)</span><br></pre></td></tr></table></figure></li>
+</ol>
+<span id="more"></span>
+<h1 id="二、删除满足特定判定条件的值"><a href="#二、删除满足特定判定条件的值" class="headerlink" title="二、删除满足特定判定条件的值"></a>二、删除满足特定判定条件的值</h1><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">bool</span> <span class="title">badValue</span><span class="params">(<span class="type">int</span>)</span> </span>&#123; <span class="keyword">return</span> <span class="literal">true</span>; &#125; <span class="comment">// 返回x是否为&quot;坏值&quot;</span></span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><p>对于 <code>vector</code>、 <code>string</code> 或 <code>deque</code></p>
+ <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">erase</span>(<span class="built_in">remove_if</span>(c.<span class="built_in">begin</span>(), c.<span class="built_in">end</span>(), badValue, c.<span class="built_in">end</span>()));</span><br></pre></td></tr></table></figure></li>
+<li><p>对于 <code>list</code> 容器</p>
+ <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">remove_if</span>(badValue);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>对于标准关联容器</p>
+<p> <strong>把当前的i传给erase，i后缀递增</strong></p>
+ <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (AssocContainer&lt;<span class="type">int</span>&gt;::iterator i = c.<span class="built_in">begin</span>(); i != c.<span class="built_in">end</span>();) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">badValue</span>(*i)) c3.<span class="built_in">erase</span>(i++); </span><br><span class="line">    <span class="keyword">else</span> ++i;                     </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h1 id="三、循环内部删除对象之外还要做某些事"><a href="#三、循环内部删除对象之外还要做某些事" class="headerlink" title="三、循环内部删除对象之外还要做某些事"></a>三、循环内部删除对象之外还要做某些事</h1><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">doSomething</span><span class="params">(<span class="type">int</span>)</span> </span>&#123; ... &#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li><p><code>vector</code>、 <code>string</code> 或 <code>deque</code></p>
+<p> <strong>接收 <code>erase</code>返回的迭代器值。</strong></p>
+ <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (SeqContainer&lt;<span class="type">int</span>&gt;::iterator i = c.<span class="built_in">begin</span>(); i != c.<span class="built_in">end</span>();) &#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">badValue</span>(*i)) &#123;</span><br><span class="line">        <span class="built_in">doSomething</span>(*i);</span><br><span class="line">        i = c.<span class="built_in">rease</span>(i);</span><br><span class="line">    &#125; <span class="keyword">else</span> ++i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>对于 <code>list</code> 容器</p>
+<p> 虽然也可以采用标准关联容器方法，但建议采用跟 <code>vector</code>、 <code>string</code> 或 <code>deque</code> 一致。</p>
+</li>
+<li><p>对于标准关联容器</p>
+ <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (SeqContainer&lt;<span class="type">int</span>&gt;::iterator i = c.<span class="built_in">begin</span>(); i != c.<span class="built_in">end</span>();) &#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">badValue</span>(*i)) &#123;</span><br><span class="line">        <span class="built_in">doSomething</span>(*i);</span><br><span class="line">        c.<span class="built_in">rease</span>(i++);</span><br><span class="line">    &#125; <span class="keyword">else</span> ++i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+]]></content>
+      <categories>
+        <category>Effective-STL</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>Effective-STL</tag>
+        <tag>stl</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Linux命令之tr</title>
     <url>/2021/11/17/linux/Linux%E5%91%BD%E4%BB%A4%E4%B9%8Btr/</url>
     <content><![CDATA[<p><code>Linux</code> 中 <code>tr</code> 命令用于转换或删除文件中的字符。</p>

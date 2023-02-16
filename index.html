@@ -119,17 +119,17 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">36</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">37</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
 
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">5</span></a>
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">12</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">14</span></a>
 
   </li>
   </ul>
@@ -159,6 +159,108 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2023/02/16/effective-stl/effective-stl-9/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="瓜地">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/02/16/effective-stl/effective-stl-9/" class="post-title-link" itemprop="url">Effective-STL 9：慎重选择删除元素的方法</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-02-16 15:11:25 / 修改时间：07:45:48" itemprop="dateCreated datePublished" datetime="2023-02-16T15:11:25+00:00">2023-02-16</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Effective-STL/" itemprop="url" rel="index"><span itemprop="name">Effective-STL</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>268</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <blockquote>
+<p>Item9. Choose carefully among easing options.</p>
+</blockquote>
+<h1 id="一、删除特定值"><a href="#一、删除特定值" class="headerlink" title="一、删除特定值"></a>一、删除特定值</h1><ol>
+<li><p><code>vector</code>、 <code>string</code> 或 <code>deque</code></p>
+<p> 最好使用 <code>erase-remove</code>习惯用法: </p>
+ <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c.<span class="built_in">erase</span>(<span class="built_in">remove</span>(c.<span class="built_in">begin</span>(), c.<span class="built_in">end</span>(), <span class="number">1963</span>, c.<span class="built_in">end</span>()));</span><br></pre></td></tr></table></figure></li>
+<li><p><code>list</code></p>
+<p> 直接使用 <code>remove</code> 方法:</p>
+ <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c.<span class="built_in">remove</span>(<span class="number">1963</span>);</span><br></pre></td></tr></table></figure></li>
+<li><p>标准关联容器</p>
+<p> 直接使用 <code>erase</code> 方法:</p>
+ <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c.<span class="built_in">erase</span>(<span class="number">1963</span>)</span><br></pre></td></tr></table></figure></li>
+</ol>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/02/16/effective-stl/effective-stl-9/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2023/02/16/macos/Disk-Arbitration/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -184,7 +286,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2023-02-16 13:38:07 / 修改时间：06:59:18" itemprop="dateCreated datePublished" datetime="2023-02-16T13:38:07+00:00">2023-02-16</time>
+              <time title="创建时间：2023-02-16 13:38:07 / 修改时间：07:45:48" itemprop="dateCreated datePublished" datetime="2023-02-16T13:38:07+00:00">2023-02-16</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -286,7 +388,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-02-16 06:59:18" itemprop="dateModified" datetime="2023-02-16T06:59:18+00:00">2023-02-16</time>
+                <time title="修改时间：2023-02-16 07:45:48" itemprop="dateModified" datetime="2023-02-16T07:45:48+00:00">2023-02-16</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -384,7 +486,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-02-16 06:59:18" itemprop="dateModified" datetime="2023-02-16T06:59:18+00:00">2023-02-16</time>
+                <time title="修改时间：2023-02-16 07:45:48" itemprop="dateModified" datetime="2023-02-16T07:45:48+00:00">2023-02-16</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -493,7 +595,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-02-16 06:59:18" itemprop="dateModified" datetime="2023-02-16T06:59:18+00:00">2023-02-16</time>
+                <time title="修改时间：2023-02-16 07:45:48" itemprop="dateModified" datetime="2023-02-16T07:45:48+00:00">2023-02-16</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -589,7 +691,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-02-16 06:59:18" itemprop="dateModified" datetime="2023-02-16T06:59:18+00:00">2023-02-16</time>
+                <time title="修改时间：2023-02-16 07:45:48" itemprop="dateModified" datetime="2023-02-16T07:45:48+00:00">2023-02-16</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -679,7 +781,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-02-16 06:59:18" itemprop="dateModified" datetime="2023-02-16T06:59:18+00:00">2023-02-16</time>
+                <time title="修改时间：2023-02-16 07:45:48" itemprop="dateModified" datetime="2023-02-16T07:45:48+00:00">2023-02-16</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -777,7 +879,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-02-16 06:59:18" itemprop="dateModified" datetime="2023-02-16T06:59:18+00:00">2023-02-16</time>
+                <time title="修改时间：2023-02-16 07:45:48" itemprop="dateModified" datetime="2023-02-16T07:45:48+00:00">2023-02-16</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -881,7 +983,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-02-16 06:59:18" itemprop="dateModified" datetime="2023-02-16T06:59:18+00:00">2023-02-16</time>
+                <time title="修改时间：2023-02-16 07:45:48" itemprop="dateModified" datetime="2023-02-16T07:45:48+00:00">2023-02-16</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -985,7 +1087,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-02-16 06:59:18" itemprop="dateModified" datetime="2023-02-16T06:59:18+00:00">2023-02-16</time>
+                <time title="修改时间：2023-02-16 07:45:48" itemprop="dateModified" datetime="2023-02-16T07:45:48+00:00">2023-02-16</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1034,96 +1136,6 @@
             </div>
           <!--/noindex-->
         
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2022/04/09/effecitve-cpp/effective-cpp-23/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="yngty">
-      <meta itemprop="description" content="预测未来的最好方式就是实现它">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="瓜地">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/04/09/effecitve-cpp/effective-cpp-23/" class="post-title-link" itemprop="url">Effective C++ 23：用非成员函数、非友元函数替换成员函数</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-04-09 22:30:35" itemprop="dateCreated datePublished" datetime="2022-04-09T22:30:35+00:00">2022-04-09</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-02-16 06:59:18" itemprop="dateModified" datetime="2023-02-16T06:59:18+00:00">2023-02-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Effective-C/" itemprop="url" rel="index"><span itemprop="name">Effective-C++</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>9</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <blockquote>
-<p>Prefer non-member non-friend functions to member functions</p>
-</blockquote>
-
       
     </div>
 
@@ -1209,20 +1221,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-count">37</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-count">14</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -1269,12 +1281,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">19k</span>
+    <span title="站点总字数">20k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">1:11</span>
+    <span title="站点阅读时长">1:12</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>
