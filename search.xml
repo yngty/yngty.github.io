@@ -1388,8 +1388,12 @@
   <entry>
     <title>Qt 之 焦点处理</title>
     <url>/2023/02/15/qt/Qt-%E4%B9%8B-%E7%84%A6%E7%82%B9%E5%A4%84%E7%90%86/</url>
-    <content><![CDATA[<h1 id="焦点事件"><a href="#焦点事件" class="headerlink" title="焦点事件"></a>焦点事件</h1><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">focusInEvent</span><span class="params">(QFocusEvent *event)</span> <span class="keyword">override</span></span>;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">focusOutEvent</span><span class="params">(QFocusEvent *event)</span> <span class="keyword">override</span></span>;</span><br></pre></td></tr></table></figure>
-<h1 id="焦点策略"><a href="#焦点策略" class="headerlink" title="焦点策略"></a>焦点策略</h1><h3 id="enum-Qt-FocusPolicy"><a href="#enum-Qt-FocusPolicy" class="headerlink" title="enum Qt::FocusPolicy"></a>enum Qt::FocusPolicy</h3><table>
+    <content><![CDATA[<h1 id="焦点事件"><a href="#焦点事件" class="headerlink" title="焦点事件"></a>焦点事件</h1><p>当焦点从一个 <code>widget</code> 移动到另一个 <code>widget</code> 时，会触发 <code>QFocusEvent</code> 事件，这个事件会被发送给原焦点窗口和当前焦点窗口，原焦点窗口执行 <code>focusOutEvent()</code> ，新焦点窗口执行 <code>focusInEvent()</code>。 相关函数如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">focusInEvent</span><span class="params">(QFocusEvent *event)</span> <span class="keyword">override</span></span>;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">focusOutEvent</span><span class="params">(QFocusEvent *event)</span> <span class="keyword">override</span></span>;</span><br></pre></td></tr></table></figure>
+<h1 id="焦点策略"><a href="#焦点策略" class="headerlink" title="焦点策略"></a>焦点策略</h1><p>只有<strong>可获取焦点</strong>的窗口，才有机会成为焦点窗口。比如<code>QWidget</code> 默认策略是 <code>Qt::NoFocus</code> 所以 QWidget 默认不获取焦点。Qt提供了如下接口：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">QWidget::setFocusPolicy</span><span class="params">(Qt::FocusPolicy policy)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="enum-Qt-FocusPolicy"><a href="#enum-Qt-FocusPolicy" class="headerlink" title="enum Qt::FocusPolicy"></a>enum Qt::FocusPolicy</h2><table>
 <thead>
 <tr>
 <th align="left">Constant</th>
@@ -1474,9 +1478,25 @@
 </tbody></table>
 <h1 id="焦点信号"><a href="#焦点信号" class="headerlink" title="焦点信号"></a>焦点信号</h1><p><code>QApplication</code> 的信号。</p>
 <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">focusChanged</span><span class="params">(QWidget *old, QWidget *now)</span></span>;</span><br></pre></td></tr></table></figure>
-<h1 id="焦点次序"><a href="#焦点次序" class="headerlink" title="焦点次序"></a>焦点次序</h1><p><code>Tab</code> 次序。</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">static</span> <span class="type">void</span> <span class="title">setTabOrder</span><span class="params">(QWidget *, QWidget *)</span></span>;</span><br></pre></td></tr></table></figure>
-<h1 id="焦点代理"><a href="#焦点代理" class="headerlink" title="焦点代理"></a>焦点代理</h1><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">setFocusProxy</span><span class="params">(QWidget *)</span></span>;</span><br></pre></td></tr></table></figure>]]></content>
+<h1 id="焦点次序"><a href="#焦点次序" class="headerlink" title="焦点次序"></a>焦点次序</h1><p>相关接口如下： </p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 返回此部件焦点链中的下一个部件</span></span><br><span class="line"><span class="function">QWidget* <span class="title">QWidget::nextInFocusChain</span><span class="params">()</span> <span class="type">const</span></span>; </span><br><span class="line"><span class="comment">// 返回此部件焦点链中的前一个部件</span></span><br><span class="line"><span class="function">QWidget* <span class="title">QWidget::previousInFocusChain</span><span class="params">()</span> <span class="type">const</span></span>;</span><br><span class="line"><span class="comment">// 将焦点顺序中的部件 second 放置在部件 first 之后</span></span><br><span class="line"><span class="function"><span class="type">static</span> <span class="type">void</span> <span class="title">setTabOrder</span><span class="params">(QWidget *, QWidget *)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>通过按 <code>Tab</code> 或者 <code>Shift+Tab</code>，可以实现焦点在各个窗口之间循环移动。</p>
+<ul>
+<li><p>点击 <code>Tab</code> 键，焦点向后查找，直至找到第一个 <code>FocusPolicy</code> 大于等于 <code>TabFocus</code> 的窗口，并设置该窗口为焦点窗口;</p>
+</li>
+<li><p>点击 <code>Shift+Tab</code> ，焦点向前查找，直至找到第一个 <code>FocusPolicy</code>  大于等于 <code>TabFocus</code> 的窗口，并设置该窗口为焦点窗口;</p>
+</li>
+</ul>
+<p>默认情况下, 先加入的 <code>QWidget</code> 焦点顺序越靠前。可以通过 <code>setTabOrder</code> 调整顺序.</p>
+<p>比如，若默认的焦点链顺序为 <code>a-b-c-d</code> ，则：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">setTabOrder(d,c); //改变后焦点链的顺序为 a-b-d-c</span><br><span class="line">setTabOrder(b,a); //改变后焦点链的顺序为 b-a-d-c</span><br></pre></td></tr></table></figure>
+
+<h1 id="焦点切换"><a href="#焦点切换" class="headerlink" title="焦点切换"></a>焦点切换</h1><p>相关接口如下： </p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 等同于focusNextPrevChild(true)</span></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">QWidget::focusNextChild</span><span class="params">()</span></span>;</span><br><span class="line"><span class="comment">// 等同于focusNextPrevChild(false)</span></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">QWidget::focusPreviousChild</span><span class="params">()</span></span>;</span><br><span class="line"><span class="comment">// next==true：设置焦点链中下个`FocusPolicy`为`TabFocus`的窗口为焦点窗口</span></span><br><span class="line"><span class="comment">// next==false：设置焦点链中前一个`FocusPolicy`为`TabFocus`的窗口为焦点窗口</span></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">QWidget::focusNextPrevChild</span><span class="params">(<span class="type">bool</span> next)</span></span>;</span><br><span class="line"><span class="comment">// 设置当前窗口为焦点窗口</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">QWidget::setFocus</span><span class="params">(Qt::FocusReason reason)</span></span>;</span><br><span class="line"><span class="comment">// 取消焦点窗口</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">QWidget::clearFocus</span><span class="params">()</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h1 id="焦点代理"><a href="#焦点代理" class="headerlink" title="焦点代理"></a>焦点代理</h1><p>代为接收焦点事件。比如，<code>Widget A</code> 是 <code>Widget B</code> 的焦点代理，则当 <code>B</code> 获得焦点时，实际获得并处理焦点的是 <code>A</code>。相关接口如下： </p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">//返回该窗口的焦点代理</span></span><br><span class="line"><span class="function">QWidget* <span class="title">QWidget::focusProxy</span><span class="params">()</span> <span class="type">const</span></span>; </span><br><span class="line"><span class="comment">//设置该窗口的焦点代理为w</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">QWidget::setFocusProxy</span><span class="params">(QWidget* w)</span></span>;</span><br></pre></td></tr></table></figure>]]></content>
       <categories>
         <category>Qt</category>
       </categories>
