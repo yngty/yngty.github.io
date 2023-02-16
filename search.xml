@@ -1392,7 +1392,7 @@
 <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">focusInEvent</span><span class="params">(QFocusEvent *event)</span> <span class="keyword">override</span></span>;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">focusOutEvent</span><span class="params">(QFocusEvent *event)</span> <span class="keyword">override</span></span>;</span><br></pre></td></tr></table></figure>
 <h1 id="焦点策略"><a href="#焦点策略" class="headerlink" title="焦点策略"></a>焦点策略</h1><p>只有<strong>可获取焦点</strong>的窗口，才有机会成为焦点窗口。比如<code>QWidget</code> 默认策略是 <code>Qt::NoFocus</code> 所以 QWidget 默认不获取焦点。Qt提供了如下接口：</p>
 <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">QWidget::setFocusPolicy</span><span class="params">(Qt::FocusPolicy policy)</span></span>;</span><br></pre></td></tr></table></figure>
-
+<span id="more"></span>
 <h2 id="enum-Qt-FocusPolicy"><a href="#enum-Qt-FocusPolicy" class="headerlink" title="enum Qt::FocusPolicy"></a>enum Qt::FocusPolicy</h2><table>
 <thead>
 <tr>
