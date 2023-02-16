@@ -21,7 +21,7 @@ void focusOutEvent(QFocusEvent *event) override;
 ```c++
 void QWidget::setFocusPolicy(Qt::FocusPolicy policy);
 ```
-
+<!--more-->
 ## enum Qt::FocusPolicy
 
 | Constant | Value | Description | 
