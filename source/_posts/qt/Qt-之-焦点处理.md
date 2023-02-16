@@ -9,14 +9,20 @@ categories:
 
 # 焦点事件
 
+当焦点从一个 `widget` 移动到另一个 `widget` 时，会触发 `QFocusEvent` 事件，这个事件会被发送给原焦点窗口和当前焦点窗口，原焦点窗口执行 `focusOutEvent()` ，新焦点窗口执行 `focusInEvent()`。 相关函数如下：
+
 ```c++
 void focusInEvent(QFocusEvent *event) override;
 void focusOutEvent(QFocusEvent *event) override;
 ```
 # 焦点策略
 
-### enum Qt::FocusPolicy
+只有**可获取焦点**的窗口，才有机会成为焦点窗口。比如`QWidget` 默认策略是 `Qt::NoFocus` 所以 QWidget 默认不获取焦点。Qt提供了如下接口：
+```c++
+void QWidget::setFocusPolicy(Qt::FocusPolicy policy);
+```
 
+## enum Qt::FocusPolicy
 
 | Constant | Value | Description | 
 | :---        |    :---  |          :--- |
@@ -48,13 +54,55 @@ void focusChanged(QWidget *old, QWidget *now);
 ```
 # 焦点次序
 
-`Tab` 次序。
-
+相关接口如下： 
 ```c++
+// 返回此部件焦点链中的下一个部件
+QWidget* QWidget::nextInFocusChain() const; 
+// 返回此部件焦点链中的前一个部件
+QWidget* QWidget::previousInFocusChain() const;
+// 将焦点顺序中的部件 second 放置在部件 first 之后
 static void setTabOrder(QWidget *, QWidget *);
 ```
-# 焦点代理
+
+通过按 `Tab` 或者 `Shift+Tab`，可以实现焦点在各个窗口之间循环移动。
+
+- 点击 `Tab` 键，焦点向后查找，直至找到第一个 `FocusPolicy` 大于等于 `TabFocus` 的窗口，并设置该窗口为焦点窗口;
+
+- 点击 `Shift+Tab` ，焦点向前查找，直至找到第一个 `FocusPolicy`  大于等于 `TabFocus` 的窗口，并设置该窗口为焦点窗口;
+
+默认情况下, 先加入的 `QWidget` 焦点顺序越靠前。可以通过 `setTabOrder` 调整顺序.
+
+比如，若默认的焦点链顺序为 `a-b-c-d` ，则：
+```
+setTabOrder(d,c); //改变后焦点链的顺序为 a-b-d-c
+setTabOrder(b,a); //改变后焦点链的顺序为 b-a-d-c
+```
+
+# 焦点切换
+
+相关接口如下： 
 
 ```c++
-void setFocusProxy(QWidget *);
+// 等同于focusNextPrevChild(true)
+bool QWidget::focusNextChild();
+// 等同于focusNextPrevChild(false)
+bool QWidget::focusPreviousChild();
+// next==true：设置焦点链中下个`FocusPolicy`为`TabFocus`的窗口为焦点窗口
+// next==false：设置焦点链中前一个`FocusPolicy`为`TabFocus`的窗口为焦点窗口
+bool QWidget::focusNextPrevChild(bool next);
+// 设置当前窗口为焦点窗口
+void QWidget::setFocus(Qt::FocusReason reason);
+// 取消焦点窗口
+void QWidget::clearFocus();
+```
+
+# 焦点代理
+
+代为接收焦点事件。比如，`Widget A` 是 `Widget B` 的焦点代理，则当 `B` 获得焦点时，实际获得并处理焦点的是 `A`。相关接口如下： 
+
+```c++
+//返回该窗口的焦点代理
+QWidget* QWidget::focusProxy() const; 
+//设置该窗口的焦点代理为w
+void QWidget::setFocusProxy(QWidget* w);
 ```
