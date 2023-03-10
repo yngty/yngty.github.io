@@ -6,7 +6,7 @@
   <link href="https://yngty.github.io/atom.xml" rel="self"/>
   
   <link href="https://yngty.github.io/"/>
-  <updated>2023-03-10T14:36:53.204Z</updated>
+  <updated>2023-03-10T15:08:11.430Z</updated>
   <id>https://yngty.github.io/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://yngty.github.io/2023/03/10/effective-stl/effective-stl-21/"/>
     <id>https://yngty.github.io/2023/03/10/effective-stl/effective-stl-21/</id>
     <published>2023-03-10T21:05:20.000Z</published>
-    <updated>2023-03-10T14:36:53.204Z</updated>
+    <updated>2023-03-10T15:08:11.430Z</updated>
     
     
     <summary type="html">&lt;blockquote&gt;
@@ -58,7 +58,7 @@
     <link href="https://yngty.github.io/2023/02/16/effective-stl/effective-stl-9/"/>
     <id>https://yngty.github.io/2023/02/16/effective-stl/effective-stl-9/</id>
     <published>2023-02-16T15:11:25.000Z</published>
-    <updated>2023-03-10T14:36:53.204Z</updated>
+    <updated>2023-03-10T15:08:11.430Z</updated>
     
     
     <summary type="html">&lt;blockquote&gt;
@@ -94,7 +94,7 @@
     <link href="https://yngty.github.io/2023/02/16/macos/Disk-Arbitration/"/>
     <id>https://yngty.github.io/2023/02/16/macos/Disk-Arbitration/</id>
     <published>2023-02-16T13:38:07.000Z</published>
-    <updated>2023-03-10T14:36:53.204Z</updated>
+    <updated>2023-03-10T15:08:11.434Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;介绍&quot;&gt;&lt;a href=&quot;#介绍&quot; class=&quot;headerlink&quot; title=&quot;介绍&quot;&gt;&lt;/a&gt;介绍&lt;/h1&gt;&lt;p&gt;&lt;code&gt;Disk Arbitration framework&lt;/code&gt; 是一个基于 &lt;code&gt;Core Foundation&lt;/code&gt; 的低级框架。会在磁盘出现和消失时通知您的应用程序，并让您的应用程序影响该过程。借助 &lt;code&gt;Disk Arbitration&lt;/code&gt;，我们可以：&lt;/p&gt;
@@ -122,7 +122,7 @@
     <link href="https://yngty.github.io/2023/02/15/qt/Qt-%E4%B9%8B-%E7%84%A6%E7%82%B9%E5%A4%84%E7%90%86/"/>
     <id>https://yngty.github.io/2023/02/15/qt/Qt-%E4%B9%8B-%E7%84%A6%E7%82%B9%E5%A4%84%E7%90%86/</id>
     <published>2023-02-15T17:08:09.000Z</published>
-    <updated>2023-03-10T14:36:53.204Z</updated>
+    <updated>2023-03-10T15:08:11.434Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;焦点事件&quot;&gt;&lt;a href=&quot;#焦点事件&quot; class=&quot;headerlink&quot; title=&quot;焦点事件&quot;&gt;&lt;/a&gt;焦点事件&lt;/h1&gt;&lt;p&gt;当焦点从一个 &lt;code&gt;widget&lt;/code&gt; 移动到另一个 &lt;code&gt;widget&lt;/code&gt; 时，会触发 &lt;code&gt;QFocusEvent&lt;/code&gt; 事件，这个事件会被发送给原焦点窗口和当前焦点窗口，原焦点窗口执行 &lt;code&gt;focusOutEvent()&lt;/code&gt; ，新焦点窗口执行 &lt;code&gt;focusInEvent()&lt;/code&gt;。 相关函数如下：&lt;/p&gt;
@@ -146,7 +146,7 @@
     <link href="https://yngty.github.io/2023/02/07/c++/std-make-shared-vs-new/"/>
     <id>https://yngty.github.io/2023/02/07/c++/std-make-shared-vs-new/</id>
     <published>2023-02-07T10:30:24.000Z</published>
-    <updated>2023-03-10T14:36:53.204Z</updated>
+    <updated>2023-03-10T15:08:11.430Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;内存分配&quot;&gt;&lt;a href=&quot;#内存分配&quot; class=&quot;headerlink&quot; title=&quot;内存分配&quot;&gt;&lt;/a&gt;内存分配&lt;/h1&gt;&lt;p&gt;&lt;code&gt;std::make_shared&lt;/code&gt; 执行&lt;strong&gt;一次&lt;/strong&gt;堆分配，而调用&lt;code&gt;std::shared_ptr&lt;/code&gt; 构造函数执行&lt;strong&gt;两次&lt;/strong&gt;。&lt;/p&gt;
@@ -181,7 +181,7 @@
     <link href="https://yngty.github.io/2022/07/26/macos/%E5%9C%A8MacOS%E5%B9%B3%E5%8F%B0%E4%B8%8A%E7%AC%A6%E5%8F%B7%E5%8C%96%E5%B4%A9%E6%BA%83%E6%8A%A5%E5%91%8A/"/>
     <id>https://yngty.github.io/2022/07/26/macos/%E5%9C%A8MacOS%E5%B9%B3%E5%8F%B0%E4%B8%8A%E7%AC%A6%E5%8F%B7%E5%8C%96%E5%B4%A9%E6%BA%83%E6%8A%A5%E5%91%8A/</id>
     <published>2022-07-26T15:41:02.000Z</published>
-    <updated>2023-03-10T14:36:53.204Z</updated>
+    <updated>2023-03-10T15:08:11.434Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;dSYM&quot;&gt;&lt;a href=&quot;#dSYM&quot; class=&quot;headerlink&quot; title=&quot;.dSYM&quot;&gt;&lt;/a&gt;&lt;code&gt;.dSYM&lt;/code&gt;&lt;/h1&gt;&lt;p&gt;&lt;code&gt;.dSYM&lt;/code&gt; (&lt;code&gt;debugging SYMbols&lt;/code&gt;) 又称为调试符号表，是苹果为了方便调试和定位问题而使用的一种调试方案，本质上使用的是起源于贝尔实验室的 &lt;code&gt;DWARF&lt;/code&gt;（&lt;code&gt;Debugging With Attributed Record Formats&lt;/code&gt;），其在.xcarchive目录中的层次结构为：&lt;/p&gt;
@@ -194,7 +194,7 @@
     
     <category term="MacOS" scheme="https://yngty.github.io/tags/MacOS/"/>
     
-    <category term="Creash" scheme="https://yngty.github.io/tags/Creash/"/>
+    <category term="Crash" scheme="https://yngty.github.io/tags/Crash/"/>
     
   </entry>
   
@@ -203,7 +203,7 @@
     <link href="https://yngty.github.io/2022/04/19/linux/NO_PUBKEY/"/>
     <id>https://yngty.github.io/2022/04/19/linux/NO_PUBKEY/</id>
     <published>2022-04-19T22:41:41.000Z</published>
-    <updated>2023-03-10T14:36:53.204Z</updated>
+    <updated>2023-03-10T15:08:11.430Z</updated>
     
     
       
@@ -230,7 +230,7 @@
     <link href="https://yngty.github.io/2022/04/16/effecitve-cpp/effective-cpp-28/"/>
     <id>https://yngty.github.io/2022/04/16/effecitve-cpp/effective-cpp-28/</id>
     <published>2022-04-16T21:42:47.000Z</published>
-    <updated>2023-03-10T14:36:53.204Z</updated>
+    <updated>2023-03-10T15:08:11.430Z</updated>
     
     
     <summary type="html">&lt;blockquote&gt;
@@ -254,7 +254,7 @@
     <link href="https://yngty.github.io/2022/04/15/effecitve-cpp/effective-cpp-26/"/>
     <id>https://yngty.github.io/2022/04/15/effecitve-cpp/effective-cpp-26/</id>
     <published>2022-04-15T10:38:20.000Z</published>
-    <updated>2023-03-10T14:36:53.204Z</updated>
+    <updated>2023-03-10T15:08:11.430Z</updated>
     
     
     <summary type="html">&lt;blockquote&gt;
@@ -284,7 +284,7 @@
     <link href="https://yngty.github.io/2022/04/09/effecitve-cpp/effective-cpp-25/"/>
     <id>https://yngty.github.io/2022/04/09/effecitve-cpp/effective-cpp-25/</id>
     <published>2022-04-09T23:12:46.000Z</published>
-    <updated>2023-03-10T14:36:53.204Z</updated>
+    <updated>2023-03-10T15:08:11.430Z</updated>
     
     
     <summary type="html">&lt;blockquote&gt;
@@ -314,7 +314,7 @@
     <link href="https://yngty.github.io/2022/04/09/effecitve-cpp/effective-cpp-24/"/>
     <id>https://yngty.github.io/2022/04/09/effecitve-cpp/effective-cpp-24/</id>
     <published>2022-04-09T22:39:25.000Z</published>
-    <updated>2023-03-10T14:36:53.204Z</updated>
+    <updated>2023-03-10T15:08:11.430Z</updated>
     
     
     <summary type="html">&lt;blockquote&gt;
@@ -338,7 +338,7 @@
     <link href="https://yngty.github.io/2022/04/09/effecitve-cpp/effective-cpp-23/"/>
     <id>https://yngty.github.io/2022/04/09/effecitve-cpp/effective-cpp-23/</id>
     <published>2022-04-09T22:30:35.000Z</published>
-    <updated>2023-03-10T14:36:53.204Z</updated>
+    <updated>2023-03-10T15:08:11.430Z</updated>
     
     
       
@@ -366,7 +366,7 @@
     <link href="https://yngty.github.io/2022/03/23/effecitve-cpp/effective-cpp-22/"/>
     <id>https://yngty.github.io/2022/03/23/effecitve-cpp/effective-cpp-22/</id>
     <published>2022-03-23T11:22:04.000Z</published>
-    <updated>2023-03-10T14:36:53.204Z</updated>
+    <updated>2023-03-10T15:08:11.430Z</updated>
     
     
       
@@ -394,7 +394,7 @@
     <link href="https://yngty.github.io/2022/03/23/effecitve-cpp/effective-cpp-21/"/>
     <id>https://yngty.github.io/2022/03/23/effecitve-cpp/effective-cpp-21/</id>
     <published>2022-03-23T10:43:36.000Z</published>
-    <updated>2023-03-10T14:36:53.204Z</updated>
+    <updated>2023-03-10T15:08:11.430Z</updated>
     
     
     <summary type="html">&lt;blockquote&gt;
@@ -418,7 +418,7 @@
     <link href="https://yngty.github.io/2022/03/23/effecitve-cpp/effective-cpp-20/"/>
     <id>https://yngty.github.io/2022/03/23/effecitve-cpp/effective-cpp-20/</id>
     <published>2022-03-23T10:29:27.000Z</published>
-    <updated>2023-03-10T14:36:53.204Z</updated>
+    <updated>2023-03-10T15:08:11.430Z</updated>
     
     
     <summary type="html">&lt;blockquote&gt;
@@ -443,7 +443,7 @@
     <link href="https://yngty.github.io/2021/11/23/linux/%E6%96%87%E4%BB%B6MIME%E7%B1%BB%E5%9E%8B/"/>
     <id>https://yngty.github.io/2021/11/23/linux/%E6%96%87%E4%BB%B6MIME%E7%B1%BB%E5%9E%8B/</id>
     <published>2021-11-23T20:14:31.000Z</published>
-    <updated>2023-03-10T14:36:53.204Z</updated>
+    <updated>2023-03-10T15:08:11.434Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;什么是-MIME-类型？&quot;&gt;&lt;a href=&quot;#什么是-MIME-类型？&quot; class=&quot;headerlink&quot; title=&quot;什么是 MIME 类型？&quot;&gt;&lt;/a&gt;什么是 MIME 类型？&lt;/h1&gt;&lt;p&gt;&lt;code&gt;MIME&lt;/code&gt;（多用途 &lt;code&gt;Internet&lt;/code&gt; 邮件扩展）的类型来识别文件格式。 &lt;code&gt;MIME&lt;/code&gt; 类型构成了 &lt;code&gt;Internet&lt;/code&gt; 上对文件类型进行分类的标准方法。&lt;/p&gt;
@@ -468,7 +468,7 @@
     <link href="https://yngty.github.io/2021/11/17/linux/Linux%E5%91%BD%E4%BB%A4%E4%B9%8Btr/"/>
     <id>https://yngty.github.io/2021/11/17/linux/Linux%E5%91%BD%E4%BB%A4%E4%B9%8Btr/</id>
     <published>2021-11-17T11:08:28.000Z</published>
-    <updated>2023-03-10T14:36:53.204Z</updated>
+    <updated>2023-03-10T15:08:11.430Z</updated>
     
     
     <summary type="html">&lt;p&gt;&lt;code&gt;Linux&lt;/code&gt; 中 &lt;code&gt;tr&lt;/code&gt; 命令用于转换或删除文件中的字符。&lt;/p&gt;
@@ -490,7 +490,7 @@
     <link href="https://yngty.github.io/2021/11/11/effecitve-cpp/effective-cpp-19/"/>
     <id>https://yngty.github.io/2021/11/11/effecitve-cpp/effective-cpp-19/</id>
     <published>2021-11-11T16:36:55.000Z</published>
-    <updated>2023-03-10T14:36:53.204Z</updated>
+    <updated>2023-03-10T15:08:11.430Z</updated>
     
     
       
@@ -518,7 +518,7 @@
     <link href="https://yngty.github.io/2021/11/08/c++/C-%E4%B8%ADmalloc%E5%92%8Cnew%E7%9A%84%E5%8C%BA%E5%88%AB/"/>
     <id>https://yngty.github.io/2021/11/08/c++/C-%E4%B8%ADmalloc%E5%92%8Cnew%E7%9A%84%E5%8C%BA%E5%88%AB/</id>
     <published>2021-11-08T22:44:44.000Z</published>
-    <updated>2023-03-10T14:36:53.204Z</updated>
+    <updated>2023-03-10T15:08:11.430Z</updated>
     
     
       
@@ -552,7 +552,7 @@
     <link href="https://yngty.github.io/2021/11/08/effecitve-cpp/effective-cpp-18/"/>
     <id>https://yngty.github.io/2021/11/08/effecitve-cpp/effective-cpp-18/</id>
     <published>2021-11-08T15:48:13.000Z</published>
-    <updated>2023-03-10T14:36:53.204Z</updated>
+    <updated>2023-03-10T15:08:11.430Z</updated>
     
     
       
