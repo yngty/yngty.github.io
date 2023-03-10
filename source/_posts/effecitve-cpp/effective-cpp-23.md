@@ -8,4 +8,4 @@ categories:
 - Effective-C++
 ---
 
-> Prefer non-member non-friend functions to member functions
+> Item 23: Prefer non-member non-friend functions to member functions

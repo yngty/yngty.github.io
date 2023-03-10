@@ -8,7 +8,7 @@ categories:
 - Effective-C++
 ---
 
-> Don't to return a reference when you must return an object.
+> Item 21: Don't to return a reference when you must return an object.
 
 Item 20 中提到，多数情况下传引用比传值更好。但不要无脑追求这一点，一定不要返回空引用或指针。
 

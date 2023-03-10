@@ -8,7 +8,7 @@ categories:
 - Effective-C++
 ---
 
-> Consider support for a non-throwing swap.
+> Item 25: Consider support for a non-throwing swap.
 
 
 `swap` 函数能置换两对象值，功能很重要!

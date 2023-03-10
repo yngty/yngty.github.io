@@ -8,4 +8,4 @@ categories:
 - Effective-C++
 ---
 
-> Declare data members private.
+> Item 22: Declare data members private.

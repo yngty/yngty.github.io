@@ -8,7 +8,7 @@ categories:
 - Effective-C++
 ---
 
-> Declare non-member functions when type conversions should apply all parameters.
+> Item 24: Declare non-member functions when type conversions should apply all parameters.
 
 令 `classes` 支持隐式转换通常是糟糕的设计，但也有例外，最常见的是在建立数值类型时。 比如设计一个有理数 `class` 允许整数隐式转换。
 
