@@ -963,6 +963,50 @@
       </tags>
   </entry>
   <entry>
+    <title>Effective-STL 21：总是让比较函数在等值情况下返回 false</title>
+    <url>/2023/03/10/effective-stl/effective-stl-21/</url>
+    <content><![CDATA[<blockquote>
+<p>Item 21: Always have comparison functions return false for equal values.</p>
+</blockquote>
+<h1 id="严格弱序-strict-weak-ordering"><a href="#严格弱序-strict-weak-ordering" class="headerlink" title="严格弱序( strict weak ordering )"></a>严格弱序( <code>strict weak ordering</code> )</h1><p>先补充下严格弱序的概念: 对两个变量 <code>x</code> 和 <code>y</code>：</p>
+<ul>
+<li><code>x &gt; y</code> 等同于 <code>y &lt; x</code></li>
+<li><code>x == y</code> 等同于 <code>!(x &lt; y) &amp;&amp; !(x &gt; y)</code></li>
+</ul>
+<p>要想严格弱序，就需要遵循如下规则：</p>
+<ul>
+<li>每个变量值必须等于其本身（<code>irreflexivity</code>）：<code>x &lt; x</code> 永远不能为 <code>true</code></li>
+<li>不对称性（<code>asymmetry</code>）：如果 <code>x &lt; y</code>，那么 <code>y &lt; x</code> 就不能为 <code>true</code></li>
+<li>有序性必须可传递性：如果 <code>x &lt; y</code> 并且 <code>y &lt; z</code>，那么 <code>x &lt; z</code></li>
+<li>值相同必须具有可传递性：如果 <code>x == y</code> 并且 <code>y == z</code>，那么 <code>x == z</code></li>
+</ul>
+<span id="more"></span>
+
+<h1 id="为什么？"><a href="#为什么？" class="headerlink" title="为什么？"></a>为什么？</h1><h2 id="1-关联容器中的比较算法"><a href="#1-关联容器中的比较算法" class="headerlink" title="1. 关联容器中的比较算法"></a>1. 关联容器中的比较算法</h2><p>比如我们创建一个 <code>set</code> ， 用 <code>less_euqal</code> 作为比较类型，然后插入两个 <code>10</code> ：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">set&lt;<span class="type">int</span>, less_equal&lt;<span class="type">int</span>&gt;&gt; s;</span><br><span class="line">s.<span class="built_in">insert</span>(<span class="number">10</span>);</span><br><span class="line">s.<span class="built_in">insert</span>(<span class="number">10</span>);</span><br></pre></td></tr></table></figure>
+
+<p>我们将第一个 <code>10</code> 记为 <code>10A</code>, 第二个 <code>10</code> 记为 <code>10B</code>, 我们在插入 <code>10B</code> 的时候会检查是否与 <code>10A</code> 相同, 我们用的是 <code>less_equal</code>，下面的表达式会为假，就会重复插入，显然不合理。:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">!(10A &lt;= 10B) &amp;&amp; !(10B &lt;= 10A) //  !(true) &amp;&amp; !(true)</span><br></pre></td></tr></table></figure>
+
+<p>另外在 <code>multiset</code> 中也不行: </p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">multiset&lt;<span class="type">int</span>, less_equal&lt;<span class="type">int</span>&gt;&gt; s;</span><br><span class="line">s.<span class="built_in">insert</span>(<span class="number">10</span>); <span class="comment">// 插入10A</span></span><br><span class="line">s.<span class="built_in">insert</span>(<span class="number">10</span>); <span class="comment">// 插入10B</span></span><br></pre></td></tr></table></figure>
+
+<p>当我们想要一个 <code>equal_range</code>, <code>10A</code> 和 <code>10B</code> 同样认为是不等，永远不会在同一个区间。</p>
+<h2 id="2-sort-算法"><a href="#2-sort-算法" class="headerlink" title="2. sort 算法"></a>2. <code>sort</code> 算法</h2><p>对于 <code>std::sort</code>，当容器里面元素个数大于 <code>_S_threshold</code> 的值时（<code>16</code>），就会使用快速排序，会将所有的元素与中间值比较是无边界保护的，实现如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> _RandomAccessIterator, <span class="keyword">typename</span> _Tp, <span class="keyword">typename</span> _Compare&gt;</span><br><span class="line">     _RandomAccessIterator</span><br><span class="line">     __unguarded_partition(_RandomAccessIterator __first,</span><br><span class="line">               _RandomAccessIterator __last,</span><br><span class="line">               _Tp __pivot, _Compare __comp)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span> (<span class="literal">true</span>)</span><br><span class="line">    &#123;</span><br><span class="line">       <span class="keyword">while</span> (__comp(*__first, __pivot)) <span class="comment">// &lt;-------------------</span></span><br><span class="line">         ++__first;</span><br><span class="line">       --__last;</span><br><span class="line">       <span class="keyword">while</span> (__comp(__pivot, *__last))</span><br><span class="line">         --__last;</span><br><span class="line">       <span class="keyword">if</span> (!(__first &lt; __last))</span><br><span class="line">         <span class="keyword">return</span> __first;</span><br><span class="line">       std::<span class="built_in">iter_swap</span>(__first, __last);</span><br><span class="line">       ++__first;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果传入的 <code>vector</code> 中，后面的元素完全相等， <code>__comp()</code>函数一直返回 <code>true</code> ，在进行快速排序的时候，<code>++first</code> 就可能越界失效，导致 <code>coredump</code>。</p>
+]]></content>
+      <categories>
+        <category>Effective-STL</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>Effective-STL</tag>
+        <tag>stl</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Effective-STL 9：慎重选择删除元素的方法</title>
     <url>/2023/02/16/effective-stl/effective-stl-9/</url>
     <content><![CDATA[<blockquote>

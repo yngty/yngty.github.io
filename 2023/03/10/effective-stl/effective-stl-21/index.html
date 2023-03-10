@@ -20,21 +20,22 @@
     var CONFIG = {"hostname":"yngty.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Item 11: Handle assignment to self in operator&#x3D;  我们在重载一个类的赋值运算符时要考虑自我赋值的问题。有了指针和引用自我赋值不总是第一时间能够识别出来。 123456789a[i] &#x3D; a[j];*px &#x3D; *py;class Base &amp;#123; ... &amp;#125;;class Derived: public Base &amp;#123;">
+  <meta name="description" content="Item 21: Always have comparison functions return false for equal values.  严格弱序( strict weak ordering )先补充下严格弱序的概念: 对两个变量 x 和 y：  x &gt; y 等同于 y &lt; x x &#x3D;&#x3D; y 等同于 !(x &lt; y) &amp;&amp; !(x &gt; y)  要">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Effective C++ 11：赋值运算符需要考虑自我赋值问题">
-<meta property="og:url" content="https://yngty.github.io/2021/11/01/effecitve-cpp/effective-cpp-11/index.html">
+<meta property="og:title" content="Effective-STL 21：总是让比较函数在等值情况下返回 false">
+<meta property="og:url" content="https://yngty.github.io/2023/03/10/effective-stl/effective-stl-21/index.html">
 <meta property="og:site_name" content="瓜地">
-<meta property="og:description" content="Item 11: Handle assignment to self in operator&#x3D;  我们在重载一个类的赋值运算符时要考虑自我赋值的问题。有了指针和引用自我赋值不总是第一时间能够识别出来。 123456789a[i] &#x3D; a[j];*px &#x3D; *py;class Base &amp;#123; ... &amp;#125;;class Derived: public Base &amp;#123;">
+<meta property="og:description" content="Item 21: Always have comparison functions return false for equal values.  严格弱序( strict weak ordering )先补充下严格弱序的概念: 对两个变量 x 和 y：  x &gt; y 等同于 y &lt; x x &#x3D;&#x3D; y 等同于 !(x &lt; y) &amp;&amp; !(x &gt; y)  要">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-11-01T13:12:55.000Z">
+<meta property="article:published_time" content="2023-03-10T21:05:20.000Z">
 <meta property="article:modified_time" content="2023-03-10T14:08:13.056Z">
 <meta property="article:author" content="yngty">
 <meta property="article:tag" content="C++">
-<meta property="article:tag" content="Effective-C++">
+<meta property="article:tag" content="Effective-STL">
+<meta property="article:tag" content="stl">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://yngty.github.io/2021/11/01/effecitve-cpp/effective-cpp-11/">
+<link rel="canonical" href="https://yngty.github.io/2023/03/10/effective-stl/effective-stl-21/">
 
 
 <script id="page-configurations">
@@ -47,7 +48,7 @@
   };
 </script>
 
-  <title>Effective C++ 11：赋值运算符需要考虑自我赋值问题 | 瓜地</title>
+  <title>Effective-STL 21：总是让比较函数在等值情况下返回 false | 瓜地</title>
   
 
 
@@ -164,7 +165,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2021/11/01/effecitve-cpp/effective-cpp-11/">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2023/03/10/effective-stl/effective-stl-21/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -177,7 +178,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Effective C++ 11：赋值运算符需要考虑自我赋值问题
+          Effective-STL 21：总是让比较函数在等值情况下返回 false
         </h1>
 
         <div class="post-meta">
@@ -186,23 +187,17 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2021-11-01 13:12:55" itemprop="dateCreated datePublished" datetime="2021-11-01T13:12:55+00:00">2021-11-01</time>
+              <time title="创建时间：2023-03-10 21:05:20 / 修改时间：14:08:13" itemprop="dateCreated datePublished" datetime="2023-03-10T21:05:20+00:00">2023-03-10</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-03-10 14:08:13" itemprop="dateModified" datetime="2023-03-10T14:08:13+00:00">2023-03-10</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Effective-C/" itemprop="url" rel="index"><span itemprop="name">Effective-C++</span></a>
+                  <a href="/categories/Effective-STL/" itemprop="url" rel="index"><span itemprop="name">Effective-STL</span></a>
                 </span>
             </span>
 
@@ -212,14 +207,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>386</span>
+              <span>461</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
+              <span>2 分钟</span>
             </span>
 
         </div>
@@ -232,25 +227,37 @@
 
       
         <blockquote>
-<p>Item 11: Handle assignment to self in operator&#x3D;</p>
+<p>Item 21: Always have comparison functions return false for equal values.</p>
 </blockquote>
-<p>我们在重载一个类的赋值运算符时要考虑自我赋值的问题。有了指针和引用自我赋值不总是第一时间能够识别出来。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">a[i] = a[j];</span><br><span class="line"></span><br><span class="line">*px = *py;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Base</span> &#123; ... &#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Derived</span>: <span class="keyword">public</span> Base &#123; ... &#125;;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">doSomething</span><span class="params">(<span class="type">const</span> Base&amp; rb, Derived* pd)</span></span>;<span class="comment">// rb和女pd 有可能其实是同一对象</span></span><br><span class="line">rb = pd;</span><br></pre></td></tr></table></figure>
+<h1 id="严格弱序-strict-weak-ordering"><a href="#严格弱序-strict-weak-ordering" class="headerlink" title="严格弱序( strict weak ordering )"></a>严格弱序( <code>strict weak ordering</code> )</h1><p>先补充下严格弱序的概念: 对两个变量 <code>x</code> 和 <code>y</code>：</p>
+<ul>
+<li><code>x &gt; y</code> 等同于 <code>y &lt; x</code></li>
+<li><code>x == y</code> 等同于 <code>!(x &lt; y) &amp;&amp; !(x &gt; y)</code></li>
+</ul>
+<p>要想严格弱序，就需要遵循如下规则：</p>
+<ul>
+<li>每个变量值必须等于其本身（<code>irreflexivity</code>）：<code>x &lt; x</code> 永远不能为 <code>true</code></li>
+<li>不对称性（<code>asymmetry</code>）：如果 <code>x &lt; y</code>，那么 <code>y &lt; x</code> 就不能为 <code>true</code></li>
+<li>有序性必须可传递性：如果 <code>x &lt; y</code> 并且 <code>y &lt; z</code>，那么 <code>x &lt; z</code></li>
+<li>值相同必须具有可传递性：如果 <code>x == y</code> 并且 <code>y == z</code>，那么 <code>x == z</code></li>
+</ul>
+<span id="more"></span>
 
-<p>自我赋值主要考虑到 <strong>自我赋值安全性</strong> 和 <strong>异常安全性</strong></p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Bitmap</span> &#123; ... &#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Widget</span> &#123;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    Bitmap* pb; <span class="comment">//指针，指向一个从heap 分配而得的对象</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h1 id="为什么？"><a href="#为什么？" class="headerlink" title="为什么？"></a>为什么？</h1><h2 id="1-关联容器中的比较算法"><a href="#1-关联容器中的比较算法" class="headerlink" title="1. 关联容器中的比较算法"></a>1. 关联容器中的比较算法</h2><p>比如我们创建一个 <code>set</code> ， 用 <code>less_euqal</code> 作为比较类型，然后插入两个 <code>10</code> ：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">set&lt;<span class="type">int</span>, less_equal&lt;<span class="type">int</span>&gt;&gt; s;</span><br><span class="line">s.<span class="built_in">insert</span>(<span class="number">10</span>);</span><br><span class="line">s.<span class="built_in">insert</span>(<span class="number">10</span>);</span><br></pre></td></tr></table></figure>
 
-<p>既不自我赋值安全性也不异常安全性, 当 rhs &#x3D;&#x3D; *this时，delete pb使得rhs.pb成为空值，接下来 new 的数据便是空的。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Widget&amp; Widget::<span class="keyword">operator</span>=(<span class="type">const</span> Widget&amp; rhs) &#123;</span><br><span class="line">    <span class="keyword">delete</span> pb;</span><br><span class="line">    pb = <span class="keyword">new</span> <span class="built_in">Bitmap</span>(*rhs.pb);</span><br><span class="line">    <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们将第一个 <code>10</code> 记为 <code>10A</code>, 第二个 <code>10</code> 记为 <code>10B</code>, 我们在插入 <code>10B</code> 的时候会检查是否与 <code>10A</code> 相同, 我们用的是 <code>less_equal</code>，下面的表达式会为假，就会重复插入，显然不合理。:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">!(10A &lt;= 10B) &amp;&amp; !(10B &lt;= 10A) //  !(true) &amp;&amp; !(true)</span><br></pre></td></tr></table></figure>
 
-<p>判断两个地址是否相同，如果是自我赋值，就不做任何事。但开始就delete pb， 但 new 出现异常， pb就会置空出现风险。  </p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Widget&amp; Widget::<span class="keyword">operator</span>=(<span class="type">const</span> Widget&amp; rhs) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span> == &amp;rhs) <span class="keyword">return</span> <span class="keyword">this</span>;  <span class="comment">// 证同测试</span></span><br><span class="line">    <span class="keyword">delete</span> pb;</span><br><span class="line">    pb = <span class="keyword">new</span> <span class="built_in">Bitmap</span>(*rhs.pb);</span><br><span class="line">    <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>另外在 <code>multiset</code> 中也不行: </p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">multiset&lt;<span class="type">int</span>, less_equal&lt;<span class="type">int</span>&gt;&gt; s;</span><br><span class="line">s.<span class="built_in">insert</span>(<span class="number">10</span>); <span class="comment">// 插入10A</span></span><br><span class="line">s.<span class="built_in">insert</span>(<span class="number">10</span>); <span class="comment">// 插入10B</span></span><br></pre></td></tr></table></figure>
 
-<p>在C++中<strong>仔细地排列语句顺序</strong>通常可以达到异常安全， 比如我们可以先申请空间，最后再delete：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Widget&amp; Widget::<span class="keyword">operator</span>=(<span class="type">const</span> Widget&amp; rhs) &#123;</span><br><span class="line">    Bitmap *pOrig = pb;  </span><br><span class="line">    pb = <span class="keyword">new</span> <span class="built_in">Bitmap</span>(*rhs.pb);</span><br><span class="line">    <span class="keyword">delete</span> pOrig;</span><br><span class="line">    <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当我们想要一个 <code>equal_range</code>, <code>10A</code> 和 <code>10B</code> 同样认为是不等，永远不会在同一个区间。</p>
+<h2 id="2-sort-算法"><a href="#2-sort-算法" class="headerlink" title="2. sort 算法"></a>2. <code>sort</code> 算法</h2><p>对于 <code>std::sort</code>，当容器里面元素个数大于 <code>_S_threshold</code> 的值时（<code>16</code>），就会使用快速排序，会将所有的元素与中间值比较是无边界保护的，实现如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> _RandomAccessIterator, <span class="keyword">typename</span> _Tp, <span class="keyword">typename</span> _Compare&gt;</span><br><span class="line">     _RandomAccessIterator</span><br><span class="line">     __unguarded_partition(_RandomAccessIterator __first,</span><br><span class="line">               _RandomAccessIterator __last,</span><br><span class="line">               _Tp __pivot, _Compare __comp)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span> (<span class="literal">true</span>)</span><br><span class="line">    &#123;</span><br><span class="line">       <span class="keyword">while</span> (__comp(*__first, __pivot)) <span class="comment">// &lt;-------------------</span></span><br><span class="line">         ++__first;</span><br><span class="line">       --__last;</span><br><span class="line">       <span class="keyword">while</span> (__comp(__pivot, *__last))</span><br><span class="line">         --__last;</span><br><span class="line">       <span class="keyword">if</span> (!(__first &lt; __last))</span><br><span class="line">         <span class="keyword">return</span> __first;</span><br><span class="line">       std::<span class="built_in">iter_swap</span>(__first, __last);</span><br><span class="line">       ++__first;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>一个更加通用的技术便是复制和交换（copy and swap）：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Widget</span> &#123;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">swap</span><span class="params">(Widget&amp; rhs)</span></span>; <span class="comment">// 交换*this rhs 的数据</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">Widget&amp; Widget::<span class="keyword">operator</span>=(<span class="type">const</span> Widget&amp; rhs)</span><br><span class="line">&#123;</span><br><span class="line">    Widget <span class="built_in">temp</span>(rhs); <span class="comment">//rhs 数据制作一份复件(副本)</span></span><br><span class="line">    <span class="built_in">swap</span> (temp); <span class="comment">//*this 数据和上述复件的数据交换</span></span><br><span class="line">    <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果传入的 <code>vector</code> 中，后面的元素完全相等， <code>__comp()</code>函数一直返回 <code>true</code> ，在进行快速排序的时候，<code>++first</code> 就可能越界失效，导致 <code>coredump</code>。</p>
+
     </div>
 
     
@@ -260,7 +267,8 @@
       <footer class="post-footer">
           <div class="post-tags">
               <a href="/tags/C/" rel="tag"># C++</a>
-              <a href="/tags/Effective-C/" rel="tag"># Effective-C++</a>
+              <a href="/tags/Effective-STL/" rel="tag"># Effective-STL</a>
+              <a href="/tags/stl/" rel="tag"># stl</a>
           </div>
 
         
@@ -269,13 +277,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/11/01/effecitve-cpp/effective-cpp-10/" rel="prev" title="Effective C++ 10：赋值运算符要返回自己的引用">
-      <i class="fa fa-chevron-left"></i> Effective C++ 10：赋值运算符要返回自己的引用
+    <a href="/2023/02/16/effective-stl/effective-stl-9/" rel="prev" title="Effective-STL 9：慎重选择删除元素的方法">
+      <i class="fa fa-chevron-left"></i> Effective-STL 9：慎重选择删除元素的方法
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2021/11/02/effecitve-cpp/effective-cpp-12/" rel="next" title="Effective C++ 12：复制对象时勿忘其每一个成分">
-      Effective C++ 12：复制对象时勿忘其每一个成分 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -334,6 +339,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%A5%E6%A0%BC%E5%BC%B1%E5%BA%8F-strict-weak-ordering"><span class="nav-number">1.</span> <span class="nav-text">严格弱序( strict weak ordering )</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-number">2.</span> <span class="nav-text">为什么？</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%85%B3%E8%81%94%E5%AE%B9%E5%99%A8%E4%B8%AD%E7%9A%84%E6%AF%94%E8%BE%83%E7%AE%97%E6%B3%95"><span class="nav-number">2.1.</span> <span class="nav-text">1. 关联容器中的比较算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-sort-%E7%AE%97%E6%B3%95"><span class="nav-number">2.2.</span> <span class="nav-text">2. sort 算法</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
