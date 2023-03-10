@@ -3,7 +3,7 @@ title: 在MacOS平台上符号化崩溃报告
 date: 2022-07-26 15:41:02
 tags:
 - MacOS
-- Creash
+- Crash
 categories:
 - MacOS
 ---
