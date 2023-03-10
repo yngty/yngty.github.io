@@ -504,7 +504,7 @@
     <title>Effective C++ 21：需要返回对象时，不要返回引用</title>
     <url>/2022/03/23/effecitve-cpp/effective-cpp-21/</url>
     <content><![CDATA[<blockquote>
-<p>Don’t to return a reference when you must return an object.</p>
+<p>Item 21: Don’t to return a reference when you must return an object.</p>
 </blockquote>
 <p>Item 20 中提到，多数情况下传引用比传值更好。但不要无脑追求这一点，一定不要返回空引用或指针。</p>
 <span id="more"></span>
@@ -550,7 +550,7 @@
     <title>Effective C++ 22：将成员变量声明为private</title>
     <url>/2022/03/23/effecitve-cpp/effective-cpp-22/</url>
     <content><![CDATA[<blockquote>
-<p>Declare data members private.</p>
+<p>Item 22: Declare data members private.</p>
 </blockquote>
 ]]></content>
       <categories>
@@ -565,7 +565,7 @@
     <title>Effective C++ 23：用非成员函数、非友元函数替换成员函数</title>
     <url>/2022/04/09/effecitve-cpp/effective-cpp-23/</url>
     <content><![CDATA[<blockquote>
-<p>Prefer non-member non-friend functions to member functions</p>
+<p>Item 23: Prefer non-member non-friend functions to member functions</p>
 </blockquote>
 ]]></content>
       <categories>
@@ -580,7 +580,7 @@
     <title>Effective C++ 24：若所有参数皆需类型转换，请采用非成员函数</title>
     <url>/2022/04/09/effecitve-cpp/effective-cpp-24/</url>
     <content><![CDATA[<blockquote>
-<p>Declare non-member functions when type conversions should apply all parameters.</p>
+<p>Item 24: Declare non-member functions when type conversions should apply all parameters.</p>
 </blockquote>
 <p>令 <code>classes</code> 支持隐式转换通常是糟糕的设计，但也有例外，最常见的是在建立数值类型时。 比如设计一个有理数 <code>class</code> 允许整数隐式转换。</p>
 <span id="more"></span>
@@ -616,7 +616,7 @@
     <title>Effective C++ 25：设计一个不抛异常的 swap 函数</title>
     <url>/2022/04/09/effecitve-cpp/effective-cpp-25/</url>
     <content><![CDATA[<blockquote>
-<p>Consider support for a non-throwing swap.</p>
+<p>Item 25: Consider support for a non-throwing swap.</p>
 </blockquote>
 <p><code>swap</code> 函数能置换两对象值，功能很重要!</p>
 <ul>

@@ -20,15 +20,15 @@
     var CONFIG = {"hostname":"yngty.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Don’t to return a reference when you must return an object.  Item 20 中提到，多数情况下传引用比传值更好。但不要无脑追求这一点，一定不要返回空引用或指针。">
+  <meta name="description" content="Item 21: Don’t to return a reference when you must return an object.  Item 20 中提到，多数情况下传引用比传值更好。但不要无脑追求这一点，一定不要返回空引用或指针。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Effective C++ 21：需要返回对象时，不要返回引用">
 <meta property="og:url" content="https://yngty.github.io/2022/03/23/effecitve-cpp/effective-cpp-21/index.html">
 <meta property="og:site_name" content="Symbol Crash">
-<meta property="og:description" content="Don’t to return a reference when you must return an object.  Item 20 中提到，多数情况下传引用比传值更好。但不要无脑追求这一点，一定不要返回空引用或指针。">
+<meta property="og:description" content="Item 21: Don’t to return a reference when you must return an object.  Item 20 中提到，多数情况下传引用比传值更好。但不要无脑追求这一点，一定不要返回空引用或指针。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-03-23T10:43:36.000Z">
-<meta property="article:modified_time" content="2023-03-10T14:26:54.931Z">
+<meta property="article:modified_time" content="2023-03-10T14:36:53.204Z">
 <meta property="article:author" content="yngty">
 <meta property="article:tag" content="C++">
 <meta property="article:tag" content="Effective-C++">
@@ -194,7 +194,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-03-10 14:26:54" itemprop="dateModified" datetime="2023-03-10T14:26:54+00:00">2023-03-10</time>
+                <time title="修改时间：2023-03-10 14:36:53" itemprop="dateModified" datetime="2023-03-10T14:36:53+00:00">2023-03-10</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -212,7 +212,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>735</span>
+              <span>737</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -232,7 +232,7 @@
 
       
         <blockquote>
-<p>Don’t to return a reference when you must return an object.</p>
+<p>Item 21: Don’t to return a reference when you must return an object.</p>
 </blockquote>
 <p>Item 20 中提到，多数情况下传引用比传值更好。但不要无脑追求这一点，一定不要返回空引用或指针。</p>
 <span id="more"></span>
