@@ -119,17 +119,17 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">38</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">39</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
 
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">6</span></a>
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">7</span></a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">14</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">15</span></a>
 
   </li>
   </ul>
@@ -155,6 +155,110 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2022/04/15/effecitve-cpp/effective-cpp-26/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Symbol Crash">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/04/15/effecitve-cpp/effective-cpp-26/" class="post-title-link" itemprop="url">Effective C++ 26：尽可能推迟变量的定义</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-04-15 10:38:20" itemprop="dateCreated datePublished" datetime="2022-04-15T10:38:20+00:00">2022-04-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-03-18 15:22:47" itemprop="dateModified" datetime="2023-03-18T15:22:47+00:00">2023-03-18</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Effective-C/" itemprop="url" rel="index"><span itemprop="name">Effective-C++</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>508</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <blockquote>
+<p>Item 26:Postpone variable definitions as long as possible.</p>
+</blockquote>
+<p>推迟变量的定义有两个好处：</p>
+<ul>
+<li>改善程序效率，减少无用的构造和析构。</li>
+<li>增加程序流程清晰度。</li>
+</ul>
+<p>这条规则看似简单，但存在流程控制语句的时候容易疏忽。如：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">string <span class="title">encryptPassword</span><span class="params">(<span class="type">const</span> string&amp; password)</span></span>&#123;</span><br><span class="line">    string encrypted;</span><br><span class="line">    <span class="keyword">if</span> (password.<span class="built_in">length</span>() &lt; MinimumPasswordLength) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="built_in">logic_error</span>(<span class="string">&quot;Password is too short&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    encrypted = password;</span><br><span class="line">    <span class="built_in">encrypt</span>(encrypted);</span><br><span class="line">    <span class="keyword">return</span> encrypted;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/04/15/effecitve-cpp/effective-cpp-26/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -190,7 +294,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-03-11 03:08:58" itemprop="dateModified" datetime="2023-03-11T03:08:58+00:00">2023-03-11</time>
+                <time title="修改时间：2023-03-18 15:22:47" itemprop="dateModified" datetime="2023-03-18T15:22:47+00:00">2023-03-18</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -294,7 +398,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-03-11 03:08:58" itemprop="dateModified" datetime="2023-03-11T03:08:58+00:00">2023-03-11</time>
+                <time title="修改时间：2023-03-18 15:22:47" itemprop="dateModified" datetime="2023-03-18T15:22:47+00:00">2023-03-18</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -392,7 +496,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-03-11 03:08:58" itemprop="dateModified" datetime="2023-03-11T03:08:58+00:00">2023-03-11</time>
+                <time title="修改时间：2023-03-18 15:22:47" itemprop="dateModified" datetime="2023-03-18T15:22:47+00:00">2023-03-18</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -482,7 +586,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-03-11 03:08:58" itemprop="dateModified" datetime="2023-03-11T03:08:58+00:00">2023-03-11</time>
+                <time title="修改时间：2023-03-18 15:22:47" itemprop="dateModified" datetime="2023-03-18T15:22:47+00:00">2023-03-18</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -572,7 +676,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-03-11 03:08:58" itemprop="dateModified" datetime="2023-03-11T03:08:58+00:00">2023-03-11</time>
+                <time title="修改时间：2023-03-18 15:22:47" itemprop="dateModified" datetime="2023-03-18T15:22:47+00:00">2023-03-18</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -670,7 +774,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-03-11 03:08:58" itemprop="dateModified" datetime="2023-03-11T03:08:58+00:00">2023-03-11</time>
+                <time title="修改时间：2023-03-18 15:22:47" itemprop="dateModified" datetime="2023-03-18T15:22:47+00:00">2023-03-18</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -769,7 +873,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-03-11 03:08:58" itemprop="dateModified" datetime="2023-03-11T03:08:58+00:00">2023-03-11</time>
+                <time title="修改时间：2023-03-18 15:22:47" itemprop="dateModified" datetime="2023-03-18T15:22:47+00:00">2023-03-18</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -868,7 +972,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-03-11 03:08:58" itemprop="dateModified" datetime="2023-03-11T03:08:58+00:00">2023-03-11</time>
+                <time title="修改时间：2023-03-18 15:22:47" itemprop="dateModified" datetime="2023-03-18T15:22:47+00:00">2023-03-18</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -966,7 +1070,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-03-11 03:08:58" itemprop="dateModified" datetime="2023-03-11T03:08:58+00:00">2023-03-11</time>
+                <time title="修改时间：2023-03-18 15:22:47" itemprop="dateModified" datetime="2023-03-18T15:22:47+00:00">2023-03-18</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1006,157 +1110,6 @@
           <blockquote>
 <p>Item 19: Teat class design as type design.</p>
 </blockquote>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2021/11/08/c++/C-%E4%B8%ADmalloc%E5%92%8Cnew%E7%9A%84%E5%8C%BA%E5%88%AB/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="yngty">
-      <meta itemprop="description" content="预测未来的最好方式就是实现它">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Symbol Crash">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/11/08/c++/C-%E4%B8%ADmalloc%E5%92%8Cnew%E7%9A%84%E5%8C%BA%E5%88%AB/" class="post-title-link" itemprop="url">C++ 中 malloc 和 new 的区别</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-11-08 22:44:44" itemprop="dateCreated datePublished" datetime="2021-11-08T22:44:44+00:00">2021-11-08</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-03-11 03:08:58" itemprop="dateModified" datetime="2023-03-11T03:08:58+00:00">2023-03-11</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C-C/" itemprop="url" rel="index"><span itemprop="name">C/C++</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>172</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <table>
-<thead>
-<tr>
-<th align="center">特征</th>
-<th align="center">new</th>
-<th align="center">malloc</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">类型</td>
-<td align="center">关键字</td>
-<td align="center">标准库函数</td>
-</tr>
-<tr>
-<td align="center">支持语言</td>
-<td align="center"><code>C/C++</code></td>
-<td align="center">只在 <code>C++</code></td>
-</tr>
-<tr>
-<td align="center">申请内存的位置</td>
-<td align="center">自由存储区 <code>free store</code></td>
-<td align="center">堆</td>
-</tr>
-<tr>
-<td align="center">分配内存的大小</td>
-<td align="center">编译器根据类型信息自行计算</td>
-<td align="center">显示指定字节数</td>
-</tr>
-<tr>
-<td align="center">内存分配失败</td>
-<td align="center">抛出 <code>bac_alloc</code> 异常, 不会返回 <code>NULL</code></td>
-<td align="center">返回 <code>NULL</code></td>
-</tr>
-<tr>
-<td align="center">返回类型</td>
-<td align="center">返回对象类型的指针</td>
-<td align="center">返回<code>void</code> 指针，需要转换</td>
-</tr>
-<tr>
-<td align="center">是否调用构造函数&#x2F;析构函数</td>
-<td align="center">调用</td>
-<td align="center">不调用</td>
-</tr>
-<tr>
-<td align="center">处理数组</td>
-<td align="center"><code>new[]</code></td>
-<td align="center">手动指定数组的大小</td>
-</tr>
-<tr>
-<td align="center">是否支持重载</td>
-<td align="center">支持</td>
-<td align="center">不支持</td>
-</tr>
-<tr>
-<td align="center">是否支持内存扩充</td>
-<td align="center">不支持</td>
-<td align="center"><code>realloc</code></td>
-</tr>
-<tr>
-<td align="center">内存释放方式</td>
-<td align="center"><code>new/delete</code>, <code>new[]/delete[]</code></td>
-<td align="center"><code>malloc/free</code></td>
-</tr>
-</tbody></table>
 
       
     </div>
@@ -1243,20 +1196,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">38</span>
+          <span class="site-state-item-count">39</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-count">7</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-count">15</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

@@ -1224,6 +1224,95 @@
       </tags>
   </entry>
   <entry>
+    <title>ARM64汇编入门</title>
+    <url>/2023/03/18/macos/ARM64%E6%B1%87%E7%BC%96%E5%85%A5%E9%97%A8/</url>
+    <content><![CDATA[<h1 id="ARM-指令概要介绍"><a href="#ARM-指令概要介绍" class="headerlink" title="ARM 指令概要介绍"></a><code>ARM</code> 指令概要介绍</h1><ul>
+<li><code>A64</code> 指令集只能运行在 <code>aarch64</code> 环境中</li>
+<li>所有的A64汇编指令都是 <code>32bits</code> 宽</li>
+<li><code>A64</code> 支持全部是大写或者全部是小写的书写方式</li>
+</ul>
+<p>寄存器名：</p>
+<table>
+<thead>
+<tr>
+<th align="left">Name</th>
+<th align="left">Size</th>
+<th align="left">Encoding</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Wn</td>
+<td align="left">32 bits</td>
+<td align="left">0-30</td>
+<td align="left">Genral-purpose register 0-30</td>
+</tr>
+<tr>
+<td align="left">Xn</td>
+<td align="left">64 bits</td>
+<td align="left">0-30</td>
+<td align="left">Genral-purpose register 0-30</td>
+</tr>
+<tr>
+<td align="left">WZR</td>
+<td align="left">32 bits</td>
+<td align="left">31</td>
+<td align="left">Zero register</td>
+</tr>
+<tr>
+<td align="left">XZR</td>
+<td align="left">64 bits</td>
+<td align="left">31</td>
+<td align="left">Zero register</td>
+</tr>
+<tr>
+<td align="left">WPS</td>
+<td align="left">32 bits</td>
+<td align="left">31</td>
+<td align="left">Current stack pointer</td>
+</tr>
+<tr>
+<td align="left">SP</td>
+<td align="left">64 bits</td>
+<td align="left">31</td>
+<td align="left">Current stack pointer</td>
+</tr>
+</tbody></table>
+<span id="more"></span>
+
+<h2 id="ARM-指令的分类"><a href="#ARM-指令的分类" class="headerlink" title="ARM 指令的分类"></a><code>ARM</code> 指令的分类</h2><ul>
+<li>内存加载和存储指令</li>
+<li>多字节内存加载和存储</li>
+<li>算术和位移指令</li>
+<li>移位操作</li>
+<li>位操作</li>
+<li>条件操作</li>
+<li>跳转指令</li>
+<li>独占访存指令</li>
+<li>内存屏障指令</li>
+<li>异常处理指令</li>
+<li>系统寄存器访问指令</li>
+</ul>
+<h2 id="ARM-指令的一般编码格式"><a href="#ARM-指令的一般编码格式" class="headerlink" title="ARM 指令的一般编码格式"></a><code>ARM</code> 指令的一般编码格式</h2><p>一条典型的 <code>ARM64</code> 指令语法格式如下所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;opcode&gt;&#123;&lt;cond&gt;&#125;&#123;S&#125; &lt;Rd&gt;, &lt;Rn&gt;, &lt;shifter_operand&gt;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>&lt;opcode&gt;</code>：是指令助记符，如 <code>ADD</code> 表示算术加操作指令。</li>
+<li><code>&#123;&lt;cond&gt;&#125;</code>：表示指令执行的条件。</li>
+<li><code>&#123;S&#125;</code>：决定指令的操作是否影响 <code>CPSR</code> 的值。</li>
+<li><code>&lt;Rd&gt;</code>：表示目标寄存器。</li>
+<li><code>&lt;Rn&gt;</code>：表示包含第 <code>1</code> 个操作数的寄存器。</li>
+<li><code>&lt;shifter_operand&gt;</code>：表示第 <code>2</code> 个操作数。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>汇编</category>
+      </categories>
+      <tags>
+        <tag>arm64</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Disk Arbitration</title>
     <url>/2023/02/16/macos/Disk-Arbitration/</url>
     <content><![CDATA[<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p><code>Disk Arbitration framework</code> 是一个基于 <code>Core Foundation</code> 的低级框架。会在磁盘出现和消失时通知您的应用程序，并让您的应用程序影响该过程。借助 <code>Disk Arbitration</code>，我们可以：</p>
