@@ -20,20 +20,20 @@
     var CONFIG = {"hostname":"yngty.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="特征 new malloc    类型 关键字 标准库函数   支持语言 C&#x2F;C++ 只在 C++   申请内存的位置 自由存储区 free store 堆   分配内存的大小 编译器根据类型信息自行计算 显示指定字节数   内存分配失败 抛出 bac_alloc 异常, 不会返回 NULL 返回 NULL   返回类型 返回对象类型的指针 返回void 指针，需要转换   是否调用构造函数">
+  <meta name="description" content="install(CODE) 和 execute_process 配合确保 WORKING_DIRECTORY 存在示例代码:  12345set(CMAKE_INSTALL_PREFIX $&amp;#123;PROJECT_BINARY_DIR&amp;#125;&#x2F;export)install(CODE &quot;    execute_process(COMMAND $&amp;#123;CMAKE_COMMAND">
 <meta property="og:type" content="article">
-<meta property="og:title" content="C++ 中 malloc 和 new 的区别">
-<meta property="og:url" content="https://yngty.github.io/2021/11/08/c++/C-%E4%B8%ADmalloc%E5%92%8Cnew%E7%9A%84%E5%8C%BA%E5%88%AB/index.html">
+<meta property="og:title" content="CMake 踩坑记">
+<meta property="og:url" content="https://yngty.github.io/2023/04/07/cmake/CMake-%E8%B8%A9%E5%9D%91%E8%AE%B0/index.html">
 <meta property="og:site_name" content="Symbol Crash">
-<meta property="og:description" content="特征 new malloc    类型 关键字 标准库函数   支持语言 C&#x2F;C++ 只在 C++   申请内存的位置 自由存储区 free store 堆   分配内存的大小 编译器根据类型信息自行计算 显示指定字节数   内存分配失败 抛出 bac_alloc 异常, 不会返回 NULL 返回 NULL   返回类型 返回对象类型的指针 返回void 指针，需要转换   是否调用构造函数">
+<meta property="og:description" content="install(CODE) 和 execute_process 配合确保 WORKING_DIRECTORY 存在示例代码:  12345set(CMAKE_INSTALL_PREFIX $&amp;#123;PROJECT_BINARY_DIR&amp;#125;&#x2F;export)install(CODE &quot;    execute_process(COMMAND $&amp;#123;CMAKE_COMMAND">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-11-08T22:44:44.000Z">
+<meta property="article:published_time" content="2023-04-07T10:26:10.000Z">
 <meta property="article:modified_time" content="2023-04-07T03:04:44.884Z">
 <meta property="article:author" content="yngty">
-<meta property="article:tag" content="C++">
+<meta property="article:tag" content="CMake">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://yngty.github.io/2021/11/08/c++/C-%E4%B8%ADmalloc%E5%92%8Cnew%E7%9A%84%E5%8C%BA%E5%88%AB/">
+<link rel="canonical" href="https://yngty.github.io/2023/04/07/cmake/CMake-%E8%B8%A9%E5%9D%91%E8%AE%B0/">
 
 
 <script id="page-configurations">
@@ -46,7 +46,7 @@
   };
 </script>
 
-  <title>C++ 中 malloc 和 new 的区别 | Symbol Crash</title>
+  <title>CMake 踩坑记 | Symbol Crash</title>
   
 
 
@@ -163,7 +163,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2021/11/08/c++/C-%E4%B8%ADmalloc%E5%92%8Cnew%E7%9A%84%E5%8C%BA%E5%88%AB/">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2023/04/07/cmake/CMake-%E8%B8%A9%E5%9D%91%E8%AE%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -176,7 +176,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          C++ 中 malloc 和 new 的区别
+          CMake 踩坑记
         </h1>
 
         <div class="post-meta">
@@ -185,24 +185,9 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2021-11-08 22:44:44" itemprop="dateCreated datePublished" datetime="2021-11-08T22:44:44+00:00">2021-11-08</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-04-07 03:04:44" itemprop="dateModified" datetime="2023-04-07T03:04:44+00:00">2023-04-07</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C-C/" itemprop="url" rel="index"><span itemprop="name">C/C++</span></a>
-                </span>
+              <time title="创建时间：2023-04-07 10:26:10 / 修改时间：03:04:44" itemprop="dateCreated datePublished" datetime="2023-04-07T10:26:10+00:00">2023-04-07</time>
             </span>
 
           <br>
@@ -211,7 +196,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>172</span>
+              <span>274</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -230,71 +215,20 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <table>
-<thead>
-<tr>
-<th align="center">特征</th>
-<th align="center">new</th>
-<th align="center">malloc</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">类型</td>
-<td align="center">关键字</td>
-<td align="center">标准库函数</td>
-</tr>
-<tr>
-<td align="center">支持语言</td>
-<td align="center"><code>C/C++</code></td>
-<td align="center">只在 <code>C++</code></td>
-</tr>
-<tr>
-<td align="center">申请内存的位置</td>
-<td align="center">自由存储区 <code>free store</code></td>
-<td align="center">堆</td>
-</tr>
-<tr>
-<td align="center">分配内存的大小</td>
-<td align="center">编译器根据类型信息自行计算</td>
-<td align="center">显示指定字节数</td>
-</tr>
-<tr>
-<td align="center">内存分配失败</td>
-<td align="center">抛出 <code>bac_alloc</code> 异常, 不会返回 <code>NULL</code></td>
-<td align="center">返回 <code>NULL</code></td>
-</tr>
-<tr>
-<td align="center">返回类型</td>
-<td align="center">返回对象类型的指针</td>
-<td align="center">返回<code>void</code> 指针，需要转换</td>
-</tr>
-<tr>
-<td align="center">是否调用构造函数&#x2F;析构函数</td>
-<td align="center">调用</td>
-<td align="center">不调用</td>
-</tr>
-<tr>
-<td align="center">处理数组</td>
-<td align="center"><code>new[]</code></td>
-<td align="center">手动指定数组的大小</td>
-</tr>
-<tr>
-<td align="center">是否支持重载</td>
-<td align="center">支持</td>
-<td align="center">不支持</td>
-</tr>
-<tr>
-<td align="center">是否支持内存扩充</td>
-<td align="center">不支持</td>
-<td align="center"><code>realloc</code></td>
-</tr>
-<tr>
-<td align="center">内存释放方式</td>
-<td align="center"><code>new/delete</code>, <code>new[]/delete[]</code></td>
-<td align="center"><code>malloc/free</code></td>
-</tr>
-</tbody></table>
+        <h1 id="install-CODE-和-execute-process-配合"><a href="#install-CODE-和-execute-process-配合" class="headerlink" title="install(CODE) 和 execute_process 配合"></a><code>install(CODE)</code> 和 <code>execute_process</code> 配合</h1><h2 id="确保-WORKING-DIRECTORY-存在"><a href="#确保-WORKING-DIRECTORY-存在" class="headerlink" title="确保 WORKING_DIRECTORY 存在"></a>确保 <code>WORKING_DIRECTORY</code> 存在</h2><p>示例代码: </p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span>(CMAKE_INSTALL_PREFIX <span class="variable">$&#123;PROJECT_BINARY_DIR&#125;</span>/<span class="keyword">export</span>)</span><br><span class="line"><span class="keyword">install</span>(CODE <span class="string">&quot;</span></span><br><span class="line"><span class="string">    execute_process(COMMAND $&#123;CMAKE_COMMAND&#125; -E make_directory folder </span></span><br><span class="line"><span class="string">    WORKING_DIRECTORY \$&#123;CMAKE_INSTALL_PREFIX&#125;)</span></span><br><span class="line"><span class="string">    &quot;</span>) </span><br></pre></td></tr></table></figure>
 
+<p>注意确保 <code>CMAKE_INSTALL_PREFIX</code> 存在，可能执行这段代码时还没有 <code>install target</code> 导致 <code>CMAKE_INSTALL_PREFIX</code> 还没有生成。</p>
+<span id="more"></span>
+
+<h2 id="注意变量转义"><a href="#注意变量转义" class="headerlink" title="注意变量转义"></a>注意变量转义</h2><p><strong>不转义容易在 <code>package</code> 时，执行 <code>execute_process</code> 因为路径问题出错</strong>。</p>
+<p>示例代码: </p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span>(CMAKE_INSTALL_PREFIX <span class="variable">$&#123;PROJECT_BINARY_DIR&#125;</span>/<span class="keyword">export</span>)</span><br><span class="line"><span class="keyword">install</span>(CODE <span class="string">&quot;</span></span><br><span class="line"><span class="string">    execute_process(COMMAND $&#123;CMAKE_COMMAND&#125; -E make_directory folder</span></span><br><span class="line"><span class="string">    WORKING_DIRECTORY \$&#123;CMAKE_INSTALL_PREFIX&#125;)</span></span><br><span class="line"><span class="string">    &quot;</span>) </span><br></pre></td></tr></table></figure>
+<p>注意 <code>$&#123;WORKING_DIRECTORY&#125;</code> 之前是有 <code>\</code> 转义，当没有转义时，<code>CMAKE_INSTALL_PREFIX</code>会直接替换，此时 <code>CMAKE_INSTALL_PREFIX</code> 表示的 <code>install</code> 路径。 <code>make package</code>时会到一个临时目录处理，其中的 <code>CMAKE_INSTALL_PREFIX</code> 跟  <code>install</code> 路径是不一样的，所以执行 <code>execute_process</code> 会出问题。当转义了表示 execute_process时再去获取 <code>CMAKE_INSTALL_PREFIX</code>, 这时能获取到正确路径。可以在 <code>cmake_install.cmake</code> 查看生成的代码。注意 <code>WORKING_DIRECTORY</code> 的值。</p>
+<h3 id="不转义生成代码："><a href="#不转义生成代码：" class="headerlink" title="不转义生成代码："></a>不转义生成代码：</h3><figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(CMAKE_INSTALL_COMPONENT <span class="keyword">STREQUAL</span> <span class="string">&quot;rel&quot;</span> <span class="keyword">OR</span> <span class="keyword">NOT</span> CMAKE_INSTALL_COMPONENT)</span><br><span class="line">    <span class="keyword">execute_process</span>(<span class="keyword">COMMAND</span> /Users/xxx/Qt/Tools/CMake/CMake.app/Contents/bin/cmake -E <span class="keyword">make_directory</span> folder</span><br><span class="line">    WORKING_DIRECTORY <span class="string">&quot;/xxx/xxx/xxxx/export&quot;</span>)</span><br><span class="line"><span class="keyword">endif</span>()</span><br></pre></td></tr></table></figure>
+
+<p>转义生成代码：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(CMAKE_INSTALL_COMPONENT <span class="keyword">STREQUAL</span> <span class="string">&quot;rel&quot;</span> <span class="keyword">OR</span> <span class="keyword">NOT</span> CMAKE_INSTALL_COMPONENT)</span><br><span class="line">    <span class="keyword">execute_process</span>(<span class="keyword">COMMAND</span> /Users/xxx/Qt/Tools/CMake/CMake.app/Contents/bin/cmake -E <span class="keyword">make_directory</span> folder</span><br><span class="line">    WORKING_DIRECTORY <span class="variable">$&#123;CMAKE_INSTALL_PREFIX&#125;</span>)</span><br><span class="line"><span class="keyword">endif</span>()</span><br></pre></td></tr></table></figure>
     </div>
 
     
@@ -303,7 +237,7 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/C/" rel="tag"># C++</a>
+              <a href="/tags/CMake/" rel="tag"># CMake</a>
           </div>
 
         
@@ -312,13 +246,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/11/08/effecitve-cpp/effective-cpp-18/" rel="prev" title="Effective C++ 18：让接口容易被正确使用，不易被误用">
-      <i class="fa fa-chevron-left"></i> Effective C++ 18：让接口容易被正确使用，不易被误用
+    <a href="/2023/03/18/macos/ARM64%E6%B1%87%E7%BC%96%E5%85%A5%E9%97%A8/" rel="prev" title="ARM64汇编入门">
+      <i class="fa fa-chevron-left"></i> ARM64汇编入门
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2021/11/11/effecitve-cpp/effective-cpp-19/" rel="next" title="Effective C++ 19：设计 class 犹如设计 type">
-      Effective C++ 19：设计 class 犹如设计 type <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -377,6 +308,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#install-CODE-%E5%92%8C-execute-process-%E9%85%8D%E5%90%88"><span class="nav-number">1.</span> <span class="nav-text">install(CODE) 和 execute_process 配合</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A1%AE%E4%BF%9D-WORKING-DIRECTORY-%E5%AD%98%E5%9C%A8"><span class="nav-number">1.1.</span> <span class="nav-text">确保 WORKING_DIRECTORY 存在</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E5%8F%98%E9%87%8F%E8%BD%AC%E4%B9%89"><span class="nav-number">1.2.</span> <span class="nav-text">注意变量转义</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8D%E8%BD%AC%E4%B9%89%E7%94%9F%E6%88%90%E4%BB%A3%E7%A0%81%EF%BC%9A"><span class="nav-number">1.2.1.</span> <span class="nav-text">不转义生成代码：</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 

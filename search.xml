@@ -173,6 +173,27 @@
       </tags>
   </entry>
   <entry>
+    <title>CMake 踩坑记</title>
+    <url>/2023/04/07/cmake/CMake-%E8%B8%A9%E5%9D%91%E8%AE%B0/</url>
+    <content><![CDATA[<h1 id="install-CODE-和-execute-process-配合"><a href="#install-CODE-和-execute-process-配合" class="headerlink" title="install(CODE) 和 execute_process 配合"></a><code>install(CODE)</code> 和 <code>execute_process</code> 配合</h1><h2 id="确保-WORKING-DIRECTORY-存在"><a href="#确保-WORKING-DIRECTORY-存在" class="headerlink" title="确保 WORKING_DIRECTORY 存在"></a>确保 <code>WORKING_DIRECTORY</code> 存在</h2><p>示例代码: </p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="keyword">set</span>(CMAKE_INSTALL_PREFIX <span class="variable">$&#123;PROJECT_BINARY_DIR&#125;</span>/<span class="keyword">export</span>)</span><br><span class="line"><span class="keyword">install</span>(CODE <span class="string">&quot;</span></span><br><span class="line"><span class="string">    execute_process(COMMAND $&#123;CMAKE_COMMAND&#125; -E make_directory folder </span></span><br><span class="line"><span class="string">    WORKING_DIRECTORY \$&#123;CMAKE_INSTALL_PREFIX&#125;)</span></span><br><span class="line"><span class="string">    &quot;</span>) </span><br></pre></td></tr></table></figure>
+
+<p>注意确保 <code>CMAKE_INSTALL_PREFIX</code> 存在，可能执行这段代码时还没有 <code>install target</code> 导致 <code>CMAKE_INSTALL_PREFIX</code> 还没有生成。</p>
+<span id="more"></span>
+
+<h2 id="注意变量转义"><a href="#注意变量转义" class="headerlink" title="注意变量转义"></a>注意变量转义</h2><p><strong>不转义容易在 <code>package</code> 时，执行 <code>execute_process</code> 因为路径问题出错</strong>。</p>
+<p>示例代码: </p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="keyword">set</span>(CMAKE_INSTALL_PREFIX <span class="variable">$&#123;PROJECT_BINARY_DIR&#125;</span>/<span class="keyword">export</span>)</span><br><span class="line"><span class="keyword">install</span>(CODE <span class="string">&quot;</span></span><br><span class="line"><span class="string">    execute_process(COMMAND $&#123;CMAKE_COMMAND&#125; -E make_directory folder</span></span><br><span class="line"><span class="string">    WORKING_DIRECTORY \$&#123;CMAKE_INSTALL_PREFIX&#125;)</span></span><br><span class="line"><span class="string">    &quot;</span>) </span><br></pre></td></tr></table></figure>
+<p>注意 <code>$&#123;WORKING_DIRECTORY&#125;</code> 之前是有 <code>\</code> 转义，当没有转义时，<code>CMAKE_INSTALL_PREFIX</code>会直接替换，此时 <code>CMAKE_INSTALL_PREFIX</code> 表示的 <code>install</code> 路径。 <code>make package</code>时会到一个临时目录处理，其中的 <code>CMAKE_INSTALL_PREFIX</code> 跟  <code>install</code> 路径是不一样的，所以执行 <code>execute_process</code> 会出问题。当转义了表示 execute_process时再去获取 <code>CMAKE_INSTALL_PREFIX</code>, 这时能获取到正确路径。可以在 <code>cmake_install.cmake</code> 查看生成的代码。注意 <code>WORKING_DIRECTORY</code> 的值。</p>
+<h3 id="不转义生成代码："><a href="#不转义生成代码：" class="headerlink" title="不转义生成代码："></a>不转义生成代码：</h3><figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span>(CMAKE_INSTALL_COMPONENT <span class="keyword">STREQUAL</span> <span class="string">&quot;rel&quot;</span> <span class="keyword">OR</span> <span class="keyword">NOT</span> CMAKE_INSTALL_COMPONENT)</span><br><span class="line">    <span class="keyword">execute_process</span>(<span class="keyword">COMMAND</span> /Users/xxx/Qt/Tools/CMake/CMake.app/Contents/bin/cmake -E <span class="keyword">make_directory</span> folder</span><br><span class="line">    WORKING_DIRECTORY <span class="string">&quot;/xxx/xxx/xxxx/export&quot;</span>)</span><br><span class="line"><span class="keyword">endif</span>()</span><br></pre></td></tr></table></figure>
+
+<p>转义生成代码：</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span>(CMAKE_INSTALL_COMPONENT <span class="keyword">STREQUAL</span> <span class="string">&quot;rel&quot;</span> <span class="keyword">OR</span> <span class="keyword">NOT</span> CMAKE_INSTALL_COMPONENT)</span><br><span class="line">    <span class="keyword">execute_process</span>(<span class="keyword">COMMAND</span> /Users/xxx/Qt/Tools/CMake/CMake.app/Contents/bin/cmake -E <span class="keyword">make_directory</span> folder</span><br><span class="line">    WORKING_DIRECTORY <span class="variable">$&#123;CMAKE_INSTALL_PREFIX&#125;</span>)</span><br><span class="line"><span class="keyword">endif</span>()</span><br></pre></td></tr></table></figure>]]></content>
+      <tags>
+        <tag>CMake</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Effective C++ 1：将C++视作一系列的语言</title>
     <url>/2020/12/07/effecitve-cpp/effective-cpp-1/</url>
     <content><![CDATA[<blockquote>
