@@ -194,6 +194,29 @@
       </tags>
   </entry>
   <entry>
+    <title>Reactor pattern</title>
+    <url>/2023/03/06/design/reactor-pattern/</url>
+    <content><![CDATA[<h1 id="什么是Reactor模式"><a href="#什么是Reactor模式" class="headerlink" title="什么是Reactor模式"></a>什么是Reactor模式</h1><h1 id="Reactor模式结构"><a href="#Reactor模式结构" class="headerlink" title="Reactor模式结构"></a>Reactor模式结构</h1><ul>
+<li><code>Handles</code>:</li>
+<li><code>Synchronous Event Demultiplexer</code></li>
+<li><code>Initiation Dispatcher</code></li>
+<li><code>Event Handler</code></li>
+<li><code>Concrete Event Handler</code></li>
+</ul>
+<h1 id="Reactor模式模块之间的交互"><a href="#Reactor模式模块之间的交互" class="headerlink" title="Reactor模式模块之间的交互"></a>Reactor模式模块之间的交互</h1><h1 id="Reactor模式实现"><a href="#Reactor模式实现" class="headerlink" title="Reactor模式实现"></a>Reactor模式实现</h1><h1 id="Reactor模式优点"><a href="#Reactor模式优点" class="headerlink" title="Reactor模式优点"></a>Reactor模式优点</h1><h1 id="Reactor模式的缺点"><a href="#Reactor模式的缺点" class="headerlink" title="Reactor模式的缺点"></a>Reactor模式的缺点</h1><ul>
+<li>Efficiency</li>
+<li>Programming simplicity</li>
+<li>Portability</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Design</category>
+      </categories>
+      <tags>
+        <tag>Reactor</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Effective C++ 1：将C++视作一系列的语言</title>
     <url>/2020/12/07/effecitve-cpp/effective-cpp-1/</url>
     <content><![CDATA[<blockquote>
@@ -1470,6 +1493,17 @@
       </tags>
   </entry>
   <entry>
+    <title>Mach-O 相关记录</title>
+    <url>/2023/03/10/macos/mach-o/</url>
+    <content><![CDATA[<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><h1 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h1>]]></content>
+      <categories>
+        <category>MacOS</category>
+      </categories>
+      <tags>
+        <tag>Mach-O</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>在MacOS平台上符号化崩溃报告</title>
     <url>/2022/07/26/macos/%E5%9C%A8MacOS%E5%B9%B3%E5%8F%B0%E4%B8%8A%E7%AC%A6%E5%8F%B7%E5%8C%96%E5%B4%A9%E6%BA%83%E6%8A%A5%E5%91%8A/</url>
     <content><![CDATA[<h1 id="dSYM"><a href="#dSYM" class="headerlink" title=".dSYM"></a><code>.dSYM</code></h1><p><code>.dSYM</code> (<code>debugging SYMbols</code>) 又称为调试符号表，是苹果为了方便调试和定位问题而使用的一种调试方案，本质上使用的是起源于贝尔实验室的 <code>DWARF</code>（<code>Debugging With Attributed Record Formats</code>），其在.xcarchive目录中的层次结构为：</p>
@@ -1518,6 +1552,32 @@
       <tags>
         <tag>MacOS</tag>
         <tag>Crash</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>存储和加载指令</title>
+    <url>/2023/03/18/macos/%E5%AD%98%E5%82%A8%E5%92%8C%E5%8A%A0%E8%BD%BD%E6%8C%87%E4%BB%A4/</url>
+    <content><![CDATA[<h3 id="存储和加载指令"><a href="#存储和加载指令" class="headerlink" title="存储和加载指令"></a>存储和加载指令</h3><h4 id="ldr-指令寻址之1：-地址偏移模式-unsigned-offset"><a href="#ldr-指令寻址之1：-地址偏移模式-unsigned-offset" class="headerlink" title="ldr 指令寻址之1： 地址偏移模式 (unsigned offset)"></a><code>ldr</code> 指令寻址之1： 地址偏移模式 (<code>unsigned offset</code>)</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">LDR Xd, [Xn, $offset]</span><br></pre></td></tr></table></figure>
+<p>首先在 <code>Xn</code> 寄存器的内容上加上一个 <code>offset</code> 偏移量后作为内存地址，加载此地址的内容到 <code>Xd</code> 寄存器。</p>
+<h4 id="ldr-指令寻址之2：-变基模式"><a href="#ldr-指令寻址之2：-变基模式" class="headerlink" title="ldr 指令寻址之2： 变基模式"></a><code>ldr</code> 指令寻址之2： 变基模式</h4><ul>
+<li>前变基模式（<code>pre-index</code> 模式）： 先更新偏移地址然后再访问内存。</li>
+<li>后变基模式（<code>post-index</code> 模式）：先访问内存地址然后再更新偏移地址。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">LDR X0, [X1, #8]! // 前变基模式。先更新X1 的值为 X1+8，然后义新的X1值为地址，加载内存的值到X0</span><br><span class="line"></span><br><span class="line">LDR X0, [X1], #8  // 后变基模式。以x1的值为地址，加载该内存地址的值到X0，然后在更新X1寄存器为X1+8</span><br></pre></td></tr></table></figure>
+
+<h4 id="ldr-指令寻址之3：-标签（literal）"><a href="#ldr-指令寻址之3：-标签（literal）" class="headerlink" title="ldr 指令寻址之3： 标签（literal）"></a><code>ldr</code> 指令寻址之3： 标签（<code>literal</code>）</h4><p>PC + label offset</p>
+<h4 id="ldr-伪指令"><a href="#ldr-伪指令" class="headerlink" title="ldr 伪指令"></a>ldr 伪指令</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">LDR x7, =MY_LABEL</span><br></pre></td></tr></table></figure>
+
+<h4 id="move-指令"><a href="#move-指令" class="headerlink" title="move 指令"></a>move 指令</h4><ul>
+<li>16位立即数</li>
+<li>16立即数左移16，32，48位</li>
+</ul>
+<h4 id="多字节加载和存储指令-ldp-和stp"><a href="#多字节加载和存储指令-ldp-和stp" class="headerlink" title="多字节加载和存储指令 ldp 和stp"></a>多字节加载和存储指令 ldp 和stp</h4>]]></content>
+      <categories>
+        <category>汇编</category>
+      </categories>
+      <tags>
+        <tag>arm64</tag>
       </tags>
   </entry>
   <entry>
