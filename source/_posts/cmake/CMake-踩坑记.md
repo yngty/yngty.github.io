@@ -52,7 +52,7 @@ if(CMAKE_INSTALL_COMPONENT STREQUAL "rel" OR NOT CMAKE_INSTALL_COMPONENT)
 endif()
 ```
 
-### 在 `MacOS` 上 `No CMAKE_CXX_COMPILER could be found`
+# 在 `MacOS` 上 `No CMAKE_CXX_COMPILER could be found`
 
 ```shell
 sudo xcode-select -s /Applications/Xcode.app/Contents/Developer 
