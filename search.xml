@@ -1,6 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>http协议</title>
+    <url>/2023/07/17/http%E5%8D%8F%E8%AE%AE/</url>
+    <content><![CDATA[<h1 id="URI-的完整图解"><a href="#URI-的完整图解" class="headerlink" title="URI 的完整图解"></a>URI 的完整图解</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">  foo://example.com:8042/over/there?name=ferret#nose</span><br><span class="line">  \_/   \______________/\_________/ \_________/ \__/</span><br><span class="line">   |           |            |            |        |</span><br><span class="line">scheme     authority       path        query   fragment</span><br><span class="line">   |   _____________________|__</span><br><span class="line">  / \ /                        \</span><br><span class="line">  urn:example:animal:ferret:nose</span><br></pre></td></tr></table></figure>
+
+<h1 id="消息格式"><a href="#消息格式" class="headerlink" title="消息格式"></a>消息格式</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">start-line</span><br><span class="line">*( header-field CRLF )</span><br><span class="line">CRLF</span><br><span class="line">[ message-body ]</span><br></pre></td></tr></table></figure>
+
+<h2 id="start-line"><a href="#start-line" class="headerlink" title="start-line"></a>start-line</h2><ul>
+<li>request line<ul>
+<li>method SP request-target SP HTTP-version CRLF</li>
+</ul>
+</li>
+<li>status line<ul>
+<li>HTTP-version SP status-code SP reason-phrase CRLF</li>
+</ul>
+</li>
+</ul>
+<h2 id="Header-Fields"><a href="#Header-Fields" class="headerlink" title="Header Fields"></a>Header Fields</h2><ul>
+<li>field-name “:” OWS field-value OWS</li>
+</ul>
+<h2 id="Message-Body"><a href="#Message-Body" class="headerlink" title="Message Body"></a>Message Body</h2><p>在一个请求中是否会出现消息体，以消息头中是否带有 <code>Content-Length</code> 或者 <code>Transfer-Encoding</code> 头字段作为信号</p>
+<h1 id="Proxy-代理"><a href="#Proxy-代理" class="headerlink" title="Proxy 代理"></a>Proxy 代理</h1><h2 id="普通代理"><a href="#普通代理" class="headerlink" title="普通代理"></a>普通代理</h2><p><a href="https://datatracker.ietf.org/doc/html/rfc7230#section-2.3">RFC 7230 - HTTP&#x2F;1.1: Message Syntax and Routing</a> 这种代理扮演的是「中间人」角色，对于连接到它的客户端来说，它是服务端；对于要连接的服务端来说，它是客户端。它就负责在两端之间来回传送 <code>HTTP</code> 报文。</p>
+<h2 id="隧道代理"><a href="#隧道代理" class="headerlink" title="隧道代理"></a>隧道代理</h2><p><a href="https://datatracker.ietf.org/doc/html/rfc7231#section-4.3.6">RFC 7231 - HTTP&#x2F;1.1: Semantics and Content</a> <code>HTTP</code> 客户端通过 <code>CONNECT</code> 方法请求隧道代理创建一条到达任意目的服务器和端口的 <code>TCP</code> 连接，并对客户端和服务器之间的后继数据进行盲转发。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">CONNECT server.example.com:80 HTTP/1.1</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <tags>
+        <tag>HTTP</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>C++ 中 malloc 和 new 的区别</title>
     <url>/2021/11/08/c++/C-%E4%B8%ADmalloc%E5%92%8Cnew%E7%9A%84%E5%8C%BA%E5%88%AB/</url>
     <content><![CDATA[<table>
