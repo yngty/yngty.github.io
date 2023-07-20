@@ -57,3 +57,16 @@ endif()
 ```shell
 sudo xcode-select -s /Applications/Xcode.app/Contents/Developer 
 ```
+
+# CMAKE_OSX_ARCHITECTURES
+
+- 设置 `macOS`和 `iOS` 的特定架构
+- 应在第一次 `project()` 或 `enable_language()` 命令之前设置
+- 应设置为 `CACHE` 条目, 除非策略 `CMP0126` 设置为 `NEW` 
+- 在 `Apple` 以外的平台上被忽略
+
+```
+if (APPLE)
+    set(CMAKE_OSX_ARCHITECTURES x86_64 CACHE STRING "")
+endif()
+```
