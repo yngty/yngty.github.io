@@ -236,7 +236,15 @@
 <p>转义生成代码：</p>
 <figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span>(CMAKE_INSTALL_COMPONENT <span class="keyword">STREQUAL</span> <span class="string">&quot;rel&quot;</span> <span class="keyword">OR</span> <span class="keyword">NOT</span> CMAKE_INSTALL_COMPONENT)</span><br><span class="line">    <span class="keyword">execute_process</span>(<span class="keyword">COMMAND</span> /Users/xxx/Qt/Tools/CMake/CMake.app/Contents/bin/cmake -E <span class="keyword">make_directory</span> folder</span><br><span class="line">    WORKING_DIRECTORY <span class="variable">$&#123;CMAKE_INSTALL_PREFIX&#125;</span>)</span><br><span class="line"><span class="keyword">endif</span>()</span><br></pre></td></tr></table></figure>
 
-<h1 id="在-MacOS-上-No-CMAKE-CXX-COMPILER-could-be-found"><a href="#在-MacOS-上-No-CMAKE-CXX-COMPILER-could-be-found" class="headerlink" title="在 MacOS 上 No CMAKE_CXX_COMPILER could be found"></a>在 <code>MacOS</code> 上 <code>No CMAKE_CXX_COMPILER could be found</code></h1><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo xcode-select -s /Applications/Xcode.app/Contents/Developer </span><br></pre></td></tr></table></figure>]]></content>
+<h1 id="在-MacOS-上-No-CMAKE-CXX-COMPILER-could-be-found"><a href="#在-MacOS-上-No-CMAKE-CXX-COMPILER-could-be-found" class="headerlink" title="在 MacOS 上 No CMAKE_CXX_COMPILER could be found"></a>在 <code>MacOS</code> 上 <code>No CMAKE_CXX_COMPILER could be found</code></h1><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo xcode-select -s /Applications/Xcode.app/Contents/Developer </span><br></pre></td></tr></table></figure>
+
+<h1 id="CMAKE-OSX-ARCHITECTURES"><a href="#CMAKE-OSX-ARCHITECTURES" class="headerlink" title="CMAKE_OSX_ARCHITECTURES"></a>CMAKE_OSX_ARCHITECTURES</h1><ul>
+<li>设置 <code>macOS</code>和 <code>iOS</code> 的特定架构</li>
+<li>应在第一次 <code>project()</code> 或 <code>enable_language()</code> 命令之前设置</li>
+<li>应设置为 <code>CACHE</code> 条目, 除非策略 <code>CMP0126</code> 设置为 <code>NEW</code> </li>
+<li>在 <code>Apple</code> 以外的平台上被忽略</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">if (APPLE)</span><br><span class="line">    set(CMAKE_OSX_ARCHITECTURES x86_64 CACHE STRING &quot;&quot;)</span><br><span class="line">endif()</span><br></pre></td></tr></table></figure>]]></content>
       <tags>
         <tag>CMake</tag>
       </tags>
