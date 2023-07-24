@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yngty.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="1. socket地址结构sockaddr_inipv4 协议的地址结构是 sockaddr_in，ipv6 的地址结构是sockaddr_in6。 123456789101112131415#include &lt;arpa&#x2F;inet.h&gt;&#x2F;&#x2F;#include&lt;netinet&#x2F;in.h&gt;struct sockaddr_in&amp;#123;    sa_family_t     si">
+<meta property="og:type" content="article">
+<meta property="og:title" content="socket 编程">
+<meta property="og:url" content="https://yngty.github.io/2023/07/24/network/socket-%E7%BC%96%E7%A8%8B/index.html">
+<meta property="og:site_name" content="Symbol Crash">
+<meta property="og:description" content="1. socket地址结构sockaddr_inipv4 协议的地址结构是 sockaddr_in，ipv6 的地址结构是sockaddr_in6。 123456789101112131415#include &lt;arpa&#x2F;inet.h&gt;&#x2F;&#x2F;#include&lt;netinet&#x2F;in.h&gt;struct sockaddr_in&amp;#123;    sa_family_t     si">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-07-24T10:38:44.000Z">
+<meta property="article:modified_time" content="2023-07-24T06:27:52.308Z">
+<meta property="article:author" content="yngty">
+<meta property="article:tag" content="tcp">
+<meta property="article:tag" content="socket">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://yngty.github.io/2023/07/24/network/socket-%E7%BC%96%E7%A8%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>socket 编程 | Symbol Crash</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Symbol Crash" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Symbol Crash</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">不学无术</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">47</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">9</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">24</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2023/07/24/network/socket-%E7%BC%96%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Symbol Crash">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          socket 编程
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-07-24 10:38:44 / 修改时间：06:27:52" itemprop="dateCreated datePublished" datetime="2023-07-24T10:38:44+00:00">2023-07-24</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Network/" itemprop="url" rel="index"><span itemprop="name">Network</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.9k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>7 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="1-socket地址结构"><a href="#1-socket地址结构" class="headerlink" title="1. socket地址结构"></a>1. socket地址结构</h1><h2 id="sockaddr-in"><a href="#sockaddr-in" class="headerlink" title="sockaddr_in"></a><code>sockaddr_in</code></h2><p><code>ipv4</code> 协议的地址结构是 <code>sockaddr_in</code>，<code>ipv6</code> 的地址结构是<code>sockaddr_in6</code>。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;arpa/inet.h&gt;</span></span></span><br><span class="line"><span class="comment">//#include&lt;netinet/in.h&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="type">sa_family_t</span>     sin_family;</span><br><span class="line">    <span class="type">in_port_t</span>       sin_port;	    <span class="comment">/* Port number.  */</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">in_addr</span>  <span class="title">sin_addr</span>;</span>		<span class="comment">/* Internet address.  */</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Pad to size of `struct sockaddr&#x27;.  */</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">char</span> sin_zero[<span class="keyword">sizeof</span> (<span class="keyword">struct</span> sockaddr) -</span><br><span class="line">            __SOCKADDR_COMMON_SIZE -</span><br><span class="line">            <span class="keyword">sizeof</span> (<span class="type">in_port_t</span>) -</span><br><span class="line">            <span class="keyword">sizeof</span> (<span class="keyword">struct</span> in_addr)];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>sin_family</code>：表示地址簇，<code>ipv4: AF_INET, ipv6: AF_INET6</code>，</li>
+<li><code>sin_port</code>：16位的端口号</li>
+<li><code>sin_addr</code>：点分十进制。</li>
+</ul>
+<h2 id="通用地址结构"><a href="#通用地址结构" class="headerlink" title="通用地址结构"></a>通用地址结构</h2><p>结构体是 <code>sockaddr</code>，方便可以接受 <code>ipv4/ipv6</code> 的地址结构。之所以采用 <code>sockaddr</code>，而不采用 <code>void*</code>  是因为 <code>BSD</code> 设计套接字的时候大约是 <code>1982</code> 年，那个时候的 <code>C</code> 语言还没有<code>void *</code> 的支持。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sockaddr</span> &#123;</span></span><br><span class="line">    <span class="type">sa_family_t</span>  sa_family;</span><br><span class="line">    <span class="type">char</span>         ss_data[<span class="number">14</span>];</span><br><span class="line">&#125;;  </span><br></pre></td></tr></table></figure>
+<span id="more"></span>
+<p>将 <code>sockaddr_in/sockaddr_in6</code> 强制转换为 <code>sockaddr</code> ，通过 <code>sockaddr</code> 的 <code>sa_family</code> 来分别使用的是 <code>ipv4/ipv6</code>。</p>
+<h2 id="网络字节序列和主机字节序列转换"><a href="#网络字节序列和主机字节序列转换" class="headerlink" title="网络字节序列和主机字节序列转换"></a>网络字节序列和主机字节序列转换</h2><p><code>TCP/IP</code> 协议规定，网络传输字节按照<strong>大端字节序列</strong>方式      </p>
+<ul>
+<li>大端：低地址存储在高位。</li>
+<li>小端：低地址存低位。</li>
+</ul>
+<h3 id="sin-port-转换"><a href="#sin-port-转换" class="headerlink" title="sin_port 转换"></a><code>sin_port</code> 转换</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;arpa/inet.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">uint32_t</span> <span class="title function_">htonl</span><span class="params">(<span class="type">uint32_t</span> hostlong)</span>;  <span class="comment">// host to net long(32位置)</span></span><br><span class="line"></span><br><span class="line"><span class="type">uint16_t</span> <span class="title function_">htons</span><span class="params">(<span class="type">uint16_t</span> hostshort)</span>; <span class="comment">// host to net short(16位置)</span></span><br><span class="line"></span><br><span class="line"><span class="type">uint32_t</span> <span class="title function_">ntohl</span><span class="params">(<span class="type">uint32_t</span> netlong)</span>;   <span class="comment">// net to host long</span></span><br><span class="line"></span><br><span class="line"><span class="type">uint16_t</span> <span class="title function_">ntohs</span><span class="params">(<span class="type">uint16_t</span> netshort)</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="sin-addr-转换"><a href="#sin-addr-转换" class="headerlink" title="sin_addr 转换"></a><code>sin_addr</code> 转换</h3><p>与协议无关的的转换函数，即 <code>ipv4/ipv6</code>都可以。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;arpa/inet.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">inet_pton</span><span class="params">(<span class="type">int</span> af, <span class="type">const</span> <span class="type">char</span> *src, <span class="type">void</span> *dst)</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">const</span> <span class="type">char</span> *<span class="title function_">inet_ntop</span><span class="params">(<span class="type">int</span> af, <span class="type">const</span> <span class="type">void</span> *src, <span class="type">char</span> *dst, <span class="type">socklen_t</span> size)</span>;</span><br></pre></td></tr></table></figure>
+<p><code>ipv4</code> 专用的转换函数</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;arpa/inet.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> </span><br><span class="line"><span class="title function_">inet_aton</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *cp, <span class="keyword">struct</span> in_addr *inp)</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">char</span> </span><br><span class="line">*<span class="title function_">inet_ntoa</span><span class="params">(<span class="keyword">struct</span> in_addr in)</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">in_addr_t</span> </span><br><span class="line"><span class="title function_">inet_addr</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *cp)</span>; <span class="comment">// 有风险，不建议使用</span></span><br></pre></td></tr></table></figure>
+<h1 id="2-socket-函数"><a href="#2-socket-函数" class="headerlink" title="2. socket 函数"></a>2. socket 函数</h1><h2 id="socket"><a href="#socket" class="headerlink" title="socket"></a><code>socket</code></h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/types.h&gt;</span>         </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">socket</span><span class="params">(<span class="type">int</span> family, <span class="type">int</span> type, <span class="type">int</span> protocol)</span>;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>返回值 <ul>
+<li>失败时返回 <code>-1</code>，成功是返回一个<strong>非零整数值</strong>，表示套接字描述符，<code>sockfd</code>。</li>
+</ul>
+</li>
+<li>参数<ul>
+<li>*<code>family</code>*：<ul>
+<li><code>PF_INET</code></li>
+<li><code>PF_INET6</code></li>
+<li><code>PF_LOCAL</code></li>
+</ul>
+</li>
+<li>*<code>type</code>*：<ul>
+<li><code>SOCK_STREAM</code> : 表示的是字节流，对应 <code>TCP</code>；</li>
+<li><code>SOCK_DGRAM</code> : 表示的是数据报，对应 <code>UDP</code>；</li>
+<li><code>SOCK_RAW</code> : 表示的是原始套接字。</li>
+<li>还可和 <code>SOCK_NOBLOCK</code> 和<code>SOCK_CLOEXEC</code> 进行组合使用。</li>
+</ul>
+</li>
+<li>*<code>protocol</code>*：<ul>
+<li><code>0</code>，原本是用来指定通信协议的，但现在基本废弃。因为协议已经通过前面两个参数指定完成。目前一般写成 <code>0</code> 即可。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>状态：  <ul>
+<li>创建 <code>sockfd</code> 以后，处于 <code>CLOSED</code> 状态。</li>
+</ul>
+</li>
+</ul>
+<h2 id="connect"><a href="#connect" class="headerlink" title="connect"></a><code>connect</code></h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/types.h&gt;</span>         </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">connect</span><span class="params">(<span class="type">int</span> sockfd, <span class="type">const</span> <span class="keyword">struct</span> sockaddr *addr, <span class="type">socklen_t</span> addrlen)</span>;</span><br></pre></td></tr></table></figure>
+<p>客户端调用函数。  </p>
+<ul>
+<li>返回值<ul>
+<li>成功返回 <code>0</code>，失败返回 <code>-1</code>。</li>
+<li>客户端调用 <code>connect</code> 函数，<strong>会激发<code>TCP</code>的三次握手过程</strong>，而且仅仅在连接成功或者失败才返回。<strong>客户端是在第二个分节返回，服务端是第三个分节返回</strong>。  </li>
+<li>*<code>ETIMEOUT</code>*：若客户端没有收到 <code>SYN</code> 分节响应，就会返回这个错误。</li>
+<li>*<code>ECONNREFUSED</code>*：若对客户端的 <code>SYN</code> 分节响应的是 <code>RST</code>，表示服务器主机在指定的端口上没有进程与之连接，客户端一接受到 <code>RST</code> 就返回 <code>ECONNREFUSED</code> 错误。</li>
+<li>不可达错误。</li>
+</ul>
+</li>
+<li>参数<ul>
+<li>*<code>sockfd</code>*：是<code>socket</code>函数返回值。</li>
+<li>*<code>sockaddr</code>*：是套接字的地址结构，<code>sockaddr_int/sockaddr_in6</code> 强制转换而来。</li>
+<li>*<code>addrlen</code>*：传入的地址结构大小。</li>
+</ul>
+</li>
+<li>状态：<br>  <code>connect</code> 会使得当前套接字从 <code>closed</code> 状态转移到 <code>SYN_SENT</code> 状态，如成功再转移到<code>ESTABLISHED</code> 状态，若失败则该套接字不可用，<strong>必须关闭</strong>。</li>
+</ul>
+<h2 id="bind"><a href="#bind" class="headerlink" title="bind"></a><code>bind</code></h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/types.h&gt;</span>         </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">bind</span><span class="params">(<span class="type">int</span> sockfd, <span class="type">const</span> <span class="keyword">struct</span> sockaddr *addr, <span class="type">socklen_t</span> addrlen)</span>;</span><br></pre></td></tr></table></figure>
+<p>服务器端调用函数。</p>
+<ul>
+<li>参数<ul>
+<li><code>addr</code><ul>
+<li>可以使用<code>通配地址</code> 对于 <code>IPv4</code> 的地址来说，使用 <code>INADDR_ANY</code> 来完成通配地址的设置；对于 <code>IPv6</code> 的地址来说，使用 <code>IN6ADDR_ANY</code> 来完成通配地址的设置</li>
+<li><code>0</code>, 系统随机分配</li>
+</ul>
+</li>
+<li><code>port</code><ul>
+<li>绑定端口，一般选择大于 <code>1024</code> 的端口。</li>
+<li><code>0</code>, 系统随机分配</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> <span class="title">name</span>;</span></span><br><span class="line">name.sin_addr.s_addr = htonl (INADDR_ANY); <span class="comment">/* IPV4 通配地址 */</span></span><br></pre></td></tr></table></figure>
+<h2 id="listen"><a href="#listen" class="headerlink" title="listen"></a><code>listen</code></h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/types.h&gt;</span>         </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">listen</span><span class="params">(<span class="type">int</span> sockfd, <span class="type">int</span> backlog)</span>;</span><br></pre></td></tr></table></figure>
+<p><code>listen</code> 函数由<strong>服务器端</strong>调用。</p>
+<p>初始化创建的套接字，可以认为是一个”主动”套接字，其目的是之后主动发起请求（通过调用 <code>connect</code> 函数）。通过 <code>listen</code> 函数，可以将原来的”主动”套接字转换为”被动”套接字，告诉操作系统内核：”我这个套接字是用来等待用户请求的。”, 操作系统内核会为此做好接收用户请求的一切准备，比如完成连接队列。</p>
+<ul>
+<li><p>返回值 </p>
+<ul>
+<li>失败时返回 <code>-1</code>，成功返回 <code>0</code>。</li>
+</ul>
+</li>
+<li><p>参数</p>
+<ul>
+<li><code>sockfd</code><ul>
+<li>初始化套接字</li>
+</ul>
+</li>
+<li><code>backlog</code><ul>
+<li><p>内核为相应套接字排队的最大连接个数，这个参数的大小决定了可以接收的并发数目。</p>
+</li>
+<li><p>内核为每个<strong>监听</strong>套接字维护两个队列：<br>  (1)半连接队列（<code>SYN</code> 队列）：接收到一个 <code>SYN</code> 建立连接请求，处于 <code>SYN_RCVD</code> 状态；<br><br>  (2)全连接队列（<code>Accept</code> 队列）：已完成 <code>TCP</code> 三次握手过程，处于 <code>ESTABLISHED</code> 状态； </p>
+<p>  在早期 <code>Linux</code> 内核 <code>backlog</code> 是 <code>SYN</code> 队列大小，也就是未完成的队列大小。在 <code>Linux</code> 内核 <code>2.2</code> 之后，<code>SYN</code> 队列由 <code>/proc/sys/net/ipv4/tcp_max_syn_backlog</code>指定； <code>backlog</code> 变成 <code>Accept</code> 队列，也就是已完成连接建立的队列长度，所以现在通常认为 <code>backlog</code> 是 <code>accept</code> 队列。但是上限值是内核参数 <code>somaxconn</code> 的大小，也就说 **<code>Accept</code> 队列长度 &#x3D; <code>min(backlog, somaxconn)</code>**。</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>状态转移</p>
+<ul>
+<li>当来自客户的 <code>SYN</code> 分节到达时，<code>TCP</code> 在未连接队列创建一个新项，然后响应以三次握手的第二个分节，这一项一直保留在未完成连接队列中，直到三次握手的第三个分节到达或者超时。如果到达，该项就从未完成连接队列中移到已完成连接队列的队尾。当调用 <code>accept</code> 时，已完成连接队列的队首将作为 <code>accept</code> 的返回值，如果已完成连接队列是空，那么调用 <code>accept</code> 函数的进程会进入睡眠状态。</li>
+</ul>
+</li>
+</ul>
+<h2 id="accept"><a href="#accept" class="headerlink" title="accept"></a><code>accept</code></h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/types.h&gt;</span>          <span class="comment">/* See NOTES */</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">accept</span><span class="params">(<span class="type">int</span> sockfd, <span class="keyword">struct</span> sockaddr *addr, <span class="type">socklen_t</span> *addrlen)</span>;</span><br></pre></td></tr></table></figure>
+<p>调用 <code>accept</code> 时，已完成连接队列的队首将作为 <code>accept</code> 的返回值，如果已完成连接队列是空，那么调用进程进入睡眠状态。成功返回客户端的已连接套接字<code>connfd</code>，失败返回 <code>-1</code>。</p>
+<p><code>accpet</code> 函数返回时，表示已连接套接字 <code>connfd</code> 和服务器端的监听套接字 <code>listenfd</code> 完成了三次握手。</p>
+<ul>
+<li><p><em><code>EMFILE</code></em><br>  如果函数<code>accept</code>返回<code>EMFILE</code>，即文件描述符过多，怎么处理？</p>
+<blockquote>
+<p>先实现准备一个空闲的文件描述符 *<code>/dev/null</code>*。遇到这种情况，先关闭这个空闲的文件描述符，就可以获得一个文件描述名额，然后再<code>accept</code>就可以拿到这个连接的<code>socket</code>文件描述符，随后立即<code>close</code>，就优雅的断开了与客户端的连接，最后重新打开空闲文件，以备这种情况再次出现。</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="close"><a href="#close" class="headerlink" title="close"></a><code>close</code></h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">close</span><span class="params">(<span class="type">int</span> fd)</span>;</span><br></pre></td></tr></table></figure>
+
+<p>这个函数表示的把该套接字标记为已关闭，然后立即返回到调用进程，该套接字描述符不能再被调用进程使用。  </p>
+<ul>
+<li>注意事项<ul>
+<li>由于描述符是引用计数，<code>close</code> 只是减少该引用计数，只有当该引用计数为 <code>0</code> 时才会引用终止序列。</li>
+<li>tcp会先将已经排队等待发送到对端的任何数据发送过去，然后再发送终止序列<code>FIN</code>。因此，调用 <code>close</code> 不是立即发送终止序列。</li>
+</ul>
+</li>
+</ul>
+<h2 id="shutdown"><a href="#shutdown" class="headerlink" title="shutdown"></a><code>shutdown</code></h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">shutdown</span><span class="params">(<span class="type">int</span> sockfd, <span class="type">int</span> how)</span>;</span><br></pre></td></tr></table></figure>
+
+<p><code>shutdown</code> 解决的是 <code>close</code> 的两个限制：</p>
+<ul>
+<li><p><code>close</code> 把描述符计数减一，仅仅在计数变为 <code>0</code> 时才关闭套接字。<code>shutdown</code> 可以不管描述符计数就激发 <code>TCP</code> 的正常连接终止序列。</p>
+</li>
+<li><p><code>close</code> 终止<strong>读和写</strong>两个方向的数据传递，<code>shutdown</code> 是半关闭，可以只是关闭一个方向数据流。</p>
+</li>
+<li><p>参数</p>
+<ul>
+<li><code>how</code>:<ul>
+<li><code>SHUT_RD</code>：关闭读</li>
+<li><code>SHUT_WR</code>：关闭写</li>
+<li><code>SHUT_RDWR</code>：关闭读写</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/tcp/" rel="tag"># tcp</a>
+              <a href="/tags/socket/" rel="tag"># socket</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/07/19/network/tcpdump-%E6%8A%93%E5%8C%85/" rel="prev" title="tcpdump 抓包">
+      <i class="fa fa-chevron-left"></i> tcpdump 抓包
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-socket%E5%9C%B0%E5%9D%80%E7%BB%93%E6%9E%84"><span class="nav-number">1.</span> <span class="nav-text">1. socket地址结构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#sockaddr-in"><span class="nav-number">1.1.</span> <span class="nav-text">sockaddr_in</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E7%94%A8%E5%9C%B0%E5%9D%80%E7%BB%93%E6%9E%84"><span class="nav-number">1.2.</span> <span class="nav-text">通用地址结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E5%AD%97%E8%8A%82%E5%BA%8F%E5%88%97%E5%92%8C%E4%B8%BB%E6%9C%BA%E5%AD%97%E8%8A%82%E5%BA%8F%E5%88%97%E8%BD%AC%E6%8D%A2"><span class="nav-number">1.3.</span> <span class="nav-text">网络字节序列和主机字节序列转换</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#sin-port-%E8%BD%AC%E6%8D%A2"><span class="nav-number">1.3.1.</span> <span class="nav-text">sin_port 转换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sin-addr-%E8%BD%AC%E6%8D%A2"><span class="nav-number">1.3.2.</span> <span class="nav-text">sin_addr 转换</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-socket-%E5%87%BD%E6%95%B0"><span class="nav-number">2.</span> <span class="nav-text">2. socket 函数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#socket"><span class="nav-number">2.1.</span> <span class="nav-text">socket</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#connect"><span class="nav-number">2.2.</span> <span class="nav-text">connect</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bind"><span class="nav-number">2.3.</span> <span class="nav-text">bind</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#listen"><span class="nav-number">2.4.</span> <span class="nav-text">listen</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#accept"><span class="nav-number">2.5.</span> <span class="nav-text">accept</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#close"><span class="nav-number">2.6.</span> <span class="nav-text">close</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#shutdown"><span class="nav-number">2.7.</span> <span class="nav-text">shutdown</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="yngty"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">yngty</p>
+  <div class="site-description" itemprop="description">预测未来的最好方式就是实现它</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yngty" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yngty" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yngty@foxmail.com" title="E-Mail → mailto:yngty@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yngty</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">20k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:14</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -6,7 +6,7 @@
   <link href="https://yngty.github.io/atom.xml" rel="self"/>
   
   <link href="https://yngty.github.io/"/>
-  <updated>2023-07-20T07:03:39.354Z</updated>
+  <updated>2023-07-24T06:27:52.308Z</updated>
   <id>https://yngty.github.io/</id>
   
   <author>
@@ -17,25 +17,82 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>socket 编程</title>
+    <link href="https://yngty.github.io/2023/07/24/network/socket-%E7%BC%96%E7%A8%8B/"/>
+    <id>https://yngty.github.io/2023/07/24/network/socket-%E7%BC%96%E7%A8%8B/</id>
+    <published>2023-07-24T10:38:44.000Z</published>
+    <updated>2023-07-24T06:27:52.308Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;1-socket地址结构&quot;&gt;&lt;a href=&quot;#1-socket地址结构&quot; class=&quot;headerlink&quot; title=&quot;1. socket地址结构&quot;&gt;&lt;/a&gt;1. socket地址结构&lt;/h1&gt;&lt;h2 id=&quot;sockaddr-in&quot;&gt;&lt;a href=&quot;#sockaddr-in&quot; class=&quot;headerlink&quot; title=&quot;sockaddr_in&quot;&gt;&lt;/a&gt;&lt;code&gt;sockaddr_in&lt;/code&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;ipv4&lt;/code&gt; 协议的地址结构是 &lt;code&gt;sockaddr_in&lt;/code&gt;，&lt;code&gt;ipv6&lt;/code&gt; 的地址结构是&lt;code&gt;sockaddr_in6&lt;/code&gt;。&lt;/p&gt;
+&lt;figure class=&quot;highlight c&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;include&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;&amp;lt;arpa/inet.h&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;//#include&amp;lt;netinet/in.h&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;sockaddr_in&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;class&quot;&gt;&amp;#123;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;type&quot;&gt;sa_family_t&lt;/span&gt;     sin_family;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;type&quot;&gt;in_port_t&lt;/span&gt;       sin_port;	    &lt;span class=&quot;comment&quot;&gt;/* Port number.  */&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;in_addr&lt;/span&gt;  &lt;span class=&quot;title&quot;&gt;sin_addr&lt;/span&gt;;&lt;/span&gt;		&lt;span class=&quot;comment&quot;&gt;/* Internet address.  */&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;comment&quot;&gt;/* Pad to size of `struct sockaddr&amp;#x27;.  */&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;type&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;type&quot;&gt;char&lt;/span&gt; sin_zero[&lt;span class=&quot;keyword&quot;&gt;sizeof&lt;/span&gt; (&lt;span class=&quot;keyword&quot;&gt;struct&lt;/span&gt; sockaddr) -&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            __SOCKADDR_COMMON_SIZE -&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            &lt;span class=&quot;keyword&quot;&gt;sizeof&lt;/span&gt; (&lt;span class=&quot;type&quot;&gt;in_port_t&lt;/span&gt;) -&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            &lt;span class=&quot;keyword&quot;&gt;sizeof&lt;/span&gt; (&lt;span class=&quot;keyword&quot;&gt;struct&lt;/span&gt; in_addr)];&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;sin_family&lt;/code&gt;：表示地址簇，&lt;code&gt;ipv4: AF_INET, ipv6: AF_INET6&lt;/code&gt;，&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sin_port&lt;/code&gt;：16位的端口号&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sin_addr&lt;/code&gt;：点分十进制。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;通用地址结构&quot;&gt;&lt;a href=&quot;#通用地址结构&quot; class=&quot;headerlink&quot; title=&quot;通用地址结构&quot;&gt;&lt;/a&gt;通用地址结构&lt;/h2&gt;&lt;p&gt;结构体是 &lt;code&gt;sockaddr&lt;/code&gt;，方便可以接受 &lt;code&gt;ipv4/ipv6&lt;/code&gt; 的地址结构。之所以采用 &lt;code&gt;sockaddr&lt;/code&gt;，而不采用 &lt;code&gt;void*&lt;/code&gt;  是因为 &lt;code&gt;BSD&lt;/code&gt; 设计套接字的时候大约是 &lt;code&gt;1982&lt;/code&gt; 年，那个时候的 &lt;code&gt;C&lt;/code&gt; 语言还没有&lt;code&gt;void *&lt;/code&gt; 的支持。&lt;/p&gt;
+&lt;figure class=&quot;highlight c&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;sockaddr&lt;/span&gt; &amp;#123;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;type&quot;&gt;sa_family_t&lt;/span&gt;  sa_family;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;type&quot;&gt;char&lt;/span&gt;         ss_data[&lt;span class=&quot;number&quot;&gt;14&lt;/span&gt;];&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;;  &lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
+    
+    
+    
+    <category term="Network" scheme="https://yngty.github.io/categories/Network/"/>
+    
+    
+    <category term="tcp" scheme="https://yngty.github.io/tags/tcp/"/>
+    
+    <category term="socket" scheme="https://yngty.github.io/tags/socket/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>tcpdump 抓包</title>
+    <link href="https://yngty.github.io/2023/07/19/network/tcpdump-%E6%8A%93%E5%8C%85/"/>
+    <id>https://yngty.github.io/2023/07/19/network/tcpdump-%E6%8A%93%E5%8C%85/</id>
+    <published>2023-07-19T13:49:02.000Z</published>
+    <updated>2023-07-24T06:27:52.308Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;&lt;code&gt;tcpdump&lt;/code&gt; 命令行抓包工具。&lt;/p&gt;
+&lt;figure class=&quot;highlight plaintext&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span</summary>
+        
+      
+    
+    
+    
+    <category term="Network" scheme="https://yngty.github.io/categories/Network/"/>
+    
+    
+    <category term="tools" scheme="https://yngty.github.io/tags/tools/"/>
+    
+    <category term="network" scheme="https://yngty.github.io/tags/network/"/>
+    
+  </entry>
+  
+  <entry>
     <title>http协议</title>
-    <link href="https://yngty.github.io/2023/07/17/http%E5%8D%8F%E8%AE%AE/"/>
-    <id>https://yngty.github.io/2023/07/17/http%E5%8D%8F%E8%AE%AE/</id>
+    <link href="https://yngty.github.io/2023/07/17/network/http%E5%8D%8F%E8%AE%AE/"/>
+    <id>https://yngty.github.io/2023/07/17/network/http%E5%8D%8F%E8%AE%AE/</id>
     <published>2023-07-17T11:42:24.000Z</published>
-    <updated>2023-07-20T07:03:39.354Z</updated>
+    <updated>2023-07-24T06:27:52.308Z</updated>
     
     
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;URI-的完整图解&quot;&gt;&lt;a href=&quot;#URI-的完整图解&quot; class=&quot;headerlink&quot; title=&quot;URI 的完整图解&quot;&gt;&lt;/a&gt;URI 的完整图解&lt;/h1&gt;&lt;figure class=&quot;highlight</summary>
-        
-      
+    <summary type="html">&lt;h1 id=&quot;HTTP-是什么？&quot;&gt;&lt;a href=&quot;#HTTP-是什么？&quot; class=&quot;headerlink&quot; title=&quot;HTTP 是什么？&quot;&gt;&lt;/a&gt;HTTP 是什么？&lt;/h1&gt;&lt;p&gt;&lt;code&gt;HTTP&lt;/code&gt; 是超文本传输协议，也就是 &lt;code&gt;HyperText Transfer Protocol&lt;/code&gt;。&lt;/p&gt;
+&lt;h1 id=&quot;URI-的完整图解&quot;&gt;&lt;a href=&quot;#URI-的完整图解&quot; class=&quot;headerlink&quot; title=&quot;URI 的完整图解&quot;&gt;&lt;/a&gt;URI 的完整图解&lt;/h1&gt;&lt;figure class=&quot;highlight plaintext&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;  foo://example.com:8042/over/there?name=ferret#nose&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &#92;_/   &#92;______________/&#92;_________/ &#92;_________/ &#92;__/&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;   |           |            |            |        |&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;scheme     authority       path        query   fragment&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;   |   _____________________|__&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  / &#92; /                        &#92;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  urn:example:animal:ferret:nose&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;h1 id=&quot;消息格式&quot;&gt;&lt;a href=&quot;#消息格式&quot; class=&quot;headerlink&quot; title=&quot;消息格式&quot;&gt;&lt;/a&gt;消息格式&lt;/h1&gt;&lt;figure class=&quot;highlight plaintext&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;start-line&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;*( header-field CRLF )&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;CRLF&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;[ message-body ]&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
     
     
     
+    <category term="Network" scheme="https://yngty.github.io/categories/Network/"/>
     
-    <category term="HTTP" scheme="https://yngty.github.io/tags/HTTP/"/>
+    
+    <category term="http" scheme="https://yngty.github.io/tags/http/"/>
     
   </entry>
   
@@ -44,7 +101,7 @@
     <link href="https://yngty.github.io/2023/04/10/c++/%E5%8F%AF%E5%8F%98%E5%8F%82%E6%95%B0%E6%A8%A1%E6%9D%BF/"/>
     <id>https://yngty.github.io/2023/04/10/c++/%E5%8F%AF%E5%8F%98%E5%8F%82%E6%95%B0%E6%A8%A1%E6%9D%BF/</id>
     <published>2023-04-10T10:21:36.000Z</published>
-    <updated>2023-07-20T07:03:39.354Z</updated>
+    <updated>2023-07-24T06:27:52.308Z</updated>
     
     
       
@@ -70,7 +127,7 @@
     <link href="https://yngty.github.io/2023/04/07/cmake/CMake-%E8%B8%A9%E5%9D%91%E8%AE%B0/"/>
     <id>https://yngty.github.io/2023/04/07/cmake/CMake-%E8%B8%A9%E5%9D%91%E8%AE%B0/</id>
     <published>2023-04-07T10:26:10.000Z</published>
-    <updated>2023-07-20T07:03:39.354Z</updated>
+    <updated>2023-07-24T06:27:52.308Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;install-CODE-和-execute-process-配合&quot;&gt;&lt;a href=&quot;#install-CODE-和-execute-process-配合&quot; class=&quot;headerlink&quot; title=&quot;install(CODE) 和 execute_process 配合&quot;&gt;&lt;/a&gt;&lt;code&gt;install(CODE)&lt;/code&gt; 和 &lt;code&gt;execute_process&lt;/code&gt; 配合&lt;/h1&gt;&lt;h2 id=&quot;确保-WORKING-DIRECTORY-存在&quot;&gt;&lt;a href=&quot;#确保-WORKING-DIRECTORY-存在&quot; class=&quot;headerlink&quot; title=&quot;确保 WORKING_DIRECTORY 存在&quot;&gt;&lt;/a&gt;确保 &lt;code&gt;WORKING_DIRECTORY&lt;/code&gt; 存在&lt;/h2&gt;&lt;p&gt;示例代码: &lt;/p&gt;
@@ -90,7 +147,7 @@
     <link href="https://yngty.github.io/2023/03/18/macos/%E5%AD%98%E5%82%A8%E5%92%8C%E5%8A%A0%E8%BD%BD%E6%8C%87%E4%BB%A4/"/>
     <id>https://yngty.github.io/2023/03/18/macos/%E5%AD%98%E5%82%A8%E5%92%8C%E5%8A%A0%E8%BD%BD%E6%8C%87%E4%BB%A4/</id>
     <published>2023-03-18T23:19:19.000Z</published>
-    <updated>2023-07-20T07:03:39.354Z</updated>
+    <updated>2023-07-24T06:27:52.308Z</updated>
     
     
       
@@ -115,7 +172,7 @@
     <link href="https://yngty.github.io/2023/03/18/macos/ARM64%E6%B1%87%E7%BC%96%E5%85%A5%E9%97%A8/"/>
     <id>https://yngty.github.io/2023/03/18/macos/ARM64%E6%B1%87%E7%BC%96%E5%85%A5%E9%97%A8/</id>
     <published>2023-03-18T15:02:42.000Z</published>
-    <updated>2023-07-20T07:03:39.354Z</updated>
+    <updated>2023-07-24T06:27:52.308Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;ARM-指令概要介绍&quot;&gt;&lt;a href=&quot;#ARM-指令概要介绍&quot; class=&quot;headerlink&quot; title=&quot;ARM 指令概要介绍&quot;&gt;&lt;/a&gt;&lt;code&gt;ARM&lt;/code&gt; 指令概要介绍&lt;/h1&gt;&lt;ul&gt;
@@ -185,7 +242,7 @@
     <link href="https://yngty.github.io/2023/03/11/c++/enable-shared-from-this%E7%9A%84%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/"/>
     <id>https://yngty.github.io/2023/03/11/c++/enable-shared-from-this%E7%9A%84%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/</id>
     <published>2023-03-11T10:09:57.000Z</published>
-    <updated>2023-07-20T07:03:39.354Z</updated>
+    <updated>2023-07-24T06:27:52.308Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;使用场景&quot;&gt;&lt;a href=&quot;#使用场景&quot; class=&quot;headerlink&quot; title=&quot;使用场景&quot;&gt;&lt;/a&gt;使用场景&lt;/h1&gt;&lt;p&gt;当我们在对象函数中需要返回或者使用自己的 &lt;code&gt;shared_ptr&lt;/code&gt; 指针时，该怎么办呢？常见的错误写法如下：用不安全的表达式试图获得 &lt;code&gt;this&lt;/code&gt; 的 &lt;code&gt;shared_ptr&lt;/code&gt; 对象, 但可能会导致 &lt;code&gt;this&lt;/code&gt; 被多个互不知晓的所有者析构.&lt;/p&gt;
@@ -211,7 +268,7 @@
     <link href="https://yngty.github.io/2023/03/10/effective-stl/effective-stl-21/"/>
     <id>https://yngty.github.io/2023/03/10/effective-stl/effective-stl-21/</id>
     <published>2023-03-10T21:05:20.000Z</published>
-    <updated>2023-07-20T07:03:39.354Z</updated>
+    <updated>2023-07-24T06:27:52.308Z</updated>
     
     
     <summary type="html">&lt;blockquote&gt;
@@ -248,7 +305,7 @@
     <link href="https://yngty.github.io/2023/03/10/macos/mach-o/"/>
     <id>https://yngty.github.io/2023/03/10/macos/mach-o/</id>
     <published>2023-03-10T11:14:12.000Z</published>
-    <updated>2023-07-20T07:03:39.354Z</updated>
+    <updated>2023-07-24T06:27:52.308Z</updated>
     
     
       
@@ -273,7 +330,7 @@
     <link href="https://yngty.github.io/2023/03/06/design/reactor-pattern/"/>
     <id>https://yngty.github.io/2023/03/06/design/reactor-pattern/</id>
     <published>2023-03-06T10:40:59.000Z</published>
-    <updated>2023-07-20T07:03:39.354Z</updated>
+    <updated>2023-07-24T06:27:52.308Z</updated>
     
     
       
@@ -298,7 +355,7 @@
     <link href="https://yngty.github.io/2023/02/16/effective-stl/effective-stl-9/"/>
     <id>https://yngty.github.io/2023/02/16/effective-stl/effective-stl-9/</id>
     <published>2023-02-16T15:11:25.000Z</published>
-    <updated>2023-07-20T07:03:39.354Z</updated>
+    <updated>2023-07-24T06:27:52.308Z</updated>
     
     
     <summary type="html">&lt;blockquote&gt;
@@ -334,7 +391,7 @@
     <link href="https://yngty.github.io/2023/02/16/macos/Disk-Arbitration/"/>
     <id>https://yngty.github.io/2023/02/16/macos/Disk-Arbitration/</id>
     <published>2023-02-16T13:38:07.000Z</published>
-    <updated>2023-07-20T07:03:39.354Z</updated>
+    <updated>2023-07-24T06:27:52.308Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;介绍&quot;&gt;&lt;a href=&quot;#介绍&quot; class=&quot;headerlink&quot; title=&quot;介绍&quot;&gt;&lt;/a&gt;介绍&lt;/h1&gt;&lt;p&gt;&lt;code&gt;Disk Arbitration framework&lt;/code&gt; 是一个基于 &lt;code&gt;Core Foundation&lt;/code&gt; 的低级框架。会在磁盘出现和消失时通知您的应用程序，并让您的应用程序影响该过程。借助 &lt;code&gt;Disk Arbitration&lt;/code&gt;，我们可以：&lt;/p&gt;
@@ -362,7 +419,7 @@
     <link href="https://yngty.github.io/2023/02/15/qt/Qt-%E4%B9%8B-%E7%84%A6%E7%82%B9%E5%A4%84%E7%90%86/"/>
     <id>https://yngty.github.io/2023/02/15/qt/Qt-%E4%B9%8B-%E7%84%A6%E7%82%B9%E5%A4%84%E7%90%86/</id>
     <published>2023-02-15T17:08:09.000Z</published>
-    <updated>2023-07-20T07:03:39.354Z</updated>
+    <updated>2023-07-24T06:27:52.308Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;焦点事件&quot;&gt;&lt;a href=&quot;#焦点事件&quot; class=&quot;headerlink&quot; title=&quot;焦点事件&quot;&gt;&lt;/a&gt;焦点事件&lt;/h1&gt;&lt;p&gt;当焦点从一个 &lt;code&gt;widget&lt;/code&gt; 移动到另一个 &lt;code&gt;widget&lt;/code&gt; 时，会触发 &lt;code&gt;QFocusEvent&lt;/code&gt; 事件，这个事件会被发送给原焦点窗口和当前焦点窗口，原焦点窗口执行 &lt;code&gt;focusOutEvent()&lt;/code&gt; ，新焦点窗口执行 &lt;code&gt;focusInEvent()&lt;/code&gt;。 相关函数如下：&lt;/p&gt;
@@ -386,7 +443,7 @@
     <link href="https://yngty.github.io/2023/02/07/c++/std-make-shared-vs-new/"/>
     <id>https://yngty.github.io/2023/02/07/c++/std-make-shared-vs-new/</id>
     <published>2023-02-07T10:30:24.000Z</published>
-    <updated>2023-07-20T07:03:39.354Z</updated>
+    <updated>2023-07-24T06:27:52.308Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;内存分配&quot;&gt;&lt;a href=&quot;#内存分配&quot; class=&quot;headerlink&quot; title=&quot;内存分配&quot;&gt;&lt;/a&gt;内存分配&lt;/h1&gt;&lt;p&gt;&lt;code&gt;std::make_shared&lt;/code&gt; 执行&lt;strong&gt;一次&lt;/strong&gt;堆分配，而调用&lt;code&gt;std::shared_ptr&lt;/code&gt; 构造函数执行&lt;strong&gt;两次&lt;/strong&gt;。&lt;/p&gt;
@@ -421,7 +478,7 @@
     <link href="https://yngty.github.io/2022/07/26/macos/%E5%9C%A8MacOS%E5%B9%B3%E5%8F%B0%E4%B8%8A%E7%AC%A6%E5%8F%B7%E5%8C%96%E5%B4%A9%E6%BA%83%E6%8A%A5%E5%91%8A/"/>
     <id>https://yngty.github.io/2022/07/26/macos/%E5%9C%A8MacOS%E5%B9%B3%E5%8F%B0%E4%B8%8A%E7%AC%A6%E5%8F%B7%E5%8C%96%E5%B4%A9%E6%BA%83%E6%8A%A5%E5%91%8A/</id>
     <published>2022-07-26T15:41:02.000Z</published>
-    <updated>2023-07-20T07:03:39.354Z</updated>
+    <updated>2023-07-24T06:27:52.308Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;dSYM&quot;&gt;&lt;a href=&quot;#dSYM&quot; class=&quot;headerlink&quot; title=&quot;.dSYM&quot;&gt;&lt;/a&gt;&lt;code&gt;.dSYM&lt;/code&gt;&lt;/h1&gt;&lt;p&gt;&lt;code&gt;.dSYM&lt;/code&gt; (&lt;code&gt;debugging SYMbols&lt;/code&gt;) 又称为调试符号表，是苹果为了方便调试和定位问题而使用的一种调试方案，本质上使用的是起源于贝尔实验室的 &lt;code&gt;DWARF&lt;/code&gt;（&lt;code&gt;Debugging With Attributed Record Formats&lt;/code&gt;），其在.xcarchive目录中的层次结构为：&lt;/p&gt;
@@ -443,7 +500,7 @@
     <link href="https://yngty.github.io/2022/04/19/linux/NO_PUBKEY/"/>
     <id>https://yngty.github.io/2022/04/19/linux/NO_PUBKEY/</id>
     <published>2022-04-19T22:41:41.000Z</published>
-    <updated>2023-07-20T07:03:39.354Z</updated>
+    <updated>2023-07-24T06:27:52.308Z</updated>
     
     
       
@@ -470,7 +527,7 @@
     <link href="https://yngty.github.io/2022/04/16/effecitve-cpp/effective-cpp-28/"/>
     <id>https://yngty.github.io/2022/04/16/effecitve-cpp/effective-cpp-28/</id>
     <published>2022-04-16T21:42:47.000Z</published>
-    <updated>2023-07-20T07:03:39.354Z</updated>
+    <updated>2023-07-24T06:27:52.308Z</updated>
     
     
     <summary type="html">&lt;blockquote&gt;
@@ -494,7 +551,7 @@
     <link href="https://yngty.github.io/2022/04/15/effecitve-cpp/effective-cpp-26/"/>
     <id>https://yngty.github.io/2022/04/15/effecitve-cpp/effective-cpp-26/</id>
     <published>2022-04-15T10:38:20.000Z</published>
-    <updated>2023-07-20T07:03:39.354Z</updated>
+    <updated>2023-07-24T06:27:52.308Z</updated>
     
     
     <summary type="html">&lt;blockquote&gt;
@@ -524,7 +581,7 @@
     <link href="https://yngty.github.io/2022/04/09/effecitve-cpp/effective-cpp-25/"/>
     <id>https://yngty.github.io/2022/04/09/effecitve-cpp/effective-cpp-25/</id>
     <published>2022-04-09T23:12:46.000Z</published>
-    <updated>2023-07-20T07:03:39.354Z</updated>
+    <updated>2023-07-24T06:27:52.308Z</updated>
     
     
     <summary type="html">&lt;blockquote&gt;
@@ -537,58 +594,6 @@
 &lt;/ul&gt;
 &lt;p&gt;&lt;code&gt;std&lt;/code&gt; 的缺省基本实现如下：&lt;/p&gt;
 &lt;figure class=&quot;highlight c++&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;namespace&lt;/span&gt; std &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;template&lt;/span&gt; &amp;lt;&lt;span class=&quot;keyword&quot;&gt;typename&lt;/span&gt; T&amp;gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;type&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;swap&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(T&amp;amp; a, T&amp;amp; b)&lt;/span&gt; &lt;/span&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;function&quot;&gt;T &lt;span class=&quot;title&quot;&gt;temp&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(a)&lt;/span&gt;&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        a = b;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        b = temp;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
-    
-    
-    
-    <category term="Effective-C++" scheme="https://yngty.github.io/categories/Effective-C/"/>
-    
-    
-    <category term="C++" scheme="https://yngty.github.io/tags/C/"/>
-    
-    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Effective C++ 24：若所有参数皆需类型转换，请采用非成员函数</title>
-    <link href="https://yngty.github.io/2022/04/09/effecitve-cpp/effective-cpp-24/"/>
-    <id>https://yngty.github.io/2022/04/09/effecitve-cpp/effective-cpp-24/</id>
-    <published>2022-04-09T22:39:25.000Z</published>
-    <updated>2023-07-20T07:03:39.354Z</updated>
-    
-    
-    <summary type="html">&lt;blockquote&gt;
-&lt;p&gt;Item 24: Declare non-member functions when type conversions should apply all parameters.&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;令 &lt;code&gt;classes&lt;/code&gt; 支持隐式转换通常是糟糕的设计，但也有例外，最常见的是在建立数值类型时。 比如设计一个有理数 &lt;code&gt;class&lt;/code&gt; 允许整数隐式转换。&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="Effective-C++" scheme="https://yngty.github.io/categories/Effective-C/"/>
-    
-    
-    <category term="C++" scheme="https://yngty.github.io/tags/C/"/>
-    
-    <category term="Effective-C++" scheme="https://yngty.github.io/tags/Effective-C/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Effective C++ 23：用非成员函数、非友元函数替换成员函数</title>
-    <link href="https://yngty.github.io/2022/04/09/effecitve-cpp/effective-cpp-23/"/>
-    <id>https://yngty.github.io/2022/04/09/effecitve-cpp/effective-cpp-23/</id>
-    <published>2022-04-09T22:30:35.000Z</published>
-    <updated>2023-07-20T07:03:39.354Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;blockquote&gt;
-&lt;p&gt;Item 23: Prefer non-member non-friend functions to member</summary>
-        
-      
     
     
     
