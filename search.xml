@@ -1852,6 +1852,43 @@
       </tags>
   </entry>
   <entry>
+    <title>如何正确使用TCP</title>
+    <url>/2023/07/24/network/%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E4%BD%BF%E7%94%A8TCP/</url>
+    <content><![CDATA[<h1 id="SO-REUSEADDR"><a href="#SO-REUSEADDR" class="headerlink" title="SO_REUSEADDR"></a>SO_REUSEADDR</h1><ul>
+<li><code>TCP</code> 服务器能够在杀掉或崩溃后快速重启</li>
+<li>也适用 <code>fork-per-connection</code> 服务器模型。</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> optval = <span class="number">1</span>;</span><br><span class="line"><span class="built_in">setsockopt</span>(sockfd, SOL_SOCKET, SO_REUSEADDR, &amp;optval, <span class="built_in">sizeof</span>(optval));</span><br></pre></td></tr></table></figure>
+<h1 id="忽略-SIGPIPE"><a href="#忽略-SIGPIPE" class="headerlink" title="忽略 SIGPIPE"></a>忽略 SIGPIPE</h1><p>程序向对方已经关闭的管道，写数据，会收到 <code>SIGPIPE</code> 信号。<code>write</code> 系统调用返回 <code>-1</code>收到 <code>errono EPIPE</code>。 <code>SIGPIPE</code> 信号默认行为终止进程。我们应该忽略 <code>SIGPIPE</code> 信号。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="built_in">signal</span>(SIGPIPE, SIG_IGN) == SIG_ERR) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+<h1 id="TCP-NODELAY"><a href="#TCP-NODELAY" class="headerlink" title="TCP_NODELAY"></a>TCP_NODELAY</h1><p><code>Nagle</code> 算法避免发送大量的小包，防止小包泛滥于网络，理想情况下，对于一个 <code>TCP</code> 连接而言，只允许一个未被 <code>ACK</code>的包存在于网络。</p>
+<p><code>Nagle</code> 算法规则: </p>
+<ul>
+<li>如果包长度达到 <code>MSS</code>，则允许发送</li>
+<li>如果包含 <code>FIN</code>，则允许发送</li>
+<li>如果设置了 <code>TCP_NODELAY</code>，则允许发送</li>
+<li>未设置 <code>TCP_CORK</code> 选项时，若所有发出去的小数据包（包长度小于<code>MSS</code>）均被确认，则允许发送</li>
+<li>上述条件都未满足，但发生了超时（一般为<code>200ms</code>），则立即发送。</li>
+</ul>
+<p>通过设置 <code>TCP_NODELAY</code> 禁用 <code>nagle</code> 算法。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> flag = <span class="number">1</span>;</span><br><span class="line"><span class="built_in">setsockopt</span>(sockfd, IPPROTO_TCP, TCP_NODELAY, (<span class="type">char</span>*)&amp;flag, <span class="built_in">sizeof</span>(<span class="type">int</span>));</span><br></pre></td></tr></table></figure>
+
+<h1 id="正确关闭-TCP-连接"><a href="#正确关闭-TCP-连接" class="headerlink" title="正确关闭 TCP 连接"></a>正确关闭 <code>TCP</code> 连接</h1><p>如果协议栈接受缓存区中有数据，程序还没有读，直接调用 <code>close</code> 函数，<code>TCP</code> 协议栈会发送 <code>RST</code> 包，强行断开连接，如果协议栈发送缓存区还有有数据，则对方没能收到，造成数据丢失。 对于无格式的协议正确的做法是：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">发送方: send() + shutdown(WR) + read()-&gt;0 + close()</span><br><span class="line">接收方: read()-&gt;0 + 没有数据发送 + close()</span><br></pre></td></tr></table></figure>
+
+<p>如果遇到恶意或者是有 <code>bug</code> 的 <code>client</code>，一直不 <code>close</code>，发送方一直阻塞在 <code>read</code> , 建议加一个超时机制退出程序，这是为了程序安全 <code>security</code>，不是为了数据安全 <code>safety</code> 完整性 <code>Integrity</code>。</p>
+<p>依赖 <code>shutdown write</code> 会发送 <code>FIN</code>，<code>end of file</code>，更好的办法是设计协议，把数据长度包含进来，接收方可以主动判断数据是否收全。</p>
+]]></content>
+      <categories>
+        <category>Network</category>
+      </categories>
+      <tags>
+        <tag>tcp</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Qt 之 焦点处理</title>
     <url>/2023/02/15/qt/Qt-%E4%B9%8B-%E7%84%A6%E7%82%B9%E5%A4%84%E7%90%86/</url>
     <content><![CDATA[<h1 id="焦点事件"><a href="#焦点事件" class="headerlink" title="焦点事件"></a>焦点事件</h1><p>当焦点从一个 <code>widget</code> 移动到另一个 <code>widget</code> 时，会触发 <code>QFocusEvent</code> 事件，这个事件会被发送给原焦点窗口和当前焦点窗口，原焦点窗口执行 <code>focusOutEvent()</code> ，新焦点窗口执行 <code>focusInEvent()</code>。 相关函数如下：</p>

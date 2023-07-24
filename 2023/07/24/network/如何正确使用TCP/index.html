@@ -20,21 +20,20 @@
     var CONFIG = {"hostname":"yngty.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Item 24: Declare non-member functions when type conversions should apply all parameters.  令 classes 支持隐式转换通常是糟糕的设计，但也有例外，最常见的是在建立数值类型时。 比如设计一个有理数 class 允许整数隐式转换。">
+  <meta name="description" content="SO_REUSEADDR TCP 服务器能够在杀掉或崩溃后快速重启 也适用 fork-per-connection 服务器模型。  12int optval &#x3D; 1;setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &amp;optval, sizeof(optval)); 忽略 SIGPIPE程序向对方已经关闭的管道，写数据，会收到 SIGPIPE 信号。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Effective C++ 24：若所有参数皆需类型转换，请采用非成员函数">
-<meta property="og:url" content="https://yngty.github.io/2022/04/09/effecitve-cpp/effective-cpp-24/index.html">
+<meta property="og:title" content="如何正确使用TCP">
+<meta property="og:url" content="https://yngty.github.io/2023/07/24/network/%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E4%BD%BF%E7%94%A8TCP/index.html">
 <meta property="og:site_name" content="Symbol Crash">
-<meta property="og:description" content="Item 24: Declare non-member functions when type conversions should apply all parameters.  令 classes 支持隐式转换通常是糟糕的设计，但也有例外，最常见的是在建立数值类型时。 比如设计一个有理数 class 允许整数隐式转换。">
+<meta property="og:description" content="SO_REUSEADDR TCP 服务器能够在杀掉或崩溃后快速重启 也适用 fork-per-connection 服务器模型。  12int optval &#x3D; 1;setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &amp;optval, sizeof(optval)); 忽略 SIGPIPE程序向对方已经关闭的管道，写数据，会收到 SIGPIPE 信号。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-04-09T22:39:25.000Z">
-<meta property="article:modified_time" content="2023-07-24T08:03:52.274Z">
+<meta property="article:published_time" content="2023-07-24T15:12:44.000Z">
+<meta property="article:modified_time" content="2023-07-24T08:03:52.278Z">
 <meta property="article:author" content="yngty">
-<meta property="article:tag" content="C++">
-<meta property="article:tag" content="Effective-C++">
+<meta property="article:tag" content="tcp">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://yngty.github.io/2022/04/09/effecitve-cpp/effective-cpp-24/">
+<link rel="canonical" href="https://yngty.github.io/2023/07/24/network/%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E4%BD%BF%E7%94%A8TCP/">
 
 
 <script id="page-configurations">
@@ -47,7 +46,7 @@
   };
 </script>
 
-  <title>Effective C++ 24：若所有参数皆需类型转换，请采用非成员函数 | Symbol Crash</title>
+  <title>如何正确使用TCP | Symbol Crash</title>
   
 
 
@@ -164,7 +163,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2022/04/09/effecitve-cpp/effective-cpp-24/">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2023/07/24/network/%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E4%BD%BF%E7%94%A8TCP/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -177,7 +176,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Effective C++ 24：若所有参数皆需类型转换，请采用非成员函数
+          如何正确使用TCP
         </h1>
 
         <div class="post-meta">
@@ -186,23 +185,17 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2022-04-09 22:39:25" itemprop="dateCreated datePublished" datetime="2022-04-09T22:39:25+00:00">2022-04-09</time>
+              <time title="创建时间：2023-07-24 15:12:44 / 修改时间：08:03:52" itemprop="dateCreated datePublished" datetime="2023-07-24T15:12:44+00:00">2023-07-24</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-07-24 08:03:52" itemprop="dateModified" datetime="2023-07-24T08:03:52+00:00">2023-07-24</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Effective-C/" itemprop="url" rel="index"><span itemprop="name">Effective-C++</span></a>
+                  <a href="/categories/Network/" itemprop="url" rel="index"><span itemprop="name">Network</span></a>
                 </span>
             </span>
 
@@ -212,14 +205,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>303</span>
+              <span>491</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
+              <span>2 分钟</span>
             </span>
 
         </div>
@@ -231,30 +224,32 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <blockquote>
-<p>Item 24: Declare non-member functions when type conversions should apply all parameters.</p>
-</blockquote>
-<p>令 <code>classes</code> 支持隐式转换通常是糟糕的设计，但也有例外，最常见的是在建立数值类型时。 比如设计一个有理数 <code>class</code> 允许整数隐式转换。</p>
+        <h1 id="SO-REUSEADDR"><a href="#SO-REUSEADDR" class="headerlink" title="SO_REUSEADDR"></a>SO_REUSEADDR</h1><ul>
+<li><code>TCP</code> 服务器能够在杀掉或崩溃后快速重启</li>
+<li>也适用 <code>fork-per-connection</code> 服务器模型。</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> optval = <span class="number">1</span>;</span><br><span class="line"><span class="built_in">setsockopt</span>(sockfd, SOL_SOCKET, SO_REUSEADDR, &amp;optval, <span class="built_in">sizeof</span>(optval));</span><br></pre></td></tr></table></figure>
+<h1 id="忽略-SIGPIPE"><a href="#忽略-SIGPIPE" class="headerlink" title="忽略 SIGPIPE"></a>忽略 SIGPIPE</h1><p>程序向对方已经关闭的管道，写数据，会收到 <code>SIGPIPE</code> 信号。<code>write</code> 系统调用返回 <code>-1</code>收到 <code>errono EPIPE</code>。 <code>SIGPIPE</code> 信号默认行为终止进程。我们应该忽略 <code>SIGPIPE</code> 信号。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="built_in">signal</span>(SIGPIPE, SIG_IGN) == SIG_ERR) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <span id="more"></span>
+<h1 id="TCP-NODELAY"><a href="#TCP-NODELAY" class="headerlink" title="TCP_NODELAY"></a>TCP_NODELAY</h1><p><code>Nagle</code> 算法避免发送大量的小包，防止小包泛滥于网络，理想情况下，对于一个 <code>TCP</code> 连接而言，只允许一个未被 <code>ACK</code>的包存在于网络。</p>
+<p><code>Nagle</code> 算法规则: </p>
+<ul>
+<li>如果包长度达到 <code>MSS</code>，则允许发送</li>
+<li>如果包含 <code>FIN</code>，则允许发送</li>
+<li>如果设置了 <code>TCP_NODELAY</code>，则允许发送</li>
+<li>未设置 <code>TCP_CORK</code> 选项时，若所有发出去的小数据包（包长度小于<code>MSS</code>）均被确认，则允许发送</li>
+<li>上述条件都未满足，但发生了超时（一般为<code>200ms</code>），则立即发送。</li>
+</ul>
+<p>通过设置 <code>TCP_NODELAY</code> 禁用 <code>nagle</code> 算法。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> flag = <span class="number">1</span>;</span><br><span class="line"><span class="built_in">setsockopt</span>(sockfd, IPPROTO_TCP, TCP_NODELAY, (<span class="type">char</span>*)&amp;flag, <span class="built_in">sizeof</span>(<span class="type">int</span>));</span><br></pre></td></tr></table></figure>
 
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Rational</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">Rational</span>(<span class="type">int</span> numerator = <span class="number">0</span>, <span class="type">int</span> denominator = <span class="number">1</span>); <span class="comment">//构造函数刻意不使用 explicit; 允许 int-to-Rational 隐式转换。</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">numerator</span><span class="params">()</span> <span class="type">const</span></span>;</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">denominator</span><span class="params">()</span> <span class="type">const</span></span>;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h1 id="正确关闭-TCP-连接"><a href="#正确关闭-TCP-连接" class="headerlink" title="正确关闭 TCP 连接"></a>正确关闭 <code>TCP</code> 连接</h1><p>如果协议栈接受缓存区中有数据，程序还没有读，直接调用 <code>close</code> 函数，<code>TCP</code> 协议栈会发送 <code>RST</code> 包，强行断开连接，如果协议栈发送缓存区还有有数据，则对方没能收到，造成数据丢失。 对于无格式的协议正确的做法是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">发送方: send() + shutdown(WR) + read()-&gt;0 + close()</span><br><span class="line">接收方: read()-&gt;0 + 没有数据发送 + close()</span><br></pre></td></tr></table></figure>
 
-<p>这时我们想设计一个乘法，该使用 <code>member</code> 函数，还是 <code>non-member</code> 函数， 还是 <code>non-member-friend</code> 函数？</p>
-<p>我们先采用 <code>member</code> 函数看有什么问题？</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Rational</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    <span class="type">const</span> Rational <span class="keyword">operator</span>* (<span class="type">const</span> Rational&amp; rhs) <span class="type">const</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>我们使用如下没有什么问题：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Rational <span class="title">oneEighth</span><span class="params">(<span class="number">1</span>, <span class="number">8</span>)</span></span>;</span><br><span class="line"><span class="function">Rational <span class="title">oneHalf</span><span class="params">(<span class="number">1</span>, <span class="number">2</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">Rational result = oneEighth * oneHalf; <span class="comment">//ok</span></span><br><span class="line">result = result * oneEighth;  <span class="comment">// ok</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>但当我们想支持混合运算，那 <code>Rational</code> 和 <code>ints</code> 相乘, 就只有一半行的通。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">result = oneHalf * <span class="number">2</span>; <span class="comment">//ok  隐式转换</span></span><br><span class="line">result = <span class="number">2</span> * oneHalf;  <span class="comment">// no</span></span><br></pre></td></tr></table></figure>
-
-<p>当我们设计成 <code>non-member</code> 函数就都支持：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Rational</span> &#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">const</span> Rational <span class="keyword">operator</span>* (<span class="type">const</span> Rational&amp; lhs, <span class="type">const</span> Rational&amp; rhs) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Rational</span>(lhs.<span class="built_in">numerator</span>() * rhs.<span class="built_in">numerator</span>(), lhs.<span class="built_in">denominator</span>(), rhs.<span class="built_in">denominator</span>());</span><br><span class="line">&#125;</span><br><span class="line">    </span><br></pre></td></tr></table></figure>
-
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Rational <span class="title">oneFourth</span><span class="params">(<span class="number">1</span>, <span class="number">4</span>)</span></span>;</span><br><span class="line">Rational result;</span><br><span class="line">result = oneFourth * <span class="number">2</span>;  <span class="comment">// ok</span></span><br><span class="line">result = <span class="number">2</span> * oneFourth;  <span class="comment">// ok </span></span><br></pre></td></tr></table></figure>
-
-<p><strong>如果需要为某个函数的所有参数进行类型转换，那这个函数必须是 <code>non-member</code></strong></p>
+<p>如果遇到恶意或者是有 <code>bug</code> 的 <code>client</code>，一直不 <code>close</code>，发送方一直阻塞在 <code>read</code> , 建议加一个超时机制退出程序，这是为了程序安全 <code>security</code>，不是为了数据安全 <code>safety</code> 完整性 <code>Integrity</code>。</p>
+<p>依赖 <code>shutdown write</code> 会发送 <code>FIN</code>，<code>end of file</code>，更好的办法是设计协议，把数据长度包含进来，接收方可以主动判断数据是否收全。</p>
 
     </div>
 
@@ -264,8 +259,7 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/C/" rel="tag"># C++</a>
-              <a href="/tags/Effective-C/" rel="tag"># Effective-C++</a>
+              <a href="/tags/tcp/" rel="tag"># tcp</a>
           </div>
 
         
@@ -274,13 +268,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2022/04/09/effecitve-cpp/effective-cpp-23/" rel="prev" title="Effective C++ 23：用非成员函数、非友元函数替换成员函数">
-      <i class="fa fa-chevron-left"></i> Effective C++ 23：用非成员函数、非友元函数替换成员函数
+    <a href="/2023/07/24/network/socket-%E7%BC%96%E7%A8%8B/" rel="prev" title="socket 编程">
+      <i class="fa fa-chevron-left"></i> socket 编程
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2022/04/09/effecitve-cpp/effective-cpp-25/" rel="next" title="Effective C++ 25：设计一个不抛异常的 swap 函数">
-      Effective C++ 25：设计一个不抛异常的 swap 函数 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -339,6 +330,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#SO-REUSEADDR"><span class="nav-number">1.</span> <span class="nav-text">SO_REUSEADDR</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BF%BD%E7%95%A5-SIGPIPE"><span class="nav-number">2.</span> <span class="nav-text">忽略 SIGPIPE</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#TCP-NODELAY"><span class="nav-number">3.</span> <span class="nav-text">TCP_NODELAY</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%AD%A3%E7%A1%AE%E5%85%B3%E9%97%AD-TCP-%E8%BF%9E%E6%8E%A5"><span class="nav-number">4.</span> <span class="nav-text">正确关闭 TCP 连接</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
