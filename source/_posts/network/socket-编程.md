@@ -105,16 +105,16 @@ int socket(int family, int type, int protocol);
 - 返回值 
     - 失败时返回 `-1`，成功是返回一个**非零整数值**，表示套接字描述符，`sockfd`。
 - 参数
-    - *`family`*：
+    - `family`：
         - `PF_INET`
         - `PF_INET6`
         - `PF_LOCAL`
-    - *`type`*：
+    - `type`：
         - `SOCK_STREAM` : 表示的是字节流，对应 `TCP`；
         - `SOCK_DGRAM` : 表示的是数据报，对应 `UDP`；
         - `SOCK_RAW` : 表示的是原始套接字。
         - 还可和 `SOCK_NOBLOCK` 和`SOCK_CLOEXEC` 进行组合使用。
-    - *`protocol`*：
+    - `protocol`：
         - `0`，原本是用来指定通信协议的，但现在基本废弃。因为协议已经通过前面两个参数指定完成。目前一般写成 `0` 即可。
 - 状态：  
     - 创建 `sockfd` 以后，处于 `CLOSED` 状态。
@@ -135,9 +135,9 @@ int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
     - *`ECONNREFUSED`*：若对客户端的 `SYN` 分节响应的是 `RST`，表示服务器主机在指定的端口上没有进程与之连接，客户端一接受到 `RST` 就返回 `ECONNREFUSED` 错误。
     - 不可达错误。
 - 参数
-    - *`sockfd`*：是`socket`函数返回值。
-    - *`sockaddr`*：是套接字的地址结构，`sockaddr_int/sockaddr_in6` 强制转换而来。
-    - *`addrlen`*：传入的地址结构大小。  
+    - `sockfd`：是`socket`函数返回值。
+    - `sockaddr`：是套接字的地址结构，`sockaddr_int/sockaddr_in6` 强制转换而来。
+    - `addrlen`：传入的地址结构大小。  
 - 状态：  
     `connect` 会使得当前套接字从 `closed` 状态转移到 `SYN_SENT` 状态，如成功再转移到`ESTABLISHED` 状态，若失败则该套接字不可用，**必须关闭**。
 
@@ -184,10 +184,10 @@ int listen(int sockfd, int backlog);
     - `backlog`
         - 内核为相应套接字排队的最大连接个数，这个参数的大小决定了可以接收的并发数目。
         - 内核为每个**监听**套接字维护两个队列：  
-            (1)半连接队列（`SYN` 队列）：接收到一个 `SYN` 建立连接请求，处于 `SYN_RCVD` 状态；<br>
-            (2)全连接队列（`Accept` 队列）：已完成 `TCP` 三次握手过程，处于 `ESTABLISHED` 状态； 
+            (1) 半连接队列（ `SYN` 队列）：接收到一个 `SYN` 建立连接请求，处于 `SYN_RCVD` 状态；<br>
+            (2) 全连接队列（ `Accept` 队列）：已完成 `TCP` 三次握手过程，处于 `ESTABLISHED` 状态； 
             
-            在早期 `Linux` 内核 `backlog` 是 `SYN` 队列大小，也就是未完成的队列大小。在 `Linux` 内核 `2.2` 之后，`SYN` 队列由 `/proc/sys/net/ipv4/tcp_max_syn_backlog`指定； `backlog` 变成 `Accept` 队列，也就是已完成连接建立的队列长度，所以现在通常认为 `backlog` 是 `accept` 队列。但是上限值是内核参数 `somaxconn` 的大小，也就说 **`Accept` 队列长度 = `min(backlog, somaxconn)`**。
+            在早期 `Linux` 内核 `backlog` 是 `SYN` 队列大小，也就是未完成的队列大小。在 `Linux` 内核 `2.2` 之后，`SYN` 队列由 `/proc/sys/net/ipv4/tcp_max_syn_backlog`指定； `backlog` 变成 `Accept` 队列，也就是已完成连接建立的队列长度，所以现在通常认为 `backlog` 是 `accept` 队列。但是上限值是内核参数 `somaxconn` 的大小，也就说 ** `Accept` 队列长度 = `min(backlog, somaxconn)`**。
 
 
 - 状态转移
