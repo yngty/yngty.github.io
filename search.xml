@@ -1626,6 +1626,7 @@
 </ul>
 </li>
 </ul>
+<span id="more"></span>
 <h2 id="操作描述集合"><a href="#操作描述集合" class="headerlink" title="操作描述集合"></a>操作描述集合</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">FD_ZERO</span><span class="params">(fd_set *fdset)</span>;　　　　　　</span><br><span class="line"><span class="type">void</span> <span class="title function_">FD_SET</span><span class="params">(<span class="type">int</span> fd, fd_set *fdset)</span>;　　</span><br><span class="line"><span class="type">void</span> <span class="title function_">FD_CLR</span><span class="params">(<span class="type">int</span> fd, fd_set *fdset)</span>;　　　</span><br><span class="line"><span class="type">int</span>  <span class="title function_">FD_ISSET</span><span class="params">(<span class="type">int</span> fd, fd_set *fdset)</span>;</span><br></pre></td></tr></table></figure>
 <ul>
 <li><code>FD_ZERO</code> 清空描述符集合；</li>
