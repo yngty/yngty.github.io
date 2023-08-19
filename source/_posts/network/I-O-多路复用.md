@@ -29,6 +29,7 @@ int select(int nfds, fd_set *restrict readfds, fd_set *restrict writefds, fd_set
     - `errorfds`：异常描述符集合
     - `timeout`: 超时设置
 
+<!--more-->
 ## 操作描述集合
 
 ```c
