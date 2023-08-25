@@ -1519,6 +1519,67 @@
       </tags>
   </entry>
   <entry>
+    <title>@executable path, @load path 和 @rpath</title>
+    <url>/2023/08/25/macos/executable-path-load-path-%E5%92%8C-rpath/</url>
+    <content><![CDATA[<p>在 <code>macOS</code> 上，动态链接器使用特定的路径变量来解析运行时的库位置。这些路径变量包括：绝对路径、 <code>@executable_path</code>、<code>@loader_path</code> 和 <code>@rpath</code>。</p>
+<h1 id="绝对路径"><a href="#绝对路径" class="headerlink" title="绝对路径"></a>绝对路径</h1><p>对于安装在系统中共享位置的框架很有用，一般是 <code>/Library/Frameworks/xxx</code>、 <code>/usr/lib/xxx</code>, 但是查找嵌入在应用内部的动态库就很难使用，应用安装的位置都不固定，所以引出新的方式。</p>
+<h1 id="executable-path"><a href="#executable-path" class="headerlink" title="@executable path"></a>@executable path</h1><p><code>@executable_path</code> 是用于指代<strong>当前正在执行的程序或应用的路径</strong>。当你的应用程序或其动态库需要引用位于与可执行文件相同路径（或其子目录）下的其他动态库时，这会非常有用。</p>
+<span id="more"></span>
+<p>举例说明: </p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">MyApp/</span><br><span class="line">|-- MyApp.app/</span><br><span class="line">    |-- Contents/</span><br><span class="line">        |-- MacOS/</span><br><span class="line">            |-- MyApp (可执行文件)</span><br><span class="line">            |-- libA.dylib (动态库A)</span><br><span class="line">        |-- Frameworks/</span><br><span class="line">            |-- libB.dylib (动态库B)</span><br></pre></td></tr></table></figure>
+
+<p>假设 <code>MyApp</code> 依赖于 <code>libA.dylib</code>，而 <code>libA.dylib</code> 依赖于 <code>libB.dylib</code>。</p>
+<p>如果你希望 <code>libA.dylib</code> 在运行时找到 <code>libB.dylib</code>，可以设置 <code>libB.dylib</code> 的安装名称为 <code>@executable_path/../Frameworks/libB.dylib</code>。当 <code>MyApp</code> 启动并加载 <code>libA.dylib</code> 时，<code>@executable_path</code> 将解析为 <code>MyApp.app/Contents/MacOS/</code>，因此 <code>libA.dylib</code> 会正确地找到 <code>libB.dylib</code> 在 <code>MyApp.app/Contents/Frameworks/</code> 目录下。</p>
+<h1 id="load-path"><a href="#load-path" class="headerlink" title="@load path"></a>@load path</h1><p><strong>加载的动态库的路径</strong>。在很多情况下，这个路径是基于正在加载该库的模块，因此它可能会随着加载该库的不同模块而变化。</p>
+<p>举例说明:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">MyApp/</span><br><span class="line">|-- MyApp.app/</span><br><span class="line">    |-- Contents/</span><br><span class="line">        |-- MacOS/</span><br><span class="line">            |-- MyApp (主应用程序)</span><br><span class="line">            |-- libMain.dylib (主应用的动态库)</span><br><span class="line">        |-- Plugins/</span><br><span class="line">            |-- PluginA.bundle/</span><br><span class="line">                |-- PluginA (插件)</span><br><span class="line">                |-- libPluginA.dylib (插件的动态库)</span><br></pre></td></tr></table></figure>
+<p>在这个例子中，<code>MyApp</code> 依赖 <code>libMain.dylib</code>，而 <code>PluginA</code> 依赖 <code>libPluginA.dylib</code>。</p>
+<ul>
+<li><p>使用 <code>@executable_path</code>：</p>
+<p>如果 <code>libMain.dylib</code> 需要引用与其位于同一目录下的另一个库，如 <code>libHelper.dylib</code>，它可以使用 <code>@executable_path/libHelper.dylib</code> 作为路径。但是，这对 <code>PluginA</code> 中的库不起作用，因为 <code>@executable_path</code> 总是指向 <code>MyApp.app/Contents/MacOS/</code>，不考虑加载它的实际模块。</p>
+</li>
+<li><p>使用 <code>@loader_path</code>：</p>
+<p>如果 <code>libPluginA.dylib</code> 需要引用与其位于同一目录下的另一个库，如 <code>libHelper.dylib</code>，它可以使用 <code>@loader_path/libHelper.dylib</code> 作为路径。这样，不管 <code>libPluginA.dylib</code> 被哪个模块加载，它都会正确地引用到相对于加载它的模块的库。</p>
+</li>
+</ul>
+<p><strong>如果是一个应用程序，那么 <code>@load path</code> 与 <code>@executable_path</code> 相同。</strong></p>
+<h1 id="rpath"><a href="#rpath" class="headerlink" title="@rpath"></a>@rpath</h1><p><code>@rpath (Runtime Search Path)</code> 提供了一种动态方式来指定和查找动态库。它的主要优势是提供了更多的灵活性，尤其是在面对多种可能的库位置或多个版本的库时。</p>
+<p>举例说明:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">MyApp/</span><br><span class="line">|-- MyApp.app/</span><br><span class="line">    |-- Contents/</span><br><span class="line">        |-- MacOS/</span><br><span class="line">            |-- MyApp (可执行文件)</span><br><span class="line">        |-- Frameworks/</span><br><span class="line">            |-- libA.dylib (动态库A版本1)</span><br><span class="line">        |-- Plugins/</span><br><span class="line">            |-- PluginA/</span><br><span class="line">                |-- libA.dylib (动态库A版本2)</span><br></pre></td></tr></table></figure>
+
+<p>假设 <code>MyApp</code> 可能需要加载两个版本中的任何一个 <code>libA.dylib</code>，具体取决于特定的运行时情境。使用<code> @rpath</code> 可以轻松管理这种情况。</p>
+<ul>
+<li><p>设置 <code>@rpath</code>:</p>
+<p>  在构建 <code>MyApp</code> 时，你可以设置多个运行时搜索路径（<code>rpaths</code>）:</p>
+<ul>
+<li><code>@executable_path/../Frameworks</code></li>
+<li><code>@executable_path/../Plugins/PluginA</code></li>
+</ul>
+</li>
+<li><p>使用 <code>@rpath</code> 在动态库中:</p>
+<p>  设 <code>libA.dylib</code> 的安装名称为 <code>@rpath/libA.dylib</code>。</p>
+</li>
+<li><p>运行时解析:</p>
+<p>  当 <code>MyApp</code> 需要加载 <code>libA.dylib</code> 时，它会沿着 <code>rpath</code> 列表搜索。首先在 <code>Frameworks</code> 文件夹中查找，然后在 <code>PluginA</code> 文件夹中查找。</p>
+</li>
+</ul>
+<p>这种方法的好处是，你可以轻松地将相同的库放在多个位置，而不需要为每个位置硬编码路径。此外，应用程序的用户或开发人员可以通过修改 <code>rpath</code> 来改变库的搜索顺序或位置。</p>
+<h1 id="install-name-tool"><a href="#install-name-tool" class="headerlink" title="install_name_tool"></a><code>install_name_tool</code></h1><p>要查看或修改一个可执行文件或动态库的 <code>rpath</code>，你可以使用 <code>otool</code> 和 <code>install_name_tool</code> 这两个命令行工具。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ otool -l WeChat</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">Load command 104</span><br><span class="line">          cmd LC_LOAD_DYLIB</span><br><span class="line">      cmdsize 64</span><br><span class="line">         name /usr/lib/swift/libswiftsimd.dylib (offset 24)</span><br><span class="line">   time stamp 2 Thu Jan  1 08:00:02 1970</span><br><span class="line">      current version 9.0.0</span><br><span class="line">compatibility version 1.0.0</span><br><span class="line">Load command 105</span><br><span class="line">          cmd LC_LOAD_DYLIB</span><br><span class="line">      cmdsize 64</span><br><span class="line">         name /usr/lib/swift/libswiftFoundation.dylib (offset 24)</span><br><span class="line">   time stamp 2 Thu Jan  1 08:00:02 1970</span><br><span class="line">      current version 1.0.0</span><br><span class="line">compatibility version 1.0.0</span><br><span class="line">Load command 106</span><br><span class="line">          cmd LC_RPATH</span><br><span class="line">      cmdsize 32</span><br><span class="line">         path /usr/lib/swift (offset 12)</span><br><span class="line">Load command 107</span><br><span class="line">          cmd LC_RPATH</span><br><span class="line">      cmdsize 48</span><br><span class="line">         path @executable_path/../Frameworks (offset 12)</span><br><span class="line">...</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>添加 <code>rpath</code>:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">install_name_tool -add_rpath @executable_path/. a.out</span><br></pre></td></tr></table></figure>
+
+<p>修改 <code>rpath</code>:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">install_name_tool -change libFoo @rpath/libFoo a.out</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>MacOS</category>
+      </categories>
+      <tags>
+        <tag>DYLD</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Mach-O 相关记录</title>
     <url>/2023/03/10/macos/mach-o/</url>
     <content><![CDATA[<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><h1 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h1>]]></content>

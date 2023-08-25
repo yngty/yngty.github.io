@@ -119,7 +119,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">51</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">52</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
@@ -129,7 +129,7 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">25</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">26</span></a>
 
   </li>
   </ul>
@@ -155,6 +155,105 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2021/11/02/effecitve-cpp/effective-cpp-12/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Symbol Crash">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/11/02/effecitve-cpp/effective-cpp-12/" class="post-title-link" itemprop="url">Effective C++ 12：复制对象时勿忘其每一个成分</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-11-02 17:36:33" itemprop="dateCreated datePublished" datetime="2021-11-02T17:36:33+00:00">2021-11-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-08-25 04:05:28" itemprop="dateModified" datetime="2023-08-25T04:05:28+00:00">2023-08-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Effective-C/" itemprop="url" rel="index"><span itemprop="name">Effective-C++</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>192</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <blockquote>
+<p>Item 12: Copy all parts of an object</p>
+</blockquote>
+<p>正确拷贝函数实现：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Customer</span>&#123;</span><br><span class="line">  string name;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="built_in">Customer</span>(<span class="type">const</span> Customer&amp; rhs): <span class="built_in">name</span>(rhs.name)&#123;&#125;</span><br><span class="line">  Customer&amp; <span class="keyword">operator</span>=(<span class="type">const</span> Customer&amp; rhs)&#123;</span><br><span class="line">    name = rhs.name;                     <span class="comment">// copy rhs&#x27;s data</span></span><br><span class="line">    <span class="keyword">return</span> *<span class="keyword">this</span>;                        <span class="comment">// see Item 10</span></span><br><span class="line">  &#125;  </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="情形一：-新添加了一个数据成员，忘记了更新拷贝函数"><a href="#情形一：-新添加了一个数据成员，忘记了更新拷贝函数" class="headerlink" title="情形一： 新添加了一个数据成员，忘记了更新拷贝函数"></a>情形一： 新添加了一个数据成员，忘记了更新拷贝函数</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Customer</span>&#123;</span><br><span class="line">  string name;</span><br><span class="line">  Date lastTransaction;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="built_in">Customer</span>(<span class="type">const</span> Customer&amp; rhs): <span class="built_in">name</span>(rhs.name)&#123;&#125;</span><br><span class="line">  Customer&amp; <span class="keyword">operator</span>=(<span class="type">const</span> Customer&amp; rhs)&#123;</span><br><span class="line">    name = rhs.name;                     <span class="comment">// copy rhs&#x27;s data</span></span><br><span class="line">    <span class="keyword">return</span> *<span class="keyword">this</span>;                        <span class="comment">// see Item 10</span></span><br><span class="line">  &#125;  </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>这时 <code>lastTransaction</code> 便被你忽略了，编译器也不会给出任何警告（即使在最高警告级别）</p>
+<h3 id="情形二：-继承父类忘记了拷贝父类的部分"><a href="#情形二：-继承父类忘记了拷贝父类的部分" class="headerlink" title="情形二： 继承父类忘记了拷贝父类的部分"></a>情形二： 继承父类忘记了拷贝父类的部分</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">PriorityCustomer</span>: <span class="keyword">public</span> Customer &#123;</span><br><span class="line">    <span class="type">int</span> priority;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="built_in">PriorityCustomer</span>(<span class="type">const</span> PriorityCustomer&amp; rhs)</span><br><span class="line">  : <span class="built_in">priority</span>(rhs.priority)&#123;&#125;</span><br><span class="line">  </span><br><span class="line">  PriorityCustomer&amp; </span><br><span class="line">  <span class="keyword">operator</span>=(<span class="type">const</span> PriorityCustomer&amp; rhs)&#123;</span><br><span class="line">    priority = rhs.priority;</span><br><span class="line">  &#125;  </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>正确写法:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">PriorityCustomer</span>: <span class="keyword">public</span> Customer &#123;</span><br><span class="line">    <span class="type">int</span> priority;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="built_in">PriorityCustomer</span>(<span class="type">const</span> PriorityCustomer&amp; rhs)</span><br><span class="line">  : <span class="built_in">Customer</span>(rhs), <span class="built_in">priority</span>(rhs.priority)&#123;&#125;</span><br><span class="line">  </span><br><span class="line">  PriorityCustomer&amp; </span><br><span class="line">  <span class="keyword">operator</span>=(<span class="type">const</span> PriorityCustomer&amp; rhs)&#123;</span><br><span class="line">    Customer::<span class="keyword">operator</span>=(rhs);</span><br><span class="line">    priority = rhs.priority;</span><br><span class="line">  &#125;  </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -190,7 +289,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-08-25 03:02:59" itemprop="dateModified" datetime="2023-08-25T03:02:59+00:00">2023-08-25</time>
+                <time title="修改时间：2023-08-25 04:05:28" itemprop="dateModified" datetime="2023-08-25T04:05:28+00:00">2023-08-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -296,7 +395,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-08-25 03:02:59" itemprop="dateModified" datetime="2023-08-25T03:02:59+00:00">2023-08-25</time>
+                <time title="修改时间：2023-08-25 04:05:28" itemprop="dateModified" datetime="2023-08-25T04:05:28+00:00">2023-08-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -394,7 +493,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-08-25 03:02:59" itemprop="dateModified" datetime="2023-08-25T03:02:59+00:00">2023-08-25</time>
+                <time title="修改时间：2023-08-25 04:05:28" itemprop="dateModified" datetime="2023-08-25T04:05:28+00:00">2023-08-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -495,7 +594,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-08-25 03:02:59" itemprop="dateModified" datetime="2023-08-25T03:02:59+00:00">2023-08-25</time>
+                <time title="修改时间：2023-08-25 04:05:28" itemprop="dateModified" datetime="2023-08-25T04:05:28+00:00">2023-08-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -609,7 +708,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-08-25 03:02:59" itemprop="dateModified" datetime="2023-08-25T03:02:59+00:00">2023-08-25</time>
+                <time title="修改时间：2023-08-25 04:05:28" itemprop="dateModified" datetime="2023-08-25T04:05:28+00:00">2023-08-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -706,7 +805,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-08-25 03:02:59" itemprop="dateModified" datetime="2023-08-25T03:02:59+00:00">2023-08-25</time>
+                <time title="修改时间：2023-08-25 04:05:28" itemprop="dateModified" datetime="2023-08-25T04:05:28+00:00">2023-08-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -803,7 +902,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-08-25 03:02:59" itemprop="dateModified" datetime="2023-08-25T03:02:59+00:00">2023-08-25</time>
+                <time title="修改时间：2023-08-25 04:05:28" itemprop="dateModified" datetime="2023-08-25T04:05:28+00:00">2023-08-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -900,7 +999,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-08-25 03:02:59" itemprop="dateModified" datetime="2023-08-25T03:02:59+00:00">2023-08-25</time>
+                <time title="修改时间：2023-08-25 04:05:28" itemprop="dateModified" datetime="2023-08-25T04:05:28+00:00">2023-08-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1010,7 +1109,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-08-25 03:02:59" itemprop="dateModified" datetime="2023-08-25T03:02:59+00:00">2023-08-25</time>
+                <time title="修改时间：2023-08-25 04:05:28" itemprop="dateModified" datetime="2023-08-25T04:05:28+00:00">2023-08-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1081,119 +1180,6 @@
 <li>调用 <code>operator[](std::size_t) const</code>，得到的返回值类型为 <code>const char&amp;</code>。</li>
 <li>把返回值去掉 <code>const</code> 属性，得到类型为 <code>char&amp;</code> 的返回值。</li>
 </ol>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2020/12/14/effecitve-cpp/effective-cpp-2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="yngty">
-      <meta itemprop="description" content="预测未来的最好方式就是实现它">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Symbol Crash">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/12/14/effecitve-cpp/effective-cpp-2/" class="post-title-link" itemprop="url">Effective C++ 2：尽量以const, enum, inline 替换 &#35;define</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-12-14 12:36:49" itemprop="dateCreated datePublished" datetime="2020-12-14T12:36:49+00:00">2020-12-14</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-08-25 03:02:59" itemprop="dateModified" datetime="2023-08-25T03:02:59+00:00">2023-08-25</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Effective-C/" itemprop="url" rel="index"><span itemprop="name">Effective-C++</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>530</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>2 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <blockquote>
-<p>Item 2: Prefer consts, enums, and inlines to #defines</p>
-</blockquote>
-<p>我们先看看<code>#deifne</code> 有哪些的问题:</p>
-<h1 id="不利于调试"><a href="#不利于调试" class="headerlink" title="不利于调试"></a>不利于调试</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define ASPECT_RATION 1.653</span><br></pre></td></tr></table></figure>
-<p>在预处理时候 <code>ASPECT_RATION</code> 可能就被移走了,<code>ASPECT_RATION</code> 没有进入 符号表, 运行此常量获得编译错误信息时, 可能会疑惑。因为这个错误信息总是提到 <code>1.653</code>，而不是<code>ASPECT_RATION</code> ， 如果 <code>ASPECT_RATION</code> 定义不是自己写的头文件中，可能对 <code>1.653</code> 的来源毫无概念，将因追踪它浪费时间，解决之道是以一个常量替换上述宏 。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">const</span> <span class="type">double</span> AspectRatio = <span class="number">1.653</span> <span class="comment">//大写名称通常用于宏</span></span><br><span class="line">                                 <span class="comment">//因此这里改变名称写法</span></span><br></pre></td></tr></table></figure>
-<p>作为一个语言常量，<code>ASPECT_RATION</code> 肯定会被编译器看到，当然会进入记号表内。此外对于浮点常量(<code>floating point constant</code>)而言，使用常量可能比使用<code>#define</code> 导致较少量的码。</p>
-<h1 id="不重视scope"><a href="#不重视scope" class="headerlink" title="不重视scope"></a>不重视scope</h1><p>无法利用 <code>#define</code> 创建<code>class</code>专属常量。一旦宏定义，它就在其后的编译过程中有效（除非在某处 <code>#undef</code> ）。而 <code>const</code> 可以。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">GamePlayer</span> &#123;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="type">static</span> <span class="type">const</span> <span class="type">int</span> NumTurns; <span class="comment">//常量声明式</span></span><br><span class="line">    <span class="type">int</span> scores[NumTurns];      <span class="comment">//使用该常量</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="enum-比-const-更好用"><a href="#enum-比-const-更好用" class="headerlink" title="enum 比 const 更好用"></a>enum 比 const 更好用</h2><p>旧式编译器也许不支持上述语法，　它们不允许static在声明式上获得初值，此外所谓的“<code>in-classs　初值设定</code>”也只运行对<strong>整数常量</strong>进行，　如果编译器不支持上述语法，可以将初值放在定义式</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">CostEstimate</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="type">static</span> <span class="type">const</span> <span class="type">double</span> FudgeFactor;  <span class="comment">//staitc class　常量声明位于头文件内</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="type">const</span> <span class="type">double</span> CostEstimate::FudgeFactor = <span class="number">1.35</span>; <span class="comment">//staitc class　常量定义位于实现文件内</span></span><br></pre></td></tr></table></figure>
-<p>如果使用<code>emnu</code>就很简单：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">GamePlayer</span> &#123;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">enum</span> &#123; NumTurns = <span class="number">5</span> &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> scores[NumTurns];　<span class="comment">//the enum hack</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>　</p>
-<h1 id="不易理解"><a href="#不易理解" class="headerlink" title="不易理解"></a>不易理解</h1><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> CALL_WITH_MAX(a, b)  f((a) &gt; (b) ? (a) : (b))</span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> a = <span class="number">5</span>, b =<span class="number">0</span>;</span><br><span class="line"><span class="built_in">CALL_WITH_MAX</span>(++a, b);     　<span class="comment">//ａ被累加二次</span></span><br><span class="line"><span class="built_in">CALL_WITH_MAX</span>(++a, b + <span class="number">10</span>);　<span class="comment">//ａ被累加一次</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>必须记住为宏的所有实参加上小括号</li>
-<li>在这里调用ｆ之前，ａ的递增次取决与“它被拿来与谁比较”</li>
-</ul>
-<p>更好的做法是使用　<code>template inline</code>　函数。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="type">void</span> <span class="title">callWithMax</span><span class="params">(<span class="type">const</span> T &amp;a, <span class="type">const</span> T &amp;b)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (a &gt; b ? a : b);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
 
       
     </div>
@@ -1280,7 +1266,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">51</span>
+          <span class="site-state-item-count">52</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1293,7 +1279,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">26</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -1340,12 +1326,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">24k</span>
+    <span title="站点总字数">25k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">1:28</span>
+    <span title="站点阅读时长">1:31</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>

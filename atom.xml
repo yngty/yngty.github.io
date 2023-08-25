@@ -6,7 +6,7 @@
   <link href="https://yngty.github.io/atom.xml" rel="self"/>
   
   <link href="https://yngty.github.io/"/>
-  <updated>2023-08-25T03:02:59.751Z</updated>
+  <updated>2023-08-25T04:05:28.461Z</updated>
   <id>https://yngty.github.io/</id>
   
   <author>
@@ -17,11 +17,32 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>@executable path, @load path 和 @rpath</title>
+    <link href="https://yngty.github.io/2023/08/25/macos/executable-path-load-path-%E5%92%8C-rpath/"/>
+    <id>https://yngty.github.io/2023/08/25/macos/executable-path-load-path-%E5%92%8C-rpath/</id>
+    <published>2023-08-25T11:05:29.000Z</published>
+    <updated>2023-08-25T04:05:28.461Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;在 &lt;code&gt;macOS&lt;/code&gt; 上，动态链接器使用特定的路径变量来解析运行时的库位置。这些路径变量包括：绝对路径、 &lt;code&gt;@executable_path&lt;/code&gt;、&lt;code&gt;@loader_path&lt;/code&gt; 和 &lt;code&gt;@rpath&lt;/code&gt;。&lt;/p&gt;
+&lt;h1 id=&quot;绝对路径&quot;&gt;&lt;a href=&quot;#绝对路径&quot; class=&quot;headerlink&quot; title=&quot;绝对路径&quot;&gt;&lt;/a&gt;绝对路径&lt;/h1&gt;&lt;p&gt;对于安装在系统中共享位置的框架很有用，一般是 &lt;code&gt;/Library/Frameworks/xxx&lt;/code&gt;、 &lt;code&gt;/usr/lib/xxx&lt;/code&gt;, 但是查找嵌入在应用内部的动态库就很难使用，应用安装的位置都不固定，所以引出新的方式。&lt;/p&gt;
+&lt;h1 id=&quot;executable-path&quot;&gt;&lt;a href=&quot;#executable-path&quot; class=&quot;headerlink&quot; title=&quot;@executable path&quot;&gt;&lt;/a&gt;@executable path&lt;/h1&gt;&lt;p&gt;&lt;code&gt;@executable_path&lt;/code&gt; 是用于指代&lt;strong&gt;当前正在执行的程序或应用的路径&lt;/strong&gt;。当你的应用程序或其动态库需要引用位于与可执行文件相同路径（或其子目录）下的其他动态库时，这会非常有用。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="MacOS" scheme="https://yngty.github.io/categories/MacOS/"/>
+    
+    
+    <category term="DYLD" scheme="https://yngty.github.io/tags/DYLD/"/>
+    
+  </entry>
+  
+  <entry>
     <title>libevent 使用入门</title>
     <link href="https://yngty.github.io/2023/08/23/network/libevent-%E4%BD%BF%E7%94%A8%E5%85%A5%E9%97%A8/"/>
     <id>https://yngty.github.io/2023/08/23/network/libevent-%E4%BD%BF%E7%94%A8%E5%85%A5%E9%97%A8/</id>
     <published>2023-08-23T10:07:43.000Z</published>
-    <updated>2023-08-25T03:02:59.751Z</updated>
+    <updated>2023-08-25T04:05:28.461Z</updated>
     
     
       
@@ -46,7 +67,7 @@
     <link href="https://yngty.github.io/2023/08/17/network/I-O-%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/"/>
     <id>https://yngty.github.io/2023/08/17/network/I-O-%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/</id>
     <published>2023-08-17T14:32:07.000Z</published>
-    <updated>2023-08-25T03:02:59.751Z</updated>
+    <updated>2023-08-25T04:05:28.461Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;select&quot;&gt;&lt;a href=&quot;#select&quot; class=&quot;headerlink&quot; title=&quot;select&quot;&gt;&lt;/a&gt;select&lt;/h1&gt;&lt;p&gt;&lt;code&gt;select&lt;/code&gt; 实现多路复用的方式是，将已连接的 &lt;code&gt;socket&lt;/code&gt; 都放到一个文件描述符集合，然后调用 &lt;code&gt;select&lt;/code&gt;函数将文件描述符集合拷贝到内核里，让内核来检查是否有网络事件产生，通过遍历文件描述符集合的方式，当检查到有事件产生后，将此 &lt;code&gt;socket&lt;/code&gt; 标记为可读或可写， 接着再把整个文件描述符集合拷贝回用户态里，然后用户态还需要再通过遍历的方法找到可读或可写的 &lt;code&gt;Socket&lt;/code&gt;，然后再对其处理。&lt;/p&gt;
@@ -81,7 +102,7 @@
     <link href="https://yngty.github.io/2023/07/25/network/TCP-%E5%8D%8F%E8%AE%AE/"/>
     <id>https://yngty.github.io/2023/07/25/network/TCP-%E5%8D%8F%E8%AE%AE/</id>
     <published>2023-07-25T09:43:58.000Z</published>
-    <updated>2023-08-25T03:02:59.751Z</updated>
+    <updated>2023-08-25T04:05:28.461Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;TCP-基本认识&quot;&gt;&lt;a href=&quot;#TCP-基本认识&quot; class=&quot;headerlink&quot; title=&quot;TCP 基本认识&quot;&gt;&lt;/a&gt;&lt;code&gt;TCP&lt;/code&gt; 基本认识&lt;/h1&gt;&lt;p&gt;&lt;code&gt;TCP&lt;/code&gt; 是 &lt;strong&gt;面向连接的、可靠的、基于字节流&lt;/strong&gt;的传输层通信协议。&lt;/p&gt;
@@ -101,7 +122,7 @@
     <link href="https://yngty.github.io/2023/07/24/network/%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E4%BD%BF%E7%94%A8TCP/"/>
     <id>https://yngty.github.io/2023/07/24/network/%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E4%BD%BF%E7%94%A8TCP/</id>
     <published>2023-07-24T15:12:44.000Z</published>
-    <updated>2023-08-25T03:02:59.751Z</updated>
+    <updated>2023-08-25T04:05:28.461Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;SO-REUSEADDR&quot;&gt;&lt;a href=&quot;#SO-REUSEADDR&quot; class=&quot;headerlink&quot; title=&quot;SO_REUSEADDR&quot;&gt;&lt;/a&gt;SO_REUSEADDR&lt;/h1&gt;&lt;ul&gt;
@@ -126,7 +147,7 @@
     <link href="https://yngty.github.io/2023/07/24/network/socket-%E7%BC%96%E7%A8%8B/"/>
     <id>https://yngty.github.io/2023/07/24/network/socket-%E7%BC%96%E7%A8%8B/</id>
     <published>2023-07-24T10:38:44.000Z</published>
-    <updated>2023-08-25T03:02:59.751Z</updated>
+    <updated>2023-08-25T04:05:28.461Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;1-socket地址结构&quot;&gt;&lt;a href=&quot;#1-socket地址结构&quot; class=&quot;headerlink&quot; title=&quot;1. socket地址结构&quot;&gt;&lt;/a&gt;1. socket地址结构&lt;/h1&gt;&lt;h2 id=&quot;sockaddr-in&quot;&gt;&lt;a href=&quot;#sockaddr-in&quot; class=&quot;headerlink&quot; title=&quot;sockaddr_in&quot;&gt;&lt;/a&gt;&lt;code&gt;sockaddr_in&lt;/code&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;ipv4&lt;/code&gt; 协议的地址结构是 &lt;code&gt;sockaddr_in&lt;/code&gt;，&lt;code&gt;ipv6&lt;/code&gt; 的地址结构是&lt;code&gt;sockaddr_in6&lt;/code&gt;。&lt;/p&gt;
@@ -156,7 +177,7 @@
     <link href="https://yngty.github.io/2023/07/19/network/tcpdump-%E6%8A%93%E5%8C%85/"/>
     <id>https://yngty.github.io/2023/07/19/network/tcpdump-%E6%8A%93%E5%8C%85/</id>
     <published>2023-07-19T13:49:02.000Z</published>
-    <updated>2023-08-25T03:02:59.751Z</updated>
+    <updated>2023-08-25T04:05:28.461Z</updated>
     
     
       
@@ -184,7 +205,7 @@
     <link href="https://yngty.github.io/2023/07/17/network/http%E5%8D%8F%E8%AE%AE/"/>
     <id>https://yngty.github.io/2023/07/17/network/http%E5%8D%8F%E8%AE%AE/</id>
     <published>2023-07-17T11:42:24.000Z</published>
-    <updated>2023-08-25T03:02:59.751Z</updated>
+    <updated>2023-08-25T04:05:28.461Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;HTTP-是什么？&quot;&gt;&lt;a href=&quot;#HTTP-是什么？&quot; class=&quot;headerlink&quot; title=&quot;HTTP 是什么？&quot;&gt;&lt;/a&gt;HTTP 是什么？&lt;/h1&gt;&lt;p&gt;&lt;code&gt;HTTP&lt;/code&gt; 是超文本传输协议，也就是 &lt;code&gt;HyperText Transfer Protocol&lt;/code&gt;。&lt;/p&gt;
@@ -206,7 +227,7 @@
     <link href="https://yngty.github.io/2023/04/10/c++/%E5%8F%AF%E5%8F%98%E5%8F%82%E6%95%B0%E6%A8%A1%E6%9D%BF/"/>
     <id>https://yngty.github.io/2023/04/10/c++/%E5%8F%AF%E5%8F%98%E5%8F%82%E6%95%B0%E6%A8%A1%E6%9D%BF/</id>
     <published>2023-04-10T10:21:36.000Z</published>
-    <updated>2023-08-25T03:02:59.751Z</updated>
+    <updated>2023-08-25T04:05:28.457Z</updated>
     
     
       
@@ -232,7 +253,7 @@
     <link href="https://yngty.github.io/2023/04/07/cmake/CMake-%E8%B8%A9%E5%9D%91%E8%AE%B0/"/>
     <id>https://yngty.github.io/2023/04/07/cmake/CMake-%E8%B8%A9%E5%9D%91%E8%AE%B0/</id>
     <published>2023-04-07T10:26:10.000Z</published>
-    <updated>2023-08-25T03:02:59.751Z</updated>
+    <updated>2023-08-25T04:05:28.457Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;install-CODE-和-execute-process-配合&quot;&gt;&lt;a href=&quot;#install-CODE-和-execute-process-配合&quot; class=&quot;headerlink&quot; title=&quot;install(CODE) 和 execute_process 配合&quot;&gt;&lt;/a&gt;&lt;code&gt;install(CODE)&lt;/code&gt; 和 &lt;code&gt;execute_process&lt;/code&gt; 配合&lt;/h1&gt;&lt;h2 id=&quot;确保-WORKING-DIRECTORY-存在&quot;&gt;&lt;a href=&quot;#确保-WORKING-DIRECTORY-存在&quot; class=&quot;headerlink&quot; title=&quot;确保 WORKING_DIRECTORY 存在&quot;&gt;&lt;/a&gt;确保 &lt;code&gt;WORKING_DIRECTORY&lt;/code&gt; 存在&lt;/h2&gt;&lt;p&gt;示例代码: &lt;/p&gt;
@@ -252,7 +273,7 @@
     <link href="https://yngty.github.io/2023/03/18/macos/%E5%AD%98%E5%82%A8%E5%92%8C%E5%8A%A0%E8%BD%BD%E6%8C%87%E4%BB%A4/"/>
     <id>https://yngty.github.io/2023/03/18/macos/%E5%AD%98%E5%82%A8%E5%92%8C%E5%8A%A0%E8%BD%BD%E6%8C%87%E4%BB%A4/</id>
     <published>2023-03-18T23:19:19.000Z</published>
-    <updated>2023-08-25T03:02:59.751Z</updated>
+    <updated>2023-08-25T04:05:28.461Z</updated>
     
     
       
@@ -277,7 +298,7 @@
     <link href="https://yngty.github.io/2023/03/18/macos/ARM64%E6%B1%87%E7%BC%96%E5%85%A5%E9%97%A8/"/>
     <id>https://yngty.github.io/2023/03/18/macos/ARM64%E6%B1%87%E7%BC%96%E5%85%A5%E9%97%A8/</id>
     <published>2023-03-18T15:02:42.000Z</published>
-    <updated>2023-08-25T03:02:59.751Z</updated>
+    <updated>2023-08-25T04:05:28.461Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;ARM-指令概要介绍&quot;&gt;&lt;a href=&quot;#ARM-指令概要介绍&quot; class=&quot;headerlink&quot; title=&quot;ARM 指令概要介绍&quot;&gt;&lt;/a&gt;&lt;code&gt;ARM&lt;/code&gt; 指令概要介绍&lt;/h1&gt;&lt;ul&gt;
@@ -347,7 +368,7 @@
     <link href="https://yngty.github.io/2023/03/11/c++/enable-shared-from-this%E7%9A%84%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/"/>
     <id>https://yngty.github.io/2023/03/11/c++/enable-shared-from-this%E7%9A%84%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/</id>
     <published>2023-03-11T10:09:57.000Z</published>
-    <updated>2023-08-25T03:02:59.751Z</updated>
+    <updated>2023-08-25T04:05:28.457Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;使用场景&quot;&gt;&lt;a href=&quot;#使用场景&quot; class=&quot;headerlink&quot; title=&quot;使用场景&quot;&gt;&lt;/a&gt;使用场景&lt;/h1&gt;&lt;p&gt;当我们在对象函数中需要返回或者使用自己的 &lt;code&gt;shared_ptr&lt;/code&gt; 指针时，该怎么办呢？常见的错误写法如下：用不安全的表达式试图获得 &lt;code&gt;this&lt;/code&gt; 的 &lt;code&gt;shared_ptr&lt;/code&gt; 对象, 但可能会导致 &lt;code&gt;this&lt;/code&gt; 被多个互不知晓的所有者析构.&lt;/p&gt;
@@ -373,7 +394,7 @@
     <link href="https://yngty.github.io/2023/03/10/effective-stl/effective-stl-21/"/>
     <id>https://yngty.github.io/2023/03/10/effective-stl/effective-stl-21/</id>
     <published>2023-03-10T21:05:20.000Z</published>
-    <updated>2023-08-25T03:02:59.751Z</updated>
+    <updated>2023-08-25T04:05:28.461Z</updated>
     
     
     <summary type="html">&lt;blockquote&gt;
@@ -410,7 +431,7 @@
     <link href="https://yngty.github.io/2023/03/10/macos/mach-o/"/>
     <id>https://yngty.github.io/2023/03/10/macos/mach-o/</id>
     <published>2023-03-10T11:14:12.000Z</published>
-    <updated>2023-08-25T03:02:59.751Z</updated>
+    <updated>2023-08-25T04:05:28.461Z</updated>
     
     
       
@@ -435,7 +456,7 @@
     <link href="https://yngty.github.io/2023/03/06/design/reactor-pattern/"/>
     <id>https://yngty.github.io/2023/03/06/design/reactor-pattern/</id>
     <published>2023-03-06T10:40:59.000Z</published>
-    <updated>2023-08-25T03:02:59.751Z</updated>
+    <updated>2023-08-25T04:05:28.457Z</updated>
     
     
       
@@ -460,7 +481,7 @@
     <link href="https://yngty.github.io/2023/02/16/effective-stl/effective-stl-9/"/>
     <id>https://yngty.github.io/2023/02/16/effective-stl/effective-stl-9/</id>
     <published>2023-02-16T15:11:25.000Z</published>
-    <updated>2023-08-25T03:02:59.751Z</updated>
+    <updated>2023-08-25T04:05:28.461Z</updated>
     
     
     <summary type="html">&lt;blockquote&gt;
@@ -496,7 +517,7 @@
     <link href="https://yngty.github.io/2023/02/16/macos/Disk-Arbitration/"/>
     <id>https://yngty.github.io/2023/02/16/macos/Disk-Arbitration/</id>
     <published>2023-02-16T13:38:07.000Z</published>
-    <updated>2023-08-25T03:02:59.751Z</updated>
+    <updated>2023-08-25T04:05:28.461Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;介绍&quot;&gt;&lt;a href=&quot;#介绍&quot; class=&quot;headerlink&quot; title=&quot;介绍&quot;&gt;&lt;/a&gt;介绍&lt;/h1&gt;&lt;p&gt;&lt;code&gt;Disk Arbitration framework&lt;/code&gt; 是一个基于 &lt;code&gt;Core Foundation&lt;/code&gt; 的低级框架。会在磁盘出现和消失时通知您的应用程序，并让您的应用程序影响该过程。借助 &lt;code&gt;Disk Arbitration&lt;/code&gt;，我们可以：&lt;/p&gt;
@@ -524,7 +545,7 @@
     <link href="https://yngty.github.io/2023/02/15/qt/Qt-%E4%B9%8B-%E7%84%A6%E7%82%B9%E5%A4%84%E7%90%86/"/>
     <id>https://yngty.github.io/2023/02/15/qt/Qt-%E4%B9%8B-%E7%84%A6%E7%82%B9%E5%A4%84%E7%90%86/</id>
     <published>2023-02-15T17:08:09.000Z</published>
-    <updated>2023-08-25T03:02:59.751Z</updated>
+    <updated>2023-08-25T04:05:28.461Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;焦点事件&quot;&gt;&lt;a href=&quot;#焦点事件&quot; class=&quot;headerlink&quot; title=&quot;焦点事件&quot;&gt;&lt;/a&gt;焦点事件&lt;/h1&gt;&lt;p&gt;当焦点从一个 &lt;code&gt;widget&lt;/code&gt; 移动到另一个 &lt;code&gt;widget&lt;/code&gt; 时，会触发 &lt;code&gt;QFocusEvent&lt;/code&gt; 事件，这个事件会被发送给原焦点窗口和当前焦点窗口，原焦点窗口执行 &lt;code&gt;focusOutEvent()&lt;/code&gt; ，新焦点窗口执行 &lt;code&gt;focusInEvent()&lt;/code&gt;。 相关函数如下：&lt;/p&gt;
@@ -548,7 +569,7 @@
     <link href="https://yngty.github.io/2023/02/07/c++/std-make-shared-vs-new/"/>
     <id>https://yngty.github.io/2023/02/07/c++/std-make-shared-vs-new/</id>
     <published>2023-02-07T10:30:24.000Z</published>
-    <updated>2023-08-25T03:02:59.751Z</updated>
+    <updated>2023-08-25T04:05:28.457Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;内存分配&quot;&gt;&lt;a href=&quot;#内存分配&quot; class=&quot;headerlink&quot; title=&quot;内存分配&quot;&gt;&lt;/a&gt;内存分配&lt;/h1&gt;&lt;p&gt;&lt;code&gt;std::make_shared&lt;/code&gt; 执行&lt;strong&gt;一次&lt;/strong&gt;堆分配，而调用&lt;code&gt;std::shared_ptr&lt;/code&gt; 构造函数执行&lt;strong&gt;两次&lt;/strong&gt;。&lt;/p&gt;
@@ -575,28 +596,6 @@
     <category term="C++" scheme="https://yngty.github.io/tags/C/"/>
     
     <category term="智能指针" scheme="https://yngty.github.io/tags/%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>在MacOS平台上符号化崩溃报告</title>
-    <link href="https://yngty.github.io/2022/07/26/macos/%E5%9C%A8MacOS%E5%B9%B3%E5%8F%B0%E4%B8%8A%E7%AC%A6%E5%8F%B7%E5%8C%96%E5%B4%A9%E6%BA%83%E6%8A%A5%E5%91%8A/"/>
-    <id>https://yngty.github.io/2022/07/26/macos/%E5%9C%A8MacOS%E5%B9%B3%E5%8F%B0%E4%B8%8A%E7%AC%A6%E5%8F%B7%E5%8C%96%E5%B4%A9%E6%BA%83%E6%8A%A5%E5%91%8A/</id>
-    <published>2022-07-26T15:41:02.000Z</published>
-    <updated>2023-08-25T03:02:59.751Z</updated>
-    
-    
-    <summary type="html">&lt;h1 id=&quot;dSYM&quot;&gt;&lt;a href=&quot;#dSYM&quot; class=&quot;headerlink&quot; title=&quot;.dSYM&quot;&gt;&lt;/a&gt;&lt;code&gt;.dSYM&lt;/code&gt;&lt;/h1&gt;&lt;p&gt;&lt;code&gt;.dSYM&lt;/code&gt; (&lt;code&gt;debugging SYMbols&lt;/code&gt;) 又称为调试符号表，是苹果为了方便调试和定位问题而使用的一种调试方案，本质上使用的是起源于贝尔实验室的 &lt;code&gt;DWARF&lt;/code&gt;（&lt;code&gt;Debugging With Attributed Record Formats&lt;/code&gt;），其在.xcarchive目录中的层次结构为：&lt;/p&gt;
-&lt;figure class=&quot;highlight plaintext&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;.xcarchive&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;--dSYMs&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  |--Your.app.dSYM&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    |--Contents&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;      |--Resources&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        |--DWARF&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
-    
-    
-    
-    <category term="MacOS" scheme="https://yngty.github.io/categories/MacOS/"/>
-    
-    
-    <category term="MacOS" scheme="https://yngty.github.io/tags/MacOS/"/>
-    
-    <category term="Crash" scheme="https://yngty.github.io/tags/Crash/"/>
     
   </entry>
   
