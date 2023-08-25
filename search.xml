@@ -1826,6 +1826,130 @@
       </tags>
   </entry>
   <entry>
+    <title>libevent 使用入门</title>
+    <url>/2023/08/23/network/libevent-%E4%BD%BF%E7%94%A8%E5%85%A5%E9%97%A8/</url>
+    <content><![CDATA[<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p><code>libEvent</code>, 一个事件通知库。有以下特点：</p>
+<ul>
+<li>事件驱动，高性能；</li>
+<li>轻量级，专注于网络；</li>
+<li>跨平台，支持 <code>Windows</code>、<code>Linux</code>、<code>Mac</code> 等；</li>
+<li>支持多种 <code>I/O</code> 多路复用技术， <code>epoll</code>、<code>poll</code>、<code>dev/poll</code>、<code>select</code> 和 <code>kqueue</code> 等；</li>
+<li>支持 <code>I/O</code> ，定时器和信号等事件；</li>
+</ul>
+<h1 id="libevent接口分析"><a href="#libevent接口分析" class="headerlink" title="libevent接口分析"></a>libevent接口分析</h1><p>libevent 接口大概分为以下几类: </p>
+<ul>
+<li>环境配置和初始化<ul>
+<li><code>event_base_new</code></li>
+</ul>
+</li>
+<li><code>evutil socket</code> 函数封装<ul>
+<li><code>evutil_make_socket_nonblocking</code></li>
+<li><code>evutil_make_listen_socket_reuseable</code><ul>
+<li>set SO_REUSEADDR on Unix and does nothing on Windows</li>
+</ul>
+</li>
+<li><code>evutil_closesocket</code></li>
+</ul>
+</li>
+<li>事件<code>IO</code>处理<ul>
+<li><code>event_new</code></li>
+</ul>
+</li>
+<li>缓冲<code>IO</code><ul>
+<li><code>bufferevent</code></li>
+</ul>
+</li>
+<li>循环(<code>Loop</code>)<ul>
+<li><code>event_base_dispatch</code></li>
+</ul>
+</li>
+</ul>
+<h1 id="Libevent-API"><a href="#Libevent-API" class="headerlink" title="Libevent API"></a>Libevent API</h1><h2 id="libevent上下文创建"><a href="#libevent上下文创建" class="headerlink" title="libevent上下文创建"></a>libevent上下文创建</h2><ul>
+<li>event_base *event_base_new(void)</li>
+<li>event_base *event_base_new_with_config( const struct event_config *);<ul>
+<li>配置参数<ul>
+<li>event_config *event_config_new(void);</li>
+<li>void event_config_free(struct event_config * cfg);</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>event_reinit<ul>
+<li>int event_reinit(struct event_base *base); 调用 fork 之后可以正确工作</li>
+</ul>
+</li>
+<li>void event_base_free(struct event_base *); 释放event_base内部分配的空间及其本身对象的空间，不释放事件和socket和在回调函数中申请 的空间</li>
+<li>event_config_set_flag</li>
+<li>event_config_avoid_method(struct event_ config *cfg, const char *method);</li>
+<li>event_config_require_features</li>
+</ul>
+<p>event_base_config_flag</p>
+<ul>
+<li><p>EVENT_BASE_FLAG_NOLOCK: </p>
+<ul>
+<li>不要为event_base 分配锁。设置这个选项可以为event_base 节省一点用于锁定和解锁的时间，但是让在多个线程中访问event_base 成为不安全的。</li>
+</ul>
+</li>
+<li><p>EVENT_BASE_FLAG_IGNORE_ENV</p>
+<ul>
+<li>选择使用的后端时，不要检测EVENT_*环境变量。使用这个标志需要三思:这会让用户更难 调试你的程序与libevent 的交互。</li>
+</ul>
+</li>
+<li><p>EVENT_BASE_FLAG_STARTUP_IOCP</p>
+<ul>
+<li>仅用于Windows,启用任何必需的IOCP 分发逻辑</li>
+<li>iocp<ul>
+<li>event_config_set_num_cpus_hint</li>
+<li>event_config_set_flag(cfg, EVENT_BASE_ FLAG_STARTUP_IOCP)</li>
+<li>evthread_use_windows_threads();</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>EVENT_BASE_FLAG_NO_CACHE_TIME</p>
+<ul>
+<li>不是在事件循环每次准备执行超时回调时检测当前时间，而是在每次超时回调后进行检 测。注意:这会消耗更多的CPU 时间。</li>
+</ul>
+</li>
+<li><p>EVENT_BASE_FLAG_EPOLL_USE_ CHANGELIST</p>
+<ul>
+<li>epoll下有效，防止同一个fd多次激发事件，fd如果做复制会有bug</li>
+</ul>
+</li>
+<li><p>EVENT_BASE_FLAG_PRECISE_TIMER</p>
+<ul>
+<li>默认使用系统最快的记时机制，如果系统有较慢 且更精确的则采用</li>
+</ul>
+</li>
+</ul>
+<p>event_method_feature</p>
+<ul>
+<li>EV_FEATURE_ET &#x3D; 0x01<ul>
+<li>边沿触发的后端</li>
+</ul>
+</li>
+<li>EV_FEATURE_O1 &#x3D; 0x02,<ul>
+<li>要求添加、删除单个事件，或者确定哪个事件激 活的操作是O(1)复杂度的后端</li>
+</ul>
+</li>
+<li>EV_FEATURE_FDS &#x3D; 0x04,<ul>
+<li>要求支持任意文件描述符，而不仅仅是套接字的 后端</li>
+</ul>
+</li>
+<li>EV_FEATURE_EARLY_CLOSE &#x3D; 0x08<ul>
+<li>检测连接关闭事件。您可以使用它来检测连接何时关闭，而不必从连接中读取所有挂起的数据。 并非所有后端都支持EV_CLOSED。允许您使用EV_CLOSED，而不需要读取所有挂起的数据。无法在所有内核版本上</li>
+</ul>
+</li>
+</ul>
+<h2 id="事件Event处理"><a href="#事件Event处理" class="headerlink" title="事件Event处理"></a>事件Event处理</h2><h2 id="循环-loop"><a href="#循环-loop" class="headerlink" title="循环(loop)"></a>循环(loop)</h2><h2 id="缓冲-bufferevent"><a href="#缓冲-bufferevent" class="headerlink" title="缓冲 bufferevent"></a>缓冲 bufferevent</h2><h2 id="libevent-http"><a href="#libevent-http" class="headerlink" title="libevent http"></a>libevent http</h2>]]></content>
+      <categories>
+        <category>Network</category>
+      </categories>
+      <tags>
+        <tag>libevent</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>socket 编程</title>
     <url>/2023/07/24/network/socket-%E7%BC%96%E7%A8%8B/</url>
     <content><![CDATA[<h1 id="1-socket地址结构"><a href="#1-socket地址结构" class="headerlink" title="1. socket地址结构"></a>1. socket地址结构</h1><h2 id="sockaddr-in"><a href="#sockaddr-in" class="headerlink" title="sockaddr_in"></a><code>sockaddr_in</code></h2><p><code>ipv4</code> 协议的地址结构是 <code>sockaddr_in</code>，<code>ipv6</code> 的地址结构是<code>sockaddr_in6</code>。</p>
