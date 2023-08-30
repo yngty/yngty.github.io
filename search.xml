@@ -1893,11 +1893,12 @@
 </ul>
 <h3 id="set"><a href="#set" class="headerlink" title="$set"></a>$set</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123; $set: &#123; &lt;filed1&gt;: &lt;value1&gt;, ...&#125;&#125;</span><br></pre></td></tr></table></figure>
 
+<p>举个例子: </p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accounts.update(</span><br><span class="line">    &#123;name: &quot;jack&quot;&#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        $set: </span><br><span class="line">        &#123;</span><br><span class="line">            balance: 3000,</span><br><span class="line">            info: &#123;</span><br><span class="line">                dateOpened: new Date(&quot;2016-05-18T16:00:00Z&quot;),</span><br><span class="line">                branch: &quot;branch1&quot; </span><br><span class="line">            &#125;,</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
 
 <h4 id="更新或新增内嵌文档的字段"><a href="#更新或新增内嵌文档的字段" class="headerlink" title="更新或新增内嵌文档的字段"></a>更新或新增内嵌文档的字段</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accounts.update(</span><br><span class="line">    &#123;name: &quot;jack&quot;&#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        $set: </span><br><span class="line">        &#123;</span><br><span class="line">            &quot;info.dateOpened&quot;: new Date(&quot;2017-01-01T16:00:00Z&quot;)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
 
-<h4 id="更新或新增数组字段"><a href="#更新或新增数组字段" class="headerlink" title="更新或新增数组字段"></a>更新或新增数组字段</h4><p>在 <code>$set</code> 中使用数组名加下标，如果向现有数组字段范围以外的位置添加新值，数组字段的长度会被扩大，未被赋值的数组成员将被设置为 <code>null</code></p>
+<h4 id="更新或新增数组字段"><a href="#更新或新增数组字段" class="headerlink" title="更新或新增数组字段"></a>更新或新增数组字段</h4><p>在 <code>$set</code> 中使用<strong>数组名加下标</strong>，如果向现有数组字段范围以外的位置添加新值，数组字段的长度会被扩大，未被赋值的数组成员将被设置为 <code>null</code></p>
 <p>举个例子 <code>jack</code>的  <code>contact</code> 数组中默认有 <code>3</code> 个元素: </p>
 <ul>
 <li><p>更新  <code>jack</code>的 <code>contact</code> 数组中第一个元素</p>
@@ -1914,7 +1915,7 @@
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">&#123; $unset: &#123;field1: &quot;&quot;, ...&#125;&#125;</span><br></pre></td></tr></table></figure>
 
 <p>例如删除 <code>jack</code> 的银行账户余额和开户地点:</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accounts.update(</span><br><span class="line">    &#123;name:&quot;jack&quot;&#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        $unset:</span><br><span class="line">        &#123;</span><br><span class="line">            balance:&quot;&quot;,</span><br><span class="line">            &quot;info.branch&quot;:&quot;&quot;,</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accounts.update(</span><br><span class="line">    &#123;name:&quot;jack&quot;&#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        $unset:</span><br><span class="line">        &#123;</span><br><span class="line">            balance: &quot;&quot;,</span><br><span class="line">            &quot;info.branch&quot;: &quot;&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>删除内嵌文档的字段<ul>
@@ -1927,7 +1928,7 @@
 </li>
 </ul>
 <p><strong>如果 <code>$unset</code> 命令中的字段不存在，那么文档内容将保持不变</strong></p>
-<h3 id="rename"><a href="#rename" class="headerlink" title="rename"></a>rename</h3><p>重命名文档字段</p>
+<h3 id="rename"><a href="#rename" class="headerlink" title="$rename"></a>$rename</h3><p>重命名文档字段</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123; $rename: &#123;&lt;field1&gt;: &lt;newName1&gt;, &lt;field2&gt;:&lt;newName2&gt;, ...&#125;&#125;</span><br></pre></td></tr></table></figure>
 
 <ul>
@@ -1945,7 +1946,7 @@
 </ul>
 </li>
 </ul>
-<p><strong>$rename命令中的旧字段和新字段都不可以指向数组元素</strong></p>
+<p><strong>$rename 命令中的旧字段和新字段都不可以指向数组元素</strong></p>
 <h3 id="inc-mul"><a href="#inc-mul" class="headerlink" title="$inc &amp; $mul"></a>$inc &amp; $mul</h3><p>更新字段值, <code>$inc</code> 加减字段值(正负数)，<code>$mul</code> 相乘字段值，格式如下：</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123; $inc: &#123; &lt;field1&gt; : &lt;value1&gt;, ...&#125;&#125;</span><br><span class="line"></span><br><span class="line">&#123; $mul: &#123; &lt;field1&gt; : &lt;value1&gt;, ...&#125;&#125;</span><br></pre></td></tr></table></figure>
 
@@ -2052,11 +2053,11 @@
 </li>
 <li><p>可以搭配 <code>$each</code></p>
   <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">db.accounts.update(</span><br><span class="line">     &#123;name: &quot;lawrence&quot;&#125;,</span><br><span class="line">     &#123; $push: &#123;</span><br><span class="line">         newArray: &#123;</span><br><span class="line">             $each:[2, 3, 4]</span><br><span class="line">         &#125;</span><br><span class="line">     &#125;&#125;</span><br><span class="line"> )</span><br></pre></td></tr></table></figure>
-<p><code>$push</code> 比 <code>addTosSet</code>增加地方:</p>
+<p><code>$push</code> 比 <code>addTosSet</code>增强地方:</p>
 </li>
 <li><p>搭配 <code>$each</code> 实现更复杂的操作</p>
 <ul>
-<li><p>使用 <code>$position</code> 操作符将元素插入到数组的指定位置, <code>$position</code> 的值 <code>0</code> 表示 从数组第一个位置开始插入，<code>-1</code> 表示从数组最后一个元素往前走 <code>1</code> 一个开始插入.</p>
+<li><p>使用 <code>$position</code> 操作符将元素插入到数组的指定位置, <code>$position</code> 的值 <code>0</code> 表示 从数组第一个位置开始插入，<code>-2</code> 表示从数组最后一个元素往前走 <code>2</code> 个开始插入。</p>
   <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accounts.update(</span><br><span class="line">    &#123;name: &quot;lawrence&quot;&#125;,</span><br><span class="line">    &#123; $push: &#123;</span><br><span class="line">        newArray: &#123;</span><br><span class="line">            $each:[&quot;pos1&quot;, &quot;pos2&quot;],</span><br><span class="line">            $position: 0</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;&#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure></li>
 <li><p>使用 <code>$sort</code> 排序</p>
   <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accounts.update(</span><br><span class="line">    &#123;name: &quot;lawrence&quot;&#125;,</span><br><span class="line">    &#123; $push: &#123;</span><br><span class="line">        newArray: &#123;</span><br><span class="line">            $each:[&quot;sort1&quot;],</span><br><span class="line">            $sort: 1</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;&#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure></li>
