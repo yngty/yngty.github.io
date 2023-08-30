@@ -2122,7 +2122,7 @@
 </li>
 <li><p>在默认情况下，<code>remove</code> 命令会删除<strong>所有</strong>复合筛选条件的文档</p>
 </li>
-<li><p>如果只想删除复合筛选条件的<strong>第一篇</strong>文档，可以使用<code>justOne</code> 选项</p>
+<li><p>如果只想删除复合筛选条件的<strong>第一篇</strong>文档，可以使用 <code>justOne</code> 选项</p>
   <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accounts.remove(</span><br><span class="line">    &#123;balance: &#123; $lt: 100&#125; &#125;,</span><br><span class="line">    &#123;justOne: true &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>删除集合内的<strong>所有</strong>文档</p>
