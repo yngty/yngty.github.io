@@ -190,7 +190,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-08-30 14:30:39" itemprop="dateModified" datetime="2023-08-30T14:30:39+00:00">2023-08-30</time>
+                <time title="修改时间：2023-08-30 14:35:48" itemprop="dateModified" datetime="2023-08-30T14:35:48+00:00">2023-08-30</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -303,7 +303,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-08-30 14:30:39" itemprop="dateModified" datetime="2023-08-30T14:30:39+00:00">2023-08-30</time>
+                <time title="修改时间：2023-08-30 14:35:48" itemprop="dateModified" datetime="2023-08-30T14:35:48+00:00">2023-08-30</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -321,7 +321,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>754</span>
+              <span>752</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -345,7 +345,7 @@
 <li>加快文档查询和文档排序的速度</li>
 <li>复合键索引只能支持前缀子查询</li>
 </ul>
-<h2 id="索引操作"><a href="#索引操作" class="headerlink" title="索引操作"></a>索引操作</h2><h3 id="创建索引"><a href="#创建索引" class="headerlink" title="创建索引"></a>创建索引</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">- db.&lt;collection&gt;.createIndex(&lt;keys&gt;, &lt;options&gt;)</span><br></pre></td></tr></table></figure>
+<h2 id="索引操作"><a href="#索引操作" class="headerlink" title="索引操作"></a>索引操作</h2><h3 id="创建索引"><a href="#创建索引" class="headerlink" title="创建索引"></a>创建索引</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.&lt;collection&gt;.createIndex(&lt;keys&gt;, &lt;options&gt;)</span><br></pre></td></tr></table></figure>
 <ul>
 <li><code>&lt;keys&gt;</code> 文档指定了创建索引的字段</li>
 <li><code>&lt;options&gt;</code> 创建索引的参数和设定索引的特性</li>
@@ -353,10 +353,7 @@
 <h4 id="创建一个单键索引"><a href="#创建一个单键索引" class="headerlink" title="创建一个单键索引"></a>创建一个单键索引</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;name: 1&#125;)</span><br></pre></td></tr></table></figure>
 <h4 id="创建一个复合键索引"><a href="#创建一个复合键索引" class="headerlink" title="创建一个复合键索引"></a>创建一个复合键索引</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;name: 1, balance: -1&#125;)</span><br></pre></td></tr></table></figure>
 <h4 id="创建一个多键索引，创建在数组字段上-数组字段中的每一个元素都会在多键索引中创建一个键"><a href="#创建一个多键索引，创建在数组字段上-数组字段中的每一个元素都会在多键索引中创建一个键" class="headerlink" title="创建一个多键索引，创建在数组字段上, 数组字段中的每一个元素都会在多键索引中创建一个键"></a>创建一个多键索引，创建在数组字段上, 数组字段中的每一个元素都会在多键索引中创建一个键</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;currency: 1&#125;)</span><br></pre></td></tr></table></figure>
-<h4 id="列出集合中的索引"><a href="#列出集合中的索引" class="headerlink" title="列出集合中的索引"></a>列出集合中的索引</h4><ul>
-<li>db.collection.getIndexes()</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.accountWithIndex.getIndexes()</span><br></pre></td></tr></table></figure>
+<h4 id="列出集合中的索引"><a href="#列出集合中的索引" class="headerlink" title="列出集合中的索引"></a>列出集合中的索引</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.accountWithIndex.getIndexes()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2023/08/26/mongodb/mongodb-%E5%85%A5%E9%97%A8-%E7%B4%A2%E5%BC%95/#more" rel="contents">
@@ -414,7 +411,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-08-30 14:30:39" itemprop="dateModified" datetime="2023-08-30T14:30:39+00:00">2023-08-30</time>
+                <time title="修改时间：2023-08-30 14:35:48" itemprop="dateModified" datetime="2023-08-30T14:35:48+00:00">2023-08-30</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -511,7 +508,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-08-30 14:30:39" itemprop="dateModified" datetime="2023-08-30T14:30:39+00:00">2023-08-30</time>
+                <time title="修改时间：2023-08-30 14:35:48" itemprop="dateModified" datetime="2023-08-30T14:35:48+00:00">2023-08-30</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -711,7 +708,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-08-30 14:30:39" itemprop="dateModified" datetime="2023-08-30T14:30:39+00:00">2023-08-30</time>
+                <time title="修改时间：2023-08-30 14:35:48" itemprop="dateModified" datetime="2023-08-30T14:35:48+00:00">2023-08-30</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -822,7 +819,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-08-30 14:30:39" itemprop="dateModified" datetime="2023-08-30T14:30:39+00:00">2023-08-30</time>
+                <time title="修改时间：2023-08-30 14:35:48" itemprop="dateModified" datetime="2023-08-30T14:35:48+00:00">2023-08-30</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -918,7 +915,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-08-30 14:30:39" itemprop="dateModified" datetime="2023-08-30T14:30:39+00:00">2023-08-30</time>
+                <time title="修改时间：2023-08-30 14:35:48" itemprop="dateModified" datetime="2023-08-30T14:35:48+00:00">2023-08-30</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1019,7 +1016,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-08-30 14:30:39" itemprop="dateModified" datetime="2023-08-30T14:30:39+00:00">2023-08-30</time>
+                <time title="修改时间：2023-08-30 14:35:48" itemprop="dateModified" datetime="2023-08-30T14:35:48+00:00">2023-08-30</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1123,7 +1120,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-08-30 14:30:39" itemprop="dateModified" datetime="2023-08-30T14:30:39+00:00">2023-08-30</time>
+                <time title="修改时间：2023-08-30 14:35:48" itemprop="dateModified" datetime="2023-08-30T14:35:48+00:00">2023-08-30</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1211,7 +1208,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-08-30 14:30:39" itemprop="dateModified" datetime="2023-08-30T14:30:39+00:00">2023-08-30</time>
+                <time title="修改时间：2023-08-30 14:35:48" itemprop="dateModified" datetime="2023-08-30T14:35:48+00:00">2023-08-30</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
