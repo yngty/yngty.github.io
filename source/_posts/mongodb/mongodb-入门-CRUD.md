@@ -448,6 +448,8 @@ db.account.update({name:"alice" }, {name : "alice", "balance":123})
 { $set: { <filed1>: <value1>, ...}}
 ```
 
+举个例子: 
+
 ```shell
 db.accounts.update(
     {name: "jack"},
@@ -480,7 +482,7 @@ db.accounts.update(
 
 #### 更新或新增数组字段
 
-在 `$set` 中使用数组名加下标，如果向现有数组字段范围以外的位置添加新值，数组字段的长度会被扩大，未被赋值的数组成员将被设置为 `null`
+在 `$set` 中使用**数组名加下标**，如果向现有数组字段范围以外的位置添加新值，数组字段的长度会被扩大，未被赋值的数组成员将被设置为 `null`
 
 举个例子 `jack`的  `contact` 数组中默认有 `3` 个元素: 
 
@@ -545,8 +547,8 @@ db.accounts.update(
     {
         $unset:
         {
-            balance:"",
-            "info.branch":"",
+            balance: "",
+            "info.branch": ""
         }
     }
 )
@@ -560,7 +562,7 @@ db.accounts.update(
 **如果 `$unset` 命令中的字段不存在，那么文档内容将保持不变**
 
 
-### rename
+### $rename
 
 重命名文档字段
 
@@ -592,7 +594,7 @@ db.accounts.update(
         )
         ```
 
-**$rename命令中的旧字段和新字段都不可以指向数组元素**
+**$rename 命令中的旧字段和新字段都不可以指向数组元素**
 
 ### $inc & $mul
 
@@ -815,10 +817,10 @@ db.accounts.update(
             }}
         )
     ```
-`$push` 比 `addTosSet`增加地方:
+`$push` 比 `addTosSet`增强地方:
 
 - 搭配 `$each` 实现更复杂的操作
-    - 使用 `$position` 操作符将元素插入到数组的指定位置, `$position` 的值 `0` 表示 从数组第一个位置开始插入，`-1` 表示从数组最后一个元素往前走 `1` 一个开始插入.
+    - 使用 `$position` 操作符将元素插入到数组的指定位置, `$position` 的值 `0` 表示 从数组第一个位置开始插入，`-2` 表示从数组最后一个元素往前走 `2` 个开始插入。
         ```shell
         db.accounts.update(
             {name: "lawrence"},
