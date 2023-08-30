@@ -10,7 +10,7 @@ categories:
 
 ## 文档主键 `_id`
 
-文档主键 `_id`是每篇文档必备的字段,具有以下特性:
+文档主键 `_id` 是每篇文档必备的字段,具有以下特性:
 
 - 文档主键的唯一性
 - 支持所有数据类型(数组除外)
@@ -18,7 +18,7 @@ categories:
 
 ## 对象主键 `ObjectId`
 
-当我们不提供主键，`MongoDB` 自动为我们生成的默认 对象主键 `ObjectId`
+当我们不提供主键，`MongoDB` 自动为我们生成的默认对象主键 `ObjectId`
 
 - 默认的文档主键
 - 可以快速生成的 `12` 字节 `id`
@@ -55,7 +55,7 @@ db.accounts.insert({
     balance: 100
 })
 ```
-**复合主键任然要满足文档主键的唯一性**，需要字段值和顺序完全一致才算重复。
+**复合主键仍然要满足文档主键的唯一性**，需要字段值和顺序完全一致才算重复。
 
 下面是不同的 `_id`:
 ```
@@ -91,7 +91,7 @@ db.<collection>.insertOne(
 
 举个例子:
 ```shell
-db.accounts.insertMany(
+db.accounts.insertOne(
     {
         _id: "account1",
         name: "alice",
@@ -116,7 +116,7 @@ db.<collection>.insertMany(
 )
 ```
 
-- `ordered`: MongoDB 是否按照顺序来写入这些文档。默认为 `true`。
+- `ordered`: `MongoDB` 是否按照顺序来写入这些文档。默认为 `true`。
 
 举个例子:
 ```shell
@@ -132,7 +132,7 @@ db.accounts.insertMany(
 
 在**顺序**写入时，一旦遇到错误，操作便会退出，剩余的文档无论正确与否，都不会被写入。 
 
-在**乱序**写入时，即使某些文档造成了错误，剩余的正确文档任然会被写入
+在**乱序**写入时，即使某些文档造成了错误，剩余的正确文档仍然会被写入
 
 ## 创建单个或多个文档
 
@@ -156,7 +156,8 @@ db.accounts.insert(
     }
 )
 
-````
+```
+
 返回结果:
 
 ```
@@ -185,10 +186,12 @@ db.<collection>.save(
 
 # 读取文档
 
-## find
+## `find`
+
 ```
 db.<collection>.find(<query>, <projection>)
 ```
+- `<query>`: 查询文档
 - `<projection>`: 定义了对读取结果进行的投射
 
 ### 读取全部文档
