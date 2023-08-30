@@ -186,15 +186,13 @@ db.<collection>.save(
 
 # 读取文档
 
-## `find`
-
 ```
 db.<collection>.find(<query>, <projection>)
 ```
 - `<query>`: 查询文档
 - `<projection>`: 定义了对读取结果进行的投射
 
-### 读取全部文档
+## 读取全部文档
 
 既不筛选，也不使用投射
 
@@ -208,9 +206,9 @@ db.accounts.find()
 db.accounts.find().pretty()
 ```
 
-### 筛选文档
+## 筛选文档
 
-#### 匹配查询
+### 匹配查询
 
 ```shell
 db.accounts.find({name: "alice", balance: 100})
@@ -221,7 +219,7 @@ db.accounts.find({name: "alice", balance: 100})
 db.accounts.find({"_id.type": "savings"})
 ```
 
-#### 比较操作符
+### 比较操作符
 
 常用的比较操作符包括:
 
@@ -232,6 +230,7 @@ db.accounts.find({"_id.type": "savings"})
 - `$gte` 匹配字段值大于或等于查询值的文档
 - `$le` 匹配字段值小于查询值的文档
 - `$te` 匹配字段值小于或等于查询值的文档
+
 操作命令格式:
 ```
 { <field>: {$<operator>: <value> }}
@@ -264,7 +263,7 @@ db.accounts.find({ balance: { $gt: 100 }})
 ```shell
 db.accounts.find({ name: { $in: ["alice", "charlie"] }})
 ```
-#### 逻辑操作符
+### 逻辑操作符
 
 - `$not` 匹配筛选条件不成立的文档
     - 操作命令格式:
@@ -328,7 +327,7 @@ db.accounts.find(
 )
 ```
 
-#### 字段操作符
+### 字段操作符
 
 - `$exists` 
     - 查询包含字段值的文档
@@ -374,7 +373,7 @@ db.accounts.find(
     {_id: { $type: 2 }}
 )
 ```
-#### 数组操作符
+### 数组操作符
 
 - `$all` 
     - 筛选数组中满足所有查询条件的文档
@@ -406,10 +405,10 @@ db.accounts.find(
 )
 ```
 
-#### 运算操作符
+### 运算操作符
 
 
-# update
+# 更新文档
 
 ```
 db.collection.update(<query>, <update>, <options>)
