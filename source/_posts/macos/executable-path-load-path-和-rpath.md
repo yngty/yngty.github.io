@@ -30,7 +30,6 @@ MyApp/
 ```
 
 假设 `MyApp` 依赖于 `libA.dylib`，而 `libA.dylib` 依赖于 `libB.dylib`。
-
 如果你希望 `libA.dylib` 在运行时找到 `libB.dylib`，可以设置 `libB.dylib` 的安装名称为 `@executable_path/../Frameworks/libB.dylib`。当 `MyApp` 启动并加载 `libA.dylib` 时，`@executable_path` 将解析为 `MyApp.app/Contents/MacOS/`，因此 `libA.dylib` 会正确地找到 `libB.dylib` 在 `MyApp.app/Contents/Frameworks/` 目录下。
 
 # @load path
