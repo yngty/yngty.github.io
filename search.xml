@@ -2152,79 +2152,9 @@
       </tags>
   </entry>
   <entry>
-    <title>mongodb 入门-索引</title>
-    <url>/2023/08/26/mongodb/mongodb-%E5%85%A5%E9%97%A8-%E7%B4%A2%E5%BC%95/</url>
-    <content><![CDATA[<h1 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h1><ul>
-<li>对文档部分内容进行排序的数据结构</li>
-<li>加快文档查询和文档排序的速度</li>
-<li>复合键索引只能支持前缀子查询</li>
-</ul>
-<h2 id="索引操作"><a href="#索引操作" class="headerlink" title="索引操作"></a>索引操作</h2><h3 id="创建索引"><a href="#创建索引" class="headerlink" title="创建索引"></a>创建索引</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">db.&lt;collection&gt;.createIndex(&lt;keys&gt;, &lt;options&gt;)</span><br></pre></td></tr></table></figure>
-<ul>
-<li><code>&lt;keys&gt;</code> 文档指定了创建索引的字段</li>
-<li><code>&lt;options&gt;</code> 创建索引的参数和设定索引的特性</li>
-</ul>
-<h4 id="创建一个单键索引"><a href="#创建一个单键索引" class="headerlink" title="创建一个单键索引"></a>创建一个单键索引</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;name: 1&#125;)</span><br></pre></td></tr></table></figure>
-<h4 id="创建一个复合键索引"><a href="#创建一个复合键索引" class="headerlink" title="创建一个复合键索引"></a>创建一个复合键索引</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;name: 1, balance: -1&#125;)</span><br></pre></td></tr></table></figure>
-<h4 id="创建一个多键索引，创建在数组字段上-数组字段中的每一个元素都会在多键索引中创建一个键"><a href="#创建一个多键索引，创建在数组字段上-数组字段中的每一个元素都会在多键索引中创建一个键" class="headerlink" title="创建一个多键索引，创建在数组字段上, 数组字段中的每一个元素都会在多键索引中创建一个键"></a>创建一个多键索引，创建在数组字段上, 数组字段中的每一个元素都会在多键索引中创建一个键</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;currency: 1&#125;)</span><br></pre></td></tr></table></figure>
-<h4 id="列出集合中的索引"><a href="#列出集合中的索引" class="headerlink" title="列出集合中的索引"></a>列出集合中的索引</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.getIndexes()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<span id="more"></span>
-<h3 id="删除索引"><a href="#删除索引" class="headerlink" title="删除索引"></a>删除索引</h3><p>如果需要更改某些字段上已经创建的索引必须首先删除原有索引，再重新创建新索引，否则新索引不会包含原有字段</p>
-<h4 id="使用索引名字删除"><a href="#使用索引名字删除" class="headerlink" title="使用索引名字删除"></a>使用索引名字删除</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.dropIndex(&quot;name_1&quot;)</span><br></pre></td></tr></table></figure>
-<h4 id="使用索引定义删除"><a href="#使用索引定义删除" class="headerlink" title="使用索引定义删除"></a>使用索引定义删除</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.dropIndex( &#123; name: 1, balance: -1 &#125;)</span><br></pre></td></tr></table></figure>
-
-
-<h2 id="索引类型"><a href="#索引类型" class="headerlink" title="索引类型"></a>索引类型</h2><ul>
-<li>单键索引</li>
-<li>复合键索引</li>
-<li>多键索引</li>
-</ul>
-<h2 id="索引特性"><a href="#索引特性" class="headerlink" title="索引特性"></a>索引特性</h2><h3 id="唯一性"><a href="#唯一性" class="headerlink" title="唯一性"></a>唯一性</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;balance:1&#125;,&#123;unique:true&#125;)</span><br></pre></td></tr></table></figure>
-
-<p>如果已有文档中的某个字段出现了重复性，就不可以在这个字段上创建唯一性索引</p>
-<p>如果新增的文档不包含唯一性索引字段，只有第一篇缺失该字段的文档可以被写入数据库，索引中该文档的键值被默认为null</p>
-<h3 id="稀疏性"><a href="#稀疏性" class="headerlink" title="稀疏性"></a>稀疏性</h3><p>只将包含索引字段的文档加入到索引中(即使索引键字段为null)</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;balance:1&#125;, &#123; sparse:true&#125;)</span><br></pre></td></tr></table></figure>
-<p>如果同一个索引既具有唯一性，又具有稀疏性，就可以保存多篇缺失索引键值的文档了 </p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;balance:1&#125;, &#123; sparse:true, unique:true&#125;)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>复合键索引也可以具有稀疏性，在这种情况下，只有在缺失复合键所包含的所有字段的情况下，文档才不会加入到索引中</p>
-<h3 id="生存时间"><a href="#生存时间" class="headerlink" title="生存时间"></a>生存时间</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;lastAccess:1&#125;,&#123;expireAfterSeconds:20&#125;)</span><br></pre></td></tr></table></figure>
-
-<p><strong>复合键索引不具有生存时间特性</strong>，当索引键是包含日期元素的数组字段时，数组中<strong>最小</strong>的的日期将被用来计算文档是否过期。数据库使用一个后台线程来监测和删除过期文档，删除操作可能有一定的延迟。</p>
-<h2 id="查询分析"><a href="#查询分析" class="headerlink" title="查询分析"></a>查询分析</h2><h3 id="检视索引的效果-explain"><a href="#检视索引的效果-explain" class="headerlink" title="检视索引的效果 explain()"></a>检视索引的效果 <code>explain()</code></h3><ul>
-<li><p>命令操作格式:</p>
-  <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">db.&lt;collection&gt;.explain().&lt;method(...)&gt;</span><br></pre></td></tr></table></figure></li>
-<li><p>可以使用 <code>explain()</code> 进行分析的命令包括 <code>aggregate()</code>，<code>count()</code>，<code>distinct()</code>，<code>find()</code>，<code>group()</code>，<code>remove()</code>，<code>update()</code></p>
-</li>
-<li><p><code>explain()</code>返回结果中包含的 <code>winningPlan</code>字段表示数据库的查询方法</p>
-<ul>
-<li><code>stage</code><ul>
-<li><code>COLLSCAN</code> 完整查询整个集合</li>
-<li><code>FETCH</code> <code>IXSCAN</code> 通过索引查询，返回完整文档<br>  -<code> PROJECTION_COVERED</code>  <code>IXSCAN</code>, 直接使用索引存在的字段，无序完整文档，没有 <code>FETCH</code> 阶段</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<p>没有 <code>IXSCAN</code> 阶段，都耗费资源</p>
-<p>举个例子，<code>explain</code> 排序:</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.explain().find().sort(&#123;name:1, balance: -1&#125;)</span><br></pre></td></tr></table></figure>
-<h2 id="索引的选择"><a href="#索引的选择" class="headerlink" title="索引的选择"></a>索引的选择</h2><ul>
-<li>如何创建一个合适的索引</li>
-<li>索引对数据库写入操作的影响</li>
-</ul>
-]]></content>
-      <categories>
-        <category>mongodb</category>
-      </categories>
-      <tags>
-        <tag>mongodb</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>I/O 多路复用</title>
     <url>/2023/08/17/network/I-O-%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/</url>
-    <content><![CDATA[<h1 id="select"><a href="#select" class="headerlink" title="select"></a>select</h1><p><code>select</code> 实现多路复用的方式是，将已连接的 <code>socket</code> 都放到一个文件描述符集合，然后调用 <code>select</code>函数将文件描述符集合拷贝到内核里，让内核来检查是否有网络事件产生，通过遍历文件描述符集合的方式，当检查到有事件产生后，将此 <code>socket</code> 标记为可读或可写， 接着再把整个文件描述符集合拷贝回用户态里，然后用户态还需要再通过遍历的方法找到可读或可写的 <code>Socket</code>，然后再对其处理。</p>
+    <content><![CDATA[<h1 id="select"><a href="#select" class="headerlink" title="select"></a>select</h1><p><code>select</code> 实现多路复用的方式是，将已连接的 <code>socket</code> 都放到一个文件描述符集合，然后调用 <code>select</code>函数将文件描述符集合拷贝到内核里，让内核来检查是否有网络事件产生，通过遍历文件描述符集合的方式，当检查到有事件产生后，将此 <code>socket</code> 标记为可读或可写， 接着再把整个文件描述符集合拷贝回用户态里，然后用户态还需要再通过遍历的方法找到可读或可写的 <code>socket</code>，然后再对其处理。</p>
 <p>所以，对于 <code>select</code> 这种方式，需要进行 <strong>2 次「遍历」文件描述符集合</strong>，一次是在内核态里，一个次是在用户态里 ，而且还会发生 <strong>2 次「拷贝」文件描述符集合</strong>，先从用户空间传入内核空间，由内核修改后，再传出到用户空间中。</p>
 <h2 id="select-函数原型"><a href="#select-函数原型" class="headerlink" title="select 函数原型"></a>select 函数原型</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/select.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">select</span><span class="params">(<span class="type">int</span> nfds, fd_set *<span class="keyword">restrict</span> readfds, fd_set *<span class="keyword">restrict</span> writefds, fd_set *<span class="keyword">restrict</span> errorfds, <span class="keyword">struct</span> timeval *<span class="keyword">restrict</span> timeout)</span>;</span><br></pre></td></tr></table></figure>
 <ul>
@@ -2289,7 +2219,7 @@
 <p><code>events</code> 类型的事件可以分为三大类。</p>
 <p>第一类是可读事件，有以下几种：</p>
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> POLLIN          0x0001          <span class="comment">/* any readable data available */</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> POLLPRI         0x0002          <span class="comment">/* OOB/Urgent readable data */</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> POLLRDNORM      0x0040          <span class="comment">/* non-OOB/URG data available */</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> POLLRDBAND      0x0080          <span class="comment">/* OOB/Urgent readable data */</span></span></span><br></pre></td></tr></table></figure>
-<p>我们一般使用 <code>POLLOUT</code>, 系统内核通知套接字缓冲区已准备好，通过 <code>read</code> 函数执行读操作不会被阻塞。</p>
+<p>我们一般使用 <code>POLLIN</code>, 系统内核通知套接字缓冲区已准备好，通过 <code>read</code> 函数执行读操作不会被阻塞。</p>
 <p>第二类是可写事件，有以下几种：</p>
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> POLLOUT         0x0004          <span class="comment">/* file descriptor is writeable */</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> POLLWRNORM      POLLOUT         <span class="comment">/* no write type differentiation */</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> POLLWRBAND      0x0100          <span class="comment">/* OOB/Urgent data can be written */</span></span></span><br></pre></td></tr></table></figure>
 <p>我们一般使用 <code>POLLOUT</code>, 系统内核通知套接字缓冲区已准备好，通过 <code>write</code> 函数执行写操作不会被阻塞。</p>
@@ -2748,6 +2678,76 @@
       <tags>
         <tag>tools</tag>
         <tag>network</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>mongodb 入门-索引</title>
+    <url>/2023/08/26/mongodb/mongodb-%E5%85%A5%E9%97%A8-%E7%B4%A2%E5%BC%95/</url>
+    <content><![CDATA[<h1 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h1><ul>
+<li>对文档部分内容进行排序的数据结构</li>
+<li>加快文档查询和文档排序的速度</li>
+<li>复合键索引只能支持前缀子查询</li>
+</ul>
+<h2 id="索引操作"><a href="#索引操作" class="headerlink" title="索引操作"></a>索引操作</h2><h3 id="创建索引"><a href="#创建索引" class="headerlink" title="创建索引"></a>创建索引</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">db.&lt;collection&gt;.createIndex(&lt;keys&gt;, &lt;options&gt;)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>&lt;keys&gt;</code> 文档指定了创建索引的字段</li>
+<li><code>&lt;options&gt;</code> 创建索引的参数和设定索引的特性</li>
+</ul>
+<h4 id="创建一个单键索引"><a href="#创建一个单键索引" class="headerlink" title="创建一个单键索引"></a>创建一个单键索引</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;name: 1&#125;)</span><br></pre></td></tr></table></figure>
+<h4 id="创建一个复合键索引"><a href="#创建一个复合键索引" class="headerlink" title="创建一个复合键索引"></a>创建一个复合键索引</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;name: 1, balance: -1&#125;)</span><br></pre></td></tr></table></figure>
+<h4 id="创建一个多键索引，创建在数组字段上-数组字段中的每一个元素都会在多键索引中创建一个键"><a href="#创建一个多键索引，创建在数组字段上-数组字段中的每一个元素都会在多键索引中创建一个键" class="headerlink" title="创建一个多键索引，创建在数组字段上, 数组字段中的每一个元素都会在多键索引中创建一个键"></a>创建一个多键索引，创建在数组字段上, 数组字段中的每一个元素都会在多键索引中创建一个键</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;currency: 1&#125;)</span><br></pre></td></tr></table></figure>
+<h4 id="列出集合中的索引"><a href="#列出集合中的索引" class="headerlink" title="列出集合中的索引"></a>列出集合中的索引</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.getIndexes()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<span id="more"></span>
+<h3 id="删除索引"><a href="#删除索引" class="headerlink" title="删除索引"></a>删除索引</h3><p>如果需要更改某些字段上已经创建的索引必须首先删除原有索引，再重新创建新索引，否则新索引不会包含原有字段</p>
+<h4 id="使用索引名字删除"><a href="#使用索引名字删除" class="headerlink" title="使用索引名字删除"></a>使用索引名字删除</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.dropIndex(&quot;name_1&quot;)</span><br></pre></td></tr></table></figure>
+<h4 id="使用索引定义删除"><a href="#使用索引定义删除" class="headerlink" title="使用索引定义删除"></a>使用索引定义删除</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.dropIndex( &#123; name: 1, balance: -1 &#125;)</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="索引类型"><a href="#索引类型" class="headerlink" title="索引类型"></a>索引类型</h2><ul>
+<li>单键索引</li>
+<li>复合键索引</li>
+<li>多键索引</li>
+</ul>
+<h2 id="索引特性"><a href="#索引特性" class="headerlink" title="索引特性"></a>索引特性</h2><h3 id="唯一性"><a href="#唯一性" class="headerlink" title="唯一性"></a>唯一性</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;balance:1&#125;,&#123;unique:true&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>如果已有文档中的某个字段出现了重复性，就不可以在这个字段上创建唯一性索引</p>
+<p>如果新增的文档不包含唯一性索引字段，只有第一篇缺失该字段的文档可以被写入数据库，索引中该文档的键值被默认为null</p>
+<h3 id="稀疏性"><a href="#稀疏性" class="headerlink" title="稀疏性"></a>稀疏性</h3><p>只将包含索引字段的文档加入到索引中(即使索引键字段为null)</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;balance:1&#125;, &#123; sparse:true&#125;)</span><br></pre></td></tr></table></figure>
+<p>如果同一个索引既具有唯一性，又具有稀疏性，就可以保存多篇缺失索引键值的文档了 </p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;balance:1&#125;, &#123; sparse:true, unique:true&#125;)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>复合键索引也可以具有稀疏性，在这种情况下，只有在缺失复合键所包含的所有字段的情况下，文档才不会加入到索引中</p>
+<h3 id="生存时间"><a href="#生存时间" class="headerlink" title="生存时间"></a>生存时间</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;lastAccess:1&#125;,&#123;expireAfterSeconds:20&#125;)</span><br></pre></td></tr></table></figure>
+
+<p><strong>复合键索引不具有生存时间特性</strong>，当索引键是包含日期元素的数组字段时，数组中<strong>最小</strong>的的日期将被用来计算文档是否过期。数据库使用一个后台线程来监测和删除过期文档，删除操作可能有一定的延迟。</p>
+<h2 id="查询分析"><a href="#查询分析" class="headerlink" title="查询分析"></a>查询分析</h2><h3 id="检视索引的效果-explain"><a href="#检视索引的效果-explain" class="headerlink" title="检视索引的效果 explain()"></a>检视索引的效果 <code>explain()</code></h3><ul>
+<li><p>命令操作格式:</p>
+  <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">db.&lt;collection&gt;.explain().&lt;method(...)&gt;</span><br></pre></td></tr></table></figure></li>
+<li><p>可以使用 <code>explain()</code> 进行分析的命令包括 <code>aggregate()</code>，<code>count()</code>，<code>distinct()</code>，<code>find()</code>，<code>group()</code>，<code>remove()</code>，<code>update()</code></p>
+</li>
+<li><p><code>explain()</code>返回结果中包含的 <code>winningPlan</code>字段表示数据库的查询方法</p>
+<ul>
+<li><code>stage</code><ul>
+<li><code>COLLSCAN</code> 完整查询整个集合</li>
+<li><code>FETCH</code> <code>IXSCAN</code> 通过索引查询，返回完整文档<br>  -<code> PROJECTION_COVERED</code>  <code>IXSCAN</code>, 直接使用索引存在的字段，无序完整文档，没有 <code>FETCH</code> 阶段</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>没有 <code>IXSCAN</code> 阶段，都耗费资源</p>
+<p>举个例子，<code>explain</code> 排序:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.explain().find().sort(&#123;name:1, balance: -1&#125;)</span><br></pre></td></tr></table></figure>
+<h2 id="索引的选择"><a href="#索引的选择" class="headerlink" title="索引的选择"></a>索引的选择</h2><ul>
+<li>如何创建一个合适的索引</li>
+<li>索引对数据库写入操作的影响</li>
+</ul>
+]]></content>
+      <categories>
+        <category>mongodb</category>
+      </categories>
+      <tags>
+        <tag>mongodb</tag>
       </tags>
   </entry>
   <entry>
