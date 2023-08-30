@@ -1043,7 +1043,7 @@ db.<collection>.remove(<query>, <options>)
 
 - 在默认情况下，`remove` 命令会删除**所有**复合筛选条件的文档
 
-- 如果只想删除复合筛选条件的**第一篇**文档，可以使用`justOne` 选项
+- 如果只想删除复合筛选条件的**第一篇**文档，可以使用 `justOne` 选项
 
     ```shell
     db.accounts.remove(
