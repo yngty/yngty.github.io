@@ -1765,7 +1765,7 @@
 <li><code>$gt</code> 匹配字段值大于查询值的文档</li>
 <li><code>$gte</code> 匹配字段值大于或等于查询值的文档</li>
 <li><code>$le</code> 匹配字段值小于查询值的文档</li>
-<li><code>$te</code> 匹配字段值小于或等于查询值的文档</li>
+<li><code>$lte</code> 匹配字段值小于或等于查询值的文档</li>
 </ul>
 <p>操作命令格式:</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123; &lt;field&gt;: &#123;$&lt;operator&gt;: &lt;value&gt; &#125;&#125;</span><br></pre></td></tr></table></figure>
@@ -1820,7 +1820,7 @@
 <p>当筛选条件应用在不同字段上时，可以省略 <code>$and</code> 操作符, 上面等价于:</p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accounts.find(</span><br><span class="line">    &#123;balance: &#123;$gt: 100&#125;&#125;,</span><br><span class="line">    &#123;name: &#123;$lt: &quot;fred&quot; &#125;&#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
 
-<p>当筛选条件应用在同一字段上时，可以省略 <code>$and</code> 操作符。例如：</p>
+<p>当筛选条件应用在同一字段上时，也可以省略 <code>$and</code> 操作符。例如：</p>
 <p>查询余额大于 <code>100</code> 并且小于 <code>500</code> 的银行账户:</p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accounts.find(</span><br><span class="line">    &#123;balance: &#123;$gt: 100, $lt: 500 &#125;&#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
 
@@ -1836,7 +1836,7 @@
 
 <ul>
 <li><code>$type</code> <ul>
-<li>查询包含字段值的文档</li>
+<li>查询包含字段值类型的文档</li>
 <li>操作命令格式:  <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123; field: &#123; $type: &lt;BSON type&gt; &#125;&#125;</span><br><span class="line">&#123; field: &#123; $type: [&lt;BSON type1&gt;, &lt;BSON type2&gt;, ... ]&#125;&#125;</span><br></pre></td></tr></table></figure></li>
 </ul>
 </li>
@@ -1852,7 +1852,7 @@
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accounts.find(</span><br><span class="line">    &#123;_id: &#123; $type: 2 &#125;&#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
 <h3 id="数组操作符"><a href="#数组操作符" class="headerlink" title="数组操作符"></a>数组操作符</h3><ul>
 <li><code>$all</code> <ul>
-<li>筛选数组中满足所有查询条件的文档</li>
+<li>筛选数组中所有元素满足查询条件的文档</li>
 <li>操作命令格式:  <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123; field: &#123; $all: [&lt;value1&gt;, &lt;value2&gt;, ... ]&#125;&#125;</span><br></pre></td></tr></table></figure></li>
 </ul>
 </li>
