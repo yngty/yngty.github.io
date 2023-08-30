@@ -19,7 +19,7 @@ categories:
 ### 创建索引
 
 ```
-- db.<collection>.createIndex(<keys>, <options>)
+db.<collection>.createIndex(<keys>, <options>)
 ```
 - `<keys>` 文档指定了创建索引的字段
 - `<options>` 创建索引的参数和设定索引的特性
@@ -40,17 +40,15 @@ db.accountWithIndex.createIndex({name: 1, balance: -1})
 db.accountWithIndex.createIndex({currency: 1})
 ```
 #### 列出集合中的索引
-- db.collection.getIndexes()
 
 ```shell
 db.accountWithIndex.getIndexes()
+
 ```
 <!--more-->
 ### 删除索引
 
 如果需要更改某些字段上已经创建的索引必须首先删除原有索引，再重新创建新索引，否则新索引不会包含原有字段
-
-- db.collection.dropIndex()
 
 #### 使用索引名字删除
 ```shell
@@ -72,35 +70,35 @@ db.accountWithIndex.dropIndex( { name: 1, balance: -1 })
 
 ### 唯一性
 
-    ```shell
-    db.accountWithIndex.createIndex({balance:1},{unique:true})
-    ```
+```shell
+db.accountWithIndex.createIndex({balance:1},{unique:true})
+```
 
-    如果已有文档中的某个字段出现了重复性，就不可以在这个字段上创建唯一性索引
+如果已有文档中的某个字段出现了重复性，就不可以在这个字段上创建唯一性索引
 
-    如果新增的文档不包含唯一性索引字段，只有第一篇缺失该字段的文档可以被写入数据库，索引中该文档的键值被默认为null
+如果新增的文档不包含唯一性索引字段，只有第一篇缺失该字段的文档可以被写入数据库，索引中该文档的键值被默认为null
 ### 稀疏性
 
-    只将包含索引字段的文档加入到索引中(即使索引键字段为null)
+只将包含索引字段的文档加入到索引中(即使索引键字段为null)
 
-    ```shell
-    db.accountWithIndex.createIndex({balance:1}, { sparse:true})
-    ```
-    如果同一个索引既具有唯一性，又具有稀疏性，就可以保存多篇缺失索引键值的文档了 
+```shell
+db.accountWithIndex.createIndex({balance:1}, { sparse:true})
+```
+如果同一个索引既具有唯一性，又具有稀疏性，就可以保存多篇缺失索引键值的文档了 
 
-    ```shell
-    db.accountWithIndex.createIndex({balance:1}, { sparse:true, unique:true})
+```shell
+db.accountWithIndex.createIndex({balance:1}, { sparse:true, unique:true})
 
-    ```
-    复合键索引也可以具有稀疏性，在这种情况下，只有在缺失复合键所包含的所有字段的情况下，文档才不会加入到索引中
+```
+复合键索引也可以具有稀疏性，在这种情况下，只有在缺失复合键所包含的所有字段的情况下，文档才不会加入到索引中
 
 ### 生存时间
 
-    ```shell
-    db.accountWithIndex.createIndex({lastAccess:1},{expireAfterSeconds:20})
-    ```
+```shell
+db.accountWithIndex.createIndex({lastAccess:1},{expireAfterSeconds:20})
+```
 
-    **复合键索引不具有生存时间特性**，当索引键是包含日期元素的数组字段时，数组中**最小**的的日期将被用来计算文档是否过期。数据库使用一个后台线程来监测和删除过期文档，删除操作可能有一定的延迟。
+**复合键索引不具有生存时间特性**，当索引键是包含日期元素的数组字段时，数组中**最小**的的日期将被用来计算文档是否过期。数据库使用一个后台线程来监测和删除过期文档，删除操作可能有一定的延迟。
 
 ## 查询分析
 
