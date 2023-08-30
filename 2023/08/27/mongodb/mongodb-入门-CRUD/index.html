@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yngty.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="文档主键文档主键 _id文档主键 _id是每篇文档必备的字段,具有以下特性:  文档主键的唯一性 支持所有数据类型(数组除外) 复合主键  对象主键 ObjectId当我们不提供主键，MongoDB 自动为我们生成的默认 对象主键 ObjectId  默认的文档主键 可以快速生成的 12 字节 id 包含创建时间  ObjectId 默认值 12test&gt; ObjectId()ObjectI">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mongodb 入门-CRUD">
+<meta property="og:url" content="https://yngty.github.io/2023/08/27/mongodb/mongodb-%E5%85%A5%E9%97%A8-CRUD/index.html">
+<meta property="og:site_name" content="Symbol Crash">
+<meta property="og:description" content="文档主键文档主键 _id文档主键 _id是每篇文档必备的字段,具有以下特性:  文档主键的唯一性 支持所有数据类型(数组除外) 复合主键  对象主键 ObjectId当我们不提供主键，MongoDB 自动为我们生成的默认 对象主键 ObjectId  默认的文档主键 可以快速生成的 12 字节 id 包含创建时间  ObjectId 默认值 12test&gt; ObjectId()ObjectI">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-08-27T15:34:59.000Z">
+<meta property="article:modified_time" content="2023-08-30T08:50:13.389Z">
+<meta property="article:author" content="yngty">
+<meta property="article:tag" content="mongodb">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://yngty.github.io/2023/08/27/mongodb/mongodb-%E5%85%A5%E9%97%A8-CRUD/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>mongodb 入门-CRUD | Symbol Crash</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Symbol Crash" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Symbol Crash</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">不学无术</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">54</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">10</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">27</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2023/08/27/mongodb/mongodb-%E5%85%A5%E9%97%A8-CRUD/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Symbol Crash">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          mongodb 入门-CRUD
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-08-27 15:34:59" itemprop="dateCreated datePublished" datetime="2023-08-27T15:34:59+00:00">2023-08-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-08-30 08:50:13" itemprop="dateModified" datetime="2023-08-30T08:50:13+00:00">2023-08-30</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/mongodb/" itemprop="url" rel="index"><span itemprop="name">mongodb</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>16 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="文档主键"><a href="#文档主键" class="headerlink" title="文档主键"></a>文档主键</h1><h2 id="文档主键-id"><a href="#文档主键-id" class="headerlink" title="文档主键 _id"></a>文档主键 <code>_id</code></h2><p>文档主键 <code>_id</code>是每篇文档必备的字段,具有以下特性:</p>
+<ul>
+<li>文档主键的唯一性</li>
+<li>支持所有数据类型(数组除外)</li>
+<li>复合主键</li>
+</ul>
+<h2 id="对象主键-ObjectId"><a href="#对象主键-ObjectId" class="headerlink" title="对象主键 ObjectId"></a>对象主键 <code>ObjectId</code></h2><p>当我们不提供主键，<code>MongoDB</code> 自动为我们生成的默认 对象主键 <code>ObjectId</code></p>
+<ul>
+<li>默认的文档主键</li>
+<li>可以快速生成的 <code>12</code> 字节 <code>id</code></li>
+<li>包含创建时间</li>
+</ul>
+<p><code>ObjectId</code> 默认值</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">test&gt; </span><span class="language-bash">ObjectId()</span></span><br><span class="line">ObjectId(&quot;64eeed51b64b9d7e95e6b8ea&quot;)</span><br></pre></td></tr></table></figure>
+<p>手动设置 <code>ObjectId</code> 的值</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">test&gt; </span><span class="language-bash">ObjectId(<span class="string">&quot;123456789011123456789011&quot;</span>)</span></span><br><span class="line">ObjectId(&quot;123456789011123456789011&quot;)</span><br></pre></td></tr></table></figure>
+
+<p>提取 <code>ObjectId</code> 的创建时间</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">test&gt; </span><span class="language-bash">ObjectId(<span class="string">&quot;123456789011123456789011&quot;</span>).getTimestamp()</span></span><br><span class="line">ISODate(&quot;1979-09-05T22:51:36.000Z&quot;)</span><br></pre></td></tr></table></figure>
+<span id="more"></span>
+<h2 id="复合主键"><a href="#复合主键" class="headerlink" title="复合主键"></a>复合主键</h2><p>使用文档作为文档主键</p>
+<p>举个例子:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.insert(&#123;</span><br><span class="line">    _id: &#123;accountNo: &quot;001&quot;, type: &quot;savings&quot;&#125;,</span><br><span class="line">    name: &quot;irene&quot;,</span><br><span class="line">    balance: 100</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p><strong>复合主键任然要满足文档主键的唯一性</strong>，需要字段值和顺序完全一致才算重复。</p>
+<p>下面是不同的 <code>_id</code>:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">_id: &#123;accountNo: &quot;001&quot;, type: &quot;savings&quot;&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">_id: &#123; type: &quot;savings&quot;, accountNo: &quot;001&quot;&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="创建文档"><a href="#创建文档" class="headerlink" title="创建文档"></a>创建文档</h1><h2 id="创建单个文档"><a href="#创建单个文档" class="headerlink" title="创建单个文档"></a>创建单个文档</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">db.&lt;collection&gt;.insertOne(</span><br><span class="line">    &lt;document&gt;,</span><br><span class="line">    &#123;</span><br><span class="line">        writeConcern: &lt;document&gt;</span><br><span class="line">    &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>&lt;collection&gt;</code>： 文档集合名</li>
+<li><code>&lt;document&gt;</code>： 准备写入数据库的文档<ul>
+<li><code>Json</code> 文档格式  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    _id: &quot;account1&quot;,</span><br><span class="line">    name: &quot;alice&quot;,</span><br><span class="line">    balance: 100</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><code>writeConcern</code>： 文档定义了本次文档创建操作的安全写级别简单来说，安全写级别用来判断一次数据库写入操作是否成功。安全写级别越高，丢失数据的风险就越低，然而写入操作的延迟也可能更高。如果不提供<code>writeConcern</code> 文档，<code>MongoDB</code> 使用默认的安全写级别</li>
+</ul>
+<p>举个例子:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.insertMany(</span><br><span class="line">    &#123;</span><br><span class="line">        _id: &quot;account1&quot;,</span><br><span class="line">        name: &quot;alice&quot;,</span><br><span class="line">        balance: 100</span><br><span class="line">    &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><code>insertOne</code>、<code>insetMany</code>、<code>insert</code> 会自动创建相应集合</p>
+</li>
+<li><p><code>_id</code> 字段<strong>不能重复</strong>，省略创建文档中的 <code>_id</code> 字段，会自动生成 <code>_id</code>。</p>
+</li>
+</ul>
+<h2 id="创建多个文档"><a href="#创建多个文档" class="headerlink" title="创建多个文档"></a>创建多个文档</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">db.&lt;collection&gt;.insertMany(</span><br><span class="line">    [&lt;document1&gt;, &lt;document2&gt;, ...],</span><br><span class="line">    &#123;</span><br><span class="line">        writeConcern: &lt;document&gt;,</span><br><span class="line">        ordered: &lt;boolean&gt;</span><br><span class="line">    &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>ordered</code>: MongoDB 是否按照顺序来写入这些文档。默认为 <code>true</code>。</li>
+</ul>
+<p>举个例子:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.insertMany(</span><br><span class="line">    [</span><br><span class="line">        &#123;name: &quot;charlie&quot;, balance: 500&#125;,</span><br><span class="line">        &#123;name: &quot;david&quot;, balance: 200&#125;</span><br><span class="line">    ]</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h3 id="错误处理"><a href="#错误处理" class="headerlink" title="错误处理"></a>错误处理</h3><p>在<strong>顺序</strong>写入时，一旦遇到错误，操作便会退出，剩余的文档无论正确与否，都不会被写入。 </p>
+<p>在<strong>乱序</strong>写入时，即使某些文档造成了错误，剩余的正确文档任然会被写入</p>
+<h2 id="创建单个或多个文档"><a href="#创建单个或多个文档" class="headerlink" title="创建单个或多个文档"></a>创建单个或多个文档</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">db.&lt;collection&gt;.insert(</span><br><span class="line">    &lt;document or array of documents&gt;,</span><br><span class="line">    &#123;</span><br><span class="line">        writeConcern: &lt;document&gt;,</span><br><span class="line">        ordered: &lt;boolean&gt;</span><br><span class="line">    &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p><code>insert</code> 命令既可以提供单个 <code>document</code> 也可以提供 <code>document</code> 数组, 返回结果不同， 正确返回 <code>WriteReult</code> 对象</p>
+<p>举个例子:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.insert(</span><br><span class="line">    &#123;</span><br><span class="line">        name: &quot;george&quot;,</span><br><span class="line">        balance: 1000</span><br><span class="line">    &#125;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">````</span><br><span class="line">返回结果:</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>WriteResult({ “nInserted”: 1 })<br>&#x2F;&#x2F; nInserted: 插入数量</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">## 三个命令的区别</span><br><span class="line"></span><br><span class="line">- 返回结果不同</span><br><span class="line">- `insertOne` 和 `insertMany` 命令不支持 `db.collection.explain()` 命令，`insert` 命令支持。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">## save</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>db.<collection>.save(<br>    <document>,<br>    {<br>        writeConcern: <document><br>    }<br>)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">当 `db.collection.save()` 命令处理一个新文档的时候，会调用 `db.collection.insert()` 命令</span><br><span class="line"></span><br><span class="line"># 读取文档</span><br><span class="line"></span><br><span class="line">## find</span><br></pre></td></tr></table></figure>
+<p>db.<collection>.find(<query>, <projection>)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">- `&lt;projection&gt;`: 定义了对读取结果进行的投射</span><br><span class="line"></span><br><span class="line">### 读取全部文档</span><br><span class="line"></span><br><span class="line">既不筛选，也不使用投射</span><br><span class="line"></span><br><span class="line">```shell</span><br><span class="line">db.accounts.find()</span><br></pre></td></tr></table></figure>
+
+<p>格式友好:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.find().pretty()</span><br></pre></td></tr></table></figure>
+
+<h3 id="筛选文档"><a href="#筛选文档" class="headerlink" title="筛选文档"></a>筛选文档</h3><h4 id="匹配查询"><a href="#匹配查询" class="headerlink" title="匹配查询"></a>匹配查询</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.find(&#123;name: &quot;alice&quot;, balance: 100&#125;)</span><br></pre></td></tr></table></figure>
+<p>嵌入文档的查询:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.find(&#123;&quot;_id.type&quot;: &quot;savings&quot;&#125;)</span><br></pre></td></tr></table></figure>
+
+<h4 id="比较操作符"><a href="#比较操作符" class="headerlink" title="比较操作符"></a>比较操作符</h4><p>常用的比较操作符包括:</p>
+<ul>
+<li><code>$eq</code> 匹配字段值相等的文档</li>
+<li><code>$ne</code> 匹配字段值不等的文档<ul>
+<li><strong>也会筛选出不包含查询字段的文档</strong></li>
+</ul>
+</li>
+<li><code>$gt</code> 匹配字段值大于查询值的文档</li>
+<li><code>$gte</code> 匹配字段值大于或等于查询值的文档</li>
+<li><code>$le</code> 匹配字段值小于查询值的文档</li>
+<li><code>$te</code> 匹配字段值小于或等于查询值的文档<br>操作命令格式:<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123; &lt;field&gt;: &#123;$&lt;operator&gt;: &lt;value&gt; &#125;&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>举个例子:</p>
+<p>读取 <code>alice</code> 的文档：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.find(&#123; name: &#123; $eq: &quot;alice&quot; &#125;&#125;)</span><br></pre></td></tr></table></figure>
+<p>读取余额大于 <code>100</code> 的文档：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.find(&#123; balance: &#123; $gt: 100 &#125;&#125;)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>$in</code> 匹配字段值与任一查询值相等的文档</li>
+<li><code>$nin</code> 匹配字段值与任何查询值都不相等的文档<ul>
+<li><strong>也会筛选出不包含查询字段的文档</strong></li>
+</ul>
+</li>
+</ul>
+<p>操作命令格式:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123; &lt;field&gt;: &#123; $in: [&lt;value1&gt;, &lt;value2&gt;, ...] &#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>举个例子:</p>
+<p>读取 <code>alice</code> 和 <code>charlie</code> 的银行账户文档:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.find(&#123; name: &#123; $in: [&quot;alice&quot;, &quot;charlie&quot;] &#125;&#125;)</span><br></pre></td></tr></table></figure>
+<h4 id="逻辑操作符"><a href="#逻辑操作符" class="headerlink" title="逻辑操作符"></a>逻辑操作符</h4><ul>
+<li><code>$not</code> 匹配筛选条件不成立的文档<ul>
+<li>操作命令格式:  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123; &lt;field&gt;: &#123; $not: &#123;&lt;operator-expression&gt; &#125; &#125;&#125;</span><br></pre></td></tr></table></figure></li>
+<li><strong>也会筛选出不包含查询字段的文档</strong></li>
+</ul>
+</li>
+<li><code>$and</code> 匹配筛选条件全部成立的文档<ul>
+<li>操作命令格式: <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123; $and: [&#123;&lt;operator-expression1&gt;&#125;, &#123;&lt;operator-expression2&gt;&#125;, ...]&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><code>$or</code> 匹配筛选条件至少一个成立的文档<ul>
+<li>操作命令格式:  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123; $or: [&#123;&lt;operator-expression1&gt;&#125;, &#123;&lt;operator-expression2&gt;&#125;, ...]&#125;</span><br></pre></td></tr></table></figure></li>
+<li>当所有的筛选条件都是 <code>$eq</code> 操作符时，<code>$or</code> 和 <code>$in</code> 效果一样</li>
+</ul>
+</li>
+<li><code>$nor</code> 匹配多个筛选条件全部不成立的文档<ul>
+<li>操作命令格式:  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123; $nor: [&#123;&lt;operator-expression1&gt;&#125;, &#123;&lt;operator-expression2&gt;&#125;, ...]&#125;</span><br></pre></td></tr></table></figure></li>
+<li><strong>也会筛选出不包含查询字段的文档</strong></li>
+</ul>
+</li>
+</ul>
+<p>举个例子：</p>
+<p>读取余额不小于 <code>500</code> 的银行账户文档：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.find(</span><br><span class="line">    &#123;balance: &#123;$not: &#123;$lt: 500 &#125;&#125;&#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>读取余额大于 <code>100</code> 且用户姓名排在 <code>fred</code> 之后的银行账户文档：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.find(</span><br><span class="line">    &#123; and: &#123;</span><br><span class="line">        &#123;balance: &#123;$gt: 100&#125;&#125;,</span><br><span class="line">        &#123;name: &#123;$lt: &quot;fred&quot; &#125;&#125;</span><br><span class="line">    &#125;&#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>当筛选条件应用在不同字段上时，可以省略 <code>$and</code> 操作符, 上面等价于:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.find(</span><br><span class="line">    &#123;balance: &#123;$gt: 100&#125;&#125;,</span><br><span class="line">    &#123;name: &#123;$lt: &quot;fred&quot; &#125;&#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>当筛选条件应用在同一字段上时，可以省略 <code>$and</code> 操作符。例如：</p>
+<p>查询余额大于 <code>100</code> 并且小于 <code>500</code> 的银行账户:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.find(</span><br><span class="line">    &#123;balance: &#123;$gt: 100, $lt: 500 &#125;&#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h4 id="字段操作符"><a href="#字段操作符" class="headerlink" title="字段操作符"></a>字段操作符</h4><ul>
+<li><code>$exists</code> <ul>
+<li>查询包含字段值的文档</li>
+<li>操作命令格式:  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123; field: &#123; $exists: &lt;boolean&gt; &#125;&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<p>举个例子:<br>读取文档主键 <code>_id.type</code> 存在并且不等于 <code>checking</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.find(</span><br><span class="line">    &#123;&quot;_id.type&quot;: &#123; $ne: &quot;checking&quot;, $exists: true &#125;&#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>$type</code> <ul>
+<li>查询包含字段值的文档</li>
+<li>操作命令格式:  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#123; field: &#123; $type: &lt;BSON type&gt; &#125;&#125;</span><br><span class="line">&#123; field: &#123; $type: [&lt;BSON type1&gt;, &lt;BSON type2&gt;, ... ]&#125;&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<p>举个例子:</p>
+<p>读取文档主键是字符串的银行账户文档</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.find(</span><br><span class="line">    &#123;_id: &#123; $type: &quot;string&quot; &#125;&#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>读取文档主键是对象主键或者是复合主键的银行账户文档</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.find(</span><br><span class="line">    &#123;_id: &#123; $type: [&quot;ObjectId&quot;, &quot;object&quot;] &#125;&#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>也可以使用 <code>BSON</code> 类型序号作为 <code>$type</code> 操作符的参数</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.find(</span><br><span class="line">    &#123;_id: &#123; $type: 2 &#125;&#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h4 id="数组操作符"><a href="#数组操作符" class="headerlink" title="数组操作符"></a>数组操作符</h4><ul>
+<li><code>$all</code> <ul>
+<li>筛选数组中满足所有查询条件的文档</li>
+<li>操作命令格式:  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123; field: &#123; $all: [&lt;value1&gt;, &lt;value2&gt;, ... ]&#125;&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><code>$elemMatch</code> <ul>
+<li>筛选数组中任一一个元素满足查询条件</li>
+<li>操作命令格式:  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123; field: &#123; $elemMatch: &#123;&lt;query1&gt;, &lt;query2&gt;, ... &#125;&#125;&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<p>举个例子</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.find(</span><br><span class="line">    &#123;contact: &#123; $elemMatch: &#123; $gt: 100, %lt: 200 &#125;&#125;&#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p><code>$all</code> 可以 与 <code>$elemMatch</code> 结合使用:<br>读取包含一个在 <code>1000</code> 至 <code>2000</code> 之间和一个在 <code>2000</code> 至 <code>3000</code> 之间的联系电话的银行账户文档:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.find(</span><br><span class="line">    &#123;contact: &#123; $all: [</span><br><span class="line">        &#123;$elemMatch:&#123;$gt: 1000, $lt: 2000&#125;&#125;,</span><br><span class="line">        &#123;$elemMatch:&#123;$gt: 2000, $lt: 3000&#125;&#125;,</span><br><span class="line">    ]&#125;&#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h4 id="运算操作符"><a href="#运算操作符" class="headerlink" title="运算操作符"></a>运算操作符</h4><h1 id="update"><a href="#update" class="headerlink" title="update"></a>update</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.collection.update(&lt;query&gt;, &lt;update&gt;, &lt;options&gt;)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>&lt;query&gt;</code> 筛选条件</li>
+<li><code>&lt;update&gt;</code> 更新文档</li>
+<li><code>&lt;options&gt;</code> 设置参数</li>
+</ul>
+<h2 id="更新整篇文档"><a href="#更新整篇文档" class="headerlink" title="更新整篇文档"></a>更新整篇文档</h2><p>如果 <code>&lt;update&gt;</code> 文档不包含任何更新操作符，<code>db.collection.update()</code> 将会使用 <code>&lt;update&gt;</code>文档直接替换集合中符合 <code>&lt;query&gt;</code> 文档筛选条件的文档</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.account.update(&#123;name:&quot;alice&quot; &#125;, &#123;name : &quot;alice&quot;, &quot;balance&quot;:123&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>注意问题: </p>
+<ul>
+<li>文档主键 <code>_id</code> 是不可以更改的</li>
+<li>只有<strong>第一篇</strong>符合 <code>&lt;query&gt;</code> 文档符合筛选条件的文档会被更新</li>
+</ul>
+<h2 id="更新特定字段"><a href="#更新特定字段" class="headerlink" title="更新特定字段"></a>更新特定字段</h2><p>更新文档特定字段，需要使用到文档更新操作符，如下:</p>
+<ul>
+<li><code>$set</code> 更新或新增字段</li>
+<li><code>$unset</code> 删除字段</li>
+<li><code>$rename</code> 重命名</li>
+<li><code>$inc</code> 加减字段值</li>
+<li><code>$mul</code> 相乘字段值</li>
+<li><code>$min</code> 比较减小字段值</li>
+<li><code>$max</code> 比较增大字段值</li>
+</ul>
+<h3 id="set"><a href="#set" class="headerlink" title="$set"></a>$set</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123; $set: &#123; &lt;filed1&gt;: &lt;value1&gt;, ...&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.update(</span><br><span class="line">    &#123;name: &quot;jack&quot;&#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        $set: </span><br><span class="line">        &#123;</span><br><span class="line">            balance: 3000,</span><br><span class="line">            info: &#123;</span><br><span class="line">                dateOpened: new Date(&quot;2016-05-18T16:00:00Z&quot;),</span><br><span class="line">                branch: &quot;branch1&quot; </span><br><span class="line">            &#125;,</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h4 id="更新或新增内嵌文档的字段"><a href="#更新或新增内嵌文档的字段" class="headerlink" title="更新或新增内嵌文档的字段"></a>更新或新增内嵌文档的字段</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.update(</span><br><span class="line">    &#123;name: &quot;jack&quot;&#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        $set: </span><br><span class="line">        &#123;</span><br><span class="line">            &quot;info.dateOpened&quot;: new Date(&quot;2017-01-01T16:00:00Z&quot;)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h4 id="更新或新增数组字段"><a href="#更新或新增数组字段" class="headerlink" title="更新或新增数组字段"></a>更新或新增数组字段</h4><p>在 <code>$set</code> 中使用数组名加下标，如果向现有数组字段范围以外的位置添加新值，数组字段的长度会被扩大，未被赋值的数组成员将被设置为 <code>null</code></p>
+<p>举个例子 <code>jack</code>的  <code>contact</code> 数组中默认有 <code>3</code> 个元素: </p>
+<ul>
+<li><p>更新  <code>jack</code>的 <code>contact</code> 数组中第一个元素</p>
+  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.update(</span><br><span class="line">    &#123;name: &quot;jack&quot;&#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        $set: </span><br><span class="line">        &#123;</span><br><span class="line">            &quot;contact.0&quot;: &quot;666666&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure></li>
+<li><p>更新 <code>jack</code>的 <code>contact</code> 数组中第四元素</p>
+<p>  在 <code>$set</code> 中使用数组名加下标 <code>3</code>， 默认只有 <code>3</code> 个，这个操作会在数组后边新增一个元素.</p>
+  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.update(</span><br><span class="line">    &#123;name: &quot;jack&quot;&#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        $set: </span><br><span class="line">        &#123;</span><br><span class="line">            &quot;contact.3&quot;: &quot;77777&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>更新  <code>jack</code>的 <code>contact</code> 数组中第六个元素</p>
+<p>  在 <code>$set </code>中使用数组名加下标 <code>5</code>， 现在只有 <code>4</code> 个，这个操作会在数组后边新增两个元素，第五个元素为 <code>null</code> 值，第六个为新增值</p>
+  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.update(</span><br><span class="line">    &#123;name: &quot;jack&quot;&#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        $set: </span><br><span class="line">        &#123;</span><br><span class="line">            &quot;contact.5&quot;: &quot;99999&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="unset"><a href="#unset" class="headerlink" title="$unset"></a>$unset</h3><p>删除字段, 传入任何值都一样，默认设置为 <code>&quot;&quot;</code>, 格式如下:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123; $unset: &#123;field1: &quot;&quot;, ...&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>例如删除 <code>jack</code> 的银行账户余额和开户地点:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.update(</span><br><span class="line">    &#123;name:&quot;jack&quot;&#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        $unset:</span><br><span class="line">        &#123;</span><br><span class="line">            balance:&quot;&quot;,</span><br><span class="line">            &quot;info.branch&quot;:&quot;&quot;,</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>删除内嵌文档的字段<ul>
+<li>同更新内嵌文档字段方式</li>
+</ul>
+</li>
+<li>删除数组内的字段<ul>
+<li>同更新内嵌文档字段方式。删除数组中元素成功时，这个元素不会被删除，只会被赋以 <code>null</code> 值，而<strong>数组的长度不会改变</strong>。</li>
+</ul>
+</li>
+</ul>
+<p><strong>如果 <code>$unset</code> 命令中的字段不存在，那么文档内容将保持不变</strong></p>
+<h3 id="rename"><a href="#rename" class="headerlink" title="rename"></a>rename</h3><p>重命名文档字段</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123; $rename: &#123;&lt;field1&gt;: &lt;newName1&gt;, &lt;field2&gt;:&lt;newName2&gt;, ...&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>如果 <code>$rename</code> 命令中的字段不存在，那么文档内容将保持不变</li>
+<li>如果新的字段名已经存在，那么原有的这个字段会被覆盖</li>
+</ul>
+<p><strong>当 <code>$rename</code> 命令中的新字段存在时，<code>$rename</code> 命令会先 <code>$unset</code> 旧字段，然后再 <code>$set</code> 新字段</strong></p>
+<ul>
+<li>重命名内嵌文档的字段<ul>
+<li>普通重命名字段名<ul>
+<li>同更新内嵌文档字段方式</li>
+</ul>
+</li>
+<li>更新内嵌文档中字段的位置  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.update(</span><br><span class="line">    &#123;name: &quot;karen&quot; &#125;</span><br><span class="line">    &#123;</span><br><span class="line">        $rename:</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;info.branch&quot;: &quot;branch&quot;,</span><br><span class="line">            &quot;balance&quot;: &quot;info.balance&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<p><strong>$rename命令中的旧字段和新字段都不可以指向数组元素</strong></p>
+<h3 id="inc-mul"><a href="#inc-mul" class="headerlink" title="$inc &amp; $mul"></a>$inc &amp; $mul</h3><p>更新字段值, <code>$inc</code> 加减字段值(正负数)，<code>$mul</code> 相乘字段值，格式如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123; $inc: &#123; &lt;field1&gt; : &lt;value1&gt;, ...&#125;&#125;</span><br><span class="line"></span><br><span class="line">&#123; $mul: &#123; &lt;field1&gt; : &lt;value1&gt;, ...&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>举个例子 <code>david</code> 账户的 <code>notYetExist</code> 值加  <code>10</code>:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.update(</span><br><span class="line">    &#123;name: &quot;david&quot;&#125;，</span><br><span class="line">    &#123;</span><br><span class="line">        $inc:</span><br><span class="line">        &#123;</span><br><span class="line">            notYetExist: 10</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p><strong>使用注意</strong>: </p>
+<ul>
+<li><code>$inc</code>、 <code>$mul</code> 只能应用在<strong>数字</strong>字段上</li>
+<li>当更新字段不存在时<ul>
+<li><code>$inc</code> 会创建字段，并且将字段值设定为命令中的<strong>增减值</strong></li>
+<li><code>$mul</code> 会创建字段，但是把字段值设为 <code>0</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="min-max"><a href="#min-max" class="headerlink" title="$min &amp; $max"></a>$min &amp; $max</h3><p>比较后更新值，<code>$min</code> 比较后保留较小字段值 <code>$max</code> 比较后保留较大字段值：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123; $min: &#123; &lt;field1&gt; : &lt;value1&gt;, ...&#125;&#125;</span><br><span class="line"></span><br><span class="line">&#123; $max: &#123; &lt;field1&gt; : &lt;value1&gt;, ...&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>举个例子:</p>
+<p>会将 <code>info.balance</code> 的当前值同 <code>5000</code> 比较，保留较小的值。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.update(</span><br><span class="line">    &#123;name: &quot;david&quot;&#125;，</span><br><span class="line">    &#123;</span><br><span class="line">        $min:</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;info.balance&quot;: 5000</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p><strong>使用注意</strong>: </p>
+<ul>
+<li>可以在任何可以比较大小的字段上使用</li>
+<li>当更新字段不存在时<ul>
+<li><code>$min</code> 和 <code>$max</code> <strong>都会创建字段</strong>，并且将字段值设定为命令中的<strong>更新值</strong>。</li>
+</ul>
+</li>
+<li>被更新的字段类型和更新值类型不一致<ul>
+<li><code>$min</code> 和 <code>$max</code>会按照 <code>BSON</code> 数据类型排序规则进行比较。<blockquote>
+<p>不同 <code>BSON</code> 类型的值时，<code>MongoDB</code> 使用以下<strong>从低到高</strong>的比较顺序：<br>  <br>  MinKey (internal type)<br>  Null<br>  Numbers (ints, longs, doubles, decimals)<br>  Symbol, String<br>  Object<br>  Array<br>  BinData<br>  ObjectId<br>  Boolean<br>  Date<br>  Timestamp<br>  Regular Expression<br>  MaxKey (internal type)</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="更新数组操作符"><a href="#更新数组操作符" class="headerlink" title="更新数组操作符"></a>更新数组操作符</h2><ul>
+<li><code>$addToSet</code> 向数组中增添元素</li>
+<li><code>$pop </code>从数组中移除元素</li>
+<li><code>$pull</code> 从数组中有选择性的移出元素</li>
+<li><code>$pullAll</code> 从数组中有选择性的移出元素</li>
+<li><code>$push</code> 向数组中增添元素</li>
+</ul>
+<p><strong>以上字段只能用到数组字段上，否则会收到错误</strong></p>
+<h3 id="addToSet"><a href="#addToSet" class="headerlink" title="$addToSet"></a>$addToSet</h3><p><code>$addToSet</code> 向数组中增添元素:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123; $addToSet: &#123; &lt;field1&gt; : &lt;value1&gt;, ...&#125;&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>如果要插入的值不存在数组字段中<ul>
+<li>新增字段会被添加到原文档中</li>
+</ul>
+</li>
+<li>如果要插入的值已经存在数组字段中<ul>
+<li><code>$addToSet</code> 不会再添加重复值。 <strong>使用 <code>$addToSet</code>插入数组和文档时，插入值中的字段顺序和已有值重复时，才被算着重复值被忽略</strong></li>
+</ul>
+</li>
+</ul>
+<p><code>$addToSet</code> 会将数组插入被更新的数组字段中，成为内嵌数组。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.update(</span><br><span class="line">    &#123;name: &quot;karen&quot;&#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        $addToSet: &#123;contact: [&quot;contact1&quot;, &quot;contact2&quot;]&#125;</span><br><span class="line">    &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>如果想要将多个元素直接添加到数组字段中，则需要使用 <code>$each</code> 操作符</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.update(</span><br><span class="line">    &#123;name: &quot;karen&quot;&#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        $addToSet: &#123;contact: &#123; $each:   [&quot;contact1&quot;, &quot;contact2&quot;] &#125;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h3 id="pop"><a href="#pop" class="headerlink" title="$pop"></a>$pop</h3><p><code>$pop</code> 从数组字段中删除元素, <strong>只能删除数组中的第一个(-1)和最后一个元素(1)</strong>, 删除掉数组中最后一个元素后，会留下<strong>空数组</strong>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123; $pop: &#123; &lt;field&gt;: &lt; -1 | 1 &gt;, ...&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从 <code>karen</code> 的账户文档中删除最后一个联系方式:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.update(</span><br><span class="line">    &#123;name: &quot;karen&quot;&#125;,</span><br><span class="line">    &#123; $pop: &#123; contact: 1 &#125;&#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h3 id="pull"><a href="#pull" class="headerlink" title="$pull"></a>$pull</h3><p><code>$pull</code> 从数组中删除符合值或者条件的元素</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123; $pull: &#123; &lt;field1&gt;: &lt;value|condition&gt;, ... &#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从 <code>karen</code>的联系方式中删除包含 <code>hi</code>字母的元素:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.update(</span><br><span class="line">    &#123; name: &quot;karen&quot;&#125;,</span><br><span class="line">    &#123; $pull: &#123; contact: &#123; $regex: /hi/ &#125;&#125;&#125;</span><br><span class="line"></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>要删除数组元素是内嵌数组，可以使用 <code>$elemMatch</code> 对内嵌数组进行筛选:</p>
+<p>从 <code>karen</code>的联系方式中删除包含 <code>22222222</code>的内嵌数组元素:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.update(</span><br><span class="line">    &#123; name: &quot;karen&quot;&#125;,</span><br><span class="line">    &#123; $pull: &#123; contact: &#123; $elemMatch: &#123; $eq: &quot;22222222&quot; &#125;&#125;&#125;&#125;  </span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h3 id="pullAll"><a href="#pullAll" class="headerlink" title="$pullAll"></a>$pullAll</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123; $pullAll: &#123; &lt;field1&gt;: [&lt;value1, value2&gt;, ...], ... &#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其实</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123; $pullAll: &#123; &lt;field1&gt;: [&lt;value1, value2&gt;] &#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>相当于</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123; $pull: &#123; &lt;field1&gt;: &#123;$in: [&lt;value1, value2&gt;] &#125;&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>如果要删除的元素是一个数组，数组的元素的值和排列顺序都必须和要被删除的数组完全一样</strong>。</p>
+<p>举个例子:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.update(</span><br><span class="line">    &#123;name: &quot;lawrence&quot;&#125;,</span><br><span class="line">    &#123; $pullAll: &#123;contact: [[&quot;333333&quot;, &quot;222222&quot;]]&#125;&#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>如果删除的元素是一个文档</p>
+<ul>
+<li><code>$pullAll</code> 命令只会删除字段和排列顺序都<strong>完全匹配</strong>的文档元素</li>
+<li><code>$pull</code> 命令会删除匹配的文档元素，模糊度更高(<strong>形成包含关系，或者能通过字段名找到</strong>)。</li>
+</ul>
+<h3 id="push"><a href="#push" class="headerlink" title="$push"></a>$push</h3><p><code>$push </code>向数组中添加元素</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123; $push: &#123; &lt;field1&gt; : &lt;value1&gt;, ...&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>$push</code> 和 <code>addTosSet</code>命令相似地方:</p>
+<ul>
+<li><p>如果要插入的值不存在数组字段中</p>
+<ul>
+<li>新增字段会被添加到原文档中</li>
+</ul>
+</li>
+<li><p>可以搭配 <code>$each</code></p>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.update(</span><br><span class="line">     &#123;name: &quot;lawrence&quot;&#125;,</span><br><span class="line">     &#123; $push: &#123;</span><br><span class="line">         newArray: &#123;</span><br><span class="line">             $each:[2, 3, 4]</span><br><span class="line">         &#125;</span><br><span class="line">     &#125;&#125;</span><br><span class="line"> )</span><br></pre></td></tr></table></figure>
+<p><code>$push</code> 比 <code>addTosSet</code>增加地方:</p>
+</li>
+<li><p>搭配 <code>$each</code> 实现更复杂的操作</p>
+<ul>
+<li><p>使用 <code>$position</code> 操作符将元素插入到数组的指定位置, <code>$position</code> 的值 <code>0</code> 表示 从数组第一个位置开始插入，<code>-1</code> 表示从数组最后一个元素往前走 <code>1</code> 一个开始插入.</p>
+  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.update(</span><br><span class="line">    &#123;name: &quot;lawrence&quot;&#125;,</span><br><span class="line">    &#123; $push: &#123;</span><br><span class="line">        newArray: &#123;</span><br><span class="line">            $each:[&quot;pos1&quot;, &quot;pos2&quot;],</span><br><span class="line">            $position: 0</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;&#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure></li>
+<li><p>使用 <code>$sort</code> 排序</p>
+  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.update(</span><br><span class="line">    &#123;name: &quot;lawrence&quot;&#125;,</span><br><span class="line">    &#123; $push: &#123;</span><br><span class="line">        newArray: &#123;</span><br><span class="line">            $each:[&quot;sort1&quot;],</span><br><span class="line">            $sort: 1</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;&#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure></li>
+<li><p>如果插入的元素是内嵌文档，也可以根据内嵌文档的字段值排序</p>
+  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.update(</span><br><span class="line">    &#123;name: &quot;lawrence&quot;&#125;,</span><br><span class="line">    &#123; $push: &#123;</span><br><span class="line">        newArray: &#123;</span><br><span class="line">            $each:[&#123;key: &quot;sort&quot;, value: 100&#125;, &#123;key: &quot;sort1&quot;, value: 200&#125;],</span><br><span class="line">            $sort: &#123; value: -1 &#125; // 只排序插入的内嵌文档</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;&#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure></li>
+<li><p>不想插入，只想对数组中的字段进行排序:</p>
+  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.update(</span><br><span class="line">    &#123;name: &quot;lawrence&quot;&#125;,</span><br><span class="line">    &#123; $push: &#123;</span><br><span class="line">        newArray: &#123;</span><br><span class="line">            $each:[],</span><br><span class="line">            $sort: -1</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;&#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure></li>
+<li><p>使用 <code>$slice</code> 截取部分数组</p>
+<p>  插入 <code>slice1</code> 元素后，保留从后往前数 <code>8</code> 个元素:</p>
+  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.update(</span><br><span class="line">    &#123;name: &quot;lawrence&quot;&#125;,</span><br><span class="line">    &#123; $push: &#123;</span><br><span class="line">        newArray: &#123;</span><br><span class="line">            $each:[&quot;slice1&quot;],</span><br><span class="line">            $slice: -8</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;&#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure></li>
+<li><p>不想插入，只想截取部分数组:</p>
+<p>  保留数组中的前 <code>6</code> 个元素:</p>
+  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.update(</span><br><span class="line">    &#123;name: &quot;lawrence&quot;&#125;,</span><br><span class="line">    &#123; $push: &#123;</span><br><span class="line">        newArray: &#123;</span><br><span class="line">            $each:[],</span><br><span class="line">            $slice: 6</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;&#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<p><code>$position</code>, <code>$sort</code>, <code>$slice</code> 可以一起使用, 他们的执行顺序是 <code>$position &gt; $sort &gt;  $slice</code>。<strong>写在命令中的操作顺序并不重要，并不会影响命令的执行顺序</strong>。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.update(</span><br><span class="line">    &#123;name: &quot;lawrence&quot;&#125;,</span><br><span class="line">    &#123; $push: &#123;</span><br><span class="line">        newArray: &#123;</span><br><span class="line">            $each:[&quot;push1&quot;, &quot;push2&quot;],</span><br><span class="line">            $position: 2,</span><br><span class="line">            $sort: -1,</span><br><span class="line">            $slice: 5</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;&#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h3 id="占位符"><a href="#占位符" class="headerlink" title="$ 占位符"></a><code>$</code> 占位符</h3><p><code>$</code> 是数组中第一个符合筛选条件的数组元素的占位符, 搭配更新操作符使用，可以对满足筛选条件的数组元素进行更新。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">db.collection.update(</span><br><span class="line">    &#123; &lt;array&gt;: &lt;query selector&gt; &#125;,</span><br><span class="line">    &#123; &lt;update operator&gt; : &#123; &quot;&lt;array&gt;.$&quot;: value &#125;&#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>举个例子，将 <code>lawrence</code> 中 <code>newArray</code> 中的 <code>pos2</code> 替换为 <code>updated</code>:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.update(</span><br><span class="line">    &#123;</span><br><span class="line">        name: &quot;lawrence&quot;,</span><br><span class="line">        newArray: &quot;pos2&quot;</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        $set: &#123;</span><br><span class="line">            &quot;newArray.$&quot;: &quot;updated&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h3 id="占位符-1"><a href="#占位符-1" class="headerlink" title="$[] 占位符"></a><code>$[]</code> 占位符</h3><p><code>$[]</code> 指代数组中的所有元素</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123; &lt;update operator&gt; : &#123; &quot;&lt;array&gt;.$[]&quot;: value &#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>举个例子，将 <code>lawrence</code> 账户中的 <code>contact</code>数组中的第一个内嵌数组，全部替换为 <code>999999</code>:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.update(</span><br><span class="line">    &#123;name: &quot;lawrence&quot;&#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        $set: &#123;</span><br><span class="line">            &quot;contact.0.$[]&quot;: 999999</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h2 id="options"><a href="#options" class="headerlink" title="options"></a>options</h2><h3 id="multi"><a href="#multi" class="headerlink" title="multi"></a>multi</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123; multi: &lt;boolean&gt; &#125;</span><br></pre></td></tr></table></figure>
+
+<p>默认情况下，即使筛选条件对应了多篇文档，<code>update</code> 命令仍然只会更新<strong>一篇</strong>文档</p>
+<p>设置 <code>multi</code> 为 <code>true</code> 选项可以更新所有符合筛选条件的文档, 注意，<code>MongoDB</code> 只能保证<strong>单个</strong>文档操作的原子性，不能保证<strong>多个</strong>文档操作的原子性。多个文档操作时的原子性需要 <code>MongoDB 4.0</code> 版本引入的事务功能进行操作。</p>
+<p>举个例子：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.update(</span><br><span class="line">    &#123;&#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        $set: &#123;</span><br><span class="line">            currency: &quot;USD&quot;</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123; multi: true&#125;</span><br><span class="line">    &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h3 id="upsert"><a href="#upsert" class="headerlink" title="upsert"></a>upsert</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123; upsert: &lt;boolean&gt; &#125;</span><br></pre></td></tr></table></figure>
+
+<p>更新或者创建文档</p>
+<p>在默认情况下，如果 <code>update</code> 命令中的筛选条件没有匹配任何文档，则不会进行任何操作</p>
+<p>将 <code>upsert</code> 设置为<code> true</code>， 如果 <code>update</code> 命令中的筛选条件没有匹配任何文档，则会创建新文档</p>
+<p>举个例子:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.update(</span><br><span class="line">    &#123;name: &quot;maggie&quot;&#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        $set: &#123;</span><br><span class="line">            balance: 700</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123; upsert: true&#125;</span><br><span class="line">    &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p><strong>如果筛选条件中能推断出确定的字段，新创建的文档会包含筛选条件设计的字段</strong></p>
+<h2 id="save"><a href="#save" class="headerlink" title="save"></a>save</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.&lt;collection&gt;.save(&lt;document&gt;)</span><br></pre></td></tr></table></figure>
+
+<p>如果 <code>document</code> 文档中包含 <code>_id</code> 字段， <code>save()</code> 命令将会调用 <code>db.collection.update()</code> 命令<code>(upsert: true)</code>, <code>_id</code> 值存在就更新，不存在就创建新文档。</p>
+<p>举个例子:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.save(</span><br><span class="line">    &#123; _id : &quot;account1&quot;, name: &quot;alice&quot;, balance: 100 &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h1 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h1><ul>
+<li>删除集合</li>
+<li>删除特定文档</li>
+</ul>
+<h2 id="删除文档"><a href="#删除文档" class="headerlink" title="删除文档"></a>删除文档</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.&lt;collection&gt;.remove(&lt;query&gt;, &lt;options&gt;)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p><code>&lt;query&gt;</code> 筛选条件</p>
+</li>
+<li><p><code>&lt;options&gt;</code> 设置参数</p>
+</li>
+<li><p>在默认情况下，<code>remove</code> 命令会删除<strong>所有</strong>复合筛选条件的文档</p>
+</li>
+<li><p>如果只想删除复合筛选条件的<strong>第一篇</strong>文档，可以使用<code>justOne</code> 选项</p>
+  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.remove(</span><br><span class="line">    &#123;balance: &#123; $lt: 100&#125; &#125;,</span><br><span class="line">    &#123;justOne: true &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>删除集合内的<strong>所有</strong>文档</p>
+  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.remove(&#123;&#125;)</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>举个例子, 删除 <code>balance</code> 等 <code>50</code> 的文档:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">db.accounts.remove(</span><br><span class="line">    &#123;balance: 50 &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h2 id="删除集合"><a href="#删除集合" class="headerlink" title="删除集合"></a>删除集合</h2><p><code>remove</code> 只会删除集合内所有的文档，但不会删除集合</p>
+<p><code>drop</code> 命令可以删除整个集合，包括集合中的所有文档，以及集合的索引</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.&lt;collection&gt;.drop(&#123; writeConcern: &lt;document&gt; &#125;)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>writeConcern</code> 定义了本次集合删除操作的安全写级别</li>
+</ul>
+<p>举个例子:</p>
+<pre><code class="shell">db.accounts.drop()
+</code></pre>
+<blockquote>
+<p>如果集合中的文档数量较多，使用 <code>remove</code> 命令删除所有的文档效率不高，这种情况下推荐，使用 <code>drop</code> 命令删除集合，然后再创建空集合并创建索引。</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/mongodb/" rel="tag"># mongodb</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/08/26/mongodb/mongodb-%E5%85%A5%E9%97%A8-%E7%B4%A2%E5%BC%95/" rel="prev" title="mongodb 入门-索引">
+      <i class="fa fa-chevron-left"></i> mongodb 入门-索引
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%96%87%E6%A1%A3%E4%B8%BB%E9%94%AE"><span class="nav-number">1.</span> <span class="nav-text">文档主键</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E6%A1%A3%E4%B8%BB%E9%94%AE-id"><span class="nav-number">1.1.</span> <span class="nav-text">文档主键 _id</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1%E4%B8%BB%E9%94%AE-ObjectId"><span class="nav-number">1.2.</span> <span class="nav-text">对象主键 ObjectId</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%8D%E5%90%88%E4%B8%BB%E9%94%AE"><span class="nav-number">1.3.</span> <span class="nav-text">复合主键</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%96%87%E6%A1%A3"><span class="nav-number">2.</span> <span class="nav-text">创建文档</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E5%8D%95%E4%B8%AA%E6%96%87%E6%A1%A3"><span class="nav-number">2.1.</span> <span class="nav-text">创建单个文档</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E5%A4%9A%E4%B8%AA%E6%96%87%E6%A1%A3"><span class="nav-number">2.2.</span> <span class="nav-text">创建多个文档</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86"><span class="nav-number">2.2.1.</span> <span class="nav-text">错误处理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E5%8D%95%E4%B8%AA%E6%88%96%E5%A4%9A%E4%B8%AA%E6%96%87%E6%A1%A3"><span class="nav-number">2.3.</span> <span class="nav-text">创建单个或多个文档</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AD%9B%E9%80%89%E6%96%87%E6%A1%A3"><span class="nav-number">2.3.1.</span> <span class="nav-text">筛选文档</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8C%B9%E9%85%8D%E6%9F%A5%E8%AF%A2"><span class="nav-number">2.3.1.1.</span> <span class="nav-text">匹配查询</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AF%94%E8%BE%83%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="nav-number">2.3.1.2.</span> <span class="nav-text">比较操作符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%BB%E8%BE%91%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="nav-number">2.3.1.3.</span> <span class="nav-text">逻辑操作符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AD%97%E6%AE%B5%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="nav-number">2.3.1.4.</span> <span class="nav-text">字段操作符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E7%BB%84%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="nav-number">2.3.1.5.</span> <span class="nav-text">数组操作符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%90%E7%AE%97%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="nav-number">2.3.1.6.</span> <span class="nav-text">运算操作符</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#update"><span class="nav-number">3.</span> <span class="nav-text">update</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0%E6%95%B4%E7%AF%87%E6%96%87%E6%A1%A3"><span class="nav-number">3.1.</span> <span class="nav-text">更新整篇文档</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0%E7%89%B9%E5%AE%9A%E5%AD%97%E6%AE%B5"><span class="nav-number">3.2.</span> <span class="nav-text">更新特定字段</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#set"><span class="nav-number">3.2.1.</span> <span class="nav-text">$set</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0%E6%88%96%E6%96%B0%E5%A2%9E%E5%86%85%E5%B5%8C%E6%96%87%E6%A1%A3%E7%9A%84%E5%AD%97%E6%AE%B5"><span class="nav-number">3.2.1.1.</span> <span class="nav-text">更新或新增内嵌文档的字段</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0%E6%88%96%E6%96%B0%E5%A2%9E%E6%95%B0%E7%BB%84%E5%AD%97%E6%AE%B5"><span class="nav-number">3.2.1.2.</span> <span class="nav-text">更新或新增数组字段</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#unset"><span class="nav-number">3.2.2.</span> <span class="nav-text">$unset</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rename"><span class="nav-number">3.2.3.</span> <span class="nav-text">rename</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#inc-mul"><span class="nav-number">3.2.4.</span> <span class="nav-text">$inc &amp; $mul</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#min-max"><span class="nav-number">3.2.5.</span> <span class="nav-text">$min &amp; $max</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0%E6%95%B0%E7%BB%84%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="nav-number">3.3.</span> <span class="nav-text">更新数组操作符</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#addToSet"><span class="nav-number">3.3.1.</span> <span class="nav-text">$addToSet</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pop"><span class="nav-number">3.3.2.</span> <span class="nav-text">$pop</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pull"><span class="nav-number">3.3.3.</span> <span class="nav-text">$pull</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pullAll"><span class="nav-number">3.3.4.</span> <span class="nav-text">$pullAll</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#push"><span class="nav-number">3.3.5.</span> <span class="nav-text">$push</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%A0%E4%BD%8D%E7%AC%A6"><span class="nav-number">3.3.6.</span> <span class="nav-text">$ 占位符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%A0%E4%BD%8D%E7%AC%A6-1"><span class="nav-number">3.3.7.</span> <span class="nav-text">$[] 占位符</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#options"><span class="nav-number">3.4.</span> <span class="nav-text">options</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#multi"><span class="nav-number">3.4.1.</span> <span class="nav-text">multi</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#upsert"><span class="nav-number">3.4.2.</span> <span class="nav-text">upsert</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#save"><span class="nav-number">3.5.</span> <span class="nav-text">save</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%A0%E9%99%A4"><span class="nav-number">4.</span> <span class="nav-text">删除</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E6%96%87%E6%A1%A3"><span class="nav-number">4.1.</span> <span class="nav-text">删除文档</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E9%9B%86%E5%90%88"><span class="nav-number">4.2.</span> <span class="nav-text">删除集合</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="yngty"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">yngty</p>
+  <div class="site-description" itemprop="description">预测未来的最好方式就是实现它</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yngty" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yngty" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yngty@foxmail.com" title="E-Mail → mailto:yngty@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yngty</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">30k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:49</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
