@@ -1852,7 +1852,7 @@
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accounts.find(</span><br><span class="line">    &#123;_id: &#123; $type: 2 &#125;&#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
 <h3 id="数组操作符"><a href="#数组操作符" class="headerlink" title="数组操作符"></a>数组操作符</h3><ul>
 <li><code>$all</code> <ul>
-<li>筛选数组中所有元素满足查询条件的文档</li>
+<li>筛选数组中包含所有的查询值的文档</li>
 <li>操作命令格式:  <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123; field: &#123; $all: [&lt;value1&gt;, &lt;value2&gt;, ... ]&#125;&#125;</span><br></pre></td></tr></table></figure></li>
 </ul>
 </li>
@@ -1867,7 +1867,81 @@
 <p><code>$all</code> 可以 与 <code>$elemMatch</code> 结合使用:<br>读取包含一个在 <code>1000</code> 至 <code>2000</code> 之间和一个在 <code>2000</code> 至 <code>3000</code> 之间的联系电话的银行账户文档:</p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accounts.find(</span><br><span class="line">    &#123;contact: &#123; $all: [</span><br><span class="line">        &#123;$elemMatch:&#123;$gt: 1000, $lt: 2000&#125;&#125;,</span><br><span class="line">        &#123;$elemMatch:&#123;$gt: 2000, $lt: 3000&#125;&#125;,</span><br><span class="line">    ]&#125;&#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
 
-<h3 id="运算操作符"><a href="#运算操作符" class="headerlink" title="运算操作符"></a>运算操作符</h3><h1 id="更新文档"><a href="#更新文档" class="headerlink" title="更新文档"></a>更新文档</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">db.collection.update(&lt;query&gt;, &lt;update&gt;, &lt;options&gt;)</span><br></pre></td></tr></table></figure>
+<h3 id="运算操作符"><a href="#运算操作符" class="headerlink" title="运算操作符"></a>运算操作符</h3><h4 id="regex"><a href="#regex" class="headerlink" title="$regex"></a>$regex</h4><p>正则表达式，操作命令格式:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123; &lt;field&gt;: &#123; : /pattern/, : &#x27;&lt;options&gt;&#x27;&#125;&#125;</span><br><span class="line">&#123; &lt;field&gt;: &#123; : /pattern/&lt;options&gt; &#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>兼容 <code>PCRE v8.41</code> 正则表达式库</p>
+<p>在和 <code>$in</code> 操作符一起使用时，只能使用 <code>/pattern/&lt;options&gt;</code> 方式</p>
+<p>举个例子:</p>
+<p>读取用户姓名以 c 或者 j 开头的银行账户文档:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accounts.find(&#123;name: &#123;$in: [ /^c/, /^j/ ]&#125;&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>读取用户姓名包含 <code>ALI</code> (不区分大小写)的银行账户文档:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accounts.find(&#123;name: &#123;$regex: /ALI/, $options: &quot;i&quot;&#125;&#125;)</span><br></pre></td></tr></table></figure>
+<h2 id="文档游标"><a href="#文档游标" class="headerlink" title="文档游标"></a>文档游标</h2><p><code>db.collection.find()</code> 返回一个文档集合游标</p>
+<p>在不迭代游标的情况下，只列出前 <code>20</code> 个文档</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">test&gt; </span><span class="language-bash">var myCursor = db.accounts.find(); myCursor</span></span><br></pre></td></tr></table></figure>
+<p><del>可以使用游标下标直接访问文档集合中的某一个文档</del></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">test&gt; </span><span class="language-bash">var myCursor = db.accounts.find(); myCursor[0]</span></span><br></pre></td></tr></table></figure>
+
+<p>遍历完游标中所有的文档之后，或者在 <code>10</code> 分钟之后，游标会自动关闭， 可以使用 <code>noCursorTimeout()</code> 函数来保持游标一直有效</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">test&gt; </span><span class="language-bash">var myCursor = db.accounts.find().noCursorTimeout()</span></span><br></pre></td></tr></table></figure>
+<p>主动关闭游标</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">test&gt; </span><span class="language-bash">myCursor.close()</span></span><br></pre></td></tr></table></figure>
+<h3 id="游标函数"><a href="#游标函数" class="headerlink" title="游标函数"></a>游标函数</h3><ul>
+<li>cursor.hasNext()</li>
+<li>cursor.next()</li>
+<li>cursor.forEach()</li>
+<li>cursor.limit()<ul>
+<li><code>limit(0)</code> 相当于没有 <code>limit</code></li>
+</ul>
+</li>
+<li>cursor.skip()</li>
+<li>cursor.count(<applySKipLimit>)<ul>
+<li>默认情况下 <code>applySKipLimit</code> 为 <code>false</code>, 即 <code>count</code> 不会考虑 <code>skip</code> 和 <code>limit</code> 的效果</li>
+<li>不提供筛选条件时， <code>count</code> 会从集合的元数据 <code>Metadata</code> 中取得结果，当数据库分布式结构较为复杂时，元数据中的文档数量可能不正确，这时更建议使用<strong>聚合管道</strong>来计算文档数量</li>
+</ul>
+</li>
+<li>cursor.sort(<document>)<ul>
+<li><code>document</code> 定义排序要求，<code>1</code> 表示正向排序，<code> -1</code> 表示逆向排序</li>
+<li><code>&#123;field: ordering&#125;</code></li>
+</ul>
+</li>
+</ul>
+<p><strong>不管命令顺序，执行的顺序永远是 <code>sort &gt; skip &gt; limit</code></strong></p>
+<h2 id="文档投影"><a href="#文档投影" class="headerlink" title="文档投影"></a>文档投影</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">db.&lt;collection&gt;.find(&lt;query&gt;, &lt;projection&gt;)</span><br></pre></td></tr></table></figure>
+<p>不使用投影时， <code>find</code> 返回符合条件的完整文档，而使用投影可以有选择性的返回文档中的部分字段</p>
+<p><code>projection</code> 格式:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123; filed: inclusion &#125;</span><br></pre></td></tr></table></figure>
+<p><code>1</code> 表示返回字段，<code>0</code> 表示不返回字段， <strong>没有设置主键默认会返回</strong></p>
+<p>举个例子:</p>
+<p>只返回银行账户的用户姓名</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accounts.find(&#123;&#125;, &#123;name: 1&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>只返回银行账户的用户姓名(不包含主键)</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accounts.find(&#123;&#125;, &#123;name: 1, _id: 0&#125;)</span><br></pre></td></tr></table></figure>
+
+<p><strong>除了文档主键外，不可以在投影文档上混合使用包含和不包含这两种投影操作</strong></p>
+<p>🙅</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accounts.find(&#123;&#125;, &#123;name: 1， balance: 0&#125;)</span><br></pre></td></tr></table></figure>
+
+<h3 id="数组字段上使用投影"><a href="#数组字段上使用投影" class="headerlink" title="数组字段上使用投影"></a>数组字段上使用投影</h3><h4 id="slice"><a href="#slice" class="headerlink" title="$slice"></a><code>$slice</code></h4><p><code>$slice</code> 操作符可以返回数组字段中的部分元素</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;$slice : n| -n | [i, j]&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>n</code>: 数组前 <code>n</code> 个元素</li>
+<li><code>-n</code>: 数组后 <code>n</code> 个元素</li>
+<li><code>[i, j]</code>: 跳过 <code>i</code> 个元素,返回接下来 <code>j</code> 个元素</li>
+</ul>
+<p>只返回 <code>contact</code> 数组中的第一个元素</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accounts.find(&#123;&#125;, &#123;_id : 0, name: 1, contact: &#123;$slice: 1&#125;&#125;)</span><br></pre></td></tr></table></figure>
+
+<h4 id="eleeMatch"><a href="#eleeMatch" class="headerlink" title="$eleeMatch &amp; $"></a><code>$eleeMatch</code> &amp; <code>$</code></h4><p><code>$eleeMatch</code> 和 <code>$</code>操作符返回数组中满足筛选条件的第一个元素</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accounts.find(&#123;&#125;, &#123;_id : 0, name: 1, contact: &#123;$elemMatch: &#123;$gt: &quot;Alabama&quot;&#125;&#125;&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>与下等同: </p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accounts.find(&#123;contact: &#123; $gt: &quot;Alabama&quot;&#125;&#125;, &#123;_id : 0, name: 1, contact: &quot;contact.$: 1&quot;&#125;)</span><br></pre></td></tr></table></figure>
+
+<h1 id="更新文档"><a href="#更新文档" class="headerlink" title="更新文档"></a>更新文档</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">db.collection.update(&lt;query&gt;, &lt;update&gt;, &lt;options&gt;)</span><br></pre></td></tr></table></figure>
 <ul>
 <li><code>&lt;query&gt;</code> 筛选条件</li>
 <li><code>&lt;update&gt;</code> 更新文档</li>
