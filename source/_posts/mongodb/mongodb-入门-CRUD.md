@@ -745,6 +745,18 @@ db.accounts.update(
 
 从 `karen`的联系方式中删除包含 `hi`字母的元素:
 
+针对数组**顶级**元素的筛选无需使用 `$elemMatch`, 下面是错误的：
+
+```shell
+db.accounts.update(
+    { name: "karen"},
+    { $pull: { contact: { $elemMatch: {$regex: /hi/ }}}}
+
+)
+```
+
+应该是：
+
 ```shell
 db.accounts.update(
     { name: "karen"},
@@ -753,7 +765,7 @@ db.accounts.update(
 )
 ```
 
-要删除数组元素是内嵌数组，可以使用 `$elemMatch` 对内嵌数组进行筛选:
+要删除数组元素是**内嵌数组**，可以使用 `$elemMatch` 对内嵌数组进行筛选:
 
 从 `karen`的联系方式中删除包含 `22222222`的内嵌数组元素:
 ```shell
