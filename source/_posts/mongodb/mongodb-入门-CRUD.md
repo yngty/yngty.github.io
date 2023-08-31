@@ -790,10 +790,52 @@ db.accounts.update(
 )
 ```
 
-如果删除的元素是一个文档
+如果删除的元素是一个**文档**
 - `$pullAll` 命令只会删除字段和排列顺序都**完全匹配**的文档元素
 - `$pull` 命令会删除匹配的文档元素，模糊度更高(**形成包含关系，或者能通过字段名找到**)。
 
+现有文档格式:
+
+```shell
+test> db.accounts.find()
+[
+  {
+    _id: ObjectId("64ef4c42cb559b034e8de6a0"),
+    contact: [
+      '1',
+      [ '2', '3' ],
+      {
+        primaryEmail: 'xxx@gmail.com',
+        secondaryEmail: 'yyy@gmail.com'
+      }
+    ],
+    name: 'alice'
+  }
+]
+```
+`pullAll` 不完全匹配无法删除：
+
+```shell
+test> db.accounts.update( {name:"alice"}, {$pullAll: {contact:[{"scondaryEmail":"yyy@gmail.com"}]}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 0,
+  modifiedCount: 0,
+  upsertedCount: 0
+}
+```
+`pull` 不完全匹配可以删除：
+```shell
+test> db.account.update( {name:"alice"}, {$pull: {contact : {"secondaryEmail" : "yyy@gmail.com"}}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 0,
+  modifiedCount: 0,
+  upsertedCount: 0
+}
+```
 ### $push
 
 `$push `向数组中添加元素
