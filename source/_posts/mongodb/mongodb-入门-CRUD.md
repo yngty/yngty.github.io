@@ -376,7 +376,7 @@ db.accounts.find(
 ### 数组操作符
 
 - `$all` 
-    - 筛选数组中所有元素满足查询条件的文档
+    - 筛选数组中包含所有的查询值的文档
     - 操作命令格式:
         ```
         { field: { $all: [<value1>, <value2>, ... ]}}
@@ -407,6 +407,134 @@ db.accounts.find(
 
 ### 运算操作符
 
+#### $regex
+
+正则表达式，操作命令格式:
+
+```
+{ <field>: { : /pattern/, : '<options>'}}
+{ <field>: { : /pattern/<options> }}
+```
+
+兼容 `PCRE v8.41` 正则表达式库
+
+在和 `$in` 操作符一起使用时，只能使用 `/pattern/<options>` 方式
+
+举个例子:
+
+读取用户姓名以 c 或者 j 开头的银行账户文档:
+
+```shell
+db.accounts.find({name: {$in: [ /^c/, /^j/ ]}})
+```
+
+读取用户姓名包含 `ALI` (不区分大小写)的银行账户文档:
+```shell
+db.accounts.find({name: {$regex: /ALI/, $options: "i"}})
+```
+## 文档游标
+
+`db.collection.find()` 返回一个文档集合游标
+
+在不迭代游标的情况下，只列出前 `20` 个文档
+
+```shell
+test> var myCursor = db.accounts.find(); myCursor
+```
+~~可以使用游标下标直接访问文档集合中的某一个文档~~
+
+```shell
+test> var myCursor = db.accounts.find(); myCursor[0]
+```
+
+遍历完游标中所有的文档之后，或者在 `10` 分钟之后，游标会自动关闭， 可以使用 `noCursorTimeout()` 函数来保持游标一直有效
+```shell
+test> var myCursor = db.accounts.find().noCursorTimeout()
+```
+主动关闭游标
+
+```shell
+test> myCursor.close()
+```
+### 游标函数
+
+- cursor.hasNext()
+- cursor.next()
+- cursor.forEach()
+- cursor.limit()
+    - `limit(0)` 相当于没有 `limit`
+- cursor.skip()
+- cursor.count(<applySKipLimit>)
+    - 默认情况下 `applySKipLimit` 为 `false`, 即 `count` 不会考虑 `skip` 和 `limit` 的效果
+    - 不提供筛选条件时， `count` 会从集合的元数据 `Metadata` 中取得结果，当数据库分布式结构较为复杂时，元数据中的文档数量可能不正确，这时更建议使用**聚合管道**来计算文档数量
+- cursor.sort(<document>)
+    - `document` 定义排序要求，`1` 表示正向排序，` -1` 表示逆向排序
+    - `{field: ordering}`
+
+**不管命令顺序，执行的顺序永远是 `sort > skip > limit`**
+
+## 文档投影
+
+```
+db.<collection>.find(<query>, <projection>)
+```
+不使用投影时， `find` 返回符合条件的完整文档，而使用投影可以有选择性的返回文档中的部分字段
+
+`projection` 格式:
+```
+{ filed: inclusion }
+```
+`1` 表示返回字段，`0` 表示不返回字段， **没有设置主键默认会返回**
+
+举个例子:
+
+只返回银行账户的用户姓名
+```shell
+db.accounts.find({}, {name: 1})
+```
+
+只返回银行账户的用户姓名(不包含主键)
+```shell
+db.accounts.find({}, {name: 1, _id: 0})
+```
+
+**除了文档主键外，不可以在投影文档上混合使用包含和不包含这两种投影操作**
+
+🙅
+```shell
+db.accounts.find({}, {name: 1， balance: 0})
+```
+
+### 数组字段上使用投影
+
+#### `$slice`
+`$slice` 操作符可以返回数组字段中的部分元素
+
+```
+{$slice : n| -n | [i, j]}
+```
+- `n`: 数组前 `n` 个元素
+- `-n`: 数组后 `n` 个元素
+- `[i, j]`: 跳过 `i` 个元素,返回接下来 `j` 个元素
+
+只返回 `contact` 数组中的第一个元素
+```shell
+db.accounts.find({}, {_id : 0, name: 1, contact: {$slice: 1}})
+```
+
+#### `$eleeMatch` & `$`
+
+`$eleeMatch` 和 `$`操作符返回数组中满足筛选条件的第一个元素
+
+```shell
+db.accounts.find({}, {_id : 0, name: 1, contact: {$elemMatch: {$gt: "Alabama"}}})
+```
+
+与下等同: 
+
+```shell
+db.accounts.find({contact: { $gt: "Alabama"}}, {_id : 0, name: 1, contact: "contact.$: 1"})
+```
 
 # 更新文档
 
