@@ -2018,9 +2018,13 @@
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123; $pull: &#123; &lt;field1&gt;: &lt;value|condition&gt;, ... &#125;&#125;</span><br></pre></td></tr></table></figure>
 
 <p>从 <code>karen</code>的联系方式中删除包含 <code>hi</code>字母的元素:</p>
+<p>针对数组<strong>顶级</strong>元素的筛选无需使用 <code>$elemMatch</code>, 下面是错误的：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accounts.update(</span><br><span class="line">    &#123; name: &quot;karen&quot;&#125;,</span><br><span class="line">    &#123; $pull: &#123; contact: &#123; $elemMatch: &#123;$regex: /hi/ &#125;&#125;&#125;&#125;</span><br><span class="line"></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>应该是：</p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accounts.update(</span><br><span class="line">    &#123; name: &quot;karen&quot;&#125;,</span><br><span class="line">    &#123; $pull: &#123; contact: &#123; $regex: /hi/ &#125;&#125;&#125;</span><br><span class="line"></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
 
-<p>要删除数组元素是内嵌数组，可以使用 <code>$elemMatch</code> 对内嵌数组进行筛选:</p>
+<p>要删除数组元素是<strong>内嵌数组</strong>，可以使用 <code>$elemMatch</code> 对内嵌数组进行筛选:</p>
 <p>从 <code>karen</code>的联系方式中删除包含 <code>22222222</code>的内嵌数组元素:</p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accounts.update(</span><br><span class="line">    &#123; name: &quot;karen&quot;&#125;,</span><br><span class="line">    &#123; $pull: &#123; contact: &#123; $elemMatch: &#123; $eq: &quot;22222222&quot; &#125;&#125;&#125;&#125;  </span><br><span class="line">)</span><br></pre></td></tr></table></figure>
 
