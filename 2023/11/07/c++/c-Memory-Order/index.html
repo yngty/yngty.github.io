@@ -20,21 +20,20 @@
     var CONFIG = {"hostname":"yngty.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Item 9: Never call virtual functions during construction or destruction.  在构造和析构期间不要调用 virtual 函数，因为这类调用不会下降至 derived class(比起当前执行构造函数和析构函数的那层)。 1234567891011121314class Transaction &amp;#123;">
+  <meta name="description" content="背景高级语言经过编译器将源码转为机器指令运行，其中的运行顺序和代码中的顺序有很大差异，主要是下面三个原因:   编译器重排 CPU 乱序执行 存储器硬件设计，不同线程看到的顺序不一致。  在 c++ 中线程同步只有两种方式：  原子变量进行同步 锁(Mutex)  这里我们主要讨论原子变量的操作。 Memory OrderC++11 规定了六种不同的 memory order:  Relaxed">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Effective C++ 9：绝不在构造和析构过程中调用 virtual 函数">
-<meta property="og:url" content="https://yngty.github.io/2021/11/01/effecitve-cpp/effective-cpp-9/index.html">
+<meta property="og:title" content="c++ Memory Order">
+<meta property="og:url" content="https://yngty.github.io/2023/11/07/c++/c-Memory-Order/index.html">
 <meta property="og:site_name" content="Symbol Crash">
-<meta property="og:description" content="Item 9: Never call virtual functions during construction or destruction.  在构造和析构期间不要调用 virtual 函数，因为这类调用不会下降至 derived class(比起当前执行构造函数和析构函数的那层)。 1234567891011121314class Transaction &amp;#123;">
+<meta property="og:description" content="背景高级语言经过编译器将源码转为机器指令运行，其中的运行顺序和代码中的顺序有很大差异，主要是下面三个原因:   编译器重排 CPU 乱序执行 存储器硬件设计，不同线程看到的顺序不一致。  在 c++ 中线程同步只有两种方式：  原子变量进行同步 锁(Mutex)  这里我们主要讨论原子变量的操作。 Memory OrderC++11 规定了六种不同的 memory order:  Relaxed">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-11-01T12:03:51.000Z">
-<meta property="article:modified_time" content="2023-11-07T09:24:18.378Z">
+<meta property="article:published_time" content="2023-11-07T16:20:11.000Z">
+<meta property="article:modified_time" content="2023-11-07T09:24:18.374Z">
 <meta property="article:author" content="yngty">
-<meta property="article:tag" content="C++">
-<meta property="article:tag" content="Effective-C++">
+<meta property="article:tag" content="Memory Order">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://yngty.github.io/2021/11/01/effecitve-cpp/effective-cpp-9/">
+<link rel="canonical" href="https://yngty.github.io/2023/11/07/c++/c-Memory-Order/">
 
 
 <script id="page-configurations">
@@ -47,7 +46,7 @@
   };
 </script>
 
-  <title>Effective C++ 9：绝不在构造和析构过程中调用 virtual 函数 | Symbol Crash</title>
+  <title>c++ Memory Order | Symbol Crash</title>
   
 
 
@@ -164,7 +163,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2021/11/01/effecitve-cpp/effective-cpp-9/">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2023/11/07/c++/c-Memory-Order/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -177,7 +176,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Effective C++ 9：绝不在构造和析构过程中调用 virtual 函数
+          c++ Memory Order
         </h1>
 
         <div class="post-meta">
@@ -186,23 +185,17 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2021-11-01 12:03:51" itemprop="dateCreated datePublished" datetime="2021-11-01T12:03:51+00:00">2021-11-01</time>
+              <time title="创建时间：2023-11-07 16:20:11 / 修改时间：09:24:18" itemprop="dateCreated datePublished" datetime="2023-11-07T16:20:11+00:00">2023-11-07</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-11-07 09:24:18" itemprop="dateModified" datetime="2023-11-07T09:24:18+00:00">2023-11-07</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Effective-C/" itemprop="url" rel="index"><span itemprop="name">Effective-C++</span></a>
+                  <a href="/categories/C-C/" itemprop="url" rel="index"><span itemprop="name">C/C++</span></a>
                 </span>
             </span>
 
@@ -212,14 +205,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>260</span>
+              <span>1k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
+              <span>4 分钟</span>
             </span>
 
         </div>
@@ -231,20 +224,95 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <blockquote>
-<p>Item 9: Never call virtual functions during construction or destruction.</p>
-</blockquote>
-<p>在构造和析构期间不要调用 <code>virtual</code> 函数，因为这类调用不会下降至 <code>derived class</code><br>(比起当前执行构造函数和析构函数的那层)。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Transaction</span> &#123;                               <span class="comment">// base class for all</span></span><br><span class="line"><span class="keyword">public</span>:                                           <span class="comment">// transactions</span></span><br><span class="line">    <span class="built_in">Transaction</span>()&#123;                                <span class="comment">// base class ctor           </span></span><br><span class="line">        <span class="built_in">logTransaction</span>();                         <span class="comment">// as final action, log this               </span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">logTransaction</span><span class="params">()</span> <span class="type">const</span> </span>= <span class="number">0</span>;      <span class="comment">// make type-dependent</span></span><br><span class="line">&#125;;</span><br><span class="line">  </span><br><span class="line"><span class="keyword">class</span> <span class="title class_">BuyTransaction</span>: <span class="keyword">public</span> Transaction &#123;        <span class="comment">// derived class</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">logTransaction</span><span class="params">()</span> <span class="type">const</span></span>;          <span class="comment">// how to log trans-</span></span><br><span class="line">&#125;;</span><br><span class="line">...</span><br><span class="line">BuyTransaction b;</span><br></pre></td></tr></table></figure>
-
-<p><code>b</code> 在构造时，调用到父类Transaction的构造函数，其中对 <code>logTransaction</code> 的调用会被解析到 <code>Transaction</code> 类。 那是一个纯虚函数，因此程序会非正常退出。</p>
-<p>在<code>derived class</code> 对象的 <code>base class</code> 构造期间，对象的类型是 <code>base class</code> 而不是 <code>derived classo</code> 不只 <code>virtual</code> 函数会被编译器解析至(resolve to) <code>base class</code> ，若使用运行期类型信息 <code>RTTI</code>(runtime type information, 例如 <code>dynamic_cast</code>  <code>typeid</code>) ，也会把对象视为 <code>base class</code> 类型。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Transaction</span>&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">Transaction</span>()&#123;</span><br><span class="line">        cout&lt;&lt;<span class="built_in">typeid</span>(<span class="keyword">this</span>).<span class="built_in">name</span>()&lt;&lt;endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">BuyTransaction</span>: <span class="keyword">public</span> Transaction&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">BuyTransaction</span>()&#123;</span><br><span class="line">        cout&lt;&lt;<span class="built_in">typeid</span>(<span class="keyword">this</span>).<span class="built_in">name</span>()&lt;&lt;endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    BuyTransaction b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>输出</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">P11Transaction</span><br><span class="line">P14BuyTransaction</span><br></pre></td></tr></table></figure>
-
-<p><strong>相同道理也适用于析构函数.</strong></p>
+        <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>高级语言经过编译器将源码转为机器指令运行，其中的运行顺序和代码中的顺序有很大差异，主要是下面三个原因: </p>
+<ul>
+<li>编译器重排</li>
+<li><code>CPU</code> 乱序执行</li>
+<li>存储器硬件设计，不同线程看到的顺序不一致。</li>
+</ul>
+<p>在 <code>c++</code> 中线程同步只有两种方式：</p>
+<ul>
+<li>原子变量进行同步</li>
+<li>锁(<code>Mutex</code>)</li>
+</ul>
+<p>这里我们主要讨论原子变量的操作。</p>
+<h1 id="Memory-Order"><a href="#Memory-Order" class="headerlink" title="Memory Order"></a>Memory Order</h1><p><code>C++11</code> 规定了六种不同的 <code>memory order</code>:</p>
+<ul>
+<li><code>Relaxed</code></li>
+<li><code>Consume</code></li>
+<li><code>Acquire</code></li>
+<li><code>Release</code></li>
+<li><code>Acquire-Release</code></li>
+<li><code>Sequential Consistent</code><span id="more"></span>
+对应着 <code>std::memory_order</code> 枚举值:</li>
+<li><code>std::memory_order_relaxed</code></li>
+<li><code>std::memory_order_consume</code></li>
+<li><code>std::memory_order_acquire</code></li>
+<li><code>std::memory_order_release</code></li>
+<li><code>std::memory_order_acq_rel</code></li>
+<li><code>std::memory_order_seq_cst</code></li>
+</ul>
+<p>对一个原子变量操作时可以传入一个  <code>std::memory_order</code> 枚举，指明这个原子操作需要满足的 <code>memory order</code>。没有传入默认为 <code>std::memory_order_seq_cst</code>。</p>
+<h2 id="Relaxed"><a href="#Relaxed" class="headerlink" title="Relaxed"></a><code>Relaxed</code></h2><p>最弱内存序，单纯的原子操作，没有线程间同步节点的作用。即：</p>
+<ul>
+<li>在一个 <code>relaxed</code> 写操作之前的写操作, 将不保证能被其他也对同一个原子变量的 <code>relaxed</code> 读操作看到。</li>
+<li>在一个 <code>relaxed</code> 读操作之后的读操作, 也不保证能看到被其他也对同一个原子变量的 <code>relaxed</code> 写操作之前的写操作。</li>
+</ul>
+<h2 id="Consume"><a href="#Consume" class="headerlink" title="Consume"></a><code>Consume</code></h2><p><code>Consume</code> 仅对原子<strong>读</strong>操作有效。</p>
+<p>我们首先理解什么是操作数之间的<strong>数据依赖</strong>: </p>
+<p>对于操作 <code>A</code> 和操作 <code>B</code>，如果操作 <code>A</code> 先于操作 <code>B</code> 发生，则有三种情况会使得操作 <code>B</code> 数据依赖于 操作 <code>A</code>：</p>
+<ul>
+<li><code>A</code> 的值被用作 <code>B</code> 的运算数，<strong>除了</strong><ul>
+<li><code>B</code> 是对 std::kill_dependency 的调用</li>
+<li><code>A</code> 是内建 <code>&amp;&amp;</code>、<code>||</code>、<code>?:</code> 或 <code>,</code> 运算符的左运算数。</li>
+</ul>
+</li>
+<li><code>A</code> 写入标量对象 <code>M</code>，<code>B</code> 从 <code>M</code> 读取</li>
+<li>存在第三个操作 <code>X</code> 数据依赖于操作 <code>A</code>，操作 <code>B</code> 又数据依赖于操作 <code>X</code></li>
+</ul>
+<p><code>acquire</code> 要求线程 <code>B</code> 能够看到线程 <code>A</code> 中在 <code>release</code> 操作之前的<strong>具有数据依赖关系的写操作</strong></p>
+<h2 id="Acquire"><a href="#Acquire" class="headerlink" title="Acquire"></a><code>Acquire</code></h2><p><code>Acquire</code> 仅对原子<strong>读</strong>操作有效。<code>acquire</code> 与 <code>consume</code> 唯一的区别是 <code>acquire</code> 要求线程 <code>B</code> 能够看到线程 <code>A</code> 中在 <code>release</code> 操作之前的<strong>所有写操作</strong>，而不仅仅是与写原子变量具有数据依赖关系的写操作。</p>
+<h2 id="Release"><a href="#Release" class="headerlink" title="Release"></a><code>Release</code></h2><p><code>Release</code> 仅对原子<strong>写</strong>操作有效。<code>Release</code> 操作通常是与 <code>consume</code> 或 <code>acquire</code> 操作配对的。</p>
+<h2 id="Acquire-Release"><a href="#Acquire-Release" class="headerlink" title="Acquire-Release"></a><code>Acquire-Release</code></h2><ul>
+<li>对于一个原子读操作，该操作都是 <code>acquire</code> 操作</li>
+<li>对于一个原子写操作，该操作是 <code>release</code> 操作</li>
+<li>对于一个既有读又有写的原子操作，该操作既是 <code>acquire</code> 操作也是 <code>release</code> 操作, 例如 <code>compare-and-swap </code>操作、read-modify-write&#96; 操作</li>
+</ul>
+<h2 id="Sequential-Consistent"><a href="#Sequential-Consistent" class="headerlink" title="Sequential Consistent"></a><code>Sequential Consistent</code></h2><ul>
+<li>对于一个原子读操作，该操作都是 <code>acquire</code> 操作</li>
+<li>对于一个原子写操作，该操作是 <code>release</code> 操作</li>
+<li>对于一个既有读又有写的原子操作，该操作既是 <code>acquire</code> 操作也是 <code>release</code> 操作</li>
+<li>程序内所有线程在使用 <code>sequential consistent</code> 操作原子变量时，必须以<strong>一致的顺序</strong>看到程序内的所有 <code>sequential consistent</code> 操作</li>
+</ul>
+<h1 id="实现方式"><a href="#实现方式" class="headerlink" title="实现方式"></a>实现方式</h1><p>在 <code>x86_64</code>平台主流实现方式：</p>
+<ul>
+<li>限制线程同步节点前后的代码重排<ul>
+<li>Consume<ul>
+<li>所有的在 <code>release</code> 操作之前的、与 <code>release</code> 操作具有数据依赖关系的写操作不能被移动到 <code>release</code> 操作之后</li>
+<li>所有的在 <code>consume</code> 操作之后的、与 <code>consume</code> 操作具有数据依赖关系的读操作不能被移动到 <code>consume</code> 操作之后</li>
+</ul>
+</li>
+<li>Acquire<ul>
+<li>所有的在 <code>release</code> 操作附近之前的写操作不能被移动到 <code>release</code> 操作之后</li>
+<li>所有的在 <code>acquire</code> 操作附近之后的读操作不能被移动到 <code>acquire</code> 操作之前</li>
+</ul>
+</li>
+<li>Release<ul>
+<li>所有在 <code>release</code> 操作附近之前的写操作均不能被移动到 <code>release</code> 操作之后</li>
+</ul>
+</li>
+<li>Acquire-Release<ul>
+<li>所有的在 <code>acquire-release</code> 操作附近之前的写操作不能被移动到 <code>acquire-release</code> 操作之后</li>
+<li>所有的在<code> acquire-release</code> 操作附近之后的读操作不能被移动到 <code>acquire-release</code> 操作之前</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>利用硬件特性，生成带 <code>lock</code> 前缀的操作指令<ul>
+<li>Sequential Consistent</li>
+</ul>
+</li>
+</ul>
 
     </div>
 
@@ -254,8 +322,7 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/C/" rel="tag"># C++</a>
-              <a href="/tags/Effective-C/" rel="tag"># Effective-C++</a>
+              <a href="/tags/Memory-Order/" rel="tag"># Memory Order</a>
           </div>
 
         
@@ -264,13 +331,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/10/25/effecitve-cpp/effective-cpp-8/" rel="prev" title="Effective C++ 8：析构函数不要抛出异常">
-      <i class="fa fa-chevron-left"></i> Effective C++ 8：析构函数不要抛出异常
+    <a href="/2023/11/03/c++/std-thread-%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/" rel="prev" title="std::thread 注意事项">
+      <i class="fa fa-chevron-left"></i> std::thread 注意事项
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2021/11/01/effecitve-cpp/effective-cpp-10/" rel="next" title="Effective C++ 10：赋值运算符要返回自己的引用">
-      Effective C++ 10：赋值运算符要返回自己的引用 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -329,6 +393,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Memory-Order"><span class="nav-number">2.</span> <span class="nav-text">Memory Order</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Relaxed"><span class="nav-number">2.1.</span> <span class="nav-text">Relaxed</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Consume"><span class="nav-number">2.2.</span> <span class="nav-text">Consume</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Acquire"><span class="nav-number">2.3.</span> <span class="nav-text">Acquire</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Release"><span class="nav-number">2.4.</span> <span class="nav-text">Release</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Acquire-Release"><span class="nav-number">2.5.</span> <span class="nav-text">Acquire-Release</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Sequential-Consistent"><span class="nav-number">2.6.</span> <span class="nav-text">Sequential Consistent</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F"><span class="nav-number">3.</span> <span class="nav-text">实现方式</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

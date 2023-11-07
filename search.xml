@@ -76,6 +76,106 @@
       </tags>
   </entry>
   <entry>
+    <title>c++ Memory Order</title>
+    <url>/2023/11/07/c++/c-Memory-Order/</url>
+    <content><![CDATA[<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>高级语言经过编译器将源码转为机器指令运行，其中的运行顺序和代码中的顺序有很大差异，主要是下面三个原因: </p>
+<ul>
+<li>编译器重排</li>
+<li><code>CPU</code> 乱序执行</li>
+<li>存储器硬件设计，不同线程看到的顺序不一致。</li>
+</ul>
+<p>在 <code>c++</code> 中线程同步只有两种方式：</p>
+<ul>
+<li>原子变量进行同步</li>
+<li>锁(<code>Mutex</code>)</li>
+</ul>
+<p>这里我们主要讨论原子变量的操作。</p>
+<h1 id="Memory-Order"><a href="#Memory-Order" class="headerlink" title="Memory Order"></a>Memory Order</h1><p><code>C++11</code> 规定了六种不同的 <code>memory order</code>:</p>
+<ul>
+<li><code>Relaxed</code></li>
+<li><code>Consume</code></li>
+<li><code>Acquire</code></li>
+<li><code>Release</code></li>
+<li><code>Acquire-Release</code></li>
+<li><code>Sequential Consistent</code><span id="more"></span>
+对应着 <code>std::memory_order</code> 枚举值:</li>
+<li><code>std::memory_order_relaxed</code></li>
+<li><code>std::memory_order_consume</code></li>
+<li><code>std::memory_order_acquire</code></li>
+<li><code>std::memory_order_release</code></li>
+<li><code>std::memory_order_acq_rel</code></li>
+<li><code>std::memory_order_seq_cst</code></li>
+</ul>
+<p>对一个原子变量操作时可以传入一个  <code>std::memory_order</code> 枚举，指明这个原子操作需要满足的 <code>memory order</code>。没有传入默认为 <code>std::memory_order_seq_cst</code>。</p>
+<h2 id="Relaxed"><a href="#Relaxed" class="headerlink" title="Relaxed"></a><code>Relaxed</code></h2><p>最弱内存序，单纯的原子操作，没有线程间同步节点的作用。即：</p>
+<ul>
+<li>在一个 <code>relaxed</code> 写操作之前的写操作, 将不保证能被其他也对同一个原子变量的 <code>relaxed</code> 读操作看到。</li>
+<li>在一个 <code>relaxed</code> 读操作之后的读操作, 也不保证能看到被其他也对同一个原子变量的 <code>relaxed</code> 写操作之前的写操作。</li>
+</ul>
+<h2 id="Consume"><a href="#Consume" class="headerlink" title="Consume"></a><code>Consume</code></h2><p><code>Consume</code> 仅对原子<strong>读</strong>操作有效。</p>
+<p>我们首先理解什么是操作数之间的<strong>数据依赖</strong>: </p>
+<p>对于操作 <code>A</code> 和操作 <code>B</code>，如果操作 <code>A</code> 先于操作 <code>B</code> 发生，则有三种情况会使得操作 <code>B</code> 数据依赖于 操作 <code>A</code>：</p>
+<ul>
+<li><code>A</code> 的值被用作 <code>B</code> 的运算数，<strong>除了</strong><ul>
+<li><code>B</code> 是对 std::kill_dependency 的调用</li>
+<li><code>A</code> 是内建 <code>&amp;&amp;</code>、<code>||</code>、<code>?:</code> 或 <code>,</code> 运算符的左运算数。</li>
+</ul>
+</li>
+<li><code>A</code> 写入标量对象 <code>M</code>，<code>B</code> 从 <code>M</code> 读取</li>
+<li>存在第三个操作 <code>X</code> 数据依赖于操作 <code>A</code>，操作 <code>B</code> 又数据依赖于操作 <code>X</code></li>
+</ul>
+<p><code>acquire</code> 要求线程 <code>B</code> 能够看到线程 <code>A</code> 中在 <code>release</code> 操作之前的<strong>具有数据依赖关系的写操作</strong></p>
+<h2 id="Acquire"><a href="#Acquire" class="headerlink" title="Acquire"></a><code>Acquire</code></h2><p><code>Acquire</code> 仅对原子<strong>读</strong>操作有效。<code>acquire</code> 与 <code>consume</code> 唯一的区别是 <code>acquire</code> 要求线程 <code>B</code> 能够看到线程 <code>A</code> 中在 <code>release</code> 操作之前的<strong>所有写操作</strong>，而不仅仅是与写原子变量具有数据依赖关系的写操作。</p>
+<h2 id="Release"><a href="#Release" class="headerlink" title="Release"></a><code>Release</code></h2><p><code>Release</code> 仅对原子<strong>写</strong>操作有效。<code>Release</code> 操作通常是与 <code>consume</code> 或 <code>acquire</code> 操作配对的。</p>
+<h2 id="Acquire-Release"><a href="#Acquire-Release" class="headerlink" title="Acquire-Release"></a><code>Acquire-Release</code></h2><ul>
+<li>对于一个原子读操作，该操作都是 <code>acquire</code> 操作</li>
+<li>对于一个原子写操作，该操作是 <code>release</code> 操作</li>
+<li>对于一个既有读又有写的原子操作，该操作既是 <code>acquire</code> 操作也是 <code>release</code> 操作, 例如 <code>compare-and-swap </code>操作、read-modify-write&#96; 操作</li>
+</ul>
+<h2 id="Sequential-Consistent"><a href="#Sequential-Consistent" class="headerlink" title="Sequential Consistent"></a><code>Sequential Consistent</code></h2><ul>
+<li>对于一个原子读操作，该操作都是 <code>acquire</code> 操作</li>
+<li>对于一个原子写操作，该操作是 <code>release</code> 操作</li>
+<li>对于一个既有读又有写的原子操作，该操作既是 <code>acquire</code> 操作也是 <code>release</code> 操作</li>
+<li>程序内所有线程在使用 <code>sequential consistent</code> 操作原子变量时，必须以<strong>一致的顺序</strong>看到程序内的所有 <code>sequential consistent</code> 操作</li>
+</ul>
+<h1 id="实现方式"><a href="#实现方式" class="headerlink" title="实现方式"></a>实现方式</h1><p>在 <code>x86_64</code>平台主流实现方式：</p>
+<ul>
+<li>限制线程同步节点前后的代码重排<ul>
+<li>Consume<ul>
+<li>所有的在 <code>release</code> 操作之前的、与 <code>release</code> 操作具有数据依赖关系的写操作不能被移动到 <code>release</code> 操作之后</li>
+<li>所有的在 <code>consume</code> 操作之后的、与 <code>consume</code> 操作具有数据依赖关系的读操作不能被移动到 <code>consume</code> 操作之后</li>
+</ul>
+</li>
+<li>Acquire<ul>
+<li>所有的在 <code>release</code> 操作附近之前的写操作不能被移动到 <code>release</code> 操作之后</li>
+<li>所有的在 <code>acquire</code> 操作附近之后的读操作不能被移动到 <code>acquire</code> 操作之前</li>
+</ul>
+</li>
+<li>Release<ul>
+<li>所有在 <code>release</code> 操作附近之前的写操作均不能被移动到 <code>release</code> 操作之后</li>
+</ul>
+</li>
+<li>Acquire-Release<ul>
+<li>所有的在 <code>acquire-release</code> 操作附近之前的写操作不能被移动到 <code>acquire-release</code> 操作之后</li>
+<li>所有的在<code> acquire-release</code> 操作附近之后的读操作不能被移动到 <code>acquire-release</code> 操作之前</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>利用硬件特性，生成带 <code>lock</code> 前缀的操作指令<ul>
+<li>Sequential Consistent</li>
+</ul>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>C/C++</category>
+      </categories>
+      <tags>
+        <tag>Memory Order</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>enable_shared_from_this的注意事项</title>
     <url>/2023/03/11/c++/enable-shared-from-this%E7%9A%84%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/</url>
     <content><![CDATA[<h1 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h1><p>当我们在对象函数中需要返回或者使用自己的 <code>shared_ptr</code> 指针时，该怎么办呢？常见的错误写法如下：用不安全的表达式试图获得 <code>this</code> 的 <code>shared_ptr</code> 对象, 但可能会导致 <code>this</code> 被多个互不知晓的所有者析构.</p>
