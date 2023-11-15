@@ -398,7 +398,16 @@
 <li>应设置为 <code>CACHE</code> 条目, 除非策略 <code>CMP0126</code> 设置为 <code>NEW</code> </li>
 <li>在 <code>Apple</code> 以外的平台上被忽略</li>
 </ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">if (APPLE)</span><br><span class="line">    set(CMAKE_OSX_ARCHITECTURES x86_64 CACHE STRING &quot;&quot;)</span><br><span class="line">endif()</span><br></pre></td></tr></table></figure>]]></content>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">if (APPLE)</span><br><span class="line">    set(CMAKE_OSX_ARCHITECTURES x86_64 CACHE STRING &quot;&quot;)</span><br><span class="line">endif()</span><br></pre></td></tr></table></figure>
+
+<h1 id="cmakedefine-的使用例子"><a href="#cmakedefine-的使用例子" class="headerlink" title="cmakedefine 的使用例子"></a>cmakedefine 的使用例子</h1><p><code>#cmakedefine</code> 用于 <code>configure_file()</code> 中用于生成头文件的文件中，只有当 <code>CMakeLists.txt</code> 中的同名变量为真时才会在生成的头文件中定义，区别于 <code>#define</code> 无论何时都会定义。</p>
+<p>例如:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">-&gt; </span><span class="language-bash"><span class="built_in">cat</span> config.h.cmake</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">ifndef __CONFIG_H</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">define __CONFIG_H</span></span><br><span class="line"></span><br><span class="line">/* Define to 1 if you have the &lt;mach/mach_time.h&gt; header file. */</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">cmakedefine HAVE_MACH_MACH_TIME_H 1</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">endif /* __CONFIG_H */</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">-&gt; </span><span class="language-bash"><span class="built_in">cat</span> CMakeLists.txt</span></span><br><span class="line"></span><br><span class="line">include(CheckIncludeFiles)</span><br><span class="line">check_include_files(&quot;mach/mach_time.h&quot; HAVE_MACH_MACH_TIME_H)</span><br><span class="line">configure_file(</span><br><span class="line">        $&#123;CMAKE_CURRENT_SOURCE_DIR&#125;/config.h.cmake</span><br><span class="line">        $&#123;CMAKE_CURRENT_BINARY_DIR&#125;/config.h</span><br><span class="line">        NEWLINE_STYLE UNIX)</span><br><span class="line">list(APPEND HEADERS $&#123;CMAKE_CURRENT_BINARY_DIR&#125;/config.h)</span><br></pre></td></tr></table></figure>
+
+<p>只有当 <code>mach/mach_time.h</code> 存在时，在 <code>config.h</code> 才会定义 <code>HAVE_MACH_MACH_TIME_H</code> 。</p>
+]]></content>
       <tags>
         <tag>CMake</tag>
       </tags>
