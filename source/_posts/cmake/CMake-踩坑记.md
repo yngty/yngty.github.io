@@ -70,3 +70,35 @@ if (APPLE)
     set(CMAKE_OSX_ARCHITECTURES x86_64 CACHE STRING "")
 endif()
 ```
+
+# cmakedefine 的使用例子
+
+`#cmakedefine` 用于 `configure_file()` 中用于生成头文件的文件中，只有当 `CMakeLists.txt` 中的同名变量为真时才会在生成的头文件中定义，区别于 `#define` 无论何时都会定义。
+
+例如:
+
+```shell
+-> cat config.h.cmake
+
+#ifndef __CONFIG_H
+#define __CONFIG_H
+
+/* Define to 1 if you have the <mach/mach_time.h> header file. */
+#cmakedefine HAVE_MACH_MACH_TIME_H 1
+
+#endif /* __CONFIG_H */
+```
+
+```shell
+-> cat CMakeLists.txt
+
+include(CheckIncludeFiles)
+check_include_files("mach/mach_time.h" HAVE_MACH_MACH_TIME_H)
+configure_file(
+        ${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake
+        ${CMAKE_CURRENT_BINARY_DIR}/config.h
+        NEWLINE_STYLE UNIX)
+list(APPEND HEADERS ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+```
+
+只有当 `mach/mach_time.h` 存在时，在 `config.h` 才会定义 `HAVE_MACH_MACH_TIME_H` 。
