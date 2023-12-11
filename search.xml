@@ -76,6 +76,44 @@
       </tags>
   </entry>
   <entry>
+    <title>enable_shared_from_this的注意事项</title>
+    <url>/2023/03/11/c++/enable-shared-from-this%E7%9A%84%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/</url>
+    <content><![CDATA[<h1 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h1><p>当我们在对象函数中需要返回或者使用自己的 <code>shared_ptr</code> 指针时，该怎么办呢？常见的错误写法如下：用不安全的表达式试图获得 <code>this</code> 的 <code>shared_ptr</code> 对象, 但可能会导致 <code>this</code> 被多个互不知晓的所有者析构.</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">Bad</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function">std::shared_ptr&lt;Bad&gt; <span class="title">getptr</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> std::<span class="built_in">shared_ptr</span>&lt;Bad&gt;(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    ~<span class="built_in">Bad</span>() &#123; std::cout &lt;&lt; <span class="string">&quot;Bad::~Bad() called\n&quot;</span>; &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    std::shared_ptr&lt;Bad&gt; bp1 = std::<span class="built_in">make_shared</span>&lt;Bad&gt;();</span><br><span class="line">    std::shared_ptr&lt;Bad&gt; bp2 = bp1-&gt;<span class="built_in">getptr</span>();</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;bp2.use_count() = &quot;</span> &lt;&lt; bp2.<span class="built_in">use_count</span>() &lt;&lt; <span class="string">&#x27;\n&#x27;</span>;</span><br><span class="line">&#125; <span class="comment">// UB: Bad 对象将会被删除两次</span></span><br></pre></td></tr></table></figure>
+<p>正确写法是将定义对象公开继承 <code>enable_shared_from_this</code>: </p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Good</span>: <span class="keyword">public</span> std::enable_shared_from_this&lt;Good&gt; <span class="comment">// 注意：继承</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function">std::shared_ptr&lt;Good&gt; <span class="title">getptr</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">shared_from_this</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<p><code>std::enable_shared_from_this</code> 能让其一个对象（假设其名为 <code>t</code> ，且已被一个 <code>std::shared_ptr</code> 对象 <code>pt</code> 管理）安全地生成其他额外的 <code>std::shared_ptr</code> 实例（假设名为 <code>pt1</code>, <code>pt2</code>, … ） ，它们与 <code>pt</code> 共享对象 <code>t</code>的所有权。</p>
+<h1 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h1><p><code>enable_shared_from_this</code> 的常见实现为：其内部保存着一个对 <code>this</code> 的弱引用（例如 <code>std::weak_ptr</code> )。 <code>std::shared_ptr</code> 的构造函数发现是并能访问 <code>enable_shared_from_this</code> 的基类，并且若内部存储的弱引用未生成。则 <code>std::shared_ptr</code> 生成内部存储的弱引用。 <code>libc++</code> 的实现如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="title class_">_Tp</span>&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">_LIBCPP_TEMPLATE_VIS</span> enable_shared_from_this</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">mutable</span> weak_ptr&lt;_Tp&gt; __weak_this_;</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">_LIBCPP_INLINE_VISIBILITY</span></span><br><span class="line"><span class="function">    shared_ptr&lt;_Tp&gt; <span class="title">shared_from_this</span><span class="params">()</span></span></span><br><span class="line"><span class="function">        </span>&#123;<span class="keyword">return</span> <span class="built_in">shared_ptr</span>&lt;_Tp&gt;(__weak_this_);&#125;</span><br><span class="line">    <span class="function">_LIBCPP_INLINE_VISIBILITY</span></span><br><span class="line"><span class="function">    shared_ptr&lt;_Tp <span class="type">const</span>&gt; <span class="title">shared_from_this</span><span class="params">()</span> <span class="type">const</span></span></span><br><span class="line"><span class="function">        </span>&#123;<span class="keyword">return</span> <span class="built_in">shared_ptr</span>&lt;<span class="type">const</span> _Tp&gt;(__weak_this_);&#125;</span><br><span class="line">    </span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><code>shared_ptr</code> 的构造函数：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    <span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="title class_">_Yp</span>, <span class="keyword">class</span> = <span class="type">__enable_if_t</span>&lt;</span><br><span class="line">        _And&lt;</span><br><span class="line">            __raw_pointer_compatible_with&lt;_Yp, _Tp&gt;</span><br><span class="line">            <span class="comment">// In C++03 we get errors when trying to do SFINAE with the</span></span><br><span class="line">            <span class="comment">// delete operator, so we always pretend that it&#x27;s deletable.</span></span><br><span class="line">            <span class="comment">// The same happens on GCC.</span></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> !defined(_LIBCPP_CXX03_LANG) &amp;&amp; !defined(_LIBCPP_COMPILER_GCC)</span></span><br><span class="line">            , _If&lt;is_array&lt;_Tp&gt;::value, __is_array_deletable&lt;_Yp*&gt;, __is_deletable&lt;_Yp*&gt; &gt;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">        &gt;::value</span><br><span class="line">    &gt; &gt;</span><br><span class="line">    <span class="keyword">explicit</span> <span class="built_in">shared_ptr</span>(_Yp* __p) : __ptr_(__p) &#123;</span><br><span class="line">        unique_ptr&lt;_Yp&gt; __hold(__p);</span><br><span class="line">        <span class="keyword">typedef</span> <span class="keyword">typename</span> __shared_ptr_default_allocator&lt;_Yp&gt;::type _AllocT;</span><br><span class="line">        <span class="keyword">typedef</span> __shared_ptr_pointer&lt;_Yp*, __shared_ptr_default_delete&lt;_Tp, _Yp&gt;, _AllocT&gt; _CntrlBlk;</span><br><span class="line">        __cntrl_ = <span class="keyword">new</span> _CntrlBlk(__p, __shared_ptr_default_delete&lt;_Tp, _Yp&gt;(), _AllocT());</span><br><span class="line">        __hold.<span class="built_in">release</span>();</span><br><span class="line">        __enable_weak_this(__p, __p);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line"> <span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">_Yp</span>, <span class="keyword">class</span> <span class="title class_">_OrigPtr</span>, <span class="keyword">class</span> = <span class="type">__enable_if_t</span>&lt;</span><br><span class="line">        is_convertible&lt;_OrigPtr*, <span class="type">const</span> enable_shared_from_this&lt;_Yp&gt;*&gt;::value</span><br><span class="line">    &gt; &gt;</span><br><span class="line">    _LIBCPP_HIDE_FROM_ABI</span><br><span class="line">    <span class="type">void</span> __enable_weak_this(<span class="type">const</span> enable_shared_from_this&lt;_Yp&gt;* __e, _OrigPtr* __ptr) _NOEXCEPT</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">typedef</span> <span class="type">__remove_cv_t</span>&lt;_Yp&gt; _RawYp;</span><br><span class="line">        <span class="keyword">if</span> (__e &amp;&amp; __e-&gt;__weak_this_.<span class="built_in">expired</span>())</span><br><span class="line">        &#123;</span><br><span class="line">            __e-&gt;__weak_this_ = <span class="built_in">shared_ptr</span>&lt;_RawYp&gt;(*<span class="keyword">this</span>,</span><br><span class="line">                <span class="built_in">const_cast</span>&lt;_RawYp*&gt;(<span class="built_in">static_cast</span>&lt;<span class="type">const</span> _Yp*&gt;(__ptr)));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>c++17</code> 前对没初始化的 <code>weak_ptr</code> 的对象调用 <code>shared_from_this</code> 行为未定义行,  <code>C++17</code> 起抛出 <code>std::bad_weak_ptr</code> 异常：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    Good not_so_good;</span><br><span class="line">    std::shared_ptr&lt;Good&gt; gp1 = not_so_good.<span class="built_in">getptr</span>();</span><br><span class="line">&#125; <span class="built_in">catch</span>(std::bad_weak_ptr&amp; e) &#123;</span><br><span class="line">    <span class="comment">// C++17 前为未定义行为； C++17 起抛出 std::bad_weak_ptr 异常</span></span><br><span class="line">    std::cout &lt;&lt; e.<span class="built_in">what</span>() &lt;&lt; <span class="string">&#x27;\n&#x27;</span>;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="相关问题"><a href="#相关问题" class="headerlink" title="相关问题"></a>相关问题</h1><h2 id="什么时候初始化-enable-shared-from-this-中的-weak-ptr？"><a href="#什么时候初始化-enable-shared-from-this-中的-weak-ptr？" class="headerlink" title="什么时候初始化 enable_shared_from_this 中的 weak_ptr？"></a>什么时候初始化 <code>enable_shared_from_this</code> 中的 <code>weak_ptr</code>？</h2><p>参考实现部分，构造 <code>shared_ptr</code> 的对象时判断是 <code>enable_shared_from_this</code>的时候会初始化。</p>
+<h2 id="能不能非公有继承-enable-shared-from-this-？"><a href="#能不能非公有继承-enable-shared-from-this-？" class="headerlink" title="能不能非公有继承 enable_shared_from_this ？"></a>能不能非公有继承 <code>enable_shared_from_this</code> ？</h2><p><strong>不能</strong></p>
+<p>非公有继承时候，判断 <code>class</code> 是否是 <code>enable_shared_from_this</code> 会失败就不会去初始化 <code>weak_ptr</code>。</p>
+<h2 id="能不能在构造函数中调用？"><a href="#能不能在构造函数中调用？" class="headerlink" title="能不能在构造函数中调用？"></a>能不能在构造函数中调用？</h2><p><strong>不能</strong></p>
+<p><code>shared_ptr</code> 初始化需要调用构造函数，而 <code>weak_ptr</code> 需要 <code>shared_ptr</code> 构造初始化。<code>GG</code> 了。</p>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ul>
+<li><a href="https://en.cppreference.com/w/cpp/memory/enable_shared_from_this">std::enable_shared_from_this</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>C/C++</category>
+      </categories>
+      <tags>
+        <tag>shared_ptr</tag>
+        <tag>智能指针</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>c++ Memory Order</title>
     <url>/2023/11/07/c++/c-Memory-Order/</url>
     <content><![CDATA[<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>高级语言经过编译器将源码转为机器指令运行，其中的运行顺序和代码中的顺序有很大差异，主要是下面三个原因: </p>
@@ -173,44 +211,6 @@
       </categories>
       <tags>
         <tag>Memory Order</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>enable_shared_from_this的注意事项</title>
-    <url>/2023/03/11/c++/enable-shared-from-this%E7%9A%84%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/</url>
-    <content><![CDATA[<h1 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h1><p>当我们在对象函数中需要返回或者使用自己的 <code>shared_ptr</code> 指针时，该怎么办呢？常见的错误写法如下：用不安全的表达式试图获得 <code>this</code> 的 <code>shared_ptr</code> 对象, 但可能会导致 <code>this</code> 被多个互不知晓的所有者析构.</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">Bad</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function">std::shared_ptr&lt;Bad&gt; <span class="title">getptr</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> std::<span class="built_in">shared_ptr</span>&lt;Bad&gt;(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    ~<span class="built_in">Bad</span>() &#123; std::cout &lt;&lt; <span class="string">&quot;Bad::~Bad() called\n&quot;</span>; &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    std::shared_ptr&lt;Bad&gt; bp1 = std::<span class="built_in">make_shared</span>&lt;Bad&gt;();</span><br><span class="line">    std::shared_ptr&lt;Bad&gt; bp2 = bp1-&gt;<span class="built_in">getptr</span>();</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;bp2.use_count() = &quot;</span> &lt;&lt; bp2.<span class="built_in">use_count</span>() &lt;&lt; <span class="string">&#x27;\n&#x27;</span>;</span><br><span class="line">&#125; <span class="comment">// UB: Bad 对象将会被删除两次</span></span><br></pre></td></tr></table></figure>
-<p>正确写法是将定义对象公开继承 <code>enable_shared_from_this</code>: </p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Good</span>: <span class="keyword">public</span> std::enable_shared_from_this&lt;Good&gt; <span class="comment">// 注意：继承</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function">std::shared_ptr&lt;Good&gt; <span class="title">getptr</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">shared_from_this</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<span id="more"></span>
-
-<p><code>std::enable_shared_from_this</code> 能让其一个对象（假设其名为 <code>t</code> ，且已被一个 <code>std::shared_ptr</code> 对象 <code>pt</code> 管理）安全地生成其他额外的 <code>std::shared_ptr</code> 实例（假设名为 <code>pt1</code>, <code>pt2</code>, … ） ，它们与 <code>pt</code> 共享对象 <code>t</code>的所有权。</p>
-<h1 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h1><p><code>enable_shared_from_this</code> 的常见实现为：其内部保存着一个对 <code>this</code> 的弱引用（例如 <code>std::weak_ptr</code> )。 <code>std::shared_ptr</code> 的构造函数发现是并能访问 <code>enable_shared_from_this</code> 的基类，并且若内部存储的弱引用未生成。则 <code>std::shared_ptr</code> 生成内部存储的弱引用。 <code>libc++</code> 的实现如下：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="title class_">_Tp</span>&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">_LIBCPP_TEMPLATE_VIS</span> enable_shared_from_this</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">mutable</span> weak_ptr&lt;_Tp&gt; __weak_this_;</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">_LIBCPP_INLINE_VISIBILITY</span></span><br><span class="line"><span class="function">    shared_ptr&lt;_Tp&gt; <span class="title">shared_from_this</span><span class="params">()</span></span></span><br><span class="line"><span class="function">        </span>&#123;<span class="keyword">return</span> <span class="built_in">shared_ptr</span>&lt;_Tp&gt;(__weak_this_);&#125;</span><br><span class="line">    <span class="function">_LIBCPP_INLINE_VISIBILITY</span></span><br><span class="line"><span class="function">    shared_ptr&lt;_Tp <span class="type">const</span>&gt; <span class="title">shared_from_this</span><span class="params">()</span> <span class="type">const</span></span></span><br><span class="line"><span class="function">        </span>&#123;<span class="keyword">return</span> <span class="built_in">shared_ptr</span>&lt;<span class="type">const</span> _Tp&gt;(__weak_this_);&#125;</span><br><span class="line">    </span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p><code>shared_ptr</code> 的构造函数：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    <span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="title class_">_Yp</span>, <span class="keyword">class</span> = <span class="type">__enable_if_t</span>&lt;</span><br><span class="line">        _And&lt;</span><br><span class="line">            __raw_pointer_compatible_with&lt;_Yp, _Tp&gt;</span><br><span class="line">            <span class="comment">// In C++03 we get errors when trying to do SFINAE with the</span></span><br><span class="line">            <span class="comment">// delete operator, so we always pretend that it&#x27;s deletable.</span></span><br><span class="line">            <span class="comment">// The same happens on GCC.</span></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> !defined(_LIBCPP_CXX03_LANG) &amp;&amp; !defined(_LIBCPP_COMPILER_GCC)</span></span><br><span class="line">            , _If&lt;is_array&lt;_Tp&gt;::value, __is_array_deletable&lt;_Yp*&gt;, __is_deletable&lt;_Yp*&gt; &gt;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">        &gt;::value</span><br><span class="line">    &gt; &gt;</span><br><span class="line">    <span class="keyword">explicit</span> <span class="built_in">shared_ptr</span>(_Yp* __p) : __ptr_(__p) &#123;</span><br><span class="line">        unique_ptr&lt;_Yp&gt; __hold(__p);</span><br><span class="line">        <span class="keyword">typedef</span> <span class="keyword">typename</span> __shared_ptr_default_allocator&lt;_Yp&gt;::type _AllocT;</span><br><span class="line">        <span class="keyword">typedef</span> __shared_ptr_pointer&lt;_Yp*, __shared_ptr_default_delete&lt;_Tp, _Yp&gt;, _AllocT&gt; _CntrlBlk;</span><br><span class="line">        __cntrl_ = <span class="keyword">new</span> _CntrlBlk(__p, __shared_ptr_default_delete&lt;_Tp, _Yp&gt;(), _AllocT());</span><br><span class="line">        __hold.<span class="built_in">release</span>();</span><br><span class="line">        __enable_weak_this(__p, __p);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line"> <span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">_Yp</span>, <span class="keyword">class</span> <span class="title class_">_OrigPtr</span>, <span class="keyword">class</span> = <span class="type">__enable_if_t</span>&lt;</span><br><span class="line">        is_convertible&lt;_OrigPtr*, <span class="type">const</span> enable_shared_from_this&lt;_Yp&gt;*&gt;::value</span><br><span class="line">    &gt; &gt;</span><br><span class="line">    _LIBCPP_HIDE_FROM_ABI</span><br><span class="line">    <span class="type">void</span> __enable_weak_this(<span class="type">const</span> enable_shared_from_this&lt;_Yp&gt;* __e, _OrigPtr* __ptr) _NOEXCEPT</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">typedef</span> <span class="type">__remove_cv_t</span>&lt;_Yp&gt; _RawYp;</span><br><span class="line">        <span class="keyword">if</span> (__e &amp;&amp; __e-&gt;__weak_this_.<span class="built_in">expired</span>())</span><br><span class="line">        &#123;</span><br><span class="line">            __e-&gt;__weak_this_ = <span class="built_in">shared_ptr</span>&lt;_RawYp&gt;(*<span class="keyword">this</span>,</span><br><span class="line">                <span class="built_in">const_cast</span>&lt;_RawYp*&gt;(<span class="built_in">static_cast</span>&lt;<span class="type">const</span> _Yp*&gt;(__ptr)));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<p><code>c++17</code> 前对没初始化的 <code>weak_ptr</code> 的对象调用 <code>shared_from_this</code> 行为未定义行,  <code>C++17</code> 起抛出 <code>std::bad_weak_ptr</code> 异常：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    Good not_so_good;</span><br><span class="line">    std::shared_ptr&lt;Good&gt; gp1 = not_so_good.<span class="built_in">getptr</span>();</span><br><span class="line">&#125; <span class="built_in">catch</span>(std::bad_weak_ptr&amp; e) &#123;</span><br><span class="line">    <span class="comment">// C++17 前为未定义行为； C++17 起抛出 std::bad_weak_ptr 异常</span></span><br><span class="line">    std::cout &lt;&lt; e.<span class="built_in">what</span>() &lt;&lt; <span class="string">&#x27;\n&#x27;</span>;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h1 id="相关问题"><a href="#相关问题" class="headerlink" title="相关问题"></a>相关问题</h1><h2 id="什么时候初始化-enable-shared-from-this-中的-weak-ptr？"><a href="#什么时候初始化-enable-shared-from-this-中的-weak-ptr？" class="headerlink" title="什么时候初始化 enable_shared_from_this 中的 weak_ptr？"></a>什么时候初始化 <code>enable_shared_from_this</code> 中的 <code>weak_ptr</code>？</h2><p>参考实现部分，构造 <code>shared_ptr</code> 的对象时判断是 <code>enable_shared_from_this</code>的时候会初始化。</p>
-<h2 id="能不能非公有继承-enable-shared-from-this-？"><a href="#能不能非公有继承-enable-shared-from-this-？" class="headerlink" title="能不能非公有继承 enable_shared_from_this ？"></a>能不能非公有继承 <code>enable_shared_from_this</code> ？</h2><p><strong>不能</strong></p>
-<p>非公有继承时候，判断 <code>class</code> 是否是 <code>enable_shared_from_this</code> 会失败就不会去初始化 <code>weak_ptr</code>。</p>
-<h2 id="能不能在构造函数中调用？"><a href="#能不能在构造函数中调用？" class="headerlink" title="能不能在构造函数中调用？"></a>能不能在构造函数中调用？</h2><p><strong>不能</strong></p>
-<p><code>shared_ptr</code> 初始化需要调用构造函数，而 <code>weak_ptr</code> 需要 <code>shared_ptr</code> 构造初始化。<code>GG</code> 了。</p>
-<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ul>
-<li><a href="https://en.cppreference.com/w/cpp/memory/enable_shared_from_this">std::enable_shared_from_this</a></li>
-</ul>
-]]></content>
-      <categories>
-        <category>C/C++</category>
-      </categories>
-      <tags>
-        <tag>shared_ptr</tag>
-        <tag>智能指针</tag>
       </tags>
   </entry>
   <entry>
@@ -436,6 +436,101 @@
       </tags>
   </entry>
   <entry>
+    <title>Effective-STL 21：总是让比较函数在等值情况下返回 false</title>
+    <url>/2023/03/10/effective-stl/effective-stl-21/</url>
+    <content><![CDATA[<blockquote>
+<p>Item 21: Always have comparison functions return false for equal values.</p>
+</blockquote>
+<h1 id="严格弱序-strict-weak-ordering"><a href="#严格弱序-strict-weak-ordering" class="headerlink" title="严格弱序( strict weak ordering )"></a>严格弱序( <code>strict weak ordering</code> )</h1><p>先补充下严格弱序的概念: 对两个变量 <code>x</code> 和 <code>y</code>：</p>
+<ul>
+<li><code>x &gt; y</code> 等同于 <code>y &lt; x</code></li>
+<li><code>x == y</code> 等同于 <code>!(x &lt; y) &amp;&amp; !(x &gt; y)</code></li>
+</ul>
+<p>要想严格弱序，就需要遵循如下规则：</p>
+<ul>
+<li>每个变量值必须等于其本身（<code>irreflexivity</code>）：<code>x &lt; x</code> 永远不能为 <code>true</code></li>
+<li>不对称性（<code>asymmetry</code>）：如果 <code>x &lt; y</code>，那么 <code>y &lt; x</code> 就不能为 <code>true</code></li>
+<li>有序性必须可传递性：如果 <code>x &lt; y</code> 并且 <code>y &lt; z</code>，那么 <code>x &lt; z</code></li>
+<li>值相同必须具有可传递性：如果 <code>x == y</code> 并且 <code>y == z</code>，那么 <code>x == z</code></li>
+</ul>
+<span id="more"></span>
+
+<h1 id="为什么？"><a href="#为什么？" class="headerlink" title="为什么？"></a>为什么？</h1><h2 id="1-关联容器中的比较算法"><a href="#1-关联容器中的比较算法" class="headerlink" title="1. 关联容器中的比较算法"></a>1. 关联容器中的比较算法</h2><p>比如我们创建一个 <code>set</code> ， 用 <code>less_euqal</code> 作为比较类型，然后插入两个 <code>10</code> ：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">set&lt;<span class="type">int</span>, less_equal&lt;<span class="type">int</span>&gt;&gt; s;</span><br><span class="line">s.<span class="built_in">insert</span>(<span class="number">10</span>);</span><br><span class="line">s.<span class="built_in">insert</span>(<span class="number">10</span>);</span><br></pre></td></tr></table></figure>
+
+<p>我们将第一个 <code>10</code> 记为 <code>10A</code>, 第二个 <code>10</code> 记为 <code>10B</code>, 我们在插入 <code>10B</code> 的时候会检查是否与 <code>10A</code> 相同, 我们用的是 <code>less_equal</code>，下面的表达式会为假，就会重复插入，显然不合理。:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">!(10A &lt;= 10B) &amp;&amp; !(10B &lt;= 10A) //  !(true) &amp;&amp; !(true)</span><br></pre></td></tr></table></figure>
+
+<p>另外在 <code>multiset</code> 中也不行: </p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">multiset&lt;<span class="type">int</span>, less_equal&lt;<span class="type">int</span>&gt;&gt; s;</span><br><span class="line">s.<span class="built_in">insert</span>(<span class="number">10</span>); <span class="comment">// 插入10A</span></span><br><span class="line">s.<span class="built_in">insert</span>(<span class="number">10</span>); <span class="comment">// 插入10B</span></span><br></pre></td></tr></table></figure>
+
+<p>当我们想要一个 <code>equal_range</code>, <code>10A</code> 和 <code>10B</code> 同样认为是不等，永远不会在同一个区间。</p>
+<h2 id="2-sort-算法"><a href="#2-sort-算法" class="headerlink" title="2. sort 算法"></a>2. <code>sort</code> 算法</h2><p>对于 <code>std::sort</code>，当容器里面元素个数大于 <code>_S_threshold</code> 的值时（<code>16</code>），就会使用快速排序，会将所有的元素与中间值比较是无边界保护的，实现如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> _RandomAccessIterator, <span class="keyword">typename</span> _Tp, <span class="keyword">typename</span> _Compare&gt;</span><br><span class="line">     _RandomAccessIterator</span><br><span class="line">     __unguarded_partition(_RandomAccessIterator __first,</span><br><span class="line">               _RandomAccessIterator __last,</span><br><span class="line">               _Tp __pivot, _Compare __comp)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span> (<span class="literal">true</span>)</span><br><span class="line">    &#123;</span><br><span class="line">       <span class="keyword">while</span> (__comp(*__first, __pivot)) <span class="comment">// &lt;-------------------</span></span><br><span class="line">         ++__first;</span><br><span class="line">       --__last;</span><br><span class="line">       <span class="keyword">while</span> (__comp(__pivot, *__last))</span><br><span class="line">         --__last;</span><br><span class="line">       <span class="keyword">if</span> (!(__first &lt; __last))</span><br><span class="line">         <span class="keyword">return</span> __first;</span><br><span class="line">       std::<span class="built_in">iter_swap</span>(__first, __last);</span><br><span class="line">       ++__first;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果传入的 <code>vector</code> 中，后面的元素完全相等， <code>__comp()</code>函数一直返回 <code>true</code> ，在进行快速排序的时候，<code>++first</code> 就可能越界失效，导致 <code>coredump</code>。</p>
+]]></content>
+      <categories>
+        <category>Effective-STL</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>Effective-STL</tag>
+        <tag>stl</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Effective-STL 9：慎重选择删除元素的方法</title>
+    <url>/2023/02/16/effective-stl/effective-stl-9/</url>
+    <content><![CDATA[<blockquote>
+<p>Item9. Choose carefully among easing options.</p>
+</blockquote>
+<h1 id="一、删除特定值"><a href="#一、删除特定值" class="headerlink" title="一、删除特定值"></a>一、删除特定值</h1><ol>
+<li><p>对于 <code>vector</code>、 <code>string</code> 或 <code>deque</code></p>
+<p> 最好使用 <code>erase-remove</code>习惯用法: </p>
+ <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">erase</span>(<span class="built_in">remove</span>(c.<span class="built_in">begin</span>(), c.<span class="built_in">end</span>(), <span class="number">1963</span>, c.<span class="built_in">end</span>()));</span><br></pre></td></tr></table></figure></li>
+<li><p>对于 <code>list</code> 容器</p>
+<p> 直接使用 <code>remove</code> 方法:</p>
+ <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">remove</span>(<span class="number">1963</span>);</span><br></pre></td></tr></table></figure></li>
+<li><p>对于标准关联容器</p>
+<p> 直接使用 <code>erase</code> 方法:</p>
+ <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">erase</span>(<span class="number">1963</span>)</span><br></pre></td></tr></table></figure></li>
+</ol>
+<span id="more"></span>
+<h1 id="二、删除满足特定判定条件的值"><a href="#二、删除满足特定判定条件的值" class="headerlink" title="二、删除满足特定判定条件的值"></a>二、删除满足特定判定条件的值</h1><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">bool</span> <span class="title">badValue</span><span class="params">(<span class="type">int</span>)</span> </span>&#123; <span class="keyword">return</span> <span class="literal">true</span>; &#125; <span class="comment">// 返回x是否为&quot;坏值&quot;</span></span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><p>对于 <code>vector</code>、 <code>string</code> 或 <code>deque</code><br> 使用 <code>erase-remove-if</code>方法: </p>
+ <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">erase</span>(<span class="built_in">remove_if</span>(c.<span class="built_in">begin</span>(), c.<span class="built_in">end</span>(), badValue, c.<span class="built_in">end</span>()));</span><br></pre></td></tr></table></figure></li>
+<li><p>对于 <code>list</code> 容器<br> 直接使用 <code>remove_if</code> 方法:</p>
+ <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">remove_if</span>(badValue);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>对于标准关联容器</p>
+<p> <strong>把当前的i传给erase，i后缀递增</strong></p>
+ <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (AssocContainer&lt;<span class="type">int</span>&gt;::iterator i = c.<span class="built_in">begin</span>(); i != c.<span class="built_in">end</span>();) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">badValue</span>(*i)) c3.<span class="built_in">erase</span>(i++); </span><br><span class="line">    <span class="keyword">else</span> ++i;                     </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h1 id="三、循环内部删除对象之外还要做某些事"><a href="#三、循环内部删除对象之外还要做某些事" class="headerlink" title="三、循环内部删除对象之外还要做某些事"></a>三、循环内部删除对象之外还要做某些事</h1><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">doSomething</span><span class="params">(<span class="type">int</span>)</span> </span>&#123; ... &#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li><p>对于 <code>vector</code>、 <code>string</code> 或 <code>deque</code></p>
+<p> <strong>接收 <code>erase</code>返回的迭代器值。</strong></p>
+ <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (SeqContainer&lt;<span class="type">int</span>&gt;::iterator i = c.<span class="built_in">begin</span>(); i != c.<span class="built_in">end</span>();) &#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">badValue</span>(*i)) &#123;</span><br><span class="line">        <span class="built_in">doSomething</span>(*i);</span><br><span class="line">        i = c.<span class="built_in">rease</span>(i);</span><br><span class="line">    &#125; <span class="keyword">else</span> ++i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>对于 <code>list</code> 容器</p>
+<p> 虽然也可以采用标准关联容器方法，但建议采用跟 <code>vector</code>、 <code>string</code> 或 <code>deque</code> 一致。</p>
+</li>
+<li><p>对于标准关联容器</p>
+ <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (SeqContainer&lt;<span class="type">int</span>&gt;::iterator i = c.<span class="built_in">begin</span>(); i != c.<span class="built_in">end</span>();) &#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">badValue</span>(*i)) &#123;</span><br><span class="line">        <span class="built_in">doSomething</span>(*i);</span><br><span class="line">        c.<span class="built_in">rease</span>(i++);</span><br><span class="line">    &#125; <span class="keyword">else</span> ++i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+]]></content>
+      <categories>
+        <category>Effective-STL</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>Effective-STL</tag>
+        <tag>stl</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Effective C++ 1：将C++视作一系列的语言</title>
     <url>/2020/12/07/effecitve-cpp/effective-cpp-1/</url>
     <content><![CDATA[<blockquote>
@@ -515,6 +610,21 @@
       </tags>
   </entry>
   <entry>
+    <title>Effective C++ 13：以对象管理资源</title>
+    <url>/2021/11/02/effecitve-cpp/effective-cpp-13/</url>
+    <content><![CDATA[<blockquote>
+<p>Item 13: Use objects to manage resources.</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>Effective-C++</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>Effective-C++</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Effective C++ 12：复制对象时勿忘其每一个成分</title>
     <url>/2021/11/02/effecitve-cpp/effective-cpp-12/</url>
     <content><![CDATA[<blockquote>
@@ -530,21 +640,6 @@
 
 <p>正确写法:</p>
 <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">PriorityCustomer</span>: <span class="keyword">public</span> Customer &#123;</span><br><span class="line">    <span class="type">int</span> priority;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="built_in">PriorityCustomer</span>(<span class="type">const</span> PriorityCustomer&amp; rhs)</span><br><span class="line">  : <span class="built_in">Customer</span>(rhs), <span class="built_in">priority</span>(rhs.priority)&#123;&#125;</span><br><span class="line">  </span><br><span class="line">  PriorityCustomer&amp; </span><br><span class="line">  <span class="keyword">operator</span>=(<span class="type">const</span> PriorityCustomer&amp; rhs)&#123;</span><br><span class="line">    Customer::<span class="keyword">operator</span>=(rhs);</span><br><span class="line">    priority = rhs.priority;</span><br><span class="line">  &#125;  </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>Effective-C++</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
-        <tag>Effective-C++</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Effective C++ 13：以对象管理资源</title>
-    <url>/2021/11/02/effecitve-cpp/effective-cpp-13/</url>
-    <content><![CDATA[<blockquote>
-<p>Item 13: Use objects to manage resources.</p>
-</blockquote>
-]]></content>
       <categories>
         <category>Effective-C++</category>
       </categories>
@@ -969,6 +1064,42 @@
       </tags>
   </entry>
   <entry>
+    <title>Effective C++ 28：避免返回 handles 指向对象内部成分</title>
+    <url>/2022/04/16/effecitve-cpp/effective-cpp-28/</url>
+    <content><![CDATA[<blockquote>
+<p>Item28: Avoid returning “handles” to object internals.</p>
+</blockquote>
+<p>避免返回 <code>handles</code> (包括 <code>references</code> 、指针、迭代器)指向对象内部。</p>
+<span id="more"></span>
+
+<h2 id="破坏封装性"><a href="#破坏封装性" class="headerlink" title="破坏封装性"></a>破坏封装性</h2><p><code>const</code> 函数不再是 <code>const</code>, 修改了私有成员变量。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Point</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">Point</span>(<span class="type">int</span> x, <span class="type">int</span> y);</span><br><span class="line">    ...</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">setX</span><span class="params">(<span class="type">int</span> x)</span></span>;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">setY</span><span class="params">(<span class="type">int</span> y)</span></span>;</span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">RectData</span> &#123;</span><br><span class="line">    Point ulhc;</span><br><span class="line">    Point lrhc;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Rectangle</span> &#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="function">Point&amp; <span class="title">upperLeft</span><span class="params">()</span> <span class="type">const</span> </span>&#123; <span class="keyword">return</span> pData-&gt;ulhc; &#125;</span><br><span class="line">    <span class="function">Point&amp; <span class="title">lowerRight</span><span class="params">()</span> <span class="type">const</span> </span>&#123; <span class="keyword">return</span> pData-&gt;lrhc; &#125;</span><br><span class="line">    ...</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    std::shared_ptr&lt;RectData&gt; pData;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>虽然这样的设计可通过编译，但却是错误的。<code>upperLeft</code> 和 <code>lowerRight</code> 被声明为 <code>const</code> 成员函数，但是可以更改内部数据。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">Point <span class="title">coord1</span><span class="params">(<span class="number">0</span>, <span class="number">0</span>)</span></span>;</span><br><span class="line"><span class="function">Point <span class="title">coord2</span><span class="params">(<span class="number">100</span>, <span class="number">100</span>)</span></span>; </span><br><span class="line"><span class="function"><span class="type">const</span> Rectangle <span class="title">rec</span><span class="params">(coord1, coord2)</span></span>; <span class="comment">// rec是个const矩形, 从 (0 ，0) 到 (100 ， 100)</span></span><br><span class="line"></span><br><span class="line">rec.<span class="built_in">upperLeft</span>( ) .<span class="built_in">setX</span>(<span class="number">50</span>);  <span class="comment">// 现在rec却变成从 (50 ， 0) 到 (100 ， 100)</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>成员变量的封装性最多只等于”返回其 <code>reference</code>“ 的函数的访问级别。</li>
+<li>如果 <code>const</code> 成员函数传出一个 <code>reference</code>，后者所指数据与对象自身有关联，而它又被存储于对象之外，那么这个函数的调用者可以修改那笔数据。(<code>bitwise constness</code>原因)</li>
+</ul>
+<h2 id="悬空问题"><a href="#悬空问题" class="headerlink" title="悬空问题"></a>悬空问题</h2><p>虽然我们可以修改函数，达到不能修改私有成员变量。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">const</span> Point&amp; <span class="title">upperLeft</span><span class="params">()</span> <span class="type">const</span> </span>&#123; <span class="keyword">return</span> pData-&gt;ulhc; &#125;</span><br></pre></td></tr></table></figure>
+<p>但也不能解决悬空问题。如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">GUIObject</span> &#123; ... &#125;;</span><br><span class="line"><span class="function"><span class="type">const</span> Rectangle <span class="title">boundingBox</span><span class="params">(<span class="type">const</span> GUIObject&amp; obj)</span></span>; <span class="comment">//以 by value 方式返回一个矩形</span></span><br></pre></td></tr></table></figure>
+
+<p>现在，客户有可能这么使用这个函数:</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">GUIObject* pgo; <span class="comment">// 让pgo指向某个GUIObject</span></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="type">const</span> Point* pUpperLeft = &amp;(<span class="built_in">boundingBox</span>(*pgo) .<span class="built_in">upperLeft</span>()); <span class="comment">// 取得一个指针指向外框左上点</span></span><br></pre></td></tr></table></figure>
+
+<p><code>pUpperLeft</code> 被悬空了，<code>boundingBox(*pgo)</code> 返回的是一个临时变量，在语句执行结束后就会销毁，导致 <code>pUpperLeft</code> 指针失效。</p>
+]]></content>
+      <categories>
+        <category>Effective-C++</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>Effective-C++</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Effective C++ 26：尽可能推迟变量的定义</title>
     <url>/2022/04/15/effecitve-cpp/effective-cpp-26/</url>
     <content><![CDATA[<blockquote>
@@ -1006,42 +1137,6 @@
 <li>这段代码是性能的关键.</li>
 <li>赋值比一对构造&#x2F;析构更加廉价。</li>
 </ul>
-]]></content>
-      <categories>
-        <category>Effective-C++</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
-        <tag>Effective-C++</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Effective C++ 28：避免返回 handles 指向对象内部成分</title>
-    <url>/2022/04/16/effecitve-cpp/effective-cpp-28/</url>
-    <content><![CDATA[<blockquote>
-<p>Item28: Avoid returning “handles” to object internals.</p>
-</blockquote>
-<p>避免返回 <code>handles</code> (包括 <code>references</code> 、指针、迭代器)指向对象内部。</p>
-<span id="more"></span>
-
-<h2 id="破坏封装性"><a href="#破坏封装性" class="headerlink" title="破坏封装性"></a>破坏封装性</h2><p><code>const</code> 函数不再是 <code>const</code>, 修改了私有成员变量。</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Point</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">Point</span>(<span class="type">int</span> x, <span class="type">int</span> y);</span><br><span class="line">    ...</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">setX</span><span class="params">(<span class="type">int</span> x)</span></span>;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">setY</span><span class="params">(<span class="type">int</span> y)</span></span>;</span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">RectData</span> &#123;</span><br><span class="line">    Point ulhc;</span><br><span class="line">    Point lrhc;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Rectangle</span> &#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="function">Point&amp; <span class="title">upperLeft</span><span class="params">()</span> <span class="type">const</span> </span>&#123; <span class="keyword">return</span> pData-&gt;ulhc; &#125;</span><br><span class="line">    <span class="function">Point&amp; <span class="title">lowerRight</span><span class="params">()</span> <span class="type">const</span> </span>&#123; <span class="keyword">return</span> pData-&gt;lrhc; &#125;</span><br><span class="line">    ...</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    std::shared_ptr&lt;RectData&gt; pData;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>虽然这样的设计可通过编译，但却是错误的。<code>upperLeft</code> 和 <code>lowerRight</code> 被声明为 <code>const</code> 成员函数，但是可以更改内部数据。</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">Point <span class="title">coord1</span><span class="params">(<span class="number">0</span>, <span class="number">0</span>)</span></span>;</span><br><span class="line"><span class="function">Point <span class="title">coord2</span><span class="params">(<span class="number">100</span>, <span class="number">100</span>)</span></span>; </span><br><span class="line"><span class="function"><span class="type">const</span> Rectangle <span class="title">rec</span><span class="params">(coord1, coord2)</span></span>; <span class="comment">// rec是个const矩形, 从 (0 ，0) 到 (100 ， 100)</span></span><br><span class="line"></span><br><span class="line">rec.<span class="built_in">upperLeft</span>( ) .<span class="built_in">setX</span>(<span class="number">50</span>);  <span class="comment">// 现在rec却变成从 (50 ， 0) 到 (100 ， 100)</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>成员变量的封装性最多只等于”返回其 <code>reference</code>“ 的函数的访问级别。</li>
-<li>如果 <code>const</code> 成员函数传出一个 <code>reference</code>，后者所指数据与对象自身有关联，而它又被存储于对象之外，那么这个函数的调用者可以修改那笔数据。(<code>bitwise constness</code>原因)</li>
-</ul>
-<h2 id="悬空问题"><a href="#悬空问题" class="headerlink" title="悬空问题"></a>悬空问题</h2><p>虽然我们可以修改函数，达到不能修改私有成员变量。</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">const</span> Point&amp; <span class="title">upperLeft</span><span class="params">()</span> <span class="type">const</span> </span>&#123; <span class="keyword">return</span> pData-&gt;ulhc; &#125;</span><br></pre></td></tr></table></figure>
-<p>但也不能解决悬空问题。如下：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">GUIObject</span> &#123; ... &#125;;</span><br><span class="line"><span class="function"><span class="type">const</span> Rectangle <span class="title">boundingBox</span><span class="params">(<span class="type">const</span> GUIObject&amp; obj)</span></span>; <span class="comment">//以 by value 方式返回一个矩形</span></span><br></pre></td></tr></table></figure>
-
-<p>现在，客户有可能这么使用这个函数:</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">GUIObject* pgo; <span class="comment">// 让pgo指向某个GUIObject</span></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="type">const</span> Point* pUpperLeft = &amp;(<span class="built_in">boundingBox</span>(*pgo) .<span class="built_in">upperLeft</span>()); <span class="comment">// 取得一个指针指向外框左上点</span></span><br></pre></td></tr></table></figure>
-
-<p><code>pUpperLeft</code> 被悬空了，<code>boundingBox(*pgo)</code> 返回的是一个临时变量，在语句执行结束后就会销毁，导致 <code>pUpperLeft</code> 指针失效。</p>
 ]]></content>
       <categories>
         <category>Effective-C++</category>
@@ -1261,101 +1356,6 @@
       <tags>
         <tag>C++</tag>
         <tag>Effective-C++</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Effective-STL 21：总是让比较函数在等值情况下返回 false</title>
-    <url>/2023/03/10/effective-stl/effective-stl-21/</url>
-    <content><![CDATA[<blockquote>
-<p>Item 21: Always have comparison functions return false for equal values.</p>
-</blockquote>
-<h1 id="严格弱序-strict-weak-ordering"><a href="#严格弱序-strict-weak-ordering" class="headerlink" title="严格弱序( strict weak ordering )"></a>严格弱序( <code>strict weak ordering</code> )</h1><p>先补充下严格弱序的概念: 对两个变量 <code>x</code> 和 <code>y</code>：</p>
-<ul>
-<li><code>x &gt; y</code> 等同于 <code>y &lt; x</code></li>
-<li><code>x == y</code> 等同于 <code>!(x &lt; y) &amp;&amp; !(x &gt; y)</code></li>
-</ul>
-<p>要想严格弱序，就需要遵循如下规则：</p>
-<ul>
-<li>每个变量值必须等于其本身（<code>irreflexivity</code>）：<code>x &lt; x</code> 永远不能为 <code>true</code></li>
-<li>不对称性（<code>asymmetry</code>）：如果 <code>x &lt; y</code>，那么 <code>y &lt; x</code> 就不能为 <code>true</code></li>
-<li>有序性必须可传递性：如果 <code>x &lt; y</code> 并且 <code>y &lt; z</code>，那么 <code>x &lt; z</code></li>
-<li>值相同必须具有可传递性：如果 <code>x == y</code> 并且 <code>y == z</code>，那么 <code>x == z</code></li>
-</ul>
-<span id="more"></span>
-
-<h1 id="为什么？"><a href="#为什么？" class="headerlink" title="为什么？"></a>为什么？</h1><h2 id="1-关联容器中的比较算法"><a href="#1-关联容器中的比较算法" class="headerlink" title="1. 关联容器中的比较算法"></a>1. 关联容器中的比较算法</h2><p>比如我们创建一个 <code>set</code> ， 用 <code>less_euqal</code> 作为比较类型，然后插入两个 <code>10</code> ：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">set&lt;<span class="type">int</span>, less_equal&lt;<span class="type">int</span>&gt;&gt; s;</span><br><span class="line">s.<span class="built_in">insert</span>(<span class="number">10</span>);</span><br><span class="line">s.<span class="built_in">insert</span>(<span class="number">10</span>);</span><br></pre></td></tr></table></figure>
-
-<p>我们将第一个 <code>10</code> 记为 <code>10A</code>, 第二个 <code>10</code> 记为 <code>10B</code>, 我们在插入 <code>10B</code> 的时候会检查是否与 <code>10A</code> 相同, 我们用的是 <code>less_equal</code>，下面的表达式会为假，就会重复插入，显然不合理。:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">!(10A &lt;= 10B) &amp;&amp; !(10B &lt;= 10A) //  !(true) &amp;&amp; !(true)</span><br></pre></td></tr></table></figure>
-
-<p>另外在 <code>multiset</code> 中也不行: </p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">multiset&lt;<span class="type">int</span>, less_equal&lt;<span class="type">int</span>&gt;&gt; s;</span><br><span class="line">s.<span class="built_in">insert</span>(<span class="number">10</span>); <span class="comment">// 插入10A</span></span><br><span class="line">s.<span class="built_in">insert</span>(<span class="number">10</span>); <span class="comment">// 插入10B</span></span><br></pre></td></tr></table></figure>
-
-<p>当我们想要一个 <code>equal_range</code>, <code>10A</code> 和 <code>10B</code> 同样认为是不等，永远不会在同一个区间。</p>
-<h2 id="2-sort-算法"><a href="#2-sort-算法" class="headerlink" title="2. sort 算法"></a>2. <code>sort</code> 算法</h2><p>对于 <code>std::sort</code>，当容器里面元素个数大于 <code>_S_threshold</code> 的值时（<code>16</code>），就会使用快速排序，会将所有的元素与中间值比较是无边界保护的，实现如下：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> _RandomAccessIterator, <span class="keyword">typename</span> _Tp, <span class="keyword">typename</span> _Compare&gt;</span><br><span class="line">     _RandomAccessIterator</span><br><span class="line">     __unguarded_partition(_RandomAccessIterator __first,</span><br><span class="line">               _RandomAccessIterator __last,</span><br><span class="line">               _Tp __pivot, _Compare __comp)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span> (<span class="literal">true</span>)</span><br><span class="line">    &#123;</span><br><span class="line">       <span class="keyword">while</span> (__comp(*__first, __pivot)) <span class="comment">// &lt;-------------------</span></span><br><span class="line">         ++__first;</span><br><span class="line">       --__last;</span><br><span class="line">       <span class="keyword">while</span> (__comp(__pivot, *__last))</span><br><span class="line">         --__last;</span><br><span class="line">       <span class="keyword">if</span> (!(__first &lt; __last))</span><br><span class="line">         <span class="keyword">return</span> __first;</span><br><span class="line">       std::<span class="built_in">iter_swap</span>(__first, __last);</span><br><span class="line">       ++__first;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>如果传入的 <code>vector</code> 中，后面的元素完全相等， <code>__comp()</code>函数一直返回 <code>true</code> ，在进行快速排序的时候，<code>++first</code> 就可能越界失效，导致 <code>coredump</code>。</p>
-]]></content>
-      <categories>
-        <category>Effective-STL</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
-        <tag>Effective-STL</tag>
-        <tag>stl</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Effective-STL 9：慎重选择删除元素的方法</title>
-    <url>/2023/02/16/effective-stl/effective-stl-9/</url>
-    <content><![CDATA[<blockquote>
-<p>Item9. Choose carefully among easing options.</p>
-</blockquote>
-<h1 id="一、删除特定值"><a href="#一、删除特定值" class="headerlink" title="一、删除特定值"></a>一、删除特定值</h1><ol>
-<li><p>对于 <code>vector</code>、 <code>string</code> 或 <code>deque</code></p>
-<p> 最好使用 <code>erase-remove</code>习惯用法: </p>
- <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">erase</span>(<span class="built_in">remove</span>(c.<span class="built_in">begin</span>(), c.<span class="built_in">end</span>(), <span class="number">1963</span>, c.<span class="built_in">end</span>()));</span><br></pre></td></tr></table></figure></li>
-<li><p>对于 <code>list</code> 容器</p>
-<p> 直接使用 <code>remove</code> 方法:</p>
- <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">remove</span>(<span class="number">1963</span>);</span><br></pre></td></tr></table></figure></li>
-<li><p>对于标准关联容器</p>
-<p> 直接使用 <code>erase</code> 方法:</p>
- <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">erase</span>(<span class="number">1963</span>)</span><br></pre></td></tr></table></figure></li>
-</ol>
-<span id="more"></span>
-<h1 id="二、删除满足特定判定条件的值"><a href="#二、删除满足特定判定条件的值" class="headerlink" title="二、删除满足特定判定条件的值"></a>二、删除满足特定判定条件的值</h1><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">bool</span> <span class="title">badValue</span><span class="params">(<span class="type">int</span>)</span> </span>&#123; <span class="keyword">return</span> <span class="literal">true</span>; &#125; <span class="comment">// 返回x是否为&quot;坏值&quot;</span></span><br></pre></td></tr></table></figure>
-
-<ol>
-<li><p>对于 <code>vector</code>、 <code>string</code> 或 <code>deque</code><br> 使用 <code>erase-remove-if</code>方法: </p>
- <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">erase</span>(<span class="built_in">remove_if</span>(c.<span class="built_in">begin</span>(), c.<span class="built_in">end</span>(), badValue, c.<span class="built_in">end</span>()));</span><br></pre></td></tr></table></figure></li>
-<li><p>对于 <code>list</code> 容器<br> 直接使用 <code>remove_if</code> 方法:</p>
- <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">remove_if</span>(badValue);</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>对于标准关联容器</p>
-<p> <strong>把当前的i传给erase，i后缀递增</strong></p>
- <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (AssocContainer&lt;<span class="type">int</span>&gt;::iterator i = c.<span class="built_in">begin</span>(); i != c.<span class="built_in">end</span>();) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">badValue</span>(*i)) c3.<span class="built_in">erase</span>(i++); </span><br><span class="line">    <span class="keyword">else</span> ++i;                     </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-</ol>
-<h1 id="三、循环内部删除对象之外还要做某些事"><a href="#三、循环内部删除对象之外还要做某些事" class="headerlink" title="三、循环内部删除对象之外还要做某些事"></a>三、循环内部删除对象之外还要做某些事</h1><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">doSomething</span><span class="params">(<span class="type">int</span>)</span> </span>&#123; ... &#125;</span><br></pre></td></tr></table></figure>
-<ol>
-<li><p>对于 <code>vector</code>、 <code>string</code> 或 <code>deque</code></p>
-<p> <strong>接收 <code>erase</code>返回的迭代器值。</strong></p>
- <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (SeqContainer&lt;<span class="type">int</span>&gt;::iterator i = c.<span class="built_in">begin</span>(); i != c.<span class="built_in">end</span>();) &#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">badValue</span>(*i)) &#123;</span><br><span class="line">        <span class="built_in">doSomething</span>(*i);</span><br><span class="line">        i = c.<span class="built_in">rease</span>(i);</span><br><span class="line">    &#125; <span class="keyword">else</span> ++i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-<li><p>对于 <code>list</code> 容器</p>
-<p> 虽然也可以采用标准关联容器方法，但建议采用跟 <code>vector</code>、 <code>string</code> 或 <code>deque</code> 一致。</p>
-</li>
-<li><p>对于标准关联容器</p>
- <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (SeqContainer&lt;<span class="type">int</span>&gt;::iterator i = c.<span class="built_in">begin</span>(); i != c.<span class="built_in">end</span>();) &#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">badValue</span>(*i)) &#123;</span><br><span class="line">        <span class="built_in">doSomething</span>(*i);</span><br><span class="line">        c.<span class="built_in">rease</span>(i++);</span><br><span class="line">    &#125; <span class="keyword">else</span> ++i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-</ol>
-]]></content>
-      <categories>
-        <category>Effective-STL</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
-        <tag>Effective-STL</tag>
-        <tag>stl</tag>
       </tags>
   </entry>
   <entry>
@@ -3015,19 +3015,6 @@
       </tags>
   </entry>
   <entry>
-    <title>tcpdump 抓包</title>
-    <url>/2023/07/19/network/tcpdump-%E6%8A%93%E5%8C%85/</url>
-    <content><![CDATA[<p><code>tcpdump</code> 命令行抓包工具。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">tcpdump [ -AbdDefhHIJKlLnNOpqStuUvxX# ] [ -B buffer_size ]</span><br><span class="line">        [ -c count ] [ --count ] [ -C file_size ]</span><br><span class="line">        [ -E spi@ipaddr algo:secret,...  ]</span><br><span class="line">        [ -F file ] [ -G rotate_seconds ] [ -i interface ]</span><br><span class="line">        [ --immediate-mode ] [ -j tstamp_type ] [ -k (metadata_arg) ]</span><br><span class="line">        [ -m module ]</span><br><span class="line">        [ -M secret ] [ --number ] [ --print ]</span><br><span class="line">        [ -Q packet-metadata-filter ] [ -Q in|out|inout ]</span><br><span class="line">        [ -r file ] [ -s snaplen ] [ -T type ] [ --version ]</span><br><span class="line">        [ -V file ] [ -w file ] [ -W filecount ] [ -y datalinktype ]</span><br><span class="line">        [ -z postrotate-command ] [ -Z user ]</span><br><span class="line">        [ --time-stamp-precision=tstamp_precision ]</span><br><span class="line">        [ --micro ] [ --nano ]</span><br><span class="line">        [ expression ]</span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>Network</category>
-      </categories>
-      <tags>
-        <tag>tools</tag>
-        <tag>network</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>如何正确使用TCP</title>
     <url>/2023/07/24/network/%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E4%BD%BF%E7%94%A8TCP/</url>
     <content><![CDATA[<h1 id="SO-REUSEADDR"><a href="#SO-REUSEADDR" class="headerlink" title="SO_REUSEADDR"></a>SO_REUSEADDR</h1><ul>
@@ -3062,6 +3049,19 @@
       </categories>
       <tags>
         <tag>tcp</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>tcpdump 抓包</title>
+    <url>/2023/07/19/network/tcpdump-%E6%8A%93%E5%8C%85/</url>
+    <content><![CDATA[<p><code>tcpdump</code> 命令行抓包工具。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">tcpdump [ -AbdDefhHIJKlLnNOpqStuUvxX# ] [ -B buffer_size ]</span><br><span class="line">        [ -c count ] [ --count ] [ -C file_size ]</span><br><span class="line">        [ -E spi@ipaddr algo:secret,...  ]</span><br><span class="line">        [ -F file ] [ -G rotate_seconds ] [ -i interface ]</span><br><span class="line">        [ --immediate-mode ] [ -j tstamp_type ] [ -k (metadata_arg) ]</span><br><span class="line">        [ -m module ]</span><br><span class="line">        [ -M secret ] [ --number ] [ --print ]</span><br><span class="line">        [ -Q packet-metadata-filter ] [ -Q in|out|inout ]</span><br><span class="line">        [ -r file ] [ -s snaplen ] [ -T type ] [ --version ]</span><br><span class="line">        [ -V file ] [ -w file ] [ -W filecount ] [ -y datalinktype ]</span><br><span class="line">        [ -z postrotate-command ] [ -Z user ]</span><br><span class="line">        [ --time-stamp-precision=tstamp_precision ]</span><br><span class="line">        [ --micro ] [ --nano ]</span><br><span class="line">        [ expression ]</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>Network</category>
+      </categories>
+      <tags>
+        <tag>tools</tag>
+        <tag>network</tag>
       </tags>
   </entry>
   <entry>
