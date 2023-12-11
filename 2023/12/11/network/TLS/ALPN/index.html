@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yngty.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="IntroductionALPN(Application-Layer Protocol Negotiation)应用层协议协商, 当单个服务器端口号（例如端口 443）上支持多个应用程序协议时，客户端和服务器需要协商用于每个连接的应用程序协议。希望在不增加客户端和服务器之间的网络往返次数的情况下完成此协商，因为每次往返都会降低最终用户的体验。 ALPN 作为 TSL的扩展，客户端会将支持的应用程序">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Application-Layer Protocol Negotiation">
+<meta property="og:url" content="https://yngty.github.io/2023/12/11/network/TLS/ALPN/index.html">
+<meta property="og:site_name" content="Symbol Crash">
+<meta property="og:description" content="IntroductionALPN(Application-Layer Protocol Negotiation)应用层协议协商, 当单个服务器端口号（例如端口 443）上支持多个应用程序协议时，客户端和服务器需要协商用于每个连接的应用程序协议。希望在不增加客户端和服务器之间的网络往返次数的情况下完成此协商，因为每次往返都会降低最终用户的体验。 ALPN 作为 TSL的扩展，客户端会将支持的应用程序">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yngty.github.io/images/alpn_client_hello_tls1_3.png">
+<meta property="og:image" content="https://yngty.github.io/images/alpn_server_hello_tls1_3.png">
+<meta property="article:published_time" content="2023-12-11T10:07:03.000Z">
+<meta property="article:modified_time" content="2023-12-11T03:37:19.800Z">
+<meta property="article:author" content="yngty">
+<meta property="article:tag" content="SSL&#x2F;TLS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yngty.github.io/images/alpn_client_hello_tls1_3.png">
+
+<link rel="canonical" href="https://yngty.github.io/2023/12/11/network/TLS/ALPN/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Application-Layer Protocol Negotiation | Symbol Crash</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Symbol Crash" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Symbol Crash</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">不学无术</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">57</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">10</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">30</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2023/12/11/network/TLS/ALPN/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Symbol Crash">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Application-Layer Protocol Negotiation
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-12-11 10:07:03 / 修改时间：03:37:19" itemprop="dateCreated datePublished" datetime="2023-12-11T10:07:03+00:00">2023-12-11</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>730</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p><code>ALPN</code>(<code>Application-Layer Protocol Negotiation</code>)应用层协议协商, 当单个服务器端口号（例如端口 <code>443</code>）上支持多个应用程序协议时，客户端和服务器需要协商用于每个连接的应用程序协议。希望在不增加客户端和服务器之间的网络往返次数的情况下完成此协商，因为每次往返都会降低最终用户的体验。</p>
+<p><code>ALPN</code> 作为 <code>TSL</code>的扩展，客户端会将支持的应用程序协议列表作为 <code>TLS ClientHello</code> 消息的一部分发送给服务器，服务器选择一个协议，并将所选协议作为 <code>TLS ServerHello</code> 消息的一部分发送给客户端。因此，可以在 <code>TLS</code> 握手中完成应用协议协商，而无需添加网络往返，并且允许服务器根据需要，将不同的证书与每个应用协议相关联。</p>
+<span id="more"></span>
+<p>通过 <code>OpenSSL</code> 命令行工具，快速查看 <code>HTTP/2</code> 服务是否支持 <code>ALPN</code> 扩展：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl s_client -alpn h2 -servername ipinfo.io -connect ipinfo.io:443 &lt; /dev/null | grep ALPN </span><br></pre></td></tr></table></figure>
+<ul>
+<li>提示 <code>unknown option -alpn</code>:  <code>OpenSSL</code> 版本太低, <code>OpenSSL 1.0.2</code> 才开始支持 <code>ALPN</code> 需要升级高版本</li>
+<li>结果包含 <code>ALPN protocol: h2</code>，说明服务端支持 <code>ALPN</code></li>
+<li>结果包含 <code>No ALPN negotiated</code>，说明服务端不支持 <code>ALPN</code></li>
+</ul>
+<h1 id="Application-Layer-Protocol-Negotiation"><a href="#Application-Layer-Protocol-Negotiation" class="headerlink" title="Application-Layer Protocol Negotiation"></a><code>Application-Layer Protocol Negotiation</code></h1><h2 id="The-Application-Layer-Protocol-Negotiation-Extension"><a href="#The-Application-Layer-Protocol-Negotiation-Extension" class="headerlink" title="The Application-Layer Protocol Negotiation Extension"></a><code>The Application-Layer Protocol Negotiation Extension</code></h2><p>定义新的扩展类型（<code>application_layer_protocol_negotiation（16</code>），并且可以由客户端包括在其 <code>ClientHello</code> 消息中。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> &#123;</span></span><br><span class="line">    application_layer_protocol_negotiation(<span class="number">16</span>), (<span class="number">65535</span>)</span><br><span class="line">&#125; ExtensionType;</span><br></pre></td></tr></table></figure>
+
+<p>（<code>application_layer_protocol_negotiation（16</code>）扩展的 <code>extension_data</code> 字段应包含<code>ProtocolNameList</code> 值。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">opaque ProtocolName&lt;<span class="number">1.</span><span class="number">.2</span>^<span class="number">8</span><span class="number">-1</span>&gt;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    ProtocolName protocol_name_list&lt;<span class="number">2.</span><span class="number">.2</span>^<span class="number">16</span><span class="number">-1</span>&gt;</span><br><span class="line">&#125; ProtocolNameList;</span><br></pre></td></tr></table></figure>
+
+<p><code>ProtocolNameList</code> 按优先级从高到低包含客户端发布的协议列表。 协议是由 <code>IANA</code> 注册的不透明非空字节串命名的。不能包含空字符串，并且不能截断字节字符串。</p>
+<p>接收到包含 <code>application_layer_protocol_negotiation</code> 扩展名的 <code>ClientHello</code> 的服务器可以向客户端返回合适的协议选择作为响应。服务器将忽略它无法识别的任何协议名称。一个新的 <code>ServerHello</code> 扩展类型(<code>application_layer_protocol_negotiation(16)</code>) 可以在 <code>ServerHello</code> 消息扩展中返回给客户端。(<code>application_layer_protocol_negotiation(16)</code>) 扩展名的 <code>extension_data</code> 字段的结构与上述针对客户端 <code>extension_data</code> 的描述相同，只是 <code>ProtocolNameList</code> 必须包含一个 <code>ProtocolName</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">Client                                              Server</span><br><span class="line">ClientHello                     --------&gt;       ServerHello</span><br><span class="line">  (ALPN extension &amp;                               (ALPN extension &amp;</span><br><span class="line">   list of protocols)                              selected protocol)</span><br><span class="line">                                                Certificate*</span><br><span class="line">                                                ServerKeyExchange*</span><br><span class="line">                                                CertificateRequest*</span><br><span class="line">                                &lt;--------       ServerHelloDone</span><br><span class="line">Certificate*</span><br><span class="line">ClientKeyExchange</span><br><span class="line">CertificateVerify*</span><br><span class="line">[ChangeCipherSpec]</span><br><span class="line">Finished                        --------&gt;</span><br><span class="line">                                                [ChangeCipherSpec]</span><br><span class="line">                                &lt;--------       Finished</span><br><span class="line">Application Data                &lt;-------&gt;       Application Data</span><br></pre></td></tr></table></figure>
+
+<h2 id="Protocol-Selection"><a href="#Protocol-Selection" class="headerlink" title="Protocol Selection"></a>Protocol Selection</h2><p>期望服务器将具有优先级支持的协议列表，并且仅在客户端支持的情况下才选择协议。在这种情况下，服务器应该选择它所支持的，并且也是由客户端发布的最优先的协议。如果服务器不支持客户端传过来的协议，则服务器应以 <code>&quot;no_application_protocol&quot;</code> <code>alert</code> 错误回应。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> &#123;</span></span><br><span class="line">    no_application_protocol(<span class="number">120</span>),</span><br><span class="line">    (<span class="number">255</span>)</span><br><span class="line">&#125; AlertDescription;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Wireshark-抓包"><a href="#Wireshark-抓包" class="headerlink" title="Wireshark 抓包"></a><code>Wireshark</code> 抓包</h2><p>在 <code>TLS1.3</code> 中:</p>
+<ul>
+<li><p><code>ClientHello</code>消息:<br><img src="/images/alpn_client_hello_tls1_3.png" alt="ClientHello"></p>
+</li>
+<li><p><code>ServerHello</code>消息:<br><img src="/images/alpn_server_hello_tls1_3.png" alt="ServerHello"></p>
+</li>
+</ul>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/html/rfc7301">Application-Layer Protocol Negotiation Extension</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/SSL-TLS/" rel="tag"># SSL/TLS</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/11/07/c++/c-Memory-Order/" rel="prev" title="c++ Memory Order">
+      <i class="fa fa-chevron-left"></i> c++ Memory Order
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Application-Layer-Protocol-Negotiation"><span class="nav-number">2.</span> <span class="nav-text">Application-Layer Protocol Negotiation</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#The-Application-Layer-Protocol-Negotiation-Extension"><span class="nav-number">2.1.</span> <span class="nav-text">The Application-Layer Protocol Negotiation Extension</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Protocol-Selection"><span class="nav-number">2.2.</span> <span class="nav-text">Protocol Selection</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Wireshark-%E6%8A%93%E5%8C%85"><span class="nav-number">2.3.</span> <span class="nav-text">Wireshark 抓包</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">3.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="yngty"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">yngty</p>
+  <div class="site-description" itemprop="description">预测未来的最好方式就是实现它</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">57</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yngty" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yngty" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yngty@foxmail.com" title="E-Mail → mailto:yngty@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yngty</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">33k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">2:01</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
