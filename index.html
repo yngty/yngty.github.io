@@ -119,7 +119,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">57</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">58</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
@@ -159,6 +159,83 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2023/12/11/network/TLS/TLS-False-Start/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Symbol Crash">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/12/11/network/TLS/TLS-False-Start/" class="post-title-link" itemprop="url">TLS False Start</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-12-11 11:39:47 / 修改时间：03:40:42" itemprop="dateCreated datePublished" datetime="2023-12-11T11:39:47+00:00">2023-12-11</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>74</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="什么是TLS-False-Start？"><a href="#什么是TLS-False-Start？" class="headerlink" title="什么是TLS False Start？"></a>什么是TLS False Start？</h1><p>在 <code>TLS</code> 协商第二阶段，浏览器发送 <code>ChangeCipherSpec</code> 和 <code>Finished</code> 后，立即发送加密的应用层数据，而无需等待服务器端的确认。</p>
+<h1 id="如何启用TLS-False-Start？"><a href="#如何启用TLS-False-Start？" class="headerlink" title="如何启用TLS False Start？"></a>如何启用TLS False Start？</h1><ul>
+<li>需要支持 <code>NPN/ALPN</code></li>
+<li>服务器端配置支持前向安全(<code>Forward Secrecy</code>)</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2023/12/11/network/TLS/ALPN/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -184,7 +261,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2023-12-11 10:07:03 / 修改时间：03:38:04" itemprop="dateCreated datePublished" datetime="2023-12-11T10:07:03+00:00">2023-12-11</time>
+              <time title="创建时间：2023-12-11 10:07:03 / 修改时间：03:40:42" itemprop="dateCreated datePublished" datetime="2023-12-11T10:07:03+00:00">2023-12-11</time>
             </span>
 
           <br>
@@ -271,7 +348,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-12-11 03:38:04" itemprop="dateModified" datetime="2023-12-11T03:38:04+00:00">2023-12-11</time>
+                <time title="修改时间：2023-12-11 03:40:42" itemprop="dateModified" datetime="2023-12-11T03:40:42+00:00">2023-12-11</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -385,7 +462,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-12-11 03:38:04" itemprop="dateModified" datetime="2023-12-11T03:38:04+00:00">2023-12-11</time>
+                <time title="修改时间：2023-12-11 03:40:42" itemprop="dateModified" datetime="2023-12-11T03:40:42+00:00">2023-12-11</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -484,7 +561,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-12-11 03:38:04" itemprop="dateModified" datetime="2023-12-11T03:38:04+00:00">2023-12-11</time>
+                <time title="修改时间：2023-12-11 03:40:42" itemprop="dateModified" datetime="2023-12-11T03:40:42+00:00">2023-12-11</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -597,7 +674,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-12-11 03:38:04" itemprop="dateModified" datetime="2023-12-11T03:38:04+00:00">2023-12-11</time>
+                <time title="修改时间：2023-12-11 03:40:42" itemprop="dateModified" datetime="2023-12-11T03:40:42+00:00">2023-12-11</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -705,7 +782,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-12-11 03:38:04" itemprop="dateModified" datetime="2023-12-11T03:38:04+00:00">2023-12-11</time>
+                <time title="修改时间：2023-12-11 03:40:42" itemprop="dateModified" datetime="2023-12-11T03:40:42+00:00">2023-12-11</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -802,7 +879,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-12-11 03:38:04" itemprop="dateModified" datetime="2023-12-11T03:38:04+00:00">2023-12-11</time>
+                <time title="修改时间：2023-12-11 03:40:42" itemprop="dateModified" datetime="2023-12-11T03:40:42+00:00">2023-12-11</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1002,7 +1079,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-12-11 03:38:04" itemprop="dateModified" datetime="2023-12-11T03:38:04+00:00">2023-12-11</time>
+                <time title="修改时间：2023-12-11 03:40:42" itemprop="dateModified" datetime="2023-12-11T03:40:42+00:00">2023-12-11</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1113,7 +1190,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-12-11 03:38:04" itemprop="dateModified" datetime="2023-12-11T03:38:04+00:00">2023-12-11</time>
+                <time title="修改时间：2023-12-11 03:40:42" itemprop="dateModified" datetime="2023-12-11T03:40:42+00:00">2023-12-11</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1155,107 +1232,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2023/07/25/network/TCP-%E5%8D%8F%E8%AE%AE/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2023/07/24/network/%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E4%BD%BF%E7%94%A8TCP/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="yngty">
-      <meta itemprop="description" content="预测未来的最好方式就是实现它">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Symbol Crash">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/07/24/network/%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E4%BD%BF%E7%94%A8TCP/" class="post-title-link" itemprop="url">如何正确使用TCP</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2023-07-24 15:12:44" itemprop="dateCreated datePublished" datetime="2023-07-24T15:12:44+00:00">2023-07-24</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-12-11 03:38:04" itemprop="dateModified" datetime="2023-12-11T03:38:04+00:00">2023-12-11</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Network/" itemprop="url" rel="index"><span itemprop="name">Network</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>491</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>2 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="SO-REUSEADDR"><a href="#SO-REUSEADDR" class="headerlink" title="SO_REUSEADDR"></a>SO_REUSEADDR</h1><ul>
-<li><code>TCP</code> 服务器能够在杀掉或崩溃后快速重启</li>
-<li>也适用 <code>fork-per-connection</code> 服务器模型。</li>
-</ul>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> optval = <span class="number">1</span>;</span><br><span class="line"><span class="built_in">setsockopt</span>(sockfd, SOL_SOCKET, SO_REUSEADDR, &amp;optval, <span class="built_in">sizeof</span>(optval));</span><br></pre></td></tr></table></figure>
-<h1 id="忽略-SIGPIPE"><a href="#忽略-SIGPIPE" class="headerlink" title="忽略 SIGPIPE"></a>忽略 SIGPIPE</h1><p>程序向对方已经关闭的管道，写数据，会收到 <code>SIGPIPE</code> 信号。<code>write</code> 系统调用返回 <code>-1</code>收到 <code>errono EPIPE</code>。 <code>SIGPIPE</code> 信号默认行为终止进程。我们应该忽略 <code>SIGPIPE</code> 信号。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="built_in">signal</span>(SIGPIPE, SIG_IGN) == SIG_ERR) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2023/07/24/network/%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E4%BD%BF%E7%94%A8TCP/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1346,7 +1322,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">57</span>
+          <span class="site-state-item-count">58</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1411,7 +1387,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">2:01</span>
+    <span title="站点阅读时长">2:02</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>

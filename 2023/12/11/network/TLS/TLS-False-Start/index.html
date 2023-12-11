@@ -20,17 +20,20 @@
     var CONFIG = {"hostname":"yngty.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="预测未来的最好方式就是实现它">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Symbol Crash">
-<meta property="og:url" content="https://yngty.github.io/tags/C/page/3/index.html">
+  <meta name="description" content="什么是TLS False Start？在 TLS 协商第二阶段，浏览器发送 ChangeCipherSpec 和 Finished 后，立即发送加密的应用层数据，而无需等待服务器端的确认。 如何启用TLS False Start？ 需要支持 NPN&#x2F;ALPN 服务器端配置支持前向安全(Forward Secrecy)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TLS False Start">
+<meta property="og:url" content="https://yngty.github.io/2023/12/11/network/TLS/TLS-False-Start/index.html">
 <meta property="og:site_name" content="Symbol Crash">
-<meta property="og:description" content="预测未来的最好方式就是实现它">
+<meta property="og:description" content="什么是TLS False Start？在 TLS 协商第二阶段，浏览器发送 ChangeCipherSpec 和 Finished 后，立即发送加密的应用层数据，而无需等待服务器端的确认。 如何启用TLS False Start？ 需要支持 NPN&#x2F;ALPN 服务器端配置支持前向安全(Forward Secrecy)">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-12-11T11:39:47.000Z">
+<meta property="article:modified_time" content="2023-12-11T03:40:42.142Z">
 <meta property="article:author" content="yngty">
+<meta property="article:tag" content="SSL&#x2F;TLS">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://yngty.github.io/tags/C/page/3/">
+<link rel="canonical" href="https://yngty.github.io/2023/12/11/network/TLS/TLS-False-Start/">
 
 
 <script id="page-configurations">
@@ -38,12 +41,12 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>标签: C++ | Symbol Crash</title>
+  <title>TLS False Start | Symbol Crash</title>
   
 
 
@@ -153,238 +156,99 @@
         <div class="content-wrap">
           
 
-          <div class="content tag">
+          <div class="content post posts-expand">
             
 
+    
   
   
-  
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        <h2 class="collection-header">C++
-          <small>标签</small>
-        </h2>
-      </div>
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2023/12/11/network/TLS/TLS-False-Start/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Symbol Crash">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          TLS False Start
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-12-11 11:39:47 / 修改时间：03:40:42" itemprop="dateCreated datePublished" datetime="2023-12-11T11:39:47+00:00">2023-12-11</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>74</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-    <div class="collection-year">
-      <span class="collection-header">2021</span>
-    </div>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-11-01T13:12:55+00:00"
-              content="2021-11-01">
-          11-01
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/11/01/effecitve-cpp/effective-cpp-11/" itemprop="url">
-            <span itemprop="name">Effective C++ 11：赋值运算符需要考虑自我赋值问题</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-11-01T12:59:28+00:00"
-              content="2021-11-01">
-          11-01
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/11/01/effecitve-cpp/effective-cpp-10/" itemprop="url">
-            <span itemprop="name">Effective C++ 10：赋值运算符要返回自己的引用</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-11-01T12:03:51+00:00"
-              content="2021-11-01">
-          11-01
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/11/01/effecitve-cpp/effective-cpp-9/" itemprop="url">
-            <span itemprop="name">Effective C++ 9：绝不在构造和析构过程中调用 virtual 函数</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-10-25T13:29:41+00:00"
-              content="2021-10-25">
-          10-25
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/10/25/effecitve-cpp/effective-cpp-8/" itemprop="url">
-            <span itemprop="name">Effective C++ 8：析构函数不要抛出异常</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-10-25T13:09:45+00:00"
-              content="2021-10-25">
-          10-25
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/10/25/effecitve-cpp/effective-cpp-7/" itemprop="url">
-            <span itemprop="name">Effective C++ 7：为多态基类声明 virtual 析构函数</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-10-25T11:32:26+00:00"
-              content="2021-10-25">
-          10-25
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/10/25/effecitve-cpp/effective-cpp-6/" itemprop="url">
-            <span itemprop="name">Effective C++ 6：若不想使用编译器自动生成的函数，就该明确拒绝</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-10-24T20:17:05+00:00"
-              content="2021-10-24">
-          10-24
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/10/24/effecitve-cpp/effective-cpp-5/" itemprop="url">
-            <span itemprop="name">Effective C++ 5：了解c++默默编写并调用哪些函数</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-01-13T22:41:25+00:00"
-              content="2021-01-13">
-          01-13
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/01/13/effecitve-cpp/effective-cpp-4/" itemprop="url">
-            <span itemprop="name">Effective C++ 4：确定对象被使用前已先被初始化</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-01-05T22:04:32+00:00"
-              content="2021-01-05">
-          01-05
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/01/05/effecitve-cpp/effective-cpp-3/" itemprop="url">
-            <span itemprop="name">Effective C++ 3：尽可能使用 const</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-    <div class="collection-year">
-      <span class="collection-header">2020</span>
-    </div>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-12-14T12:36:49+00:00"
-              content="2020-12-14">
-          12-14
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/12/14/effecitve-cpp/effective-cpp-2/" itemprop="url">
-            <span itemprop="name">Effective C++ 2：尽量以const, enum, inline 替换 &#35;define</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
+        <h1 id="什么是TLS-False-Start？"><a href="#什么是TLS-False-Start？" class="headerlink" title="什么是TLS False Start？"></a>什么是TLS False Start？</h1><p>在 <code>TLS</code> 协商第二阶段，浏览器发送 <code>ChangeCipherSpec</code> 和 <code>Finished</code> 后，立即发送加密的应用层数据，而无需等待服务器端的确认。</p>
+<h1 id="如何启用TLS-False-Start？"><a href="#如何启用TLS-False-Start？" class="headerlink" title="如何启用TLS False Start？"></a>如何启用TLS False Start？</h1><ul>
+<li>需要支持 <code>NPN/ALPN</code></li>
+<li>服务器端配置支持前向安全(<code>Forward Secrecy</code>)</li>
+</ul>
 
     </div>
-  </div>
-  
-  
-  
 
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/SSL-TLS/" rel="tag"># SSL/TLS</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/12/11/network/TLS/ALPN/" rel="prev" title="Application-Layer Protocol Negotiation">
+      <i class="fa fa-chevron-left"></i> Application-Layer Protocol Negotiation
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
   
-  <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/tags/C/page/2/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/tags/C/">1</a><a class="page-number" href="/tags/C/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/tags/C/page/4/">4</a><a class="extend next" rel="next" href="/tags/C/page/4/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
-  </nav>
+  
+  
 
 
 
@@ -436,6 +300,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFTLS-False-Start%EF%BC%9F"><span class="nav-number">1.</span> <span class="nav-text">什么是TLS False Start？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%90%AF%E7%94%A8TLS-False-Start%EF%BC%9F"><span class="nav-number">2.</span> <span class="nav-text">如何启用TLS False Start？</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
