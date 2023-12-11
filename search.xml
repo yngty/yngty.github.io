@@ -273,6 +273,31 @@
       </tags>
   </entry>
   <entry>
+    <title>std::thread 注意事项</title>
+    <url>/2023/11/03/c++/std-thread-%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/</url>
+    <content><![CDATA[<h1 id="join-和-detach"><a href="#join-和-detach" class="headerlink" title="join 和 detach"></a><code>join</code> 和 <code>detach</code></h1><ul>
+<li><p><code>join</code> 或者 <code>detach</code> 只能调用<strong>一次</strong></p>
+<p>当调用 <code>join</code> 或者 <code>detach</code> 之后会将持有的线程ID置为 <code>0</code>, 再次调用会抛异常。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span></span></span><br><span class="line"><span class="function"><span class="title">thread::join</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">int</span> ec = EINVAL;</span><br><span class="line">    <span class="keyword">if</span> (!__libcpp_thread_isnull(&amp;__t_))</span><br><span class="line">    &#123;</span><br><span class="line">        ec = __libcpp_thread_join(&amp;__t_);</span><br><span class="line">        <span class="keyword">if</span> (ec == <span class="number">0</span>)</span><br><span class="line">            __t_ = _LIBCPP_NULL_THREAD;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (ec)</span><br><span class="line">        __throw_system_error(ec, <span class="string">&quot;thread::join failed&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span></span></span><br><span class="line"><span class="function"><span class="title">thread::detach</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">int</span> ec = EINVAL;</span><br><span class="line">    <span class="keyword">if</span> (!__libcpp_thread_isnull(&amp;__t_))</span><br><span class="line">    &#123;</span><br><span class="line">        ec = __libcpp_thread_detach(&amp;__t_);</span><br><span class="line">        <span class="keyword">if</span> (ec == <span class="number">0</span>)</span><br><span class="line">            __t_ = _LIBCPP_NULL_THREAD;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (ec)</span><br><span class="line">        __throw_system_error(ec, <span class="string">&quot;thread::detach failed&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<span id="more"></span>
+<ul>
+<li><code>thread</code> <strong>不能拷贝只能移动</strong>，但只能移动到没绑定线程的 <code>thread</code>。</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">_LIBCPP_EXPORTED_FROM_ABI</span> thread</span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">__libcpp_thread_t</span> __t_;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">thread</span>(<span class="type">const</span> thread&amp;);</span><br><span class="line">    thread&amp; <span class="keyword">operator</span>=(<span class="type">const</span> thread&amp;);</span><br><span class="line">     _LIBCPP_INLINE_VISIBILITY</span><br><span class="line">    thread&amp; <span class="keyword">operator</span>=(thread&amp;&amp; <span class="type">__t</span>) _NOEXCEPT &#123;</span><br><span class="line">        <span class="keyword">if</span> (!__libcpp_thread_isnull(&amp;__t_))</span><br><span class="line">            <span class="built_in">terminate</span>();</span><br><span class="line">        __t_ = <span class="type">__t</span>.__t_;</span><br><span class="line">        <span class="type">__t</span>.__t_ = _LIBCPP_NULL_THREAD;</span><br><span class="line">        <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h1 id="线程析构"><a href="#线程析构" class="headerlink" title="线程析构"></a>线程析构</h1><p>通过 <code>std::thread</code> 创建的线程**必须调用 <code>join</code> 或者 <code>detach</code>**。线程析构时会先判断线程ID为 <code>0</code> 就抛异常。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">thread::~<span class="built_in">thread</span>()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (!__libcpp_thread_isnull(&amp;__t_))</span><br><span class="line">        <span class="built_in">terminate</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>std::thread</code> 析构默认不会等待线程结束，在 <code>C++20</code> 可以使用 <code>std::jthread</code>, <code>std::jthread</code> 实际是使用了 <code>RAII</code> 技术， 在内部持有 <code>thread</code> 成员变量，在析构时调用 <code>join</code> 函数。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">_LIBCPP_AVAILABILITY_SYNC</span> jthread &#123;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">_LIBCPP_HIDE_FROM_ABI ~<span class="built_in">jthread</span>() &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">joinable</span>()) &#123;</span><br><span class="line">        <span class="built_in">request_stop</span>();</span><br><span class="line">        <span class="built_in">join</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">thread __thread_;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>C/C++</category>
+      </categories>
+      <tags>
+        <tag>thread</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>可变参数模板</title>
     <url>/2023/04/10/c++/%E5%8F%AF%E5%8F%98%E5%8F%82%E6%95%B0%E6%A8%A1%E6%9D%BF/</url>
     <content><![CDATA[<h1 id="可变参数模板的需求"><a href="#可变参数模板的需求" class="headerlink" title="可变参数模板的需求"></a>可变参数模板的需求</h1><p>可变参数模板有助于解决在编译时求值类型安全，不需要宏，不需要显式指定 参数的数量，可以编写可变参数函数模板和可变参数类模板。此外，也有可变参数变量模板和可变 参数别名模板。</p>
@@ -345,31 +370,6 @@
       </categories>
       <tags>
         <tag>template</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>std::thread 注意事项</title>
-    <url>/2023/11/03/c++/std-thread-%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/</url>
-    <content><![CDATA[<h1 id="join-和-detach"><a href="#join-和-detach" class="headerlink" title="join 和 detach"></a><code>join</code> 和 <code>detach</code></h1><ul>
-<li><p><code>join</code> 或者 <code>detach</code> 只能调用<strong>一次</strong></p>
-<p>当调用 <code>join</code> 或者 <code>detach</code> 之后会将持有的线程ID置为 <code>0</code>, 再次调用会抛异常。</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span></span></span><br><span class="line"><span class="function"><span class="title">thread::join</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">int</span> ec = EINVAL;</span><br><span class="line">    <span class="keyword">if</span> (!__libcpp_thread_isnull(&amp;__t_))</span><br><span class="line">    &#123;</span><br><span class="line">        ec = __libcpp_thread_join(&amp;__t_);</span><br><span class="line">        <span class="keyword">if</span> (ec == <span class="number">0</span>)</span><br><span class="line">            __t_ = _LIBCPP_NULL_THREAD;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (ec)</span><br><span class="line">        __throw_system_error(ec, <span class="string">&quot;thread::join failed&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span></span></span><br><span class="line"><span class="function"><span class="title">thread::detach</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">int</span> ec = EINVAL;</span><br><span class="line">    <span class="keyword">if</span> (!__libcpp_thread_isnull(&amp;__t_))</span><br><span class="line">    &#123;</span><br><span class="line">        ec = __libcpp_thread_detach(&amp;__t_);</span><br><span class="line">        <span class="keyword">if</span> (ec == <span class="number">0</span>)</span><br><span class="line">            __t_ = _LIBCPP_NULL_THREAD;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (ec)</span><br><span class="line">        __throw_system_error(ec, <span class="string">&quot;thread::detach failed&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-</ul>
-<span id="more"></span>
-<ul>
-<li><code>thread</code> <strong>不能拷贝只能移动</strong>，但只能移动到没绑定线程的 <code>thread</code>。</li>
-</ul>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">_LIBCPP_EXPORTED_FROM_ABI</span> thread</span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">__libcpp_thread_t</span> __t_;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">thread</span>(<span class="type">const</span> thread&amp;);</span><br><span class="line">    thread&amp; <span class="keyword">operator</span>=(<span class="type">const</span> thread&amp;);</span><br><span class="line">     _LIBCPP_INLINE_VISIBILITY</span><br><span class="line">    thread&amp; <span class="keyword">operator</span>=(thread&amp;&amp; <span class="type">__t</span>) _NOEXCEPT &#123;</span><br><span class="line">        <span class="keyword">if</span> (!__libcpp_thread_isnull(&amp;__t_))</span><br><span class="line">            <span class="built_in">terminate</span>();</span><br><span class="line">        __t_ = <span class="type">__t</span>.__t_;</span><br><span class="line">        <span class="type">__t</span>.__t_ = _LIBCPP_NULL_THREAD;</span><br><span class="line">        <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h1 id="线程析构"><a href="#线程析构" class="headerlink" title="线程析构"></a>线程析构</h1><p>通过 <code>std::thread</code> 创建的线程**必须调用 <code>join</code> 或者 <code>detach</code>**。线程析构时会先判断线程ID为 <code>0</code> 就抛异常。</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">thread::~<span class="built_in">thread</span>()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (!__libcpp_thread_isnull(&amp;__t_))</span><br><span class="line">        <span class="built_in">terminate</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><code>std::thread</code> 析构默认不会等待线程结束，在 <code>C++20</code> 可以使用 <code>std::jthread</code>, <code>std::jthread</code> 实际是使用了 <code>RAII</code> 技术， 在内部持有 <code>thread</code> 成员变量，在析构时调用 <code>join</code> 函数。</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">_LIBCPP_AVAILABILITY_SYNC</span> jthread &#123;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">_LIBCPP_HIDE_FROM_ABI ~<span class="built_in">jthread</span>() &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">joinable</span>()) &#123;</span><br><span class="line">        <span class="built_in">request_stop</span>();</span><br><span class="line">        <span class="built_in">join</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">thread __thread_;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>C/C++</category>
-      </categories>
-      <tags>
-        <tag>thread</tag>
       </tags>
   </entry>
   <entry>
@@ -484,21 +484,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Effective C++ 13：以对象管理资源</title>
-    <url>/2021/11/02/effecitve-cpp/effective-cpp-13/</url>
-    <content><![CDATA[<blockquote>
-<p>Item 13: Use objects to manage resources.</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>Effective-C++</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
-        <tag>Effective-C++</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Effective C++ 11：赋值运算符需要考虑自我赋值问题</title>
     <url>/2021/11/01/effecitve-cpp/effective-cpp-11/</url>
     <content><![CDATA[<blockquote>
@@ -545,6 +530,21 @@
 
 <p>正确写法:</p>
 <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">PriorityCustomer</span>: <span class="keyword">public</span> Customer &#123;</span><br><span class="line">    <span class="type">int</span> priority;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="built_in">PriorityCustomer</span>(<span class="type">const</span> PriorityCustomer&amp; rhs)</span><br><span class="line">  : <span class="built_in">Customer</span>(rhs), <span class="built_in">priority</span>(rhs.priority)&#123;&#125;</span><br><span class="line">  </span><br><span class="line">  PriorityCustomer&amp; </span><br><span class="line">  <span class="keyword">operator</span>=(<span class="type">const</span> PriorityCustomer&amp; rhs)&#123;</span><br><span class="line">    Customer::<span class="keyword">operator</span>=(rhs);</span><br><span class="line">    priority = rhs.priority;</span><br><span class="line">  &#125;  </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>Effective-C++</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>Effective-C++</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Effective C++ 13：以对象管理资源</title>
+    <url>/2021/11/02/effecitve-cpp/effective-cpp-13/</url>
+    <content><![CDATA[<blockquote>
+<p>Item 13: Use objects to manage resources.</p>
+</blockquote>
+]]></content>
       <categories>
         <category>Effective-C++</category>
       </categories>
@@ -1098,28 +1098,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Effective C++ 5：了解c++默默编写并调用哪些函数</title>
-    <url>/2021/10/24/effecitve-cpp/effective-cpp-5/</url>
-    <content><![CDATA[<blockquote>
-<p>Item 5: Know what functions C++ silently writes and calls</p>
-</blockquote>
-<h1 id="默认函数"><a href="#默认函数" class="headerlink" title="默认函数"></a>默认函数</h1><p>在 <code>C++</code> 中，一个类有八个默认函数：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Empty</span> &#123;</span><br><span class="line">    <span class="built_in">Empty</span> () &#123;&#125; <span class="comment">//默认构造函数    </span></span><br><span class="line">    <span class="built_in">Empty</span> (<span class="type">const</span> Empty &amp;) &#123;&#125; <span class="comment">// 默认拷贝构造函数</span></span><br><span class="line">    <span class="built_in">Empty</span> (<span class="type">const</span> Empty &amp;&amp;) &#123;&#125; <span class="comment">// 默认移动构造函数(`C++11`)</span></span><br><span class="line">    ~<span class="built_in">Empty</span>() &#123;&#125; <span class="comment">// 默认析构函数</span></span><br><span class="line">    Empty&amp; <span class="keyword">operator</span>=(<span class="type">const</span> Empty&amp;) &#123;&#125; <span class="comment">// 默认重载赋值运算符函数</span></span><br><span class="line">    Empty&amp; <span class="keyword">operator</span>=(<span class="type">const</span> Empty&amp;&amp;)&#123;&#125; <span class="comment">// 默认重载移动赋值操作符函数函数</span></span><br><span class="line">    Empty* <span class="keyword">operator</span> &amp;() &#123;&#125; <span class="comment">// 默认重载取址运算符函数</span></span><br><span class="line">    <span class="type">const</span> Empty* <span class="keyword">operator</span> &amp;() <span class="type">const</span> &#123;&#125; <span class="comment">// 默认重载取址运算符 `const` 函数</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<h1 id="调用时机"><a href="#调用时机" class="headerlink" title="调用时机"></a>调用时机</h1><p>只有你需要用到这些函数并且你又没有显示的声明这些函数的时候，编译器才会贴心的自动声明相应的函数。</p>
-<h1 id="引用成员"><a href="#引用成员" class="headerlink" title="引用成员"></a>引用成员</h1><p>如果你打算在一个“内含引用成员”或者“内含<code>const</code>成员”的类内支持赋值操作，就必须定义自己的默认拷贝赋值操作符。因为 <code>C++</code> 本身不允许引用改指不同的对象，也不允许更改 <code>const</code> 成员。</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Person</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    string &amp; name;</span><br><span class="line">    <span class="built_in">Person</span>(string &amp;str):<span class="built_in">name</span>(str) &#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">string s1 = <span class="string">&quot;hello&quot;</span>, s2 = <span class="string">&quot;world&quot;</span>;</span><br><span class="line"><span class="function">Person <span class="title">p1</span><span class="params">(s1)</span>, <span class="title">p2</span><span class="params">(s2)</span></span>;</span><br><span class="line">p1 = p2;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">error: object of type &#x27;Person&#x27; cannot be assigned because its copy assignment operator is implicitly deleted</span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>Effective-C++</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
-        <tag>Effective-C++</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Effective C++ 4：确定对象被使用前已先被初始化</title>
     <url>/2021/01/13/effecitve-cpp/effective-cpp-4/</url>
     <content><![CDATA[<blockquote>
@@ -1146,6 +1124,28 @@
 <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Directory</span> &#123; ... &#125;</span><br><span class="line"></span><br><span class="line">Directory::<span class="built_in">Directory</span>( params) </span><br><span class="line">&#123;</span><br><span class="line">    ...</span><br><span class="line">    std::<span class="type">size_t</span> disks = <span class="built_in">tfs</span>().<span class="built_in">numDisks</span>();</span><br><span class="line">    ...    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Directory&amp; <span class="title">tempDir</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">static</span> Directory td;</span><br><span class="line">    <span class="keyword">return</span> td;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 ]]></content>
+      <categories>
+        <category>Effective-C++</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>Effective-C++</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Effective C++ 5：了解c++默默编写并调用哪些函数</title>
+    <url>/2021/10/24/effecitve-cpp/effective-cpp-5/</url>
+    <content><![CDATA[<blockquote>
+<p>Item 5: Know what functions C++ silently writes and calls</p>
+</blockquote>
+<h1 id="默认函数"><a href="#默认函数" class="headerlink" title="默认函数"></a>默认函数</h1><p>在 <code>C++</code> 中，一个类有八个默认函数：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Empty</span> &#123;</span><br><span class="line">    <span class="built_in">Empty</span> () &#123;&#125; <span class="comment">//默认构造函数    </span></span><br><span class="line">    <span class="built_in">Empty</span> (<span class="type">const</span> Empty &amp;) &#123;&#125; <span class="comment">// 默认拷贝构造函数</span></span><br><span class="line">    <span class="built_in">Empty</span> (<span class="type">const</span> Empty &amp;&amp;) &#123;&#125; <span class="comment">// 默认移动构造函数(`C++11`)</span></span><br><span class="line">    ~<span class="built_in">Empty</span>() &#123;&#125; <span class="comment">// 默认析构函数</span></span><br><span class="line">    Empty&amp; <span class="keyword">operator</span>=(<span class="type">const</span> Empty&amp;) &#123;&#125; <span class="comment">// 默认重载赋值运算符函数</span></span><br><span class="line">    Empty&amp; <span class="keyword">operator</span>=(<span class="type">const</span> Empty&amp;&amp;)&#123;&#125; <span class="comment">// 默认重载移动赋值操作符函数函数</span></span><br><span class="line">    Empty* <span class="keyword">operator</span> &amp;() &#123;&#125; <span class="comment">// 默认重载取址运算符函数</span></span><br><span class="line">    <span class="type">const</span> Empty* <span class="keyword">operator</span> &amp;() <span class="type">const</span> &#123;&#125; <span class="comment">// 默认重载取址运算符 `const` 函数</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h1 id="调用时机"><a href="#调用时机" class="headerlink" title="调用时机"></a>调用时机</h1><p>只有你需要用到这些函数并且你又没有显示的声明这些函数的时候，编译器才会贴心的自动声明相应的函数。</p>
+<h1 id="引用成员"><a href="#引用成员" class="headerlink" title="引用成员"></a>引用成员</h1><p>如果你打算在一个“内含引用成员”或者“内含<code>const</code>成员”的类内支持赋值操作，就必须定义自己的默认拷贝赋值操作符。因为 <code>C++</code> 本身不允许引用改指不同的对象，也不允许更改 <code>const</code> 成员。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Person</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    string &amp; name;</span><br><span class="line">    <span class="built_in">Person</span>(string &amp;str):<span class="built_in">name</span>(str) &#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">string s1 = <span class="string">&quot;hello&quot;</span>, s2 = <span class="string">&quot;world&quot;</span>;</span><br><span class="line"><span class="function">Person <span class="title">p1</span><span class="params">(s1)</span>, <span class="title">p2</span><span class="params">(s2)</span></span>;</span><br><span class="line">p1 = p2;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">error: object of type &#x27;Person&#x27; cannot be assigned because its copy assignment operator is implicitly deleted</span><br></pre></td></tr></table></figure>]]></content>
       <categories>
         <category>Effective-C++</category>
       </categories>
@@ -1238,32 +1238,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Effective C++ 9：绝不在构造和析构过程中调用 virtual 函数</title>
-    <url>/2021/11/01/effecitve-cpp/effective-cpp-9/</url>
-    <content><![CDATA[<blockquote>
-<p>Item 9: Never call virtual functions during construction or destruction.</p>
-</blockquote>
-<p>在构造和析构期间不要调用 <code>virtual</code> 函数，因为这类调用不会下降至 <code>derived class</code><br>(比起当前执行构造函数和析构函数的那层)。</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Transaction</span> &#123;                               <span class="comment">// base class for all</span></span><br><span class="line"><span class="keyword">public</span>:                                           <span class="comment">// transactions</span></span><br><span class="line">    <span class="built_in">Transaction</span>()&#123;                                <span class="comment">// base class ctor           </span></span><br><span class="line">        <span class="built_in">logTransaction</span>();                         <span class="comment">// as final action, log this               </span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">logTransaction</span><span class="params">()</span> <span class="type">const</span> </span>= <span class="number">0</span>;      <span class="comment">// make type-dependent</span></span><br><span class="line">&#125;;</span><br><span class="line">  </span><br><span class="line"><span class="keyword">class</span> <span class="title class_">BuyTransaction</span>: <span class="keyword">public</span> Transaction &#123;        <span class="comment">// derived class</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">logTransaction</span><span class="params">()</span> <span class="type">const</span></span>;          <span class="comment">// how to log trans-</span></span><br><span class="line">&#125;;</span><br><span class="line">...</span><br><span class="line">BuyTransaction b;</span><br></pre></td></tr></table></figure>
-
-<p><code>b</code> 在构造时，调用到父类Transaction的构造函数，其中对 <code>logTransaction</code> 的调用会被解析到 <code>Transaction</code> 类。 那是一个纯虚函数，因此程序会非正常退出。</p>
-<p>在<code>derived class</code> 对象的 <code>base class</code> 构造期间，对象的类型是 <code>base class</code> 而不是 <code>derived classo</code> 不只 <code>virtual</code> 函数会被编译器解析至(resolve to) <code>base class</code> ，若使用运行期类型信息 <code>RTTI</code>(runtime type information, 例如 <code>dynamic_cast</code>  <code>typeid</code>) ，也会把对象视为 <code>base class</code> 类型。</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Transaction</span>&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">Transaction</span>()&#123;</span><br><span class="line">        cout&lt;&lt;<span class="built_in">typeid</span>(<span class="keyword">this</span>).<span class="built_in">name</span>()&lt;&lt;endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">BuyTransaction</span>: <span class="keyword">public</span> Transaction&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">BuyTransaction</span>()&#123;</span><br><span class="line">        cout&lt;&lt;<span class="built_in">typeid</span>(<span class="keyword">this</span>).<span class="built_in">name</span>()&lt;&lt;endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    BuyTransaction b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>输出</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">P11Transaction</span><br><span class="line">P14BuyTransaction</span><br></pre></td></tr></table></figure>
-
-<p><strong>相同道理也适用于析构函数.</strong></p>
-]]></content>
-      <categories>
-        <category>Effective-C++</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
-        <tag>Effective-C++</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Effective-STL 21：总是让比较函数在等值情况下返回 false</title>
     <url>/2023/03/10/effective-stl/effective-stl-21/</url>
     <content><![CDATA[<blockquote>
@@ -1305,6 +1279,32 @@
         <tag>C++</tag>
         <tag>Effective-STL</tag>
         <tag>stl</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Effective C++ 9：绝不在构造和析构过程中调用 virtual 函数</title>
+    <url>/2021/11/01/effecitve-cpp/effective-cpp-9/</url>
+    <content><![CDATA[<blockquote>
+<p>Item 9: Never call virtual functions during construction or destruction.</p>
+</blockquote>
+<p>在构造和析构期间不要调用 <code>virtual</code> 函数，因为这类调用不会下降至 <code>derived class</code><br>(比起当前执行构造函数和析构函数的那层)。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Transaction</span> &#123;                               <span class="comment">// base class for all</span></span><br><span class="line"><span class="keyword">public</span>:                                           <span class="comment">// transactions</span></span><br><span class="line">    <span class="built_in">Transaction</span>()&#123;                                <span class="comment">// base class ctor           </span></span><br><span class="line">        <span class="built_in">logTransaction</span>();                         <span class="comment">// as final action, log this               </span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">logTransaction</span><span class="params">()</span> <span class="type">const</span> </span>= <span class="number">0</span>;      <span class="comment">// make type-dependent</span></span><br><span class="line">&#125;;</span><br><span class="line">  </span><br><span class="line"><span class="keyword">class</span> <span class="title class_">BuyTransaction</span>: <span class="keyword">public</span> Transaction &#123;        <span class="comment">// derived class</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">logTransaction</span><span class="params">()</span> <span class="type">const</span></span>;          <span class="comment">// how to log trans-</span></span><br><span class="line">&#125;;</span><br><span class="line">...</span><br><span class="line">BuyTransaction b;</span><br></pre></td></tr></table></figure>
+
+<p><code>b</code> 在构造时，调用到父类Transaction的构造函数，其中对 <code>logTransaction</code> 的调用会被解析到 <code>Transaction</code> 类。 那是一个纯虚函数，因此程序会非正常退出。</p>
+<p>在<code>derived class</code> 对象的 <code>base class</code> 构造期间，对象的类型是 <code>base class</code> 而不是 <code>derived classo</code> 不只 <code>virtual</code> 函数会被编译器解析至(resolve to) <code>base class</code> ，若使用运行期类型信息 <code>RTTI</code>(runtime type information, 例如 <code>dynamic_cast</code>  <code>typeid</code>) ，也会把对象视为 <code>base class</code> 类型。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Transaction</span>&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">Transaction</span>()&#123;</span><br><span class="line">        cout&lt;&lt;<span class="built_in">typeid</span>(<span class="keyword">this</span>).<span class="built_in">name</span>()&lt;&lt;endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">BuyTransaction</span>: <span class="keyword">public</span> Transaction&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">BuyTransaction</span>()&#123;</span><br><span class="line">        cout&lt;&lt;<span class="built_in">typeid</span>(<span class="keyword">this</span>).<span class="built_in">name</span>()&lt;&lt;endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    BuyTransaction b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">P11Transaction</span><br><span class="line">P14BuyTransaction</span><br></pre></td></tr></table></figure>
+
+<p><strong>相同道理也适用于析构函数.</strong></p>
+]]></content>
+      <categories>
+        <category>Effective-C++</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>Effective-C++</tag>
       </tags>
   </entry>
   <entry>
@@ -1712,6 +1712,17 @@
       </tags>
   </entry>
   <entry>
+    <title>Mach-O 相关记录</title>
+    <url>/2023/03/10/macos/mach-o/</url>
+    <content><![CDATA[<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><h1 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h1>]]></content>
+      <categories>
+        <category>MacOS</category>
+      </categories>
+      <tags>
+        <tag>Mach-O</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>@executable path, @load path 和 @rpath</title>
     <url>/2023/08/25/macos/executable-path-load-path-%E5%92%8C-rpath/</url>
     <content><![CDATA[<p>在 <code>macOS</code> 上，动态链接器使用特定的路径变量来解析运行时的库位置。这些路径变量包括：绝对路径、 <code>@executable_path</code>、<code>@loader_path</code> 和 <code>@rpath</code>。</p>
@@ -1769,17 +1780,6 @@
       </categories>
       <tags>
         <tag>DYLD</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Mach-O 相关记录</title>
-    <url>/2023/03/10/macos/mach-o/</url>
-    <content><![CDATA[<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><h1 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h1>]]></content>
-      <categories>
-        <category>MacOS</category>
-      </categories>
-      <tags>
-        <tag>Mach-O</tag>
       </tags>
   </entry>
   <entry>
