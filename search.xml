@@ -413,6 +413,17 @@
       </tags>
   </entry>
   <entry>
+    <title>CSS Layout</title>
+    <url>/2023/09/04/css/CSS-Layout/</url>
+    <content><![CDATA[<h1 id="Grid"><a href="#Grid" class="headerlink" title="Grid"></a>Grid</h1><h2 id="fr"><a href="#fr" class="headerlink" title="fr"></a>fr</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">grid-template-columns: 1fr, 1fr, 1fr, 1fr;</span><br><span class="line">grid-template-columns: repeat(4, 1fr);</span><br><span class="line">grid-template-columns: 1fr, 1fr, 1fr, auto;</span><br></pre></td></tr></table></figure>
+
+<h2 id="grid-column"><a href="#grid-column" class="headerlink" title="grid-column"></a>grid-column</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">grid-column: 1</span><br><span class="line">grid-column: 1 / 4;</span><br><span class="line">grid-column: 1 / span 3;</span><br><span class="line">grid-column: 1 / -1;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>css</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Reactor pattern</title>
     <url>/2023/03/06/design/reactor-pattern/</url>
     <content><![CDATA[<h1 id="什么是Reactor模式"><a href="#什么是Reactor模式" class="headerlink" title="什么是Reactor模式"></a>什么是Reactor模式</h1><h1 id="Reactor模式结构"><a href="#Reactor模式结构" class="headerlink" title="Reactor模式结构"></a>Reactor模式结构</h1><ul>
@@ -1359,21 +1370,6 @@
       </tags>
   </entry>
   <entry>
-    <title>解决 由于没有公钥，无法验证下列签名 :NO_PUBKEY</title>
-    <url>/2022/04/19/linux/NO_PUBKEY/</url>
-    <content><![CDATA[<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ sudo apt update </span><br><span class="line">命中:1 https://pro-driver-packages.uniontech.com eagle InRelease</span><br><span class="line">获取:2 http://mirrors.tuna.tsinghua.edu.cn/ubuntu hirsute InRelease [269 kB]                                 </span><br><span class="line">命中:3 http://packages.microsoft.com/repos/code stable InRelease                                             </span><br><span class="line">命中:4 https://home-packages.chinauos.com/home plum InRelease                                                </span><br><span class="line">命中:5 https://home-packages.chinauos.com/home plum/beta InRelease   </span><br><span class="line">命中:6 https://home-packages.chinauos.com/printer eagle InRelease</span><br><span class="line">错误:2 http://mirrors.tuna.tsinghua.edu.cn/ubuntu hirsute InRelease</span><br><span class="line">  由于没有公钥，无法验证下列签名： NO_PUBKEY 871920D1991BC93C</span><br><span class="line">命中:7 https://home-store-img.uniontech.com/appstore eagle InRelease</span><br><span class="line">正在读取软件包列表... 完成</span><br><span class="line">W: GPG 错误：http://mirrors.tuna.tsinghua.edu.cn/ubuntu hirsute InRelease: 由于没有公钥，无法验证下列签名： NO_PUBKEY 871920D1991BC93C</span><br><span class="line">E: 仓库 “http://mirrors.tuna.tsinghua.edu.cn/ubuntu hirsute InRelease” 没有数字签名。</span><br><span class="line">N: 无法安全地用该源进行更新，所以默认禁用该源。</span><br><span class="line">N: 参见 apt-secure(8) 手册以了解仓库创建和用户配置方面的细节。</span><br></pre></td></tr></table></figure>
-
-<p>执行：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 871920D1991BC93C</span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>Linux</category>
-      </categories>
-      <tags>
-        <tag>Linux</tag>
-        <tag>apt</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Linux命令之tr</title>
     <url>/2021/11/17/linux/Linux%E5%91%BD%E4%BB%A4%E4%B9%8Btr/</url>
     <content><![CDATA[<p><code>Linux</code> 中 <code>tr</code> 命令用于转换或删除文件中的字符。</p>
@@ -1400,6 +1396,21 @@
       </categories>
       <tags>
         <tag>Linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>解决 由于没有公钥，无法验证下列签名 :NO_PUBKEY</title>
+    <url>/2022/04/19/linux/NO_PUBKEY/</url>
+    <content><![CDATA[<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ sudo apt update </span><br><span class="line">命中:1 https://pro-driver-packages.uniontech.com eagle InRelease</span><br><span class="line">获取:2 http://mirrors.tuna.tsinghua.edu.cn/ubuntu hirsute InRelease [269 kB]                                 </span><br><span class="line">命中:3 http://packages.microsoft.com/repos/code stable InRelease                                             </span><br><span class="line">命中:4 https://home-packages.chinauos.com/home plum InRelease                                                </span><br><span class="line">命中:5 https://home-packages.chinauos.com/home plum/beta InRelease   </span><br><span class="line">命中:6 https://home-packages.chinauos.com/printer eagle InRelease</span><br><span class="line">错误:2 http://mirrors.tuna.tsinghua.edu.cn/ubuntu hirsute InRelease</span><br><span class="line">  由于没有公钥，无法验证下列签名： NO_PUBKEY 871920D1991BC93C</span><br><span class="line">命中:7 https://home-store-img.uniontech.com/appstore eagle InRelease</span><br><span class="line">正在读取软件包列表... 完成</span><br><span class="line">W: GPG 错误：http://mirrors.tuna.tsinghua.edu.cn/ubuntu hirsute InRelease: 由于没有公钥，无法验证下列签名： NO_PUBKEY 871920D1991BC93C</span><br><span class="line">E: 仓库 “http://mirrors.tuna.tsinghua.edu.cn/ubuntu hirsute InRelease” 没有数字签名。</span><br><span class="line">N: 无法安全地用该源进行更新，所以默认禁用该源。</span><br><span class="line">N: 参见 apt-secure(8) 手册以了解仓库创建和用户配置方面的细节。</span><br></pre></td></tr></table></figure>
+
+<p>执行：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 871920D1991BC93C</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>Linux</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+        <tag>apt</tag>
       </tags>
   </entry>
   <entry>
@@ -1484,6 +1495,95 @@
       <tags>
         <tag>Linux</tag>
         <tag>mime</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ARM64汇编入门</title>
+    <url>/2023/03/18/macos/ARM64%E6%B1%87%E7%BC%96%E5%85%A5%E9%97%A8/</url>
+    <content><![CDATA[<h1 id="ARM-指令概要介绍"><a href="#ARM-指令概要介绍" class="headerlink" title="ARM 指令概要介绍"></a><code>ARM</code> 指令概要介绍</h1><ul>
+<li><code>A64</code> 指令集只能运行在 <code>aarch64</code> 环境中</li>
+<li>所有的A64汇编指令都是 <code>32bits</code> 宽</li>
+<li><code>A64</code> 支持全部是大写或者全部是小写的书写方式</li>
+</ul>
+<p>寄存器名：</p>
+<table>
+<thead>
+<tr>
+<th align="left">Name</th>
+<th align="left">Size</th>
+<th align="left">Encoding</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Wn</td>
+<td align="left">32 bits</td>
+<td align="left">0-30</td>
+<td align="left">Genral-purpose register 0-30</td>
+</tr>
+<tr>
+<td align="left">Xn</td>
+<td align="left">64 bits</td>
+<td align="left">0-30</td>
+<td align="left">Genral-purpose register 0-30</td>
+</tr>
+<tr>
+<td align="left">WZR</td>
+<td align="left">32 bits</td>
+<td align="left">31</td>
+<td align="left">Zero register</td>
+</tr>
+<tr>
+<td align="left">XZR</td>
+<td align="left">64 bits</td>
+<td align="left">31</td>
+<td align="left">Zero register</td>
+</tr>
+<tr>
+<td align="left">WPS</td>
+<td align="left">32 bits</td>
+<td align="left">31</td>
+<td align="left">Current stack pointer</td>
+</tr>
+<tr>
+<td align="left">SP</td>
+<td align="left">64 bits</td>
+<td align="left">31</td>
+<td align="left">Current stack pointer</td>
+</tr>
+</tbody></table>
+<span id="more"></span>
+
+<h2 id="ARM-指令的分类"><a href="#ARM-指令的分类" class="headerlink" title="ARM 指令的分类"></a><code>ARM</code> 指令的分类</h2><ul>
+<li>内存加载和存储指令</li>
+<li>多字节内存加载和存储</li>
+<li>算术和位移指令</li>
+<li>移位操作</li>
+<li>位操作</li>
+<li>条件操作</li>
+<li>跳转指令</li>
+<li>独占访存指令</li>
+<li>内存屏障指令</li>
+<li>异常处理指令</li>
+<li>系统寄存器访问指令</li>
+</ul>
+<h2 id="ARM-指令的一般编码格式"><a href="#ARM-指令的一般编码格式" class="headerlink" title="ARM 指令的一般编码格式"></a><code>ARM</code> 指令的一般编码格式</h2><p>一条典型的 <code>ARM64</code> 指令语法格式如下所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;opcode&gt;&#123;&lt;cond&gt;&#125;&#123;S&#125; &lt;Rd&gt;, &lt;Rn&gt;, &lt;shifter_operand&gt;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>&lt;opcode&gt;</code>：是指令助记符，如 <code>ADD</code> 表示算术加操作指令。</li>
+<li><code>&#123;&lt;cond&gt;&#125;</code>：表示指令执行的条件。</li>
+<li><code>&#123;S&#125;</code>：决定指令的操作是否影响 <code>CPSR</code> 的值。</li>
+<li><code>&lt;Rd&gt;</code>：表示目标寄存器。</li>
+<li><code>&lt;Rn&gt;</code>：表示包含第 <code>1</code> 个操作数的寄存器。</li>
+<li><code>&lt;shifter_operand&gt;</code>：表示第 <code>2</code> 个操作数。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>汇编</category>
+      </categories>
+      <tags>
+        <tag>arm64</tag>
       </tags>
   </entry>
   <entry>
@@ -1623,95 +1723,6 @@
       </tags>
   </entry>
   <entry>
-    <title>ARM64汇编入门</title>
-    <url>/2023/03/18/macos/ARM64%E6%B1%87%E7%BC%96%E5%85%A5%E9%97%A8/</url>
-    <content><![CDATA[<h1 id="ARM-指令概要介绍"><a href="#ARM-指令概要介绍" class="headerlink" title="ARM 指令概要介绍"></a><code>ARM</code> 指令概要介绍</h1><ul>
-<li><code>A64</code> 指令集只能运行在 <code>aarch64</code> 环境中</li>
-<li>所有的A64汇编指令都是 <code>32bits</code> 宽</li>
-<li><code>A64</code> 支持全部是大写或者全部是小写的书写方式</li>
-</ul>
-<p>寄存器名：</p>
-<table>
-<thead>
-<tr>
-<th align="left">Name</th>
-<th align="left">Size</th>
-<th align="left">Encoding</th>
-<th align="left">Description</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">Wn</td>
-<td align="left">32 bits</td>
-<td align="left">0-30</td>
-<td align="left">Genral-purpose register 0-30</td>
-</tr>
-<tr>
-<td align="left">Xn</td>
-<td align="left">64 bits</td>
-<td align="left">0-30</td>
-<td align="left">Genral-purpose register 0-30</td>
-</tr>
-<tr>
-<td align="left">WZR</td>
-<td align="left">32 bits</td>
-<td align="left">31</td>
-<td align="left">Zero register</td>
-</tr>
-<tr>
-<td align="left">XZR</td>
-<td align="left">64 bits</td>
-<td align="left">31</td>
-<td align="left">Zero register</td>
-</tr>
-<tr>
-<td align="left">WPS</td>
-<td align="left">32 bits</td>
-<td align="left">31</td>
-<td align="left">Current stack pointer</td>
-</tr>
-<tr>
-<td align="left">SP</td>
-<td align="left">64 bits</td>
-<td align="left">31</td>
-<td align="left">Current stack pointer</td>
-</tr>
-</tbody></table>
-<span id="more"></span>
-
-<h2 id="ARM-指令的分类"><a href="#ARM-指令的分类" class="headerlink" title="ARM 指令的分类"></a><code>ARM</code> 指令的分类</h2><ul>
-<li>内存加载和存储指令</li>
-<li>多字节内存加载和存储</li>
-<li>算术和位移指令</li>
-<li>移位操作</li>
-<li>位操作</li>
-<li>条件操作</li>
-<li>跳转指令</li>
-<li>独占访存指令</li>
-<li>内存屏障指令</li>
-<li>异常处理指令</li>
-<li>系统寄存器访问指令</li>
-</ul>
-<h2 id="ARM-指令的一般编码格式"><a href="#ARM-指令的一般编码格式" class="headerlink" title="ARM 指令的一般编码格式"></a><code>ARM</code> 指令的一般编码格式</h2><p>一条典型的 <code>ARM64</code> 指令语法格式如下所示：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;opcode&gt;&#123;&lt;cond&gt;&#125;&#123;S&#125; &lt;Rd&gt;, &lt;Rn&gt;, &lt;shifter_operand&gt;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><code>&lt;opcode&gt;</code>：是指令助记符，如 <code>ADD</code> 表示算术加操作指令。</li>
-<li><code>&#123;&lt;cond&gt;&#125;</code>：表示指令执行的条件。</li>
-<li><code>&#123;S&#125;</code>：决定指令的操作是否影响 <code>CPSR</code> 的值。</li>
-<li><code>&lt;Rd&gt;</code>：表示目标寄存器。</li>
-<li><code>&lt;Rn&gt;</code>：表示包含第 <code>1</code> 个操作数的寄存器。</li>
-<li><code>&lt;shifter_operand&gt;</code>：表示第 <code>2</code> 个操作数。</li>
-</ul>
-]]></content>
-      <categories>
-        <category>汇编</category>
-      </categories>
-      <tags>
-        <tag>arm64</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>@executable path, @load path 和 @rpath</title>
     <url>/2023/08/25/macos/executable-path-load-path-%E5%92%8C-rpath/</url>
     <content><![CDATA[<p>在 <code>macOS</code> 上，动态链接器使用特定的路径变量来解析运行时的库位置。这些路径变量包括：绝对路径、 <code>@executable_path</code>、<code>@loader_path</code> 和 <code>@rpath</code>。</p>
@@ -1769,6 +1780,23 @@
       </categories>
       <tags>
         <tag>DYLD</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>macOS 设置面板快捷链接</title>
+    <url>/2023/12/28/macos/macOS-%E8%AE%BE%E7%BD%AE%E9%9D%A2%E6%9D%BF%E5%BF%AB%E6%8D%B7%E9%93%BE%E6%8E%A5/</url>
+    <content><![CDATA[<h1 id="Accessibility-Preference-Pane"><a href="#Accessibility-Preference-Pane" class="headerlink" title="Accessibility Preference Pane"></a>Accessibility Preference Pane</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Main    x-apple.systempreferences:com.apple.preference.universalaccess</span><br><span class="line">Display x-apple.systempreferences:com.apple.preference.universalaccess?Seeing_Display</span><br><span class="line">Zoom    x-apple.systempreferences:com.apple.preference.universalaccess?Seeing_Zoom</span><br><span class="line">VoiceOver   x-apple.systempreferences:com.apple.preference.universalaccess?Seeing_VoiceOver</span><br><span class="line">Descriptions    x-apple.systempreferences:com.apple.preference.universalaccess?Media_Descriptions</span><br><span class="line">Captions    x-apple.systempreferences:com.apple.preference.universalaccess?Captioning</span><br><span class="line">Audio   x-apple.systempreferences:com.apple.preference.universalaccess?Hearing</span><br><span class="line">Keyboard    x-apple.systempreferences:com.apple.preference.universalaccess?Keyboard</span><br><span class="line">Mouse &amp; Trackpad    x-apple.systempreferences:com.apple.preference.universalaccess?Mouse</span><br><span class="line">Switch Control  x-apple.systempreferences:com.apple.preference.universalaccess?Switch</span><br><span class="line">Dictation   x-apple.systempreferences:com.apple.preference.universalaccess?SpeakableItems</span><br></pre></td></tr></table></figure>
+<span id="more"></span>
+
+<h1 id="Security-Privacy-Preference-Pane"><a href="#Security-Privacy-Preference-Pane" class="headerlink" title="Security &amp; Privacy Preference Pane"></a>Security &amp; Privacy Preference Pane</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Main    x-apple.systempreferences:com.apple.preference.security</span><br><span class="line">General x-apple.systempreferences:com.apple.preference.security?General</span><br><span class="line">FileVault   x-apple.systempreferences:com.apple.preference.security?FDE</span><br><span class="line">Firewall    x-apple.systempreferences:com.apple.preference.security?Firewall</span><br><span class="line">Advanced    x-apple.systempreferences:com.apple.preference.security?Advanced</span><br><span class="line">Privacy x-apple.systempreferences:com.apple.preference.security?Privacy</span><br><span class="line">Privacy-Camera x-apple.systempreferences:com.apple.preference.security?Privacy_Camera</span><br><span class="line">Privacy-Microphone  x-apple.systempreferences:com.apple.preference.security?Privacy_Microphone</span><br><span class="line">Privacy-Automation  x-apple.systempreferences:com.apple.preference.security?Privacy_Automation</span><br><span class="line">Privacy-AllFiles    x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles</span><br><span class="line">Privacy-Accessibility   x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility</span><br><span class="line">Privacy-Assistive   x-apple.systempreferences:com.apple.preference.security?Privacy_Assistive</span><br><span class="line">Privacy-Location Services   x-apple.systempreferences:com.apple.preference.security?Privacy_LocationServices</span><br><span class="line">Privacy-SystemServices  x-apple.systempreferences:com.apple.preference.security?Privacy_SystemServices</span><br><span class="line">Privacy-Advertising x-apple.systempreferences:com.apple.preference.security?Privacy_Advertising</span><br><span class="line">Privacy-Contacts    x-apple.systempreferences:com.apple.preference.security?Privacy_Contacts</span><br><span class="line">Privacy-Diagnostics &amp; Usage x-apple.systempreferences:com.apple.preference.security?Privacy_Diagnostics</span><br><span class="line">Privacy-Calendars   x-apple.systempreferences:com.apple.preference.security?Privacy_Calendars</span><br><span class="line">Privacy-Reminders   x-apple.systempreferences:com.apple.preference.security?Privacy_Reminders</span><br><span class="line">Privacy-Facebook    x-apple.systempreferences:com.apple.preference.security?Privacy_Facebook</span><br><span class="line">Privacy-LinkedIn    x-apple.systempreferences:com.apple.preference.security?Privacy_LinkedIn</span><br><span class="line">Privacy-Twitter x-apple.systempreferences:com.apple.preference.security?Privacy_Twitter</span><br><span class="line">Privacy-Weibo   x-apple.systempreferences:com.apple.preference.security?Privacy_Weibo</span><br><span class="line">Privacy-Tencent Weibo   x-apple.systempreferences:com.apple.preference.security?Privacy_TencentWeibo</span><br></pre></td></tr></table></figure>
+
+<h2 id="macOS-Catalina-10-15"><a href="#macOS-Catalina-10-15" class="headerlink" title="macOS Catalina 10.15"></a>macOS Catalina 10.15</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Privacy-ScreenCapture   x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture</span><br><span class="line">Privacy-DevTools    x-apple.systempreferences:com.apple.preference.security?Privacy_DevTools</span><br><span class="line">Privacy-InputMonitoring x-apple.systempreferences:com.apple.preference.security?Privacy_ListenEvent</span><br><span class="line">Privacy-DesktopFolder   x-apple.systempreferences:com.apple.preference.security?Privacy_DesktopFolder</span><br><span class="line">Privacy-DocumentsFolder x-apple.systempreferences:com.apple.preference.security?Privacy_DocumentsFolder</span><br><span class="line">Privacy-DownloadsFolder x-apple.systempreferences:com.apple.preference.security?Privacy_DownloadsFolder</span><br><span class="line">Privacy-NetworkVolume   x-apple.systempreferences:com.apple.preference.security?Privacy_NetworkVolume</span><br><span class="line">Privacy-RemovableVolume x-apple.systempreferences:com.apple.preference.security?Privacy_RemovableVolume</span><br><span class="line">Privacy-SpeechRecognition   x-apple.systempreferences:com.apple.preference.security?Privacy_SpeechRecognition</span><br></pre></td></tr></table></figure>
+<h1 id="Dictation-Speech-Preference-Pane"><a href="#Dictation-Speech-Preference-Pane" class="headerlink" title="Dictation &amp; Speech Preference Pane"></a>Dictation &amp; Speech Preference Pane</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Dictation   x-apple.systempreferences:com.apple.preference.speech?Dictation</span><br><span class="line">Text to Speech  x-apple.systempreferences:com.apple.preference.speech?TTS</span><br><span class="line">Sharing Preference Pane</span><br><span class="line">Main    x-apple.systempreferences:com.apple.preferences.sharing</span><br><span class="line">Screen Sharing  x-apple.systempreferences:com.apple.preferences.sharing?Services_ScreenSharing</span><br><span class="line">File Sharing    x-apple.systempreferences:com.apple.preferences.sharing?Services_PersonalFileSharing</span><br><span class="line">Printer Sharing x-apple.systempreferences:com.apple.preferences.sharing?Services_PrinterSharing</span><br><span class="line">Remote Login    x-apple.systempreferences:com.apple.preferences.sharing?Services_RemoteLogin</span><br><span class="line">Remote Management   x-apple.systempreferences:com.apple.preferences.sharing?Services_ARDService</span><br><span class="line">Remote Apple Events x-apple.systempreferences:com.apple.preferences.sharing?Services_RemoteAppleEvent</span><br><span class="line">Internet Sharing    x-apple.systempreferences:com.apple.preferences.sharing?Internet</span><br><span class="line">Bluetooth Sharing   x-apple.systempreferences:com.apple.preferences.sharing?Services_BluetoothSharing</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>macOS</category>
+      </categories>
+      <tags>
+        <tag>macOS</tag>
       </tags>
   </entry>
   <entry>
@@ -1860,68 +1888,9 @@
       </tags>
   </entry>
   <entry>
-    <title>mongodb 入门-索引</title>
-    <url>/2023/08/26/mongodb/mongodb-%E5%85%A5%E9%97%A8-%E7%B4%A2%E5%BC%95/</url>
-    <content><![CDATA[<h1 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h1><ul>
-<li>对文档部分内容进行排序的数据结构</li>
-<li>加快文档查询和文档排序的速度</li>
-<li>复合键索引只能支持前缀子查询</li>
-</ul>
-<h2 id="索引操作"><a href="#索引操作" class="headerlink" title="索引操作"></a>索引操作</h2><h3 id="创建索引"><a href="#创建索引" class="headerlink" title="创建索引"></a>创建索引</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">db.&lt;collection&gt;.createIndex(&lt;keys&gt;, &lt;options&gt;)</span><br></pre></td></tr></table></figure>
-<ul>
-<li><code>&lt;keys&gt;</code> 文档指定了创建索引的字段</li>
-<li><code>&lt;options&gt;</code> 创建索引的参数和设定索引的特性</li>
-</ul>
-<h4 id="创建一个单键索引"><a href="#创建一个单键索引" class="headerlink" title="创建一个单键索引"></a>创建一个单键索引</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;name: 1&#125;)</span><br></pre></td></tr></table></figure>
-<h4 id="创建一个复合键索引"><a href="#创建一个复合键索引" class="headerlink" title="创建一个复合键索引"></a>创建一个复合键索引</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;name: 1, balance: -1&#125;)</span><br></pre></td></tr></table></figure>
-<h4 id="创建一个多键索引，创建在数组字段上-数组字段中的每一个元素都会在多键索引中创建一个键"><a href="#创建一个多键索引，创建在数组字段上-数组字段中的每一个元素都会在多键索引中创建一个键" class="headerlink" title="创建一个多键索引，创建在数组字段上, 数组字段中的每一个元素都会在多键索引中创建一个键"></a>创建一个多键索引，创建在数组字段上, 数组字段中的每一个元素都会在多键索引中创建一个键</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;currency: 1&#125;)</span><br></pre></td></tr></table></figure>
-<h4 id="列出集合中的索引"><a href="#列出集合中的索引" class="headerlink" title="列出集合中的索引"></a>列出集合中的索引</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.getIndexes()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<span id="more"></span>
-<h3 id="删除索引"><a href="#删除索引" class="headerlink" title="删除索引"></a>删除索引</h3><p>如果需要更改某些字段上已经创建的索引必须首先删除原有索引，再重新创建新索引，否则新索引不会包含原有字段</p>
-<h4 id="使用索引名字删除"><a href="#使用索引名字删除" class="headerlink" title="使用索引名字删除"></a>使用索引名字删除</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.dropIndex(&quot;name_1&quot;)</span><br></pre></td></tr></table></figure>
-<h4 id="使用索引定义删除"><a href="#使用索引定义删除" class="headerlink" title="使用索引定义删除"></a>使用索引定义删除</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.dropIndex( &#123; name: 1, balance: -1 &#125;)</span><br></pre></td></tr></table></figure>
-
-
-<h2 id="索引类型"><a href="#索引类型" class="headerlink" title="索引类型"></a>索引类型</h2><ul>
-<li>单键索引</li>
-<li>复合键索引</li>
-<li>多键索引</li>
-</ul>
-<h2 id="索引特性"><a href="#索引特性" class="headerlink" title="索引特性"></a>索引特性</h2><h3 id="唯一性"><a href="#唯一性" class="headerlink" title="唯一性"></a>唯一性</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;balance:1&#125;,&#123;unique:true&#125;)</span><br></pre></td></tr></table></figure>
-
-<p>如果已有文档中的某个字段出现了重复性，就不可以在这个字段上创建唯一性索引</p>
-<p>如果新增的文档不包含唯一性索引字段，只有第一篇缺失该字段的文档可以被写入数据库，索引中该文档的键值被默认为null</p>
-<h3 id="稀疏性"><a href="#稀疏性" class="headerlink" title="稀疏性"></a>稀疏性</h3><p>只将包含索引字段的文档加入到索引中(即使索引键字段为null)</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;balance:1&#125;, &#123; sparse:true&#125;)</span><br></pre></td></tr></table></figure>
-<p>如果同一个索引既具有唯一性，又具有稀疏性，就可以保存多篇缺失索引键值的文档了 </p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;balance:1&#125;, &#123; sparse:true, unique:true&#125;)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>复合键索引也可以具有稀疏性，在这种情况下，只有在缺失复合键所包含的所有字段的情况下，文档才不会加入到索引中</p>
-<h3 id="生存时间"><a href="#生存时间" class="headerlink" title="生存时间"></a>生存时间</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;lastAccess:1&#125;,&#123;expireAfterSeconds:20&#125;)</span><br></pre></td></tr></table></figure>
-
-<p><strong>复合键索引不具有生存时间特性</strong>，当索引键是包含日期元素的数组字段时，数组中<strong>最小</strong>的的日期将被用来计算文档是否过期。数据库使用一个后台线程来监测和删除过期文档，删除操作可能有一定的延迟。</p>
-<h2 id="查询分析"><a href="#查询分析" class="headerlink" title="查询分析"></a>查询分析</h2><h3 id="检视索引的效果-explain"><a href="#检视索引的效果-explain" class="headerlink" title="检视索引的效果 explain()"></a>检视索引的效果 <code>explain()</code></h3><ul>
-<li><p>命令操作格式:</p>
-  <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">db.&lt;collection&gt;.explain().&lt;method(...)&gt;</span><br></pre></td></tr></table></figure></li>
-<li><p>可以使用 <code>explain()</code> 进行分析的命令包括 <code>aggregate()</code>，<code>count()</code>，<code>distinct()</code>，<code>find()</code>，<code>group()</code>，<code>remove()</code>，<code>update()</code></p>
-</li>
-<li><p><code>explain()</code>返回结果中包含的 <code>winningPlan</code>字段表示数据库的查询方法</p>
-<ul>
-<li><code>stage</code><ul>
-<li><code>COLLSCAN</code> 完整查询整个集合</li>
-<li><code>FETCH</code> <code>IXSCAN</code> 通过索引查询，返回完整文档<br>  -<code> PROJECTION_COVERED</code>  <code>IXSCAN</code>, 直接使用索引存在的字段，无序完整文档，没有 <code>FETCH</code> 阶段</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<p>没有 <code>IXSCAN</code> 阶段，都耗费资源</p>
-<p>举个例子，<code>explain</code> 排序:</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.explain().find().sort(&#123;name:1, balance: -1&#125;)</span><br></pre></td></tr></table></figure>
-<h2 id="索引的选择"><a href="#索引的选择" class="headerlink" title="索引的选择"></a>索引的选择</h2><ul>
-<li>如何创建一个合适的索引</li>
-<li>索引对数据库写入操作的影响</li>
-</ul>
-]]></content>
+    <title>mongodb 入门-Aggregate</title>
+    <url>/2023/08/31/mongodb/mongodb-%E5%85%A5%E9%97%A8-Aggregate/</url>
+    <content><![CDATA[<h1 id="聚合操作"><a href="#聚合操作" class="headerlink" title="聚合操作"></a>聚合操作</h1>]]></content>
       <categories>
         <category>mongodb</category>
       </categories>
@@ -2499,6 +2468,76 @@
       </tags>
   </entry>
   <entry>
+    <title>mongodb 入门-索引</title>
+    <url>/2023/08/26/mongodb/mongodb-%E5%85%A5%E9%97%A8-%E7%B4%A2%E5%BC%95/</url>
+    <content><![CDATA[<h1 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h1><ul>
+<li>对文档部分内容进行排序的数据结构</li>
+<li>加快文档查询和文档排序的速度</li>
+<li>复合键索引只能支持前缀子查询</li>
+</ul>
+<h2 id="索引操作"><a href="#索引操作" class="headerlink" title="索引操作"></a>索引操作</h2><h3 id="创建索引"><a href="#创建索引" class="headerlink" title="创建索引"></a>创建索引</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">db.&lt;collection&gt;.createIndex(&lt;keys&gt;, &lt;options&gt;)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>&lt;keys&gt;</code> 文档指定了创建索引的字段</li>
+<li><code>&lt;options&gt;</code> 创建索引的参数和设定索引的特性</li>
+</ul>
+<h4 id="创建一个单键索引"><a href="#创建一个单键索引" class="headerlink" title="创建一个单键索引"></a>创建一个单键索引</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;name: 1&#125;)</span><br></pre></td></tr></table></figure>
+<h4 id="创建一个复合键索引"><a href="#创建一个复合键索引" class="headerlink" title="创建一个复合键索引"></a>创建一个复合键索引</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;name: 1, balance: -1&#125;)</span><br></pre></td></tr></table></figure>
+<h4 id="创建一个多键索引，创建在数组字段上-数组字段中的每一个元素都会在多键索引中创建一个键"><a href="#创建一个多键索引，创建在数组字段上-数组字段中的每一个元素都会在多键索引中创建一个键" class="headerlink" title="创建一个多键索引，创建在数组字段上, 数组字段中的每一个元素都会在多键索引中创建一个键"></a>创建一个多键索引，创建在数组字段上, 数组字段中的每一个元素都会在多键索引中创建一个键</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;currency: 1&#125;)</span><br></pre></td></tr></table></figure>
+<h4 id="列出集合中的索引"><a href="#列出集合中的索引" class="headerlink" title="列出集合中的索引"></a>列出集合中的索引</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.getIndexes()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<span id="more"></span>
+<h3 id="删除索引"><a href="#删除索引" class="headerlink" title="删除索引"></a>删除索引</h3><p>如果需要更改某些字段上已经创建的索引必须首先删除原有索引，再重新创建新索引，否则新索引不会包含原有字段</p>
+<h4 id="使用索引名字删除"><a href="#使用索引名字删除" class="headerlink" title="使用索引名字删除"></a>使用索引名字删除</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.dropIndex(&quot;name_1&quot;)</span><br></pre></td></tr></table></figure>
+<h4 id="使用索引定义删除"><a href="#使用索引定义删除" class="headerlink" title="使用索引定义删除"></a>使用索引定义删除</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.dropIndex( &#123; name: 1, balance: -1 &#125;)</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="索引类型"><a href="#索引类型" class="headerlink" title="索引类型"></a>索引类型</h2><ul>
+<li>单键索引</li>
+<li>复合键索引</li>
+<li>多键索引</li>
+</ul>
+<h2 id="索引特性"><a href="#索引特性" class="headerlink" title="索引特性"></a>索引特性</h2><h3 id="唯一性"><a href="#唯一性" class="headerlink" title="唯一性"></a>唯一性</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;balance:1&#125;,&#123;unique:true&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>如果已有文档中的某个字段出现了重复性，就不可以在这个字段上创建唯一性索引</p>
+<p>如果新增的文档不包含唯一性索引字段，只有第一篇缺失该字段的文档可以被写入数据库，索引中该文档的键值被默认为null</p>
+<h3 id="稀疏性"><a href="#稀疏性" class="headerlink" title="稀疏性"></a>稀疏性</h3><p>只将包含索引字段的文档加入到索引中(即使索引键字段为null)</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;balance:1&#125;, &#123; sparse:true&#125;)</span><br></pre></td></tr></table></figure>
+<p>如果同一个索引既具有唯一性，又具有稀疏性，就可以保存多篇缺失索引键值的文档了 </p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;balance:1&#125;, &#123; sparse:true, unique:true&#125;)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>复合键索引也可以具有稀疏性，在这种情况下，只有在缺失复合键所包含的所有字段的情况下，文档才不会加入到索引中</p>
+<h3 id="生存时间"><a href="#生存时间" class="headerlink" title="生存时间"></a>生存时间</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;lastAccess:1&#125;,&#123;expireAfterSeconds:20&#125;)</span><br></pre></td></tr></table></figure>
+
+<p><strong>复合键索引不具有生存时间特性</strong>，当索引键是包含日期元素的数组字段时，数组中<strong>最小</strong>的的日期将被用来计算文档是否过期。数据库使用一个后台线程来监测和删除过期文档，删除操作可能有一定的延迟。</p>
+<h2 id="查询分析"><a href="#查询分析" class="headerlink" title="查询分析"></a>查询分析</h2><h3 id="检视索引的效果-explain"><a href="#检视索引的效果-explain" class="headerlink" title="检视索引的效果 explain()"></a>检视索引的效果 <code>explain()</code></h3><ul>
+<li><p>命令操作格式:</p>
+  <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">db.&lt;collection&gt;.explain().&lt;method(...)&gt;</span><br></pre></td></tr></table></figure></li>
+<li><p>可以使用 <code>explain()</code> 进行分析的命令包括 <code>aggregate()</code>，<code>count()</code>，<code>distinct()</code>，<code>find()</code>，<code>group()</code>，<code>remove()</code>，<code>update()</code></p>
+</li>
+<li><p><code>explain()</code>返回结果中包含的 <code>winningPlan</code>字段表示数据库的查询方法</p>
+<ul>
+<li><code>stage</code><ul>
+<li><code>COLLSCAN</code> 完整查询整个集合</li>
+<li><code>FETCH</code> <code>IXSCAN</code> 通过索引查询，返回完整文档<br>  -<code> PROJECTION_COVERED</code>  <code>IXSCAN</code>, 直接使用索引存在的字段，无序完整文档，没有 <code>FETCH</code> 阶段</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>没有 <code>IXSCAN</code> 阶段，都耗费资源</p>
+<p>举个例子，<code>explain</code> 排序:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.explain().find().sort(&#123;name:1, balance: -1&#125;)</span><br></pre></td></tr></table></figure>
+<h2 id="索引的选择"><a href="#索引的选择" class="headerlink" title="索引的选择"></a>索引的选择</h2><ul>
+<li>如何创建一个合适的索引</li>
+<li>索引对数据库写入操作的影响</li>
+</ul>
+]]></content>
+      <categories>
+        <category>mongodb</category>
+      </categories>
+      <tags>
+        <tag>mongodb</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>I/O 多路复用</title>
     <url>/2023/08/17/network/I-O-%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/</url>
     <content><![CDATA[<h1 id="select"><a href="#select" class="headerlink" title="select"></a>select</h1><p><code>select</code> 实现多路复用的方式是，将已连接的 <code>socket</code> 都放到一个文件描述符集合，然后调用 <code>select</code>函数将文件描述符集合拷贝到内核里，让内核来检查是否有网络事件产生，通过遍历文件描述符集合的方式，当检查到有事件产生后，将此 <code>socket</code> 标记为可读或可写， 接着再把整个文件描述符集合拷贝回用户态里，然后用户态还需要再通过遍历的方法找到可读或可写的 <code>socket</code>，然后再对其处理。</p>
@@ -2587,6 +2626,11 @@
       <tags>
         <tag>socket</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>TCP Nagle算法与ACK延迟确认</title>
+    <url>/2023/11/20/network/TCP-Nagle%E7%AE%97%E6%B3%95%E4%B8%8EACK%E5%BB%B6%E8%BF%9F%E7%A1%AE%E8%AE%A4/</url>
+    <content><![CDATA[]]></content>
   </entry>
   <entry>
     <title>TCP 协议</title>
@@ -2842,19 +2886,6 @@
       </tags>
   </entry>
   <entry>
-    <title>tcpdump 抓包</title>
-    <url>/2023/07/19/network/tcpdump-%E6%8A%93%E5%8C%85/</url>
-    <content><![CDATA[<p><code>tcpdump</code> 命令行抓包工具。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">tcpdump [ -AbdDefhHIJKlLnNOpqStuUvxX# ] [ -B buffer_size ]</span><br><span class="line">        [ -c count ] [ --count ] [ -C file_size ]</span><br><span class="line">        [ -E spi@ipaddr algo:secret,...  ]</span><br><span class="line">        [ -F file ] [ -G rotate_seconds ] [ -i interface ]</span><br><span class="line">        [ --immediate-mode ] [ -j tstamp_type ] [ -k (metadata_arg) ]</span><br><span class="line">        [ -m module ]</span><br><span class="line">        [ -M secret ] [ --number ] [ --print ]</span><br><span class="line">        [ -Q packet-metadata-filter ] [ -Q in|out|inout ]</span><br><span class="line">        [ -r file ] [ -s snaplen ] [ -T type ] [ --version ]</span><br><span class="line">        [ -V file ] [ -w file ] [ -W filecount ] [ -y datalinktype ]</span><br><span class="line">        [ -z postrotate-command ] [ -Z user ]</span><br><span class="line">        [ --time-stamp-precision=tstamp_precision ]</span><br><span class="line">        [ --micro ] [ --nano ]</span><br><span class="line">        [ expression ]</span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>Network</category>
-      </categories>
-      <tags>
-        <tag>tools</tag>
-        <tag>network</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>socket 编程</title>
     <url>/2023/07/24/network/socket-%E7%BC%96%E7%A8%8B/</url>
     <content><![CDATA[<h1 id="1-socket地址结构"><a href="#1-socket地址结构" class="headerlink" title="1. socket地址结构"></a>1. socket地址结构</h1><h2 id="sockaddr-in"><a href="#sockaddr-in" class="headerlink" title="sockaddr_in"></a><code>sockaddr_in</code></h2><p><code>ipv4</code> 协议的地址结构是 <code>sockaddr_in</code>，<code>ipv6</code> 的地址结构是<code>sockaddr_in6</code>。</p>
@@ -3028,6 +3059,19 @@
       </tags>
   </entry>
   <entry>
+    <title>tcpdump 抓包</title>
+    <url>/2023/07/19/network/tcpdump-%E6%8A%93%E5%8C%85/</url>
+    <content><![CDATA[<p><code>tcpdump</code> 命令行抓包工具。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">tcpdump [ -AbdDefhHIJKlLnNOpqStuUvxX# ] [ -B buffer_size ]</span><br><span class="line">        [ -c count ] [ --count ] [ -C file_size ]</span><br><span class="line">        [ -E spi@ipaddr algo:secret,...  ]</span><br><span class="line">        [ -F file ] [ -G rotate_seconds ] [ -i interface ]</span><br><span class="line">        [ --immediate-mode ] [ -j tstamp_type ] [ -k (metadata_arg) ]</span><br><span class="line">        [ -m module ]</span><br><span class="line">        [ -M secret ] [ --number ] [ --print ]</span><br><span class="line">        [ -Q packet-metadata-filter ] [ -Q in|out|inout ]</span><br><span class="line">        [ -r file ] [ -s snaplen ] [ -T type ] [ --version ]</span><br><span class="line">        [ -V file ] [ -w file ] [ -W filecount ] [ -y datalinktype ]</span><br><span class="line">        [ -z postrotate-command ] [ -Z user ]</span><br><span class="line">        [ --time-stamp-precision=tstamp_precision ]</span><br><span class="line">        [ --micro ] [ --nano ]</span><br><span class="line">        [ expression ]</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>Network</category>
+      </categories>
+      <tags>
+        <tag>tools</tag>
+        <tag>network</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>如何正确使用TCP</title>
     <url>/2023/07/24/network/%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E4%BD%BF%E7%94%A8TCP/</url>
     <content><![CDATA[<h1 id="SO-REUSEADDR"><a href="#SO-REUSEADDR" class="headerlink" title="SO_REUSEADDR"></a>SO_REUSEADDR</h1><ul>
@@ -3185,19 +3229,6 @@
       </tags>
   </entry>
   <entry>
-    <title>TLS False Start</title>
-    <url>/2023/12/11/network/TLS/TLS-False-Start/</url>
-    <content><![CDATA[<h1 id="什么是TLS-False-Start？"><a href="#什么是TLS-False-Start？" class="headerlink" title="什么是TLS False Start？"></a>什么是TLS False Start？</h1><p>在 <code>TLS</code> 协商第二阶段，浏览器发送 <code>ChangeCipherSpec</code> 和 <code>Finished</code> 后，立即发送加密的应用层数据，而无需等待服务器端的确认。</p>
-<h1 id="如何启用TLS-False-Start？"><a href="#如何启用TLS-False-Start？" class="headerlink" title="如何启用TLS False Start？"></a>如何启用TLS False Start？</h1><ul>
-<li>需要支持 <code>NPN/ALPN</code></li>
-<li>服务器端配置支持前向安全(<code>Forward Secrecy</code>)</li>
-</ul>
-]]></content>
-      <tags>
-        <tag>SSL/TLS</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Application-Layer Protocol Negotiation</title>
     <url>/2023/12/11/network/TLS/ALPN/</url>
     <content><![CDATA[<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p><code>ALPN</code>(<code>Application-Layer Protocol Negotiation</code>)应用层协议协商, 当单个服务器端口号（例如端口 <code>443</code>）上支持多个应用程序协议时，客户端和服务器需要协商用于每个连接的应用程序协议。希望在不增加客户端和服务器之间的网络往返次数的情况下完成此协商，因为每次往返都会降低最终用户的体验。</p>
@@ -3232,6 +3263,19 @@
 </ul>
 <h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ul>
 <li><a href="https://datatracker.ietf.org/doc/html/rfc7301">Application-Layer Protocol Negotiation Extension</a></li>
+</ul>
+]]></content>
+      <tags>
+        <tag>SSL/TLS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>TLS False Start</title>
+    <url>/2023/12/11/network/TLS/TLS-False-Start/</url>
+    <content><![CDATA[<h1 id="什么是TLS-False-Start？"><a href="#什么是TLS-False-Start？" class="headerlink" title="什么是TLS False Start？"></a>什么是TLS False Start？</h1><p>在 <code>TLS</code> 协商第二阶段，浏览器发送 <code>ChangeCipherSpec</code> 和 <code>Finished</code> 后，立即发送加密的应用层数据，而无需等待服务器端的确认。</p>
+<h1 id="如何启用TLS-False-Start？"><a href="#如何启用TLS-False-Start？" class="headerlink" title="如何启用TLS False Start？"></a>如何启用TLS False Start？</h1><ul>
+<li>需要支持 <code>NPN/ALPN</code></li>
+<li>服务器端配置支持前向安全(<code>Forward Secrecy</code>)</li>
 </ul>
 ]]></content>
       <tags>
