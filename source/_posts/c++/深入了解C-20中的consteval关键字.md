@@ -1,5 +1,5 @@
 ---
-title: 深入了解 `C++20` 中的`consteval`
+title: 深入了解 C++20 中的 consteval
 date: 2023-12-29 18:16:18
 tags:
 - C++20
@@ -8,9 +8,9 @@ categories:
 - C/C++
 ---
 
-# 介绍
+# 简介
 
-用最简单的术语来说，一个只能应用于函数的 `consteval` 说明符, 保证它产生一个编译时间常数。否则会导致编译错误。
+用最简单的术语来说，一个只能应用于函数的 `consteval` 关键字, 保证它产生一个编译时间常数。否则会导致编译错误。
 
 `cppreference` 页面对 `consteval` 说明符有如下描述：
 >`consteval` 指定函数是立即函数，也就是说，对该函数的每次调用都必须产生一个编译时常量
@@ -26,7 +26,7 @@ categories:
 
 # `consteval` 和 `constexpr` 方法的区别
 
-他们最大的区别：`consteval` 保证编译时生成，不能编译时生成时会报错，但`constexpr` 不一定，当编译时不能生成就转为运行时函数。
+他们最大的区别：`consteval` 保证编译时生成，不能编译时生成时会报错，但 `constexpr` 不一定，当编译时不能生成就转为运行时函数。
 
 # 从汇编看 `consteval` 和 `constexpr` 函数
 

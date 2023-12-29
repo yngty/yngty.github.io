@@ -1,5 +1,5 @@
 ---
-title: 深入了解 `C++20` 中的 `constinit`
+title: 深入了解 C++20 中的 constinit
 date: 2023-12-29 17:41:16
 tags:
 - C++20
