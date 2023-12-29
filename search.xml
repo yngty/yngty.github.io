@@ -373,7 +373,7 @@
       </tags>
   </entry>
   <entry>
-    <title>深入了解 `C++20` 中的 `constinit`</title>
+    <title>深入了解 C++20 中的 constinit</title>
     <url>/2023/12/29/c++/%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3C++20%E4%B8%AD%E7%9A%84constinit%E5%85%B3%E9%94%AE%E5%AD%97/</url>
     <content><![CDATA[<p>在 <code>C++</code> 中，存储变量的方式有几种：</p>
 <ul>
@@ -420,9 +420,9 @@
       </tags>
   </entry>
   <entry>
-    <title>深入了解 `C++20` 中的`consteval`</title>
+    <title>深入了解 C++20 中的 consteval</title>
     <url>/2023/12/29/c++/%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3C-20%E4%B8%AD%E7%9A%84consteval%E5%85%B3%E9%94%AE%E5%AD%97/</url>
-    <content><![CDATA[<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p>用最简单的术语来说，一个只能应用于函数的 <code>consteval</code> 说明符, 保证它产生一个编译时间常数。否则会导致编译错误。</p>
+    <content><![CDATA[<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>用最简单的术语来说，一个只能应用于函数的 <code>consteval</code> 关键字, 保证它产生一个编译时间常数。否则会导致编译错误。</p>
 <p><code>cppreference</code> 页面对 <code>consteval</code> 说明符有如下描述：</p>
 <blockquote>
 <p><code>consteval</code> 指定函数是立即函数，也就是说，对该函数的每次调用都必须产生一个编译时常量</p>
@@ -436,7 +436,7 @@
 </ul>
 <span id="more"></span>
 
-<h1 id="consteval-和-constexpr-方法的区别"><a href="#consteval-和-constexpr-方法的区别" class="headerlink" title="consteval 和 constexpr 方法的区别"></a><code>consteval</code> 和 <code>constexpr</code> 方法的区别</h1><p>他们最大的区别：<code>consteval</code> 保证编译时生成，不能编译时生成时会报错，但<code>constexpr</code> 不一定，当编译时不能生成就转为运行时函数。</p>
+<h1 id="consteval-和-constexpr-方法的区别"><a href="#consteval-和-constexpr-方法的区别" class="headerlink" title="consteval 和 constexpr 方法的区别"></a><code>consteval</code> 和 <code>constexpr</code> 方法的区别</h1><p>他们最大的区别：<code>consteval</code> 保证编译时生成，不能编译时生成时会报错，但 <code>constexpr</code> 不一定，当编译时不能生成就转为运行时函数。</p>
 <h1 id="从汇编看-consteval-和-constexpr-函数"><a href="#从汇编看-consteval-和-constexpr-函数" class="headerlink" title="从汇编看 consteval 和 constexpr 函数"></a>从汇编看 <code>consteval</code> 和 <code>constexpr</code> 函数</h1><h2 id="定义函数"><a href="#定义函数" class="headerlink" title="定义函数"></a>定义函数</h2><p>对于定义的普通函数、 <code>consteval</code> 函数、 <code>constexpr</code> 函数, 只有普通函数会生成汇编代码<br><img src="/images/consteval1.png" alt="consteval1"></p>
 <h2 id="在编译时上下文调用-consteval-和-constexpr-函数"><a href="#在编译时上下文调用-consteval-和-constexpr-函数" class="headerlink" title="在编译时上下文调用 consteval 和 constexpr 函数"></a>在编译时上下文调用 <code>consteval</code> 和 <code>constexpr</code> 函数</h2><p>在编译时直接生成结果，不会生成对应的函数汇编代码和调用汇编指令<br><img src="/images/consteval2.png" alt="consteval2"></p>
 <h2 id="在非编译时上下文调用-consteval-和-constexpr-函数"><a href="#在非编译时上下文调用-consteval-和-constexpr-函数" class="headerlink" title="在非编译时上下文调用 consteval 和 constexpr 函数"></a>在非编译时上下文调用 <code>consteval</code> 和 <code>constexpr</code> 函数</h2><p>会生成 <code>constexpr</code>函数的汇编代码和调用函数汇编指令<br><img src="/images/consteval3.png" alt="consteval3"></p>
@@ -498,6 +498,17 @@
       </tags>
   </entry>
   <entry>
+    <title>CSS Layout</title>
+    <url>/2023/09/04/css/CSS-Layout/</url>
+    <content><![CDATA[<h1 id="Grid"><a href="#Grid" class="headerlink" title="Grid"></a>Grid</h1><h2 id="fr"><a href="#fr" class="headerlink" title="fr"></a>fr</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">grid-template-columns: 1fr, 1fr, 1fr, 1fr;</span><br><span class="line">grid-template-columns: repeat(4, 1fr);</span><br><span class="line">grid-template-columns: 1fr, 1fr, 1fr, auto;</span><br></pre></td></tr></table></figure>
+
+<h2 id="grid-column"><a href="#grid-column" class="headerlink" title="grid-column"></a>grid-column</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">grid-column: 1</span><br><span class="line">grid-column: 1 / 4;</span><br><span class="line">grid-column: 1 / span 3;</span><br><span class="line">grid-column: 1 / -1;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>css</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Reactor pattern</title>
     <url>/2023/03/06/design/reactor-pattern/</url>
     <content><![CDATA[<h1 id="什么是Reactor模式"><a href="#什么是Reactor模式" class="headerlink" title="什么是Reactor模式"></a>什么是Reactor模式</h1><h1 id="Reactor模式结构"><a href="#Reactor模式结构" class="headerlink" title="Reactor模式结构"></a>Reactor模式结构</h1><ul>
@@ -518,17 +529,6 @@
       </categories>
       <tags>
         <tag>Reactor</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>CSS Layout</title>
-    <url>/2023/09/04/css/CSS-Layout/</url>
-    <content><![CDATA[<h1 id="Grid"><a href="#Grid" class="headerlink" title="Grid"></a>Grid</h1><h2 id="fr"><a href="#fr" class="headerlink" title="fr"></a>fr</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">grid-template-columns: 1fr, 1fr, 1fr, 1fr;</span><br><span class="line">grid-template-columns: repeat(4, 1fr);</span><br><span class="line">grid-template-columns: 1fr, 1fr, 1fr, auto;</span><br></pre></td></tr></table></figure>
-
-<h2 id="grid-column"><a href="#grid-column" class="headerlink" title="grid-column"></a>grid-column</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">grid-column: 1</span><br><span class="line">grid-column: 1 / 4;</span><br><span class="line">grid-column: 1 / span 3;</span><br><span class="line">grid-column: 1 / -1;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>css</tag>
       </tags>
   </entry>
   <entry>
@@ -1010,6 +1010,53 @@
       </tags>
   </entry>
   <entry>
+    <title>Effective C++ 26：尽可能推迟变量的定义</title>
+    <url>/2022/04/15/effecitve-cpp/effective-cpp-26/</url>
+    <content><![CDATA[<blockquote>
+<p>Item 26:Postpone variable definitions as long as possible.</p>
+</blockquote>
+<p>推迟变量的定义有两个好处：</p>
+<ul>
+<li>改善程序效率，减少无用的构造和析构。</li>
+<li>增加程序流程清晰度。</li>
+</ul>
+<p>这条规则看似简单，但存在流程控制语句的时候容易疏忽。如：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">string <span class="title">encryptPassword</span><span class="params">(<span class="type">const</span> string&amp; password)</span></span>&#123;</span><br><span class="line">    string encrypted;</span><br><span class="line">    <span class="keyword">if</span> (password.<span class="built_in">length</span>() &lt; MinimumPasswordLength) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="built_in">logic_error</span>(<span class="string">&quot;Password is too short&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    encrypted = password;</span><br><span class="line">    <span class="built_in">encrypt</span>(encrypted);</span><br><span class="line">    <span class="keyword">return</span> encrypted;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<h2 id="推迟到需要构造时执行"><a href="#推迟到需要构造时执行" class="headerlink" title="推迟到需要构造时执行"></a>推迟到需要构造时执行</h2><p>当 <code>encryptPassword</code> 抛出异常时，<code>encrypted</code> 是无用的, 根本不需要构造它。所以更好的写法是推迟 <code>encrypted</code> 的构造：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">string <span class="title">encryptPassword</span><span class="params">(<span class="type">const</span> string&amp; password)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (password.<span class="built_in">length</span>() &lt; MinimumPasswordLength) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="built_in">logic_error</span>(<span class="string">&quot;Password is too short&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    string encrypted;       <span class="comment">// 默认构造函数</span></span><br><span class="line">    encrypted = password;   <span class="comment">// 赋值运算符</span></span><br><span class="line">    <span class="built_in">encrypt</span>(encrypted);</span><br><span class="line">    <span class="keyword">return</span> encrypted;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="推迟到有构造参数时"><a href="#推迟到有构造参数时" class="headerlink" title="推迟到有构造参数时"></a>推迟到有构造参数时</h2><p> <strong>“尽可能延后”</strong> 的真正意义。你不只应该延后变量的定义，直到非得使用该变量的前一刻为止，甚至<strong>应该尝试延后这份定义直到能够给它初值实参为止</strong>。如果这样，不仅能够避免构造(和析构)非必要对象，还可以避免无意义的 <code>default</code> 构造行为。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">string <span class="title">encryptPassword</span><span class="params">(<span class="type">const</span> string&amp; password)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (password.<span class="built_in">length</span>() &lt; MinimumPasswordLength) &#123;</span><br><span class="line">       <span class="keyword">throw</span> <span class="built_in">logic_error</span>(<span class="string">&quot;Password is too short&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function">string <span class="title">encrypted</span><span class="params">(password)</span></span>;     <span class="comment">// 拷贝构造函数</span></span><br><span class="line">    <span class="built_in">encrypt</span>(encrypted);</span><br><span class="line">    <span class="keyword">return</span> encrypted;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="循环中的变量"><a href="#循环中的变量" class="headerlink" title="循环中的变量"></a>循环中的变量</h2><p>循环中的变量定义也是一个常见的争论点。常有两种写法：</p>
+<p>写法 <code>A</code>，在循环外定义：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">Widget w;</span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; ++i)&#123; </span><br><span class="line">  w = some value dependent on i;</span><br><span class="line">  ...                           </span><br><span class="line">&#125;                  </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>写法 <code>B</code> ，在循环内定义：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; ++i) &#123;</span><br><span class="line">    <span class="function">Widget <span class="title">w</span><span class="params">(some value dependent on i)</span></span>;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>A</code>：<code>1</code> 个构造函数，<code>1</code> 个析构函数，<code>n</code> 个赋值运算符</li>
+<li><code>B</code>：<code>n</code> 个构造函数，<code>n</code> 个析构函数</li>
+</ul>
+<p>但 <code>A</code> 使得循环内才使用的变量进入外部的作用域，不利于程序的理解和维护。软件工程中倾向于认为人的效率比机器的效率更加难得， 所以推荐采用 <code>B</code> 来实现。除非：</p>
+<ul>
+<li>这段代码是性能的关键.</li>
+<li>赋值比一对构造&#x2F;析构更加廉价。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Effective-C++</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>Effective-C++</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Effective C++ 25：设计一个不抛异常的 swap 函数</title>
     <url>/2022/04/09/effecitve-cpp/effective-cpp-25/</url>
     <content><![CDATA[<blockquote>
@@ -1065,89 +1112,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Effective C++ 26：尽可能推迟变量的定义</title>
-    <url>/2022/04/15/effecitve-cpp/effective-cpp-26/</url>
-    <content><![CDATA[<blockquote>
-<p>Item 26:Postpone variable definitions as long as possible.</p>
-</blockquote>
-<p>推迟变量的定义有两个好处：</p>
-<ul>
-<li>改善程序效率，减少无用的构造和析构。</li>
-<li>增加程序流程清晰度。</li>
-</ul>
-<p>这条规则看似简单，但存在流程控制语句的时候容易疏忽。如：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">string <span class="title">encryptPassword</span><span class="params">(<span class="type">const</span> string&amp; password)</span></span>&#123;</span><br><span class="line">    string encrypted;</span><br><span class="line">    <span class="keyword">if</span> (password.<span class="built_in">length</span>() &lt; MinimumPasswordLength) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="built_in">logic_error</span>(<span class="string">&quot;Password is too short&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    encrypted = password;</span><br><span class="line">    <span class="built_in">encrypt</span>(encrypted);</span><br><span class="line">    <span class="keyword">return</span> encrypted;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<span id="more"></span>
-
-<h2 id="推迟到需要构造时执行"><a href="#推迟到需要构造时执行" class="headerlink" title="推迟到需要构造时执行"></a>推迟到需要构造时执行</h2><p>当 <code>encryptPassword</code> 抛出异常时，<code>encrypted</code> 是无用的, 根本不需要构造它。所以更好的写法是推迟 <code>encrypted</code> 的构造：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">string <span class="title">encryptPassword</span><span class="params">(<span class="type">const</span> string&amp; password)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (password.<span class="built_in">length</span>() &lt; MinimumPasswordLength) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="built_in">logic_error</span>(<span class="string">&quot;Password is too short&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    string encrypted;       <span class="comment">// 默认构造函数</span></span><br><span class="line">    encrypted = password;   <span class="comment">// 赋值运算符</span></span><br><span class="line">    <span class="built_in">encrypt</span>(encrypted);</span><br><span class="line">    <span class="keyword">return</span> encrypted;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="推迟到有构造参数时"><a href="#推迟到有构造参数时" class="headerlink" title="推迟到有构造参数时"></a>推迟到有构造参数时</h2><p> <strong>“尽可能延后”</strong> 的真正意义。你不只应该延后变量的定义，直到非得使用该变量的前一刻为止，甚至<strong>应该尝试延后这份定义直到能够给它初值实参为止</strong>。如果这样，不仅能够避免构造(和析构)非必要对象，还可以避免无意义的 <code>default</code> 构造行为。</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">string <span class="title">encryptPassword</span><span class="params">(<span class="type">const</span> string&amp; password)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (password.<span class="built_in">length</span>() &lt; MinimumPasswordLength) &#123;</span><br><span class="line">       <span class="keyword">throw</span> <span class="built_in">logic_error</span>(<span class="string">&quot;Password is too short&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function">string <span class="title">encrypted</span><span class="params">(password)</span></span>;     <span class="comment">// 拷贝构造函数</span></span><br><span class="line">    <span class="built_in">encrypt</span>(encrypted);</span><br><span class="line">    <span class="keyword">return</span> encrypted;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="循环中的变量"><a href="#循环中的变量" class="headerlink" title="循环中的变量"></a>循环中的变量</h2><p>循环中的变量定义也是一个常见的争论点。常有两种写法：</p>
-<p>写法 <code>A</code>，在循环外定义：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">Widget w;</span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; ++i)&#123; </span><br><span class="line">  w = some value dependent on i;</span><br><span class="line">  ...                           </span><br><span class="line">&#125;                  </span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>写法 <code>B</code> ，在循环内定义：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; ++i) &#123;</span><br><span class="line">    <span class="function">Widget <span class="title">w</span><span class="params">(some value dependent on i)</span></span>;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><code>A</code>：<code>1</code> 个构造函数，<code>1</code> 个析构函数，<code>n</code> 个赋值运算符</li>
-<li><code>B</code>：<code>n</code> 个构造函数，<code>n</code> 个析构函数</li>
-</ul>
-<p>但 <code>A</code> 使得循环内才使用的变量进入外部的作用域，不利于程序的理解和维护。软件工程中倾向于认为人的效率比机器的效率更加难得， 所以推荐采用 <code>B</code> 来实现。除非：</p>
-<ul>
-<li>这段代码是性能的关键.</li>
-<li>赋值比一对构造&#x2F;析构更加廉价。</li>
-</ul>
-]]></content>
-      <categories>
-        <category>Effective-C++</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
-        <tag>Effective-C++</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Effective C++ 28：避免返回 handles 指向对象内部成分</title>
-    <url>/2022/04/16/effecitve-cpp/effective-cpp-28/</url>
-    <content><![CDATA[<blockquote>
-<p>Item28: Avoid returning “handles” to object internals.</p>
-</blockquote>
-<p>避免返回 <code>handles</code> (包括 <code>references</code> 、指针、迭代器)指向对象内部。</p>
-<span id="more"></span>
-
-<h2 id="破坏封装性"><a href="#破坏封装性" class="headerlink" title="破坏封装性"></a>破坏封装性</h2><p><code>const</code> 函数不再是 <code>const</code>, 修改了私有成员变量。</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Point</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">Point</span>(<span class="type">int</span> x, <span class="type">int</span> y);</span><br><span class="line">    ...</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">setX</span><span class="params">(<span class="type">int</span> x)</span></span>;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">setY</span><span class="params">(<span class="type">int</span> y)</span></span>;</span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">RectData</span> &#123;</span><br><span class="line">    Point ulhc;</span><br><span class="line">    Point lrhc;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Rectangle</span> &#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="function">Point&amp; <span class="title">upperLeft</span><span class="params">()</span> <span class="type">const</span> </span>&#123; <span class="keyword">return</span> pData-&gt;ulhc; &#125;</span><br><span class="line">    <span class="function">Point&amp; <span class="title">lowerRight</span><span class="params">()</span> <span class="type">const</span> </span>&#123; <span class="keyword">return</span> pData-&gt;lrhc; &#125;</span><br><span class="line">    ...</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    std::shared_ptr&lt;RectData&gt; pData;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>虽然这样的设计可通过编译，但却是错误的。<code>upperLeft</code> 和 <code>lowerRight</code> 被声明为 <code>const</code> 成员函数，但是可以更改内部数据。</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">Point <span class="title">coord1</span><span class="params">(<span class="number">0</span>, <span class="number">0</span>)</span></span>;</span><br><span class="line"><span class="function">Point <span class="title">coord2</span><span class="params">(<span class="number">100</span>, <span class="number">100</span>)</span></span>; </span><br><span class="line"><span class="function"><span class="type">const</span> Rectangle <span class="title">rec</span><span class="params">(coord1, coord2)</span></span>; <span class="comment">// rec是个const矩形, 从 (0 ，0) 到 (100 ， 100)</span></span><br><span class="line"></span><br><span class="line">rec.<span class="built_in">upperLeft</span>( ) .<span class="built_in">setX</span>(<span class="number">50</span>);  <span class="comment">// 现在rec却变成从 (50 ， 0) 到 (100 ， 100)</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>成员变量的封装性最多只等于”返回其 <code>reference</code>“ 的函数的访问级别。</li>
-<li>如果 <code>const</code> 成员函数传出一个 <code>reference</code>，后者所指数据与对象自身有关联，而它又被存储于对象之外，那么这个函数的调用者可以修改那笔数据。(<code>bitwise constness</code>原因)</li>
-</ul>
-<h2 id="悬空问题"><a href="#悬空问题" class="headerlink" title="悬空问题"></a>悬空问题</h2><p>虽然我们可以修改函数，达到不能修改私有成员变量。</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">const</span> Point&amp; <span class="title">upperLeft</span><span class="params">()</span> <span class="type">const</span> </span>&#123; <span class="keyword">return</span> pData-&gt;ulhc; &#125;</span><br></pre></td></tr></table></figure>
-<p>但也不能解决悬空问题。如下：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">GUIObject</span> &#123; ... &#125;;</span><br><span class="line"><span class="function"><span class="type">const</span> Rectangle <span class="title">boundingBox</span><span class="params">(<span class="type">const</span> GUIObject&amp; obj)</span></span>; <span class="comment">//以 by value 方式返回一个矩形</span></span><br></pre></td></tr></table></figure>
-
-<p>现在，客户有可能这么使用这个函数:</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">GUIObject* pgo; <span class="comment">// 让pgo指向某个GUIObject</span></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="type">const</span> Point* pUpperLeft = &amp;(<span class="built_in">boundingBox</span>(*pgo) .<span class="built_in">upperLeft</span>()); <span class="comment">// 取得一个指针指向外框左上点</span></span><br></pre></td></tr></table></figure>
-
-<p><code>pUpperLeft</code> 被悬空了，<code>boundingBox(*pgo)</code> 返回的是一个临时变量，在语句执行结束后就会销毁，导致 <code>pUpperLeft</code> 指针失效。</p>
-]]></content>
-      <categories>
-        <category>Effective-C++</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
-        <tag>Effective-C++</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Effective C++ 3：尽可能使用 const</title>
     <url>/2021/01/05/effecitve-cpp/effective-cpp-3/</url>
     <content><![CDATA[<blockquote>
@@ -1184,6 +1148,42 @@
 <li>调用 <code>operator[](std::size_t) const</code>，得到的返回值类型为 <code>const char&amp;</code>。</li>
 <li>把返回值去掉 <code>const</code> 属性，得到类型为 <code>char&amp;</code> 的返回值。</li>
 </ol>
+]]></content>
+      <categories>
+        <category>Effective-C++</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>Effective-C++</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Effective C++ 28：避免返回 handles 指向对象内部成分</title>
+    <url>/2022/04/16/effecitve-cpp/effective-cpp-28/</url>
+    <content><![CDATA[<blockquote>
+<p>Item28: Avoid returning “handles” to object internals.</p>
+</blockquote>
+<p>避免返回 <code>handles</code> (包括 <code>references</code> 、指针、迭代器)指向对象内部。</p>
+<span id="more"></span>
+
+<h2 id="破坏封装性"><a href="#破坏封装性" class="headerlink" title="破坏封装性"></a>破坏封装性</h2><p><code>const</code> 函数不再是 <code>const</code>, 修改了私有成员变量。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Point</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">Point</span>(<span class="type">int</span> x, <span class="type">int</span> y);</span><br><span class="line">    ...</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">setX</span><span class="params">(<span class="type">int</span> x)</span></span>;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">setY</span><span class="params">(<span class="type">int</span> y)</span></span>;</span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">RectData</span> &#123;</span><br><span class="line">    Point ulhc;</span><br><span class="line">    Point lrhc;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Rectangle</span> &#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="function">Point&amp; <span class="title">upperLeft</span><span class="params">()</span> <span class="type">const</span> </span>&#123; <span class="keyword">return</span> pData-&gt;ulhc; &#125;</span><br><span class="line">    <span class="function">Point&amp; <span class="title">lowerRight</span><span class="params">()</span> <span class="type">const</span> </span>&#123; <span class="keyword">return</span> pData-&gt;lrhc; &#125;</span><br><span class="line">    ...</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    std::shared_ptr&lt;RectData&gt; pData;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>虽然这样的设计可通过编译，但却是错误的。<code>upperLeft</code> 和 <code>lowerRight</code> 被声明为 <code>const</code> 成员函数，但是可以更改内部数据。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">Point <span class="title">coord1</span><span class="params">(<span class="number">0</span>, <span class="number">0</span>)</span></span>;</span><br><span class="line"><span class="function">Point <span class="title">coord2</span><span class="params">(<span class="number">100</span>, <span class="number">100</span>)</span></span>; </span><br><span class="line"><span class="function"><span class="type">const</span> Rectangle <span class="title">rec</span><span class="params">(coord1, coord2)</span></span>; <span class="comment">// rec是个const矩形, 从 (0 ，0) 到 (100 ， 100)</span></span><br><span class="line"></span><br><span class="line">rec.<span class="built_in">upperLeft</span>( ) .<span class="built_in">setX</span>(<span class="number">50</span>);  <span class="comment">// 现在rec却变成从 (50 ， 0) 到 (100 ， 100)</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>成员变量的封装性最多只等于”返回其 <code>reference</code>“ 的函数的访问级别。</li>
+<li>如果 <code>const</code> 成员函数传出一个 <code>reference</code>，后者所指数据与对象自身有关联，而它又被存储于对象之外，那么这个函数的调用者可以修改那笔数据。(<code>bitwise constness</code>原因)</li>
+</ul>
+<h2 id="悬空问题"><a href="#悬空问题" class="headerlink" title="悬空问题"></a>悬空问题</h2><p>虽然我们可以修改函数，达到不能修改私有成员变量。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">const</span> Point&amp; <span class="title">upperLeft</span><span class="params">()</span> <span class="type">const</span> </span>&#123; <span class="keyword">return</span> pData-&gt;ulhc; &#125;</span><br></pre></td></tr></table></figure>
+<p>但也不能解决悬空问题。如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">GUIObject</span> &#123; ... &#125;;</span><br><span class="line"><span class="function"><span class="type">const</span> Rectangle <span class="title">boundingBox</span><span class="params">(<span class="type">const</span> GUIObject&amp; obj)</span></span>; <span class="comment">//以 by value 方式返回一个矩形</span></span><br></pre></td></tr></table></figure>
+
+<p>现在，客户有可能这么使用这个函数:</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">GUIObject* pgo; <span class="comment">// 让pgo指向某个GUIObject</span></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="type">const</span> Point* pUpperLeft = &amp;(<span class="built_in">boundingBox</span>(*pgo) .<span class="built_in">upperLeft</span>()); <span class="comment">// 取得一个指针指向外框左上点</span></span><br></pre></td></tr></table></figure>
+
+<p><code>pUpperLeft</code> 被悬空了，<code>boundingBox(*pgo)</code> 返回的是一个临时变量，在语句执行结束后就会销毁，导致 <code>pUpperLeft</code> 指针失效。</p>
 ]]></content>
       <categories>
         <category>Effective-C++</category>
@@ -1672,6 +1672,66 @@
       </tags>
   </entry>
   <entry>
+    <title>@executable path, @load path 和 @rpath</title>
+    <url>/2023/08/25/macos/executable-path-load-path-%E5%92%8C-rpath/</url>
+    <content><![CDATA[<p>在 <code>macOS</code> 上，动态链接器使用特定的路径变量来解析运行时的库位置。这些路径变量包括：绝对路径、 <code>@executable_path</code>、<code>@loader_path</code> 和 <code>@rpath</code>。</p>
+<h1 id="绝对路径"><a href="#绝对路径" class="headerlink" title="绝对路径"></a>绝对路径</h1><p>对于安装在系统中共享位置的框架很有用，一般是 <code>/Library/Frameworks/xxx</code>、 <code>/usr/lib/xxx</code>, 但是查找嵌入在应用内部的动态库就很难使用，应用安装的位置都不固定，所以引出新的方式。</p>
+<h1 id="executable-path"><a href="#executable-path" class="headerlink" title="@executable path"></a>@executable path</h1><p><code>@executable_path</code> 是用于指代<strong>当前正在执行的程序或应用的路径</strong>。当你的应用程序或其动态库需要引用位于与可执行文件相同路径（或其子目录）下的其他动态库时，这会非常有用。</p>
+<span id="more"></span>
+<p>举例说明: </p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">MyApp/</span><br><span class="line">|-- MyApp.app/</span><br><span class="line">    |-- Contents/</span><br><span class="line">        |-- MacOS/</span><br><span class="line">            |-- MyApp (可执行文件)</span><br><span class="line">            |-- libA.dylib (动态库A)</span><br><span class="line">        |-- Frameworks/</span><br><span class="line">            |-- libB.dylib (动态库B)</span><br></pre></td></tr></table></figure>
+
+<p>假设 <code>MyApp</code> 依赖于 <code>libA.dylib</code>，而 <code>libA.dylib</code> 依赖于 <code>libB.dylib</code>。<br>如果你希望 <code>libA.dylib</code> 在运行时找到 <code>libB.dylib</code>，可以设置 <code>libB.dylib</code> 的安装名称为 <code>@executable_path/../Frameworks/libB.dylib</code>。当 <code>MyApp</code> 启动并加载 <code>libA.dylib</code> 时，<code>@executable_path</code> 将解析为 <code>MyApp.app/Contents/MacOS/</code>，因此 <code>libA.dylib</code> 会正确地找到 <code>libB.dylib</code> 在 <code>MyApp.app/Contents/Frameworks/</code> 目录下。</p>
+<h1 id="load-path"><a href="#load-path" class="headerlink" title="@load path"></a>@load path</h1><p><strong>加载的动态库的路径</strong>。在很多情况下，这个路径是基于正在加载该库的模块，因此它可能会随着加载该库的不同模块而变化。</p>
+<p>举例说明:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">MyApp/</span><br><span class="line">|-- MyApp.app/</span><br><span class="line">    |-- Contents/</span><br><span class="line">        |-- MacOS/</span><br><span class="line">            |-- MyApp (主应用程序)</span><br><span class="line">            |-- libMain.dylib (主应用的动态库)</span><br><span class="line">        |-- Plugins/</span><br><span class="line">            |-- PluginA.bundle/</span><br><span class="line">                |-- PluginA (插件)</span><br><span class="line">                |-- libPluginA.dylib (插件的动态库)</span><br></pre></td></tr></table></figure>
+<p>在这个例子中，<code>MyApp</code> 依赖 <code>libMain.dylib</code>，而 <code>PluginA</code> 依赖 <code>libPluginA.dylib</code>。</p>
+<ul>
+<li><p>使用 <code>@executable_path</code>：</p>
+<p>如果 <code>libMain.dylib</code> 需要引用与其位于同一目录下的另一个库，如 <code>libHelper.dylib</code>，它可以使用 <code>@executable_path/libHelper.dylib</code> 作为路径。但是，这对 <code>PluginA</code> 中的库不起作用，因为 <code>@executable_path</code> 总是指向 <code>MyApp.app/Contents/MacOS/</code>，不考虑加载它的实际模块。</p>
+</li>
+<li><p>使用 <code>@loader_path</code>：</p>
+<p>如果 <code>libPluginA.dylib</code> 需要引用与其位于同一目录下的另一个库，如 <code>libHelper.dylib</code>，它可以使用 <code>@loader_path/libHelper.dylib</code> 作为路径。这样，不管 <code>libPluginA.dylib</code> 被哪个模块加载，它都会正确地引用到相对于加载它的模块的库。</p>
+</li>
+</ul>
+<p><strong>如果是一个应用程序，那么 <code>@load path</code> 与 <code>@executable_path</code> 相同。</strong></p>
+<h1 id="rpath"><a href="#rpath" class="headerlink" title="@rpath"></a>@rpath</h1><p><code>@rpath (Runtime Search Path)</code> 提供了一种动态方式来指定和查找动态库。它的主要优势是提供了更多的灵活性，尤其是在面对多种可能的库位置或多个版本的库时。</p>
+<p>举例说明:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">MyApp/</span><br><span class="line">|-- MyApp.app/</span><br><span class="line">    |-- Contents/</span><br><span class="line">        |-- MacOS/</span><br><span class="line">            |-- MyApp (可执行文件)</span><br><span class="line">        |-- Frameworks/</span><br><span class="line">            |-- libA.dylib (动态库A版本1)</span><br><span class="line">        |-- Plugins/</span><br><span class="line">            |-- PluginA/</span><br><span class="line">                |-- libA.dylib (动态库A版本2)</span><br></pre></td></tr></table></figure>
+
+<p>假设 <code>MyApp</code> 可能需要加载两个版本中的任何一个 <code>libA.dylib</code>，具体取决于特定的运行时情境。使用<code> @rpath</code> 可以轻松管理这种情况。</p>
+<ul>
+<li><p>设置 <code>@rpath</code>:</p>
+<p>  在构建 <code>MyApp</code> 时，你可以设置多个运行时搜索路径（<code>rpaths</code>）:</p>
+<ul>
+<li><code>@executable_path/../Frameworks</code></li>
+<li><code>@executable_path/../Plugins/PluginA</code></li>
+</ul>
+</li>
+<li><p>使用 <code>@rpath</code> 在动态库中:</p>
+<p>  设 <code>libA.dylib</code> 的安装名称为 <code>@rpath/libA.dylib</code>。</p>
+</li>
+<li><p>运行时解析:</p>
+<p>  当 <code>MyApp</code> 需要加载 <code>libA.dylib</code> 时，它会沿着 <code>rpath</code> 列表搜索。首先在 <code>Frameworks</code> 文件夹中查找，然后在 <code>PluginA</code> 文件夹中查找。</p>
+</li>
+</ul>
+<p>这种方法的好处是，你可以轻松地将相同的库放在多个位置，而不需要为每个位置硬编码路径。此外，应用程序的用户或开发人员可以通过修改 <code>rpath</code> 来改变库的搜索顺序或位置。</p>
+<h1 id="install-name-tool"><a href="#install-name-tool" class="headerlink" title="install_name_tool"></a><code>install_name_tool</code></h1><p>要查看或修改一个可执行文件或动态库的 <code>rpath</code>，你可以使用 <code>otool</code> 和 <code>install_name_tool</code> 这两个命令行工具。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ otool -l WeChat</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">Load command 104</span><br><span class="line">          cmd LC_LOAD_DYLIB</span><br><span class="line">      cmdsize 64</span><br><span class="line">         name /usr/lib/swift/libswiftsimd.dylib (offset 24)</span><br><span class="line">   time stamp 2 Thu Jan  1 08:00:02 1970</span><br><span class="line">      current version 9.0.0</span><br><span class="line">compatibility version 1.0.0</span><br><span class="line">Load command 105</span><br><span class="line">          cmd LC_LOAD_DYLIB</span><br><span class="line">      cmdsize 64</span><br><span class="line">         name /usr/lib/swift/libswiftFoundation.dylib (offset 24)</span><br><span class="line">   time stamp 2 Thu Jan  1 08:00:02 1970</span><br><span class="line">      current version 1.0.0</span><br><span class="line">compatibility version 1.0.0</span><br><span class="line">Load command 106</span><br><span class="line">          cmd LC_RPATH</span><br><span class="line">      cmdsize 32</span><br><span class="line">         path /usr/lib/swift (offset 12)</span><br><span class="line">Load command 107</span><br><span class="line">          cmd LC_RPATH</span><br><span class="line">      cmdsize 48</span><br><span class="line">         path @executable_path/../Frameworks (offset 12)</span><br><span class="line">...</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>添加 <code>rpath</code>:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">install_name_tool -add_rpath @executable_path/. a.out</span><br></pre></td></tr></table></figure>
+
+<p>修改 <code>rpath</code>:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">install_name_tool -change libFoo @rpath/libFoo a.out</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>MacOS</category>
+      </categories>
+      <tags>
+        <tag>DYLD</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Disk Arbitration</title>
     <url>/2023/02/16/macos/Disk-Arbitration/</url>
     <content><![CDATA[<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p><code>Disk Arbitration framework</code> 是一个基于 <code>Core Foundation</code> 的低级框架。会在磁盘出现和消失时通知您的应用程序，并让您的应用程序影响该过程。借助 <code>Disk Arbitration</code>，我们可以：</p>
@@ -1808,63 +1868,14 @@
       </tags>
   </entry>
   <entry>
-    <title>@executable path, @load path 和 @rpath</title>
-    <url>/2023/08/25/macos/executable-path-load-path-%E5%92%8C-rpath/</url>
-    <content><![CDATA[<p>在 <code>macOS</code> 上，动态链接器使用特定的路径变量来解析运行时的库位置。这些路径变量包括：绝对路径、 <code>@executable_path</code>、<code>@loader_path</code> 和 <code>@rpath</code>。</p>
-<h1 id="绝对路径"><a href="#绝对路径" class="headerlink" title="绝对路径"></a>绝对路径</h1><p>对于安装在系统中共享位置的框架很有用，一般是 <code>/Library/Frameworks/xxx</code>、 <code>/usr/lib/xxx</code>, 但是查找嵌入在应用内部的动态库就很难使用，应用安装的位置都不固定，所以引出新的方式。</p>
-<h1 id="executable-path"><a href="#executable-path" class="headerlink" title="@executable path"></a>@executable path</h1><p><code>@executable_path</code> 是用于指代<strong>当前正在执行的程序或应用的路径</strong>。当你的应用程序或其动态库需要引用位于与可执行文件相同路径（或其子目录）下的其他动态库时，这会非常有用。</p>
-<span id="more"></span>
-<p>举例说明: </p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">MyApp/</span><br><span class="line">|-- MyApp.app/</span><br><span class="line">    |-- Contents/</span><br><span class="line">        |-- MacOS/</span><br><span class="line">            |-- MyApp (可执行文件)</span><br><span class="line">            |-- libA.dylib (动态库A)</span><br><span class="line">        |-- Frameworks/</span><br><span class="line">            |-- libB.dylib (动态库B)</span><br></pre></td></tr></table></figure>
-
-<p>假设 <code>MyApp</code> 依赖于 <code>libA.dylib</code>，而 <code>libA.dylib</code> 依赖于 <code>libB.dylib</code>。<br>如果你希望 <code>libA.dylib</code> 在运行时找到 <code>libB.dylib</code>，可以设置 <code>libB.dylib</code> 的安装名称为 <code>@executable_path/../Frameworks/libB.dylib</code>。当 <code>MyApp</code> 启动并加载 <code>libA.dylib</code> 时，<code>@executable_path</code> 将解析为 <code>MyApp.app/Contents/MacOS/</code>，因此 <code>libA.dylib</code> 会正确地找到 <code>libB.dylib</code> 在 <code>MyApp.app/Contents/Frameworks/</code> 目录下。</p>
-<h1 id="load-path"><a href="#load-path" class="headerlink" title="@load path"></a>@load path</h1><p><strong>加载的动态库的路径</strong>。在很多情况下，这个路径是基于正在加载该库的模块，因此它可能会随着加载该库的不同模块而变化。</p>
-<p>举例说明:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">MyApp/</span><br><span class="line">|-- MyApp.app/</span><br><span class="line">    |-- Contents/</span><br><span class="line">        |-- MacOS/</span><br><span class="line">            |-- MyApp (主应用程序)</span><br><span class="line">            |-- libMain.dylib (主应用的动态库)</span><br><span class="line">        |-- Plugins/</span><br><span class="line">            |-- PluginA.bundle/</span><br><span class="line">                |-- PluginA (插件)</span><br><span class="line">                |-- libPluginA.dylib (插件的动态库)</span><br></pre></td></tr></table></figure>
-<p>在这个例子中，<code>MyApp</code> 依赖 <code>libMain.dylib</code>，而 <code>PluginA</code> 依赖 <code>libPluginA.dylib</code>。</p>
-<ul>
-<li><p>使用 <code>@executable_path</code>：</p>
-<p>如果 <code>libMain.dylib</code> 需要引用与其位于同一目录下的另一个库，如 <code>libHelper.dylib</code>，它可以使用 <code>@executable_path/libHelper.dylib</code> 作为路径。但是，这对 <code>PluginA</code> 中的库不起作用，因为 <code>@executable_path</code> 总是指向 <code>MyApp.app/Contents/MacOS/</code>，不考虑加载它的实际模块。</p>
-</li>
-<li><p>使用 <code>@loader_path</code>：</p>
-<p>如果 <code>libPluginA.dylib</code> 需要引用与其位于同一目录下的另一个库，如 <code>libHelper.dylib</code>，它可以使用 <code>@loader_path/libHelper.dylib</code> 作为路径。这样，不管 <code>libPluginA.dylib</code> 被哪个模块加载，它都会正确地引用到相对于加载它的模块的库。</p>
-</li>
-</ul>
-<p><strong>如果是一个应用程序，那么 <code>@load path</code> 与 <code>@executable_path</code> 相同。</strong></p>
-<h1 id="rpath"><a href="#rpath" class="headerlink" title="@rpath"></a>@rpath</h1><p><code>@rpath (Runtime Search Path)</code> 提供了一种动态方式来指定和查找动态库。它的主要优势是提供了更多的灵活性，尤其是在面对多种可能的库位置或多个版本的库时。</p>
-<p>举例说明:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">MyApp/</span><br><span class="line">|-- MyApp.app/</span><br><span class="line">    |-- Contents/</span><br><span class="line">        |-- MacOS/</span><br><span class="line">            |-- MyApp (可执行文件)</span><br><span class="line">        |-- Frameworks/</span><br><span class="line">            |-- libA.dylib (动态库A版本1)</span><br><span class="line">        |-- Plugins/</span><br><span class="line">            |-- PluginA/</span><br><span class="line">                |-- libA.dylib (动态库A版本2)</span><br></pre></td></tr></table></figure>
-
-<p>假设 <code>MyApp</code> 可能需要加载两个版本中的任何一个 <code>libA.dylib</code>，具体取决于特定的运行时情境。使用<code> @rpath</code> 可以轻松管理这种情况。</p>
-<ul>
-<li><p>设置 <code>@rpath</code>:</p>
-<p>  在构建 <code>MyApp</code> 时，你可以设置多个运行时搜索路径（<code>rpaths</code>）:</p>
-<ul>
-<li><code>@executable_path/../Frameworks</code></li>
-<li><code>@executable_path/../Plugins/PluginA</code></li>
-</ul>
-</li>
-<li><p>使用 <code>@rpath</code> 在动态库中:</p>
-<p>  设 <code>libA.dylib</code> 的安装名称为 <code>@rpath/libA.dylib</code>。</p>
-</li>
-<li><p>运行时解析:</p>
-<p>  当 <code>MyApp</code> 需要加载 <code>libA.dylib</code> 时，它会沿着 <code>rpath</code> 列表搜索。首先在 <code>Frameworks</code> 文件夹中查找，然后在 <code>PluginA</code> 文件夹中查找。</p>
-</li>
-</ul>
-<p>这种方法的好处是，你可以轻松地将相同的库放在多个位置，而不需要为每个位置硬编码路径。此外，应用程序的用户或开发人员可以通过修改 <code>rpath</code> 来改变库的搜索顺序或位置。</p>
-<h1 id="install-name-tool"><a href="#install-name-tool" class="headerlink" title="install_name_tool"></a><code>install_name_tool</code></h1><p>要查看或修改一个可执行文件或动态库的 <code>rpath</code>，你可以使用 <code>otool</code> 和 <code>install_name_tool</code> 这两个命令行工具。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ otool -l WeChat</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">Load command 104</span><br><span class="line">          cmd LC_LOAD_DYLIB</span><br><span class="line">      cmdsize 64</span><br><span class="line">         name /usr/lib/swift/libswiftsimd.dylib (offset 24)</span><br><span class="line">   time stamp 2 Thu Jan  1 08:00:02 1970</span><br><span class="line">      current version 9.0.0</span><br><span class="line">compatibility version 1.0.0</span><br><span class="line">Load command 105</span><br><span class="line">          cmd LC_LOAD_DYLIB</span><br><span class="line">      cmdsize 64</span><br><span class="line">         name /usr/lib/swift/libswiftFoundation.dylib (offset 24)</span><br><span class="line">   time stamp 2 Thu Jan  1 08:00:02 1970</span><br><span class="line">      current version 1.0.0</span><br><span class="line">compatibility version 1.0.0</span><br><span class="line">Load command 106</span><br><span class="line">          cmd LC_RPATH</span><br><span class="line">      cmdsize 32</span><br><span class="line">         path /usr/lib/swift (offset 12)</span><br><span class="line">Load command 107</span><br><span class="line">          cmd LC_RPATH</span><br><span class="line">      cmdsize 48</span><br><span class="line">         path @executable_path/../Frameworks (offset 12)</span><br><span class="line">...</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>添加 <code>rpath</code>:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">install_name_tool -add_rpath @executable_path/. a.out</span><br></pre></td></tr></table></figure>
-
-<p>修改 <code>rpath</code>:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">install_name_tool -change libFoo @rpath/libFoo a.out</span><br></pre></td></tr></table></figure>]]></content>
+    <title>Mach-O 相关记录</title>
+    <url>/2023/03/10/macos/mach-o/</url>
+    <content><![CDATA[<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><h1 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h1>]]></content>
       <categories>
         <category>MacOS</category>
       </categories>
       <tags>
-        <tag>DYLD</tag>
+        <tag>Mach-O</tag>
       </tags>
   </entry>
   <entry>
@@ -1882,17 +1893,6 @@
       </categories>
       <tags>
         <tag>macOS</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Mach-O 相关记录</title>
-    <url>/2023/03/10/macos/mach-o/</url>
-    <content><![CDATA[<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><h1 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h1>]]></content>
-      <categories>
-        <category>MacOS</category>
-      </categories>
-      <tags>
-        <tag>Mach-O</tag>
       </tags>
   </entry>
   <entry>
@@ -1944,6 +1944,17 @@
       <tags>
         <tag>MacOS</tag>
         <tag>Crash</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>mongodb 入门-Aggregate</title>
+    <url>/2023/08/31/mongodb/mongodb-%E5%85%A5%E9%97%A8-Aggregate/</url>
+    <content><![CDATA[<h1 id="聚合操作"><a href="#聚合操作" class="headerlink" title="聚合操作"></a>聚合操作</h1>]]></content>
+      <categories>
+        <category>mongodb</category>
+      </categories>
+      <tags>
+        <tag>mongodb</tag>
       </tags>
   </entry>
   <entry>
@@ -2542,17 +2553,6 @@
       </tags>
   </entry>
   <entry>
-    <title>mongodb 入门-Aggregate</title>
-    <url>/2023/08/31/mongodb/mongodb-%E5%85%A5%E9%97%A8-Aggregate/</url>
-    <content><![CDATA[<h1 id="聚合操作"><a href="#聚合操作" class="headerlink" title="聚合操作"></a>聚合操作</h1>]]></content>
-      <categories>
-        <category>mongodb</category>
-      </categories>
-      <tags>
-        <tag>mongodb</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>mongodb 入门-索引</title>
     <url>/2023/08/26/mongodb/mongodb-%E5%85%A5%E9%97%A8-%E7%B4%A2%E5%BC%95/</url>
     <content><![CDATA[<h1 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h1><ul>
@@ -2621,6 +2621,11 @@
       <tags>
         <tag>mongodb</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>TCP Nagle算法与ACK延迟确认</title>
+    <url>/2023/11/20/network/TCP-Nagle%E7%AE%97%E6%B3%95%E4%B8%8EACK%E5%BB%B6%E8%BF%9F%E7%A1%AE%E8%AE%A4/</url>
+    <content><![CDATA[]]></content>
   </entry>
   <entry>
     <title>I/O 多路复用</title>
@@ -2711,11 +2716,6 @@
       <tags>
         <tag>socket</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>TCP Nagle算法与ACK延迟确认</title>
-    <url>/2023/11/20/network/TCP-Nagle%E7%AE%97%E6%B3%95%E4%B8%8EACK%E5%BB%B6%E8%BF%9F%E7%A1%AE%E8%AE%A4/</url>
-    <content><![CDATA[]]></content>
   </entry>
   <entry>
     <title>TCP 协议</title>
@@ -3314,6 +3314,19 @@
       </tags>
   </entry>
   <entry>
+    <title>TLS False Start</title>
+    <url>/2023/12/11/network/TLS/TLS-False-Start/</url>
+    <content><![CDATA[<h1 id="什么是TLS-False-Start？"><a href="#什么是TLS-False-Start？" class="headerlink" title="什么是TLS False Start？"></a>什么是TLS False Start？</h1><p>在 <code>TLS</code> 协商第二阶段，浏览器发送 <code>ChangeCipherSpec</code> 和 <code>Finished</code> 后，立即发送加密的应用层数据，而无需等待服务器端的确认。</p>
+<h1 id="如何启用TLS-False-Start？"><a href="#如何启用TLS-False-Start？" class="headerlink" title="如何启用TLS False Start？"></a>如何启用TLS False Start？</h1><ul>
+<li>需要支持 <code>NPN/ALPN</code></li>
+<li>服务器端配置支持前向安全(<code>Forward Secrecy</code>)</li>
+</ul>
+]]></content>
+      <tags>
+        <tag>SSL/TLS</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Application-Layer Protocol Negotiation</title>
     <url>/2023/12/11/network/TLS/ALPN/</url>
     <content><![CDATA[<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p><code>ALPN</code>(<code>Application-Layer Protocol Negotiation</code>)应用层协议协商, 当单个服务器端口号（例如端口 <code>443</code>）上支持多个应用程序协议时，客户端和服务器需要协商用于每个连接的应用程序协议。希望在不增加客户端和服务器之间的网络往返次数的情况下完成此协商，因为每次往返都会降低最终用户的体验。</p>
@@ -3348,19 +3361,6 @@
 </ul>
 <h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ul>
 <li><a href="https://datatracker.ietf.org/doc/html/rfc7301">Application-Layer Protocol Negotiation Extension</a></li>
-</ul>
-]]></content>
-      <tags>
-        <tag>SSL/TLS</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>TLS False Start</title>
-    <url>/2023/12/11/network/TLS/TLS-False-Start/</url>
-    <content><![CDATA[<h1 id="什么是TLS-False-Start？"><a href="#什么是TLS-False-Start？" class="headerlink" title="什么是TLS False Start？"></a>什么是TLS False Start？</h1><p>在 <code>TLS</code> 协商第二阶段，浏览器发送 <code>ChangeCipherSpec</code> 和 <code>Finished</code> 后，立即发送加密的应用层数据，而无需等待服务器端的确认。</p>
-<h1 id="如何启用TLS-False-Start？"><a href="#如何启用TLS-False-Start？" class="headerlink" title="如何启用TLS False Start？"></a>如何启用TLS False Start？</h1><ul>
-<li>需要支持 <code>NPN/ALPN</code></li>
-<li>服务器端配置支持前向安全(<code>Forward Secrecy</code>)</li>
 </ul>
 ]]></content>
       <tags>

@@ -20,18 +20,18 @@
     var CONFIG = {"hostname":"yngty.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="介绍用最简单的术语来说，一个只能应用于函数的 consteval 说明符, 保证它产生一个编译时间常数。否则会导致编译错误。 cppreference 页面对 consteval 说明符有如下描述：  consteval 指定函数是立即函数，也就是说，对该函数的每次调用都必须产生一个编译时常量  什么是立即函数？  不能是协程 函数主体中不能有 throw 语句 不能有 goto 语句或标签语句，">
+  <meta name="description" content="简介用最简单的术语来说，一个只能应用于函数的 consteval 关键字, 保证它产生一个编译时间常数。否则会导致编译错误。 cppreference 页面对 consteval 说明符有如下描述：  consteval 指定函数是立即函数，也就是说，对该函数的每次调用都必须产生一个编译时常量  什么是立即函数？  不能是协程 函数主体中不能有 throw 语句 不能有 goto 语句或标签语句，">
 <meta property="og:type" content="article">
-<meta property="og:title" content="深入了解 &#96;C++20&#96; 中的&#96;consteval&#96;">
+<meta property="og:title" content="深入了解 C++20 中的 consteval">
 <meta property="og:url" content="https://yngty.github.io/2023/12/29/c++/%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3C-20%E4%B8%AD%E7%9A%84consteval%E5%85%B3%E9%94%AE%E5%AD%97/index.html">
 <meta property="og:site_name" content="Symbol Crash">
-<meta property="og:description" content="介绍用最简单的术语来说，一个只能应用于函数的 consteval 说明符, 保证它产生一个编译时间常数。否则会导致编译错误。 cppreference 页面对 consteval 说明符有如下描述：  consteval 指定函数是立即函数，也就是说，对该函数的每次调用都必须产生一个编译时常量  什么是立即函数？  不能是协程 函数主体中不能有 throw 语句 不能有 goto 语句或标签语句，">
+<meta property="og:description" content="简介用最简单的术语来说，一个只能应用于函数的 consteval 关键字, 保证它产生一个编译时间常数。否则会导致编译错误。 cppreference 页面对 consteval 说明符有如下描述：  consteval 指定函数是立即函数，也就是说，对该函数的每次调用都必须产生一个编译时常量  什么是立即函数？  不能是协程 函数主体中不能有 throw 语句 不能有 goto 语句或标签语句，">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://yngty.github.io/images/consteval1.png">
 <meta property="og:image" content="https://yngty.github.io/images/consteval2.png">
 <meta property="og:image" content="https://yngty.github.io/images/consteval3.png">
 <meta property="article:published_time" content="2023-12-29T18:16:18.000Z">
-<meta property="article:modified_time" content="2023-12-29T14:46:10.369Z">
+<meta property="article:modified_time" content="2023-12-29T16:27:10.108Z">
 <meta property="article:author" content="yngty">
 <meta property="article:tag" content="C++20">
 <meta property="article:tag" content="const">
@@ -51,7 +51,7 @@
   };
 </script>
 
-  <title>深入了解 `C++20` 中的`consteval` | Symbol Crash</title>
+  <title>深入了解 C++20 中的 consteval | Symbol Crash</title>
   
 
 
@@ -181,7 +181,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          深入了解 `C++20` 中的`consteval`
+          深入了解 C++20 中的 consteval
         </h1>
 
         <div class="post-meta">
@@ -192,7 +192,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2023-12-29 18:16:18 / 修改时间：14:46:10" itemprop="dateCreated datePublished" datetime="2023-12-29T18:16:18+00:00">2023-12-29</time>
+              <time title="创建时间：2023-12-29 18:16:18 / 修改时间：16:27:10" itemprop="dateCreated datePublished" datetime="2023-12-29T18:16:18+00:00">2023-12-29</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -229,7 +229,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p>用最简单的术语来说，一个只能应用于函数的 <code>consteval</code> 说明符, 保证它产生一个编译时间常数。否则会导致编译错误。</p>
+        <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>用最简单的术语来说，一个只能应用于函数的 <code>consteval</code> 关键字, 保证它产生一个编译时间常数。否则会导致编译错误。</p>
 <p><code>cppreference</code> 页面对 <code>consteval</code> 说明符有如下描述：</p>
 <blockquote>
 <p><code>consteval</code> 指定函数是立即函数，也就是说，对该函数的每次调用都必须产生一个编译时常量</p>
@@ -243,7 +243,7 @@
 </ul>
 <span id="more"></span>
 
-<h1 id="consteval-和-constexpr-方法的区别"><a href="#consteval-和-constexpr-方法的区别" class="headerlink" title="consteval 和 constexpr 方法的区别"></a><code>consteval</code> 和 <code>constexpr</code> 方法的区别</h1><p>他们最大的区别：<code>consteval</code> 保证编译时生成，不能编译时生成时会报错，但<code>constexpr</code> 不一定，当编译时不能生成就转为运行时函数。</p>
+<h1 id="consteval-和-constexpr-方法的区别"><a href="#consteval-和-constexpr-方法的区别" class="headerlink" title="consteval 和 constexpr 方法的区别"></a><code>consteval</code> 和 <code>constexpr</code> 方法的区别</h1><p>他们最大的区别：<code>consteval</code> 保证编译时生成，不能编译时生成时会报错，但 <code>constexpr</code> 不一定，当编译时不能生成就转为运行时函数。</p>
 <h1 id="从汇编看-consteval-和-constexpr-函数"><a href="#从汇编看-consteval-和-constexpr-函数" class="headerlink" title="从汇编看 consteval 和 constexpr 函数"></a>从汇编看 <code>consteval</code> 和 <code>constexpr</code> 函数</h1><h2 id="定义函数"><a href="#定义函数" class="headerlink" title="定义函数"></a>定义函数</h2><p>对于定义的普通函数、 <code>consteval</code> 函数、 <code>constexpr</code> 函数, 只有普通函数会生成汇编代码<br><img src="/images/consteval1.png" alt="consteval1"></p>
 <h2 id="在编译时上下文调用-consteval-和-constexpr-函数"><a href="#在编译时上下文调用-consteval-和-constexpr-函数" class="headerlink" title="在编译时上下文调用 consteval 和 constexpr 函数"></a>在编译时上下文调用 <code>consteval</code> 和 <code>constexpr</code> 函数</h2><p>在编译时直接生成结果，不会生成对应的函数汇编代码和调用汇编指令<br><img src="/images/consteval2.png" alt="consteval2"></p>
 <h2 id="在非编译时上下文调用-consteval-和-constexpr-函数"><a href="#在非编译时上下文调用-consteval-和-constexpr-函数" class="headerlink" title="在非编译时上下文调用 consteval 和 constexpr 函数"></a>在非编译时上下文调用 <code>consteval</code> 和 <code>constexpr</code> 函数</h2><p>会生成 <code>constexpr</code>函数的汇编代码和调用函数汇编指令<br><img src="/images/consteval3.png" alt="consteval3"></p>
@@ -274,8 +274,8 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2023/12/29/c++/%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3C++20%E4%B8%AD%E7%9A%84constinit%E5%85%B3%E9%94%AE%E5%AD%97/" rel="prev" title="深入了解 `C++20` 中的 `constinit`">
-      <i class="fa fa-chevron-left"></i> 深入了解 `C++20` 中的 `constinit`
+    <a href="/2023/12/29/c++/%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3C++20%E4%B8%AD%E7%9A%84constinit%E5%85%B3%E9%94%AE%E5%AD%97/" rel="prev" title="深入了解 C++20 中的 constinit">
+      <i class="fa fa-chevron-left"></i> 深入了解 C++20 中的 constinit
     </a></div>
       <div class="post-nav-item"></div>
     </div>
@@ -336,7 +336,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#consteval-%E5%92%8C-constexpr-%E6%96%B9%E6%B3%95%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">2.</span> <span class="nav-text">consteval 和 constexpr 方法的区别</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%8E%E6%B1%87%E7%BC%96%E7%9C%8B-consteval-%E5%92%8C-constexpr-%E5%87%BD%E6%95%B0"><span class="nav-number">3.</span> <span class="nav-text">从汇编看 consteval 和 constexpr 函数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E5%87%BD%E6%95%B0"><span class="nav-number">3.1.</span> <span class="nav-text">定义函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8%E7%BC%96%E8%AF%91%E6%97%B6%E4%B8%8A%E4%B8%8B%E6%96%87%E8%B0%83%E7%94%A8-consteval-%E5%92%8C-constexpr-%E5%87%BD%E6%95%B0"><span class="nav-number">3.2.</span> <span class="nav-text">在编译时上下文调用 consteval 和 constexpr 函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8%E9%9D%9E%E7%BC%96%E8%AF%91%E6%97%B6%E4%B8%8A%E4%B8%8B%E6%96%87%E8%B0%83%E7%94%A8-consteval-%E5%92%8C-constexpr-%E5%87%BD%E6%95%B0"><span class="nav-number">3.3.</span> <span class="nav-text">在非编译时上下文调用 consteval 和 constexpr 函数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#consteval-%E5%92%8C-constexpr-%E6%96%B9%E6%B3%95%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">2.</span> <span class="nav-text">consteval 和 constexpr 方法的区别</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%8E%E6%B1%87%E7%BC%96%E7%9C%8B-consteval-%E5%92%8C-constexpr-%E5%87%BD%E6%95%B0"><span class="nav-number">3.</span> <span class="nav-text">从汇编看 consteval 和 constexpr 函数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E5%87%BD%E6%95%B0"><span class="nav-number">3.1.</span> <span class="nav-text">定义函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8%E7%BC%96%E8%AF%91%E6%97%B6%E4%B8%8A%E4%B8%8B%E6%96%87%E8%B0%83%E7%94%A8-consteval-%E5%92%8C-constexpr-%E5%87%BD%E6%95%B0"><span class="nav-number">3.2.</span> <span class="nav-text">在编译时上下文调用 consteval 和 constexpr 函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8%E9%9D%9E%E7%BC%96%E8%AF%91%E6%97%B6%E4%B8%8A%E4%B8%8B%E6%96%87%E8%B0%83%E7%94%A8-consteval-%E5%92%8C-constexpr-%E5%87%BD%E6%95%B0"><span class="nav-number">3.3.</span> <span class="nav-text">在非编译时上下文调用 consteval 和 constexpr 函数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
