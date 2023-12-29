@@ -6,7 +6,7 @@
   <link href="https://yngty.github.io/atom.xml" rel="self"/>
   
   <link href="https://yngty.github.io/"/>
-  <updated>2023-12-28T09:57:05.950Z</updated>
+  <updated>2023-12-29T14:46:10.369Z</updated>
   <id>https://yngty.github.io/</id>
   
   <author>
@@ -17,11 +17,79 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>深入了解 `C++20` 中的`consteval`</title>
+    <link href="https://yngty.github.io/2023/12/29/c++/%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3C-20%E4%B8%AD%E7%9A%84consteval%E5%85%B3%E9%94%AE%E5%AD%97/"/>
+    <id>https://yngty.github.io/2023/12/29/c++/%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3C-20%E4%B8%AD%E7%9A%84consteval%E5%85%B3%E9%94%AE%E5%AD%97/</id>
+    <published>2023-12-29T18:16:18.000Z</published>
+    <updated>2023-12-29T14:46:10.369Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;介绍&quot;&gt;&lt;a href=&quot;#介绍&quot; class=&quot;headerlink&quot; title=&quot;介绍&quot;&gt;&lt;/a&gt;介绍&lt;/h1&gt;&lt;p&gt;用最简单的术语来说，一个只能应用于函数的 &lt;code&gt;consteval&lt;/code&gt; 说明符, 保证它产生一个编译时间常数。否则会导致编译错误。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;cppreference&lt;/code&gt; 页面对 &lt;code&gt;consteval&lt;/code&gt; 说明符有如下描述：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;code&gt;consteval&lt;/code&gt; 指定函数是立即函数，也就是说，对该函数的每次调用都必须产生一个编译时常量&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;什么是立即函数？&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;不能是协程&lt;/li&gt;
+&lt;li&gt;函数主体中不能有 &lt;code&gt;throw&lt;/code&gt; 语句&lt;/li&gt;
+&lt;li&gt;不能有 &lt;code&gt;goto&lt;/code&gt; 语句或标签语句，除了 &lt;code&gt;case&lt;/code&gt; 和 &lt;code&gt;default&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;参数和返回类型必须是&lt;a href=&quot;https://en.cppreference.com/w/cpp/named_req/LiteralType&quot;&gt;LiteralType&lt;/a&gt;,简单地说，是一个可以在编译时计算的类型（比如所有可以在 &lt;code&gt;constexpr&lt;/code&gt; 上下文中使用的类型）&lt;/li&gt;
+&lt;/ul&gt;</summary>
+    
+    
+    
+    <category term="C/C++" scheme="https://yngty.github.io/categories/C-C/"/>
+    
+    
+    <category term="C++20" scheme="https://yngty.github.io/tags/C-20/"/>
+    
+    <category term="const" scheme="https://yngty.github.io/tags/const/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>深入了解 `C++20` 中的 `constinit`</title>
+    <link href="https://yngty.github.io/2023/12/29/c++/%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3C++20%E4%B8%AD%E7%9A%84constinit%E5%85%B3%E9%94%AE%E5%AD%97/"/>
+    <id>https://yngty.github.io/2023/12/29/c++/%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3C++20%E4%B8%AD%E7%9A%84constinit%E5%85%B3%E9%94%AE%E5%AD%97/</id>
+    <published>2023-12-29T17:41:16.000Z</published>
+    <updated>2023-12-29T14:46:10.369Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;在 &lt;code&gt;C++&lt;/code&gt; 中，存储变量的方式有几种：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;存储期（&lt;code&gt;Storage Duration&lt;/code&gt;）：&lt;br&gt;存储期是指变量在程序中存在的时间段。在 &lt;code&gt;C++&lt;/code&gt; 中，有三种主要的存储期：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;自动存储期（&lt;code&gt;Automatic Storage Duration&lt;/code&gt;）：变量在函数或代码块执行时创建，函数执行结束时销毁。&lt;/li&gt;
+&lt;li&gt;动态存储期（&lt;code&gt;Dynamic Storage Duration&lt;/code&gt;）： 使用 &lt;code&gt;new&lt;/code&gt; 或 &lt;code&gt;malloc&lt;/code&gt; 分配的内存，直到使用 &lt;code&gt;delete&lt;/code&gt; 或 &lt;code&gt;free&lt;/code&gt; 手动释放为止。&lt;/li&gt;
+&lt;li&gt;静态存储期（&lt;code&gt;Static Storage Duration&lt;/code&gt;）： 变量在程序启动时创建，在整个程序运行期间都存在，直到程序结束才销毁。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;静态存储变量：&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;静态存储变量是在程序启动时创建，一直存在于整个程序运行期间的变量。这类变量有两种主要形式：&lt;br&gt;    - 全局变量（&lt;code&gt;Global Variables&lt;/code&gt;）： 在函数外部声明的变量，可以被程序中的所有函数访问。&lt;br&gt;    - 静态局部变量（&lt;code&gt;Static Local Variables&lt;/code&gt;）： 在函数内部使用 &lt;code&gt;static&lt;/code&gt; 关键字声明的变量，与自动存储期变量不同，它在函数调用之间保持其值。&lt;/p&gt;
+&lt;p&gt;在 &lt;code&gt;C++&lt;/code&gt; 中，我们经常使用静态存储期变量，包括全局变量和使用 &lt;code&gt;static&lt;/code&gt; 关键字声明的局部变量。然而，这些变量并不保证在程序执行前被初始化，除非它们被声明为 &lt;code&gt;const&lt;/code&gt; 常量。为了解决这一问题，&lt;code&gt;C++20&lt;/code&gt; 引入了 &lt;code&gt;constinit&lt;/code&gt; 关键字，它为我们提供了一种保证变量在程序启动时被初始化的方式，从而增强了可预测性和可靠性。&lt;/p&gt;
+&lt;p&gt;尽管 &lt;code&gt;constinit&lt;/code&gt; 确保变量在程序启动时被初始化，但这并不意味着这些变量是不可修改的常量。相反，这个关键字允许变量在初始化后在运行时或编译时上下文中被修改。&lt;/p&gt;
+&lt;p&gt;因此，&lt;code&gt;constinit&lt;/code&gt; 关键字为我们提供了一种在使用静态存储期变量时获得初始化保证的方法，同时允许在初始化后对其进行适当的修改。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="C/C++" scheme="https://yngty.github.io/categories/C-C/"/>
+    
+    
+    <category term="C++20" scheme="https://yngty.github.io/tags/C-20/"/>
+    
+    <category term="const" scheme="https://yngty.github.io/tags/const/"/>
+    
+  </entry>
+  
+  <entry>
     <title>macOS 设置面板快捷链接</title>
     <link href="https://yngty.github.io/2023/12/28/macos/macOS-%E8%AE%BE%E7%BD%AE%E9%9D%A2%E6%9D%BF%E5%BF%AB%E6%8D%B7%E9%93%BE%E6%8E%A5/"/>
     <id>https://yngty.github.io/2023/12/28/macos/macOS-%E8%AE%BE%E7%BD%AE%E9%9D%A2%E6%9D%BF%E5%BF%AB%E6%8D%B7%E9%93%BE%E6%8E%A5/</id>
     <published>2023-12-28T17:41:12.000Z</published>
-    <updated>2023-12-28T09:57:05.950Z</updated>
+    <updated>2023-12-29T14:46:10.369Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;Accessibility-Preference-Pane&quot;&gt;&lt;a href=&quot;#Accessibility-Preference-Pane&quot; class=&quot;headerlink&quot; title=&quot;Accessibility Preference Pane&quot;&gt;&lt;/a&gt;Accessibility Preference Pane&lt;/h1&gt;&lt;figure class=&quot;highlight plaintext&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;Main    x-apple.systempreferences:com.apple.preference.universalaccess&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Display x-apple.systempreferences:com.apple.preference.universalaccess?Seeing_Display&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Zoom    x-apple.systempreferences:com.apple.preference.universalaccess?Seeing_Zoom&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;VoiceOver   x-apple.systempreferences:com.apple.preference.universalaccess?Seeing_VoiceOver&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Descriptions    x-apple.systempreferences:com.apple.preference.universalaccess?Media_Descriptions&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Captions    x-apple.systempreferences:com.apple.preference.universalaccess?Captioning&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Audio   x-apple.systempreferences:com.apple.preference.universalaccess?Hearing&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Keyboard    x-apple.systempreferences:com.apple.preference.universalaccess?Keyboard&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Mouse &amp;amp; Trackpad    x-apple.systempreferences:com.apple.preference.universalaccess?Mouse&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Switch Control  x-apple.systempreferences:com.apple.preference.universalaccess?Switch&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Dictation   x-apple.systempreferences:com.apple.preference.universalaccess?SpeakableItems&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
@@ -40,7 +108,7 @@
     <link href="https://yngty.github.io/2023/12/11/network/TLS/TLS-False-Start/"/>
     <id>https://yngty.github.io/2023/12/11/network/TLS/TLS-False-Start/</id>
     <published>2023-12-11T11:39:47.000Z</published>
-    <updated>2023-12-28T09:57:05.950Z</updated>
+    <updated>2023-12-29T14:46:10.369Z</updated>
     
     
       
@@ -63,7 +131,7 @@
     <link href="https://yngty.github.io/2023/12/11/network/TLS/ALPN/"/>
     <id>https://yngty.github.io/2023/12/11/network/TLS/ALPN/</id>
     <published>2023-12-11T10:07:03.000Z</published>
-    <updated>2023-12-28T09:57:05.950Z</updated>
+    <updated>2023-12-29T14:46:10.369Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;Introduction&quot;&gt;&lt;a href=&quot;#Introduction&quot; class=&quot;headerlink&quot; title=&quot;Introduction&quot;&gt;&lt;/a&gt;Introduction&lt;/h1&gt;&lt;p&gt;&lt;code&gt;ALPN&lt;/code&gt;(&lt;code&gt;Application-Layer Protocol Negotiation&lt;/code&gt;)应用层协议协商, 当单个服务器端口号（例如端口 &lt;code&gt;443&lt;/code&gt;）上支持多个应用程序协议时，客户端和服务器需要协商用于每个连接的应用程序协议。希望在不增加客户端和服务器之间的网络往返次数的情况下完成此协商，因为每次往返都会降低最终用户的体验。&lt;/p&gt;
@@ -81,7 +149,7 @@
     <link href="https://yngty.github.io/2023/11/20/network/TCP-Nagle%E7%AE%97%E6%B3%95%E4%B8%8EACK%E5%BB%B6%E8%BF%9F%E7%A1%AE%E8%AE%A4/"/>
     <id>https://yngty.github.io/2023/11/20/network/TCP-Nagle%E7%AE%97%E6%B3%95%E4%B8%8EACK%E5%BB%B6%E8%BF%9F%E7%A1%AE%E8%AE%A4/</id>
     <published>2023-11-20T11:30:52.000Z</published>
-    <updated>2023-12-28T09:57:05.950Z</updated>
+    <updated>2023-12-29T14:46:10.369Z</updated>
     
     
     
@@ -94,7 +162,7 @@
     <link href="https://yngty.github.io/2023/11/07/c++/c-Memory-Order/"/>
     <id>https://yngty.github.io/2023/11/07/c++/c-Memory-Order/</id>
     <published>2023-11-07T16:20:11.000Z</published>
-    <updated>2023-12-28T09:57:05.946Z</updated>
+    <updated>2023-12-29T14:46:10.369Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;背景&quot;&gt;&lt;a href=&quot;#背景&quot; class=&quot;headerlink&quot; title=&quot;背景&quot;&gt;&lt;/a&gt;背景&lt;/h1&gt;&lt;p&gt;高级语言经过编译器将源码转为机器指令运行，其中的运行顺序和代码中的顺序有很大差异，主要是下面三个原因: &lt;/p&gt;
@@ -132,7 +200,7 @@
     <link href="https://yngty.github.io/2023/11/03/c++/std-thread-%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/"/>
     <id>https://yngty.github.io/2023/11/03/c++/std-thread-%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/</id>
     <published>2023-11-03T14:35:22.000Z</published>
-    <updated>2023-12-28T09:57:05.946Z</updated>
+    <updated>2023-12-29T14:46:10.369Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;join-和-detach&quot;&gt;&lt;a href=&quot;#join-和-detach&quot; class=&quot;headerlink&quot; title=&quot;join 和 detach&quot;&gt;&lt;/a&gt;&lt;code&gt;join&lt;/code&gt; 和 &lt;code&gt;detach&lt;/code&gt;&lt;/h1&gt;&lt;ul&gt;
@@ -155,7 +223,7 @@
     <link href="https://yngty.github.io/2023/09/04/css/CSS-Layout/"/>
     <id>https://yngty.github.io/2023/09/04/css/CSS-Layout/</id>
     <published>2023-09-04T14:09:14.000Z</published>
-    <updated>2023-12-28T09:57:05.946Z</updated>
+    <updated>2023-12-29T14:46:10.369Z</updated>
     
     
       
@@ -178,7 +246,7 @@
     <link href="https://yngty.github.io/2023/08/31/mongodb/mongodb-%E5%85%A5%E9%97%A8-Aggregate/"/>
     <id>https://yngty.github.io/2023/08/31/mongodb/mongodb-%E5%85%A5%E9%97%A8-Aggregate/</id>
     <published>2023-08-31T10:48:46.000Z</published>
-    <updated>2023-12-28T09:57:05.950Z</updated>
+    <updated>2023-12-29T14:46:10.369Z</updated>
     
     
       
@@ -203,7 +271,7 @@
     <link href="https://yngty.github.io/2023/08/27/mongodb/mongodb-%E5%85%A5%E9%97%A8-CRUD/"/>
     <id>https://yngty.github.io/2023/08/27/mongodb/mongodb-%E5%85%A5%E9%97%A8-CRUD/</id>
     <published>2023-08-27T15:34:59.000Z</published>
-    <updated>2023-12-28T09:57:05.950Z</updated>
+    <updated>2023-12-29T14:46:10.369Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;文档主键&quot;&gt;&lt;a href=&quot;#文档主键&quot; class=&quot;headerlink&quot; title=&quot;文档主键&quot;&gt;&lt;/a&gt;文档主键&lt;/h1&gt;&lt;h2 id=&quot;文档主键-id&quot;&gt;&lt;a href=&quot;#文档主键-id&quot; class=&quot;headerlink&quot; title=&quot;文档主键 _id&quot;&gt;&lt;/a&gt;文档主键 &lt;code&gt;_id&lt;/code&gt;&lt;/h2&gt;&lt;p&gt;文档主键 &lt;code&gt;_id&lt;/code&gt; 是每篇文档必备的字段,具有以下特性:&lt;/p&gt;
@@ -240,7 +308,7 @@
     <link href="https://yngty.github.io/2023/08/26/mongodb/mongodb-%E5%85%A5%E9%97%A8-%E7%B4%A2%E5%BC%95/"/>
     <id>https://yngty.github.io/2023/08/26/mongodb/mongodb-%E5%85%A5%E9%97%A8-%E7%B4%A2%E5%BC%95/</id>
     <published>2023-08-26T14:30:06.000Z</published>
-    <updated>2023-12-28T09:57:05.950Z</updated>
+    <updated>2023-12-29T14:46:10.369Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;索引&quot;&gt;&lt;a href=&quot;#索引&quot; class=&quot;headerlink&quot; title=&quot;索引&quot;&gt;&lt;/a&gt;索引&lt;/h1&gt;&lt;ul&gt;
@@ -272,7 +340,7 @@
     <link href="https://yngty.github.io/2023/08/25/macos/executable-path-load-path-%E5%92%8C-rpath/"/>
     <id>https://yngty.github.io/2023/08/25/macos/executable-path-load-path-%E5%92%8C-rpath/</id>
     <published>2023-08-25T11:05:29.000Z</published>
-    <updated>2023-12-28T09:57:05.950Z</updated>
+    <updated>2023-12-29T14:46:10.369Z</updated>
     
     
     <summary type="html">&lt;p&gt;在 &lt;code&gt;macOS&lt;/code&gt; 上，动态链接器使用特定的路径变量来解析运行时的库位置。这些路径变量包括：绝对路径、 &lt;code&gt;@executable_path&lt;/code&gt;、&lt;code&gt;@loader_path&lt;/code&gt; 和 &lt;code&gt;@rpath&lt;/code&gt;。&lt;/p&gt;
@@ -293,7 +361,7 @@
     <link href="https://yngty.github.io/2023/08/23/network/libevent-%E4%BD%BF%E7%94%A8%E5%85%A5%E9%97%A8/"/>
     <id>https://yngty.github.io/2023/08/23/network/libevent-%E4%BD%BF%E7%94%A8%E5%85%A5%E9%97%A8/</id>
     <published>2023-08-23T10:07:43.000Z</published>
-    <updated>2023-12-28T09:57:05.950Z</updated>
+    <updated>2023-12-29T14:46:10.369Z</updated>
     
     
       
@@ -318,7 +386,7 @@
     <link href="https://yngty.github.io/2023/08/17/network/I-O-%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/"/>
     <id>https://yngty.github.io/2023/08/17/network/I-O-%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/</id>
     <published>2023-08-17T14:32:07.000Z</published>
-    <updated>2023-12-28T09:57:05.950Z</updated>
+    <updated>2023-12-29T14:46:10.369Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;select&quot;&gt;&lt;a href=&quot;#select&quot; class=&quot;headerlink&quot; title=&quot;select&quot;&gt;&lt;/a&gt;select&lt;/h1&gt;&lt;p&gt;&lt;code&gt;select&lt;/code&gt; 实现多路复用的方式是，将已连接的 &lt;code&gt;socket&lt;/code&gt; 都放到一个文件描述符集合，然后调用 &lt;code&gt;select&lt;/code&gt;函数将文件描述符集合拷贝到内核里，让内核来检查是否有网络事件产生，通过遍历文件描述符集合的方式，当检查到有事件产生后，将此 &lt;code&gt;socket&lt;/code&gt; 标记为可读或可写， 接着再把整个文件描述符集合拷贝回用户态里，然后用户态还需要再通过遍历的方法找到可读或可写的 &lt;code&gt;socket&lt;/code&gt;，然后再对其处理。&lt;/p&gt;
@@ -353,7 +421,7 @@
     <link href="https://yngty.github.io/2023/07/25/network/TCP-%E5%8D%8F%E8%AE%AE/"/>
     <id>https://yngty.github.io/2023/07/25/network/TCP-%E5%8D%8F%E8%AE%AE/</id>
     <published>2023-07-25T09:43:58.000Z</published>
-    <updated>2023-12-28T09:57:05.950Z</updated>
+    <updated>2023-12-29T14:46:10.369Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;TCP-基本认识&quot;&gt;&lt;a href=&quot;#TCP-基本认识&quot; class=&quot;headerlink&quot; title=&quot;TCP 基本认识&quot;&gt;&lt;/a&gt;&lt;code&gt;TCP&lt;/code&gt; 基本认识&lt;/h1&gt;&lt;p&gt;&lt;code&gt;TCP&lt;/code&gt; 是 &lt;strong&gt;面向连接的、可靠的、基于字节流&lt;/strong&gt;的传输层通信协议。&lt;/p&gt;
@@ -373,7 +441,7 @@
     <link href="https://yngty.github.io/2023/07/24/network/%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E4%BD%BF%E7%94%A8TCP/"/>
     <id>https://yngty.github.io/2023/07/24/network/%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E4%BD%BF%E7%94%A8TCP/</id>
     <published>2023-07-24T15:12:44.000Z</published>
-    <updated>2023-12-28T09:57:05.950Z</updated>
+    <updated>2023-12-29T14:46:10.373Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;SO-REUSEADDR&quot;&gt;&lt;a href=&quot;#SO-REUSEADDR&quot; class=&quot;headerlink&quot; title=&quot;SO_REUSEADDR&quot;&gt;&lt;/a&gt;SO_REUSEADDR&lt;/h1&gt;&lt;ul&gt;
@@ -398,7 +466,7 @@
     <link href="https://yngty.github.io/2023/07/24/network/socket-%E7%BC%96%E7%A8%8B/"/>
     <id>https://yngty.github.io/2023/07/24/network/socket-%E7%BC%96%E7%A8%8B/</id>
     <published>2023-07-24T10:38:44.000Z</published>
-    <updated>2023-12-28T09:57:05.950Z</updated>
+    <updated>2023-12-29T14:46:10.373Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;1-socket地址结构&quot;&gt;&lt;a href=&quot;#1-socket地址结构&quot; class=&quot;headerlink&quot; title=&quot;1. socket地址结构&quot;&gt;&lt;/a&gt;1. socket地址结构&lt;/h1&gt;&lt;h2 id=&quot;sockaddr-in&quot;&gt;&lt;a href=&quot;#sockaddr-in&quot; class=&quot;headerlink&quot; title=&quot;sockaddr_in&quot;&gt;&lt;/a&gt;&lt;code&gt;sockaddr_in&lt;/code&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;ipv4&lt;/code&gt; 协议的地址结构是 &lt;code&gt;sockaddr_in&lt;/code&gt;，&lt;code&gt;ipv6&lt;/code&gt; 的地址结构是&lt;code&gt;sockaddr_in6&lt;/code&gt;。&lt;/p&gt;
@@ -428,7 +496,7 @@
     <link href="https://yngty.github.io/2023/07/19/network/tcpdump-%E6%8A%93%E5%8C%85/"/>
     <id>https://yngty.github.io/2023/07/19/network/tcpdump-%E6%8A%93%E5%8C%85/</id>
     <published>2023-07-19T13:49:02.000Z</published>
-    <updated>2023-12-28T09:57:05.950Z</updated>
+    <updated>2023-12-29T14:46:10.373Z</updated>
     
     
       
@@ -456,7 +524,7 @@
     <link href="https://yngty.github.io/2023/07/17/network/http%E5%8D%8F%E8%AE%AE/"/>
     <id>https://yngty.github.io/2023/07/17/network/http%E5%8D%8F%E8%AE%AE/</id>
     <published>2023-07-17T11:42:24.000Z</published>
-    <updated>2023-12-28T09:57:05.950Z</updated>
+    <updated>2023-12-29T14:46:10.369Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;HTTP-是什么？&quot;&gt;&lt;a href=&quot;#HTTP-是什么？&quot; class=&quot;headerlink&quot; title=&quot;HTTP 是什么？&quot;&gt;&lt;/a&gt;HTTP 是什么？&lt;/h1&gt;&lt;p&gt;&lt;code&gt;HTTP&lt;/code&gt; 是超文本传输协议，也就是 &lt;code&gt;HyperText Transfer Protocol&lt;/code&gt;。&lt;/p&gt;
@@ -470,51 +538,6 @@
     
     
     <category term="http" scheme="https://yngty.github.io/tags/http/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>可变参数模板</title>
-    <link href="https://yngty.github.io/2023/04/10/c++/%E5%8F%AF%E5%8F%98%E5%8F%82%E6%95%B0%E6%A8%A1%E6%9D%BF/"/>
-    <id>https://yngty.github.io/2023/04/10/c++/%E5%8F%AF%E5%8F%98%E5%8F%82%E6%95%B0%E6%A8%A1%E6%9D%BF/</id>
-    <published>2023-04-10T10:21:36.000Z</published>
-    <updated>2023-12-28T09:57:05.946Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;可变参数模板的需求&quot;&gt;&lt;a href=&quot;#可变参数模板的需求&quot; class=&quot;headerlink&quot; title=&quot;可变参数模板的需求&quot;&gt;&lt;/a&gt;可变参数模板的需求&lt;/h1&gt;&lt;p&gt;可变参数模板有助于解决在编译时求值类型安全，不需要宏，不需要显式指定</summary>
-        
-      
-    
-    
-    
-    <category term="C/C++" scheme="https://yngty.github.io/categories/C-C/"/>
-    
-    
-    <category term="template" scheme="https://yngty.github.io/tags/template/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>CMake 踩坑记</title>
-    <link href="https://yngty.github.io/2023/04/07/cmake/CMake-%E8%B8%A9%E5%9D%91%E8%AE%B0/"/>
-    <id>https://yngty.github.io/2023/04/07/cmake/CMake-%E8%B8%A9%E5%9D%91%E8%AE%B0/</id>
-    <published>2023-04-07T10:26:10.000Z</published>
-    <updated>2023-12-28T09:57:05.946Z</updated>
-    
-    
-    <summary type="html">&lt;h1 id=&quot;install-CODE-和-execute-process-配合&quot;&gt;&lt;a href=&quot;#install-CODE-和-execute-process-配合&quot; class=&quot;headerlink&quot; title=&quot;install(CODE) 和 execute_process 配合&quot;&gt;&lt;/a&gt;&lt;code&gt;install(CODE)&lt;/code&gt; 和 &lt;code&gt;execute_process&lt;/code&gt; 配合&lt;/h1&gt;&lt;h2 id=&quot;确保-WORKING-DIRECTORY-存在&quot;&gt;&lt;a href=&quot;#确保-WORKING-DIRECTORY-存在&quot; class=&quot;headerlink&quot; title=&quot;确保 WORKING_DIRECTORY 存在&quot;&gt;&lt;/a&gt;确保 &lt;code&gt;WORKING_DIRECTORY&lt;/code&gt; 存在&lt;/h2&gt;&lt;p&gt;示例代码: &lt;/p&gt;
-&lt;figure class=&quot;highlight cmake&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;set&lt;/span&gt;(CMAKE_INSTALL_PREFIX &lt;span class=&quot;variable&quot;&gt;$&amp;#123;PROJECT_BINARY_DIR&amp;#125;&lt;/span&gt;/&lt;span class=&quot;keyword&quot;&gt;export&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;install&lt;/span&gt;(CODE &lt;span class=&quot;string&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;    execute_process(COMMAND $&amp;#123;CMAKE_COMMAND&amp;#125; -E make_directory folder &lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;    WORKING_DIRECTORY &#92;$&amp;#123;CMAKE_INSTALL_PREFIX&amp;#125;)&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;    &amp;quot;&lt;/span&gt;) &lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-
-&lt;p&gt;注意确保 &lt;code&gt;CMAKE_INSTALL_PREFIX&lt;/code&gt; 存在，可能执行这段代码时还没有 &lt;code&gt;install target&lt;/code&gt; 导致 &lt;code&gt;CMAKE_INSTALL_PREFIX&lt;/code&gt; 还没有生成。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="CMake" scheme="https://yngty.github.io/tags/CMake/"/>
     
   </entry>
   

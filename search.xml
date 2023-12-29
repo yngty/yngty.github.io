@@ -373,6 +373,91 @@
       </tags>
   </entry>
   <entry>
+    <title>深入了解 `C++20` 中的 `constinit`</title>
+    <url>/2023/12/29/c++/%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3C++20%E4%B8%AD%E7%9A%84constinit%E5%85%B3%E9%94%AE%E5%AD%97/</url>
+    <content><![CDATA[<p>在 <code>C++</code> 中，存储变量的方式有几种：</p>
+<ul>
+<li><p>存储期（<code>Storage Duration</code>）：<br>存储期是指变量在程序中存在的时间段。在 <code>C++</code> 中，有三种主要的存储期：</p>
+<ul>
+<li>自动存储期（<code>Automatic Storage Duration</code>）：变量在函数或代码块执行时创建，函数执行结束时销毁。</li>
+<li>动态存储期（<code>Dynamic Storage Duration</code>）： 使用 <code>new</code> 或 <code>malloc</code> 分配的内存，直到使用 <code>delete</code> 或 <code>free</code> 手动释放为止。</li>
+<li>静态存储期（<code>Static Storage Duration</code>）： 变量在程序启动时创建，在整个程序运行期间都存在，直到程序结束才销毁。</li>
+</ul>
+</li>
+<li><p>静态存储变量：</p>
+</li>
+</ul>
+<p>静态存储变量是在程序启动时创建，一直存在于整个程序运行期间的变量。这类变量有两种主要形式：<br>    - 全局变量（<code>Global Variables</code>）： 在函数外部声明的变量，可以被程序中的所有函数访问。<br>    - 静态局部变量（<code>Static Local Variables</code>）： 在函数内部使用 <code>static</code> 关键字声明的变量，与自动存储期变量不同，它在函数调用之间保持其值。</p>
+<p>在 <code>C++</code> 中，我们经常使用静态存储期变量，包括全局变量和使用 <code>static</code> 关键字声明的局部变量。然而，这些变量并不保证在程序执行前被初始化，除非它们被声明为 <code>const</code> 常量。为了解决这一问题，<code>C++20</code> 引入了 <code>constinit</code> 关键字，它为我们提供了一种保证变量在程序启动时被初始化的方式，从而增强了可预测性和可靠性。</p>
+<p>尽管 <code>constinit</code> 确保变量在程序启动时被初始化，但这并不意味着这些变量是不可修改的常量。相反，这个关键字允许变量在初始化后在运行时或编译时上下文中被修改。</p>
+<p>因此，<code>constinit</code> 关键字为我们提供了一种在使用静态存储期变量时获得初始化保证的方法，同时允许在初始化后对其进行适当的修改。</p>
+<span id="more"></span>
+
+<h1 id="constinit-和-constexpr-有什么区别？"><a href="#constinit-和-constexpr-有什么区别？" class="headerlink" title="constinit 和 constexpr 有什么区别？"></a>constinit 和 constexpr 有什么区别？</h1><p>如果一个变量被声明为 <code>constexpr</code> ，那么它隐含地具有了 <code>constinit</code> 的性质。 <code>constexpr</code> 关键字用于指示编译器，在编译时可以计算该变量的值，并要求该变量在程序启动时被静态初始化。因此，<code>constexpr</code> 的变量天然地拥有 <code>constinit</code> 的特性<br>但是反过来并不成立，即如果一个变量被声明为 <code>constinit</code>，并不意味着它就是 <code>constexpr</code>。<code>constinit</code>仅确保变量在程序启动时被静态初始化，但不要求在编译时就能确定其值。相反，<code>constexpr</code> 要求在编译时就能确定变量的值。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;array&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">constexpr</span> std::<span class="type">size_t</span> <span class="title">getArraySizeBasedOnArchitecture</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">sizeof</span>(std::<span class="type">size_t</span>) * <span class="number">100</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">constinit</span> <span class="keyword">auto</span> arrSize2 = <span class="built_in">getArraySizeBasedOnArchitecture</span>();</span><br><span class="line"><span class="keyword">constexpr</span> <span class="keyword">auto</span> arrSize1 = <span class="built_in">getArraySizeBasedOnArchitecture</span>();</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">     std::array&lt;<span class="type">int</span>, arrSize1&gt; intArray1;  <span class="comment">// Ok</span></span><br><span class="line">     std::array&lt;<span class="type">int</span>, arrSize2&gt; intArray2;  <span class="comment">// compilation error</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意：<strong>constexpr 和 constinit 不能同时出现在变量上。这会导致编译错误</strong>。</p>
+<h1 id="constinit-有什么作用？"><a href="#constinit-有什么作用？" class="headerlink" title="constinit 有什么作用？"></a>constinit 有什么作用？</h1><ul>
+<li>保证变量在编译时初始化</li>
+<li>当变量不能在编译时初始化时编译器生成错误提示</li>
+<li>处理静态初始化顺序，<a href="https://isocpp.org/wiki/faq/ctors#static-init-order">static-init-order</a></li>
+</ul>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ul>
+<li><code>constinit</code> 说明符仅适用于变量</li>
+<li><code>constinit</code> 保证变量在编译过程中被初始化，否则我们会得到一个编译错误。</li>
+<li><code>constinit</code> 说明符表示静态存储持续时间，但反之则不成立</li>
+<li><code>constexpr</code> 变量意味着 <code>constinit</code> ，但反过来并不正确。</li>
+<li>一个变量只能出现 <code>constexpr</code> 和 <code>constinit</code> 说明符之一。</li>
+<li><code>constinit</code> 可以应用于 <code>const</code> 限定变量。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>C/C++</category>
+      </categories>
+      <tags>
+        <tag>C++20</tag>
+        <tag>const</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>深入了解 `C++20` 中的`consteval`</title>
+    <url>/2023/12/29/c++/%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3C-20%E4%B8%AD%E7%9A%84consteval%E5%85%B3%E9%94%AE%E5%AD%97/</url>
+    <content><![CDATA[<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p>用最简单的术语来说，一个只能应用于函数的 <code>consteval</code> 说明符, 保证它产生一个编译时间常数。否则会导致编译错误。</p>
+<p><code>cppreference</code> 页面对 <code>consteval</code> 说明符有如下描述：</p>
+<blockquote>
+<p><code>consteval</code> 指定函数是立即函数，也就是说，对该函数的每次调用都必须产生一个编译时常量</p>
+</blockquote>
+<p>什么是立即函数？</p>
+<ul>
+<li>不能是协程</li>
+<li>函数主体中不能有 <code>throw</code> 语句</li>
+<li>不能有 <code>goto</code> 语句或标签语句，除了 <code>case</code> 和 <code>default</code></li>
+<li>参数和返回类型必须是<a href="https://en.cppreference.com/w/cpp/named_req/LiteralType">LiteralType</a>,简单地说，是一个可以在编译时计算的类型（比如所有可以在 <code>constexpr</code> 上下文中使用的类型）</li>
+</ul>
+<span id="more"></span>
+
+<h1 id="consteval-和-constexpr-方法的区别"><a href="#consteval-和-constexpr-方法的区别" class="headerlink" title="consteval 和 constexpr 方法的区别"></a><code>consteval</code> 和 <code>constexpr</code> 方法的区别</h1><p>他们最大的区别：<code>consteval</code> 保证编译时生成，不能编译时生成时会报错，但<code>constexpr</code> 不一定，当编译时不能生成就转为运行时函数。</p>
+<h1 id="从汇编看-consteval-和-constexpr-函数"><a href="#从汇编看-consteval-和-constexpr-函数" class="headerlink" title="从汇编看 consteval 和 constexpr 函数"></a>从汇编看 <code>consteval</code> 和 <code>constexpr</code> 函数</h1><h2 id="定义函数"><a href="#定义函数" class="headerlink" title="定义函数"></a>定义函数</h2><p>对于定义的普通函数、 <code>consteval</code> 函数、 <code>constexpr</code> 函数, 只有普通函数会生成汇编代码<br><img src="/images/consteval1.png" alt="consteval1"></p>
+<h2 id="在编译时上下文调用-consteval-和-constexpr-函数"><a href="#在编译时上下文调用-consteval-和-constexpr-函数" class="headerlink" title="在编译时上下文调用 consteval 和 constexpr 函数"></a>在编译时上下文调用 <code>consteval</code> 和 <code>constexpr</code> 函数</h2><p>在编译时直接生成结果，不会生成对应的函数汇编代码和调用汇编指令<br><img src="/images/consteval2.png" alt="consteval2"></p>
+<h2 id="在非编译时上下文调用-consteval-和-constexpr-函数"><a href="#在非编译时上下文调用-consteval-和-constexpr-函数" class="headerlink" title="在非编译时上下文调用 consteval 和 constexpr 函数"></a>在非编译时上下文调用 <code>consteval</code> 和 <code>constexpr</code> 函数</h2><p>会生成 <code>constexpr</code>函数的汇编代码和调用函数汇编指令<br><img src="/images/consteval3.png" alt="consteval3"></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ul>
+<li><code>consteval</code> 说明符只能应用于函数和构造函数</li>
+<li>带有 <code>consteval</code> 的函数称为立即函数</li>
+<li><code>constexpr</code> 函数在编译时上下文中执行时，与<code>consteval</code> 函数行为相同</li>
+<li>当 <code>consteval</code> 函数不能产生编译时错误时，会导致错误，而对于 <code>constexpr</code> 函数则不会。</li>
+<li>当需要对函数的编译时求值进行保证时，首选 <code>consteval</code></li>
+<li>优先使用 <code>consteval</code> 函数而不是预处理器宏函数。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>C/C++</category>
+      </categories>
+      <tags>
+        <tag>C++20</tag>
+        <tag>const</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>CMake 踩坑记</title>
     <url>/2023/04/07/cmake/CMake-%E8%B8%A9%E5%9D%91%E8%AE%B0/</url>
     <content><![CDATA[<h1 id="install-CODE-和-execute-process-配合"><a href="#install-CODE-和-execute-process-配合" class="headerlink" title="install(CODE) 和 execute_process 配合"></a><code>install(CODE)</code> 和 <code>execute_process</code> 配合</h1><h2 id="确保-WORKING-DIRECTORY-存在"><a href="#确保-WORKING-DIRECTORY-存在" class="headerlink" title="确保 WORKING_DIRECTORY 存在"></a>确保 <code>WORKING_DIRECTORY</code> 存在</h2><p>示例代码: </p>
@@ -413,17 +498,6 @@
       </tags>
   </entry>
   <entry>
-    <title>CSS Layout</title>
-    <url>/2023/09/04/css/CSS-Layout/</url>
-    <content><![CDATA[<h1 id="Grid"><a href="#Grid" class="headerlink" title="Grid"></a>Grid</h1><h2 id="fr"><a href="#fr" class="headerlink" title="fr"></a>fr</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">grid-template-columns: 1fr, 1fr, 1fr, 1fr;</span><br><span class="line">grid-template-columns: repeat(4, 1fr);</span><br><span class="line">grid-template-columns: 1fr, 1fr, 1fr, auto;</span><br></pre></td></tr></table></figure>
-
-<h2 id="grid-column"><a href="#grid-column" class="headerlink" title="grid-column"></a>grid-column</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">grid-column: 1</span><br><span class="line">grid-column: 1 / 4;</span><br><span class="line">grid-column: 1 / span 3;</span><br><span class="line">grid-column: 1 / -1;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>css</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Reactor pattern</title>
     <url>/2023/03/06/design/reactor-pattern/</url>
     <content><![CDATA[<h1 id="什么是Reactor模式"><a href="#什么是Reactor模式" class="headerlink" title="什么是Reactor模式"></a>什么是Reactor模式</h1><h1 id="Reactor模式结构"><a href="#Reactor模式结构" class="headerlink" title="Reactor模式结构"></a>Reactor模式结构</h1><ul>
@@ -444,6 +518,17 @@
       </categories>
       <tags>
         <tag>Reactor</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>CSS Layout</title>
+    <url>/2023/09/04/css/CSS-Layout/</url>
+    <content><![CDATA[<h1 id="Grid"><a href="#Grid" class="headerlink" title="Grid"></a>Grid</h1><h2 id="fr"><a href="#fr" class="headerlink" title="fr"></a>fr</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">grid-template-columns: 1fr, 1fr, 1fr, 1fr;</span><br><span class="line">grid-template-columns: repeat(4, 1fr);</span><br><span class="line">grid-template-columns: 1fr, 1fr, 1fr, auto;</span><br></pre></td></tr></table></figure>
+
+<h2 id="grid-column"><a href="#grid-column" class="headerlink" title="grid-column"></a>grid-column</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">grid-column: 1</span><br><span class="line">grid-column: 1 / 4;</span><br><span class="line">grid-column: 1 / span 3;</span><br><span class="line">grid-column: 1 / -1;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>css</tag>
       </tags>
   </entry>
   <entry>
@@ -1888,17 +1973,6 @@
       </tags>
   </entry>
   <entry>
-    <title>mongodb 入门-Aggregate</title>
-    <url>/2023/08/31/mongodb/mongodb-%E5%85%A5%E9%97%A8-Aggregate/</url>
-    <content><![CDATA[<h1 id="聚合操作"><a href="#聚合操作" class="headerlink" title="聚合操作"></a>聚合操作</h1>]]></content>
-      <categories>
-        <category>mongodb</category>
-      </categories>
-      <tags>
-        <tag>mongodb</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>mongodb 入门-CRUD</title>
     <url>/2023/08/27/mongodb/mongodb-%E5%85%A5%E9%97%A8-CRUD/</url>
     <content><![CDATA[<h1 id="文档主键"><a href="#文档主键" class="headerlink" title="文档主键"></a>文档主键</h1><h2 id="文档主键-id"><a href="#文档主键-id" class="headerlink" title="文档主键 _id"></a>文档主键 <code>_id</code></h2><p>文档主键 <code>_id</code> 是每篇文档必备的字段,具有以下特性:</p>
@@ -2460,6 +2534,17 @@
 <p>如果集合中的文档数量较多，使用 <code>remove</code> 命令删除所有的文档效率不高，这种情况下推荐，使用 <code>drop</code> 命令删除集合，然后再创建空集合并创建索引。</p>
 </blockquote>
 ]]></content>
+      <categories>
+        <category>mongodb</category>
+      </categories>
+      <tags>
+        <tag>mongodb</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>mongodb 入门-Aggregate</title>
+    <url>/2023/08/31/mongodb/mongodb-%E5%85%A5%E9%97%A8-Aggregate/</url>
+    <content><![CDATA[<h1 id="聚合操作"><a href="#聚合操作" class="headerlink" title="聚合操作"></a>聚合操作</h1>]]></content>
       <categories>
         <category>mongodb</category>
       </categories>
