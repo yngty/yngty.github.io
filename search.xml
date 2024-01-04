@@ -298,81 +298,6 @@
       </tags>
   </entry>
   <entry>
-    <title>可变参数模板</title>
-    <url>/2023/04/10/c++/%E5%8F%AF%E5%8F%98%E5%8F%82%E6%95%B0%E6%A8%A1%E6%9D%BF/</url>
-    <content><![CDATA[<h1 id="可变参数模板的需求"><a href="#可变参数模板的需求" class="headerlink" title="可变参数模板的需求"></a>可变参数模板的需求</h1><p>可变参数模板有助于解决在编译时求值类型安全，不需要宏，不需要显式指定 参数的数量，可以编写可变参数函数模板和可变参数类模板。此外，也有可变参数变量模板和可变 参数别名模板。</p>
-<h1 id="可变参数函数模板"><a href="#可变参数函数模板" class="headerlink" title="可变参数函数模板"></a>可变参数函数模板</h1><p>可变参数模板以两种方式使用省略号。在参数名称的左侧，表示参数包，在参数名称的右侧，将参数包扩展为单独的名称。</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; </span><br><span class="line"><span class="function">T <span class="title">min</span><span class="params">(T a, T b)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">return</span> a &lt; b ? a : b;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span>... Args&gt; </span><br><span class="line"><span class="function">T <span class="title">min</span><span class="params">(T a, Args... args)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">min</span>(a, <span class="built_in">min</span>(args...)); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>要在模板参数列表中指定一组参数，如 <code>typename... Args</code>，这称为模板参数包。可以为类型模板、非类型模板和双重模板参数定义的模板参数包。</li>
-<li>函数参数列表中指定一组参数，如 <code>Args...args</code>，这称为函数参数包。</li>
-<li>函数体中展开包，如在 <code>args...</code> 中，可在 <code>min(args...)</code> 中看到，这称为参数包展开。这种展开的结果是一个由零个或多个值 (或表达式) 组成的逗号分隔列表。</li>
-</ul>
-<h1 id="参数包"><a href="#参数包" class="headerlink" title="参数包"></a>参数包</h1><ul>
-<li><code>sizeof...</code> 计算参数包的大小，返回 <code>std::size_t</code> 类型的 <code>constexpr</code> 值。</li>
-</ul>
-<h1 id="可变参数类模板"><a href="#可变参数类模板" class="headerlink" title="可变参数类模板"></a>可变参数类模板</h1><h1 id="折叠表达式"><a href="#折叠表达式" class="headerlink" title="折叠表达式"></a>折叠表达式</h1><table>
-<thead>
-<tr>
-<th align="left">折叠方式</th>
-<th align="center">语法</th>
-<th align="right">展开方式</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">一元右折叠</td>
-<td align="center">(pack op …)</td>
-<td align="right">(arg1 op (… op (argN-1 op argN)))</td>
-</tr>
-<tr>
-<td align="left">一元左折叠</td>
-<td align="center">(… op pack)</td>
-<td align="right">(((arg1 op arg2) op …) op argN)</td>
-</tr>
-<tr>
-<td align="left">二元右折叠</td>
-<td align="center">(pack op … op init)</td>
-<td align="right">(arg1 op (… op (argN-1 op (argN op init))))</td>
-</tr>
-<tr>
-<td align="left">二元左折叠</td>
-<td align="center">(init op … op pack)</td>
-<td align="right">((((init op arg1) op arg2) op …) op argN)</td>
-</tr>
-</tbody></table>
-<ul>
-<li><p>一元折叠中，若参数包不包含任何元素，则只允许使用某些操作符。下表列出了这些值，以及 空参数包的值:</p>
-<table>
-<thead>
-<tr>
-<th>操作符</th>
-<th>空参数包的值</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>&amp;&amp; (逻辑 AND)</td>
-<td>true</td>
-</tr>
-<tr>
-<td>&#124;&#124; (逻辑 OR)</td>
-<td>false</td>
-</tr>
-<tr>
-<td>, (逗号操作符)</td>
-<td>void()</td>
-</tr>
-</tbody></table>
-</li>
-</ul>
-<h1 id="可变参数别名模板"><a href="#可变参数别名模板" class="headerlink" title="可变参数别名模板"></a>可变参数别名模板</h1><h1 id="可变参数变量模板"><a href="#可变参数变量模板" class="headerlink" title="可变参数变量模板"></a>可变参数变量模板</h1>]]></content>
-      <categories>
-        <category>C/C++</category>
-      </categories>
-      <tags>
-        <tag>template</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>深入了解 C++20 中的 constinit</title>
     <url>/2023/12/29/c++/%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3C++20%E4%B8%AD%E7%9A%84constinit%E5%85%B3%E9%94%AE%E5%AD%97/</url>
     <content><![CDATA[<p>在 <code>C++</code> 中，存储变量的方式有几种：</p>
@@ -462,6 +387,81 @@
       </tags>
   </entry>
   <entry>
+    <title>可变参数模板</title>
+    <url>/2023/04/10/c++/%E5%8F%AF%E5%8F%98%E5%8F%82%E6%95%B0%E6%A8%A1%E6%9D%BF/</url>
+    <content><![CDATA[<h1 id="可变参数模板的需求"><a href="#可变参数模板的需求" class="headerlink" title="可变参数模板的需求"></a>可变参数模板的需求</h1><p>可变参数模板有助于解决在编译时求值类型安全，不需要宏，不需要显式指定 参数的数量，可以编写可变参数函数模板和可变参数类模板。此外，也有可变参数变量模板和可变 参数别名模板。</p>
+<h1 id="可变参数函数模板"><a href="#可变参数函数模板" class="headerlink" title="可变参数函数模板"></a>可变参数函数模板</h1><p>可变参数模板以两种方式使用省略号。在参数名称的左侧，表示参数包，在参数名称的右侧，将参数包扩展为单独的名称。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; </span><br><span class="line"><span class="function">T <span class="title">min</span><span class="params">(T a, T b)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">return</span> a &lt; b ? a : b;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span>... Args&gt; </span><br><span class="line"><span class="function">T <span class="title">min</span><span class="params">(T a, Args... args)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">min</span>(a, <span class="built_in">min</span>(args...)); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>要在模板参数列表中指定一组参数，如 <code>typename... Args</code>，这称为模板参数包。可以为类型模板、非类型模板和双重模板参数定义的模板参数包。</li>
+<li>函数参数列表中指定一组参数，如 <code>Args...args</code>，这称为函数参数包。</li>
+<li>函数体中展开包，如在 <code>args...</code> 中，可在 <code>min(args...)</code> 中看到，这称为参数包展开。这种展开的结果是一个由零个或多个值 (或表达式) 组成的逗号分隔列表。</li>
+</ul>
+<h1 id="参数包"><a href="#参数包" class="headerlink" title="参数包"></a>参数包</h1><ul>
+<li><code>sizeof...</code> 计算参数包的大小，返回 <code>std::size_t</code> 类型的 <code>constexpr</code> 值。</li>
+</ul>
+<h1 id="可变参数类模板"><a href="#可变参数类模板" class="headerlink" title="可变参数类模板"></a>可变参数类模板</h1><h1 id="折叠表达式"><a href="#折叠表达式" class="headerlink" title="折叠表达式"></a>折叠表达式</h1><table>
+<thead>
+<tr>
+<th align="left">折叠方式</th>
+<th align="center">语法</th>
+<th align="right">展开方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">一元右折叠</td>
+<td align="center">(pack op …)</td>
+<td align="right">(arg1 op (… op (argN-1 op argN)))</td>
+</tr>
+<tr>
+<td align="left">一元左折叠</td>
+<td align="center">(… op pack)</td>
+<td align="right">(((arg1 op arg2) op …) op argN)</td>
+</tr>
+<tr>
+<td align="left">二元右折叠</td>
+<td align="center">(pack op … op init)</td>
+<td align="right">(arg1 op (… op (argN-1 op (argN op init))))</td>
+</tr>
+<tr>
+<td align="left">二元左折叠</td>
+<td align="center">(init op … op pack)</td>
+<td align="right">((((init op arg1) op arg2) op …) op argN)</td>
+</tr>
+</tbody></table>
+<ul>
+<li><p>一元折叠中，若参数包不包含任何元素，则只允许使用某些操作符。下表列出了这些值，以及 空参数包的值:</p>
+<table>
+<thead>
+<tr>
+<th>操作符</th>
+<th>空参数包的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&amp;&amp; (逻辑 AND)</td>
+<td>true</td>
+</tr>
+<tr>
+<td>&#124;&#124; (逻辑 OR)</td>
+<td>false</td>
+</tr>
+<tr>
+<td>, (逗号操作符)</td>
+<td>void()</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+<h1 id="可变参数别名模板"><a href="#可变参数别名模板" class="headerlink" title="可变参数别名模板"></a>可变参数别名模板</h1><h1 id="可变参数变量模板"><a href="#可变参数变量模板" class="headerlink" title="可变参数变量模板"></a>可变参数变量模板</h1>]]></content>
+      <categories>
+        <category>C/C++</category>
+      </categories>
+      <tags>
+        <tag>template</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>CMake 踩坑记</title>
     <url>/2023/04/07/cmake/CMake-%E8%B8%A9%E5%9D%91%E8%AE%B0/</url>
     <content><![CDATA[<h1 id="install-CODE-和-execute-process-配合"><a href="#install-CODE-和-execute-process-配合" class="headerlink" title="install(CODE) 和 execute_process 配合"></a><code>install(CODE)</code> 和 <code>execute_process</code> 配合</h1><h2 id="确保-WORKING-DIRECTORY-存在"><a href="#确保-WORKING-DIRECTORY-存在" class="headerlink" title="确保 WORKING_DIRECTORY 存在"></a>确保 <code>WORKING_DIRECTORY</code> 存在</h2><p>示例代码: </p>
@@ -533,6 +533,101 @@
       </categories>
       <tags>
         <tag>Reactor</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Effective-STL 21：总是让比较函数在等值情况下返回 false</title>
+    <url>/2023/03/10/effective-stl/effective-stl-21/</url>
+    <content><![CDATA[<blockquote>
+<p>Item 21: Always have comparison functions return false for equal values.</p>
+</blockquote>
+<h1 id="严格弱序-strict-weak-ordering"><a href="#严格弱序-strict-weak-ordering" class="headerlink" title="严格弱序( strict weak ordering )"></a>严格弱序( <code>strict weak ordering</code> )</h1><p>先补充下严格弱序的概念: 对两个变量 <code>x</code> 和 <code>y</code>：</p>
+<ul>
+<li><code>x &gt; y</code> 等同于 <code>y &lt; x</code></li>
+<li><code>x == y</code> 等同于 <code>!(x &lt; y) &amp;&amp; !(x &gt; y)</code></li>
+</ul>
+<p>要想严格弱序，就需要遵循如下规则：</p>
+<ul>
+<li>每个变量值必须等于其本身（<code>irreflexivity</code>）：<code>x &lt; x</code> 永远不能为 <code>true</code></li>
+<li>不对称性（<code>asymmetry</code>）：如果 <code>x &lt; y</code>，那么 <code>y &lt; x</code> 就不能为 <code>true</code></li>
+<li>有序性必须可传递性：如果 <code>x &lt; y</code> 并且 <code>y &lt; z</code>，那么 <code>x &lt; z</code></li>
+<li>值相同必须具有可传递性：如果 <code>x == y</code> 并且 <code>y == z</code>，那么 <code>x == z</code></li>
+</ul>
+<span id="more"></span>
+
+<h1 id="为什么？"><a href="#为什么？" class="headerlink" title="为什么？"></a>为什么？</h1><h2 id="1-关联容器中的比较算法"><a href="#1-关联容器中的比较算法" class="headerlink" title="1. 关联容器中的比较算法"></a>1. 关联容器中的比较算法</h2><p>比如我们创建一个 <code>set</code> ， 用 <code>less_euqal</code> 作为比较类型，然后插入两个 <code>10</code> ：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">set&lt;<span class="type">int</span>, less_equal&lt;<span class="type">int</span>&gt;&gt; s;</span><br><span class="line">s.<span class="built_in">insert</span>(<span class="number">10</span>);</span><br><span class="line">s.<span class="built_in">insert</span>(<span class="number">10</span>);</span><br></pre></td></tr></table></figure>
+
+<p>我们将第一个 <code>10</code> 记为 <code>10A</code>, 第二个 <code>10</code> 记为 <code>10B</code>, 我们在插入 <code>10B</code> 的时候会检查是否与 <code>10A</code> 相同, 我们用的是 <code>less_equal</code>，下面的表达式会为假，就会重复插入，显然不合理。:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">!(10A &lt;= 10B) &amp;&amp; !(10B &lt;= 10A) //  !(true) &amp;&amp; !(true)</span><br></pre></td></tr></table></figure>
+
+<p>另外在 <code>multiset</code> 中也不行: </p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">multiset&lt;<span class="type">int</span>, less_equal&lt;<span class="type">int</span>&gt;&gt; s;</span><br><span class="line">s.<span class="built_in">insert</span>(<span class="number">10</span>); <span class="comment">// 插入10A</span></span><br><span class="line">s.<span class="built_in">insert</span>(<span class="number">10</span>); <span class="comment">// 插入10B</span></span><br></pre></td></tr></table></figure>
+
+<p>当我们想要一个 <code>equal_range</code>, <code>10A</code> 和 <code>10B</code> 同样认为是不等，永远不会在同一个区间。</p>
+<h2 id="2-sort-算法"><a href="#2-sort-算法" class="headerlink" title="2. sort 算法"></a>2. <code>sort</code> 算法</h2><p>对于 <code>std::sort</code>，当容器里面元素个数大于 <code>_S_threshold</code> 的值时（<code>16</code>），就会使用快速排序，会将所有的元素与中间值比较是无边界保护的，实现如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> _RandomAccessIterator, <span class="keyword">typename</span> _Tp, <span class="keyword">typename</span> _Compare&gt;</span><br><span class="line">     _RandomAccessIterator</span><br><span class="line">     __unguarded_partition(_RandomAccessIterator __first,</span><br><span class="line">               _RandomAccessIterator __last,</span><br><span class="line">               _Tp __pivot, _Compare __comp)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span> (<span class="literal">true</span>)</span><br><span class="line">    &#123;</span><br><span class="line">       <span class="keyword">while</span> (__comp(*__first, __pivot)) <span class="comment">// &lt;-------------------</span></span><br><span class="line">         ++__first;</span><br><span class="line">       --__last;</span><br><span class="line">       <span class="keyword">while</span> (__comp(__pivot, *__last))</span><br><span class="line">         --__last;</span><br><span class="line">       <span class="keyword">if</span> (!(__first &lt; __last))</span><br><span class="line">         <span class="keyword">return</span> __first;</span><br><span class="line">       std::<span class="built_in">iter_swap</span>(__first, __last);</span><br><span class="line">       ++__first;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果传入的 <code>vector</code> 中，后面的元素完全相等， <code>__comp()</code>函数一直返回 <code>true</code> ，在进行快速排序的时候，<code>++first</code> 就可能越界失效，导致 <code>coredump</code>。</p>
+]]></content>
+      <categories>
+        <category>Effective-STL</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>Effective-STL</tag>
+        <tag>stl</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Effective-STL 9：慎重选择删除元素的方法</title>
+    <url>/2023/02/16/effective-stl/effective-stl-9/</url>
+    <content><![CDATA[<blockquote>
+<p>Item9. Choose carefully among easing options.</p>
+</blockquote>
+<h1 id="一、删除特定值"><a href="#一、删除特定值" class="headerlink" title="一、删除特定值"></a>一、删除特定值</h1><ol>
+<li><p>对于 <code>vector</code>、 <code>string</code> 或 <code>deque</code></p>
+<p> 最好使用 <code>erase-remove</code>习惯用法: </p>
+ <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">erase</span>(<span class="built_in">remove</span>(c.<span class="built_in">begin</span>(), c.<span class="built_in">end</span>(), <span class="number">1963</span>, c.<span class="built_in">end</span>()));</span><br></pre></td></tr></table></figure></li>
+<li><p>对于 <code>list</code> 容器</p>
+<p> 直接使用 <code>remove</code> 方法:</p>
+ <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">remove</span>(<span class="number">1963</span>);</span><br></pre></td></tr></table></figure></li>
+<li><p>对于标准关联容器</p>
+<p> 直接使用 <code>erase</code> 方法:</p>
+ <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">erase</span>(<span class="number">1963</span>)</span><br></pre></td></tr></table></figure></li>
+</ol>
+<span id="more"></span>
+<h1 id="二、删除满足特定判定条件的值"><a href="#二、删除满足特定判定条件的值" class="headerlink" title="二、删除满足特定判定条件的值"></a>二、删除满足特定判定条件的值</h1><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">bool</span> <span class="title">badValue</span><span class="params">(<span class="type">int</span>)</span> </span>&#123; <span class="keyword">return</span> <span class="literal">true</span>; &#125; <span class="comment">// 返回x是否为&quot;坏值&quot;</span></span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><p>对于 <code>vector</code>、 <code>string</code> 或 <code>deque</code><br> 使用 <code>erase-remove-if</code>方法: </p>
+ <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">erase</span>(<span class="built_in">remove_if</span>(c.<span class="built_in">begin</span>(), c.<span class="built_in">end</span>(), badValue, c.<span class="built_in">end</span>()));</span><br></pre></td></tr></table></figure></li>
+<li><p>对于 <code>list</code> 容器<br> 直接使用 <code>remove_if</code> 方法:</p>
+ <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">remove_if</span>(badValue);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>对于标准关联容器</p>
+<p> <strong>把当前的i传给erase，i后缀递增</strong></p>
+ <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (AssocContainer&lt;<span class="type">int</span>&gt;::iterator i = c.<span class="built_in">begin</span>(); i != c.<span class="built_in">end</span>();) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">badValue</span>(*i)) c3.<span class="built_in">erase</span>(i++); </span><br><span class="line">    <span class="keyword">else</span> ++i;                     </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h1 id="三、循环内部删除对象之外还要做某些事"><a href="#三、循环内部删除对象之外还要做某些事" class="headerlink" title="三、循环内部删除对象之外还要做某些事"></a>三、循环内部删除对象之外还要做某些事</h1><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">doSomething</span><span class="params">(<span class="type">int</span>)</span> </span>&#123; ... &#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li><p>对于 <code>vector</code>、 <code>string</code> 或 <code>deque</code></p>
+<p> <strong>接收 <code>erase</code>返回的迭代器值。</strong></p>
+ <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (SeqContainer&lt;<span class="type">int</span>&gt;::iterator i = c.<span class="built_in">begin</span>(); i != c.<span class="built_in">end</span>();) &#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">badValue</span>(*i)) &#123;</span><br><span class="line">        <span class="built_in">doSomething</span>(*i);</span><br><span class="line">        i = c.<span class="built_in">rease</span>(i);</span><br><span class="line">    &#125; <span class="keyword">else</span> ++i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>对于 <code>list</code> 容器</p>
+<p> 虽然也可以采用标准关联容器方法，但建议采用跟 <code>vector</code>、 <code>string</code> 或 <code>deque</code> 一致。</p>
+</li>
+<li><p>对于标准关联容器</p>
+ <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (SeqContainer&lt;<span class="type">int</span>&gt;::iterator i = c.<span class="built_in">begin</span>(); i != c.<span class="built_in">end</span>();) &#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">badValue</span>(*i)) &#123;</span><br><span class="line">        <span class="built_in">doSomething</span>(*i);</span><br><span class="line">        c.<span class="built_in">rease</span>(i++);</span><br><span class="line">    &#125; <span class="keyword">else</span> ++i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+]]></content>
+      <categories>
+        <category>Effective-STL</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>Effective-STL</tag>
+        <tag>stl</tag>
       </tags>
   </entry>
   <entry>
@@ -1364,98 +1459,18 @@
       </tags>
   </entry>
   <entry>
-    <title>Effective-STL 21：总是让比较函数在等值情况下返回 false</title>
-    <url>/2023/03/10/effective-stl/effective-stl-21/</url>
-    <content><![CDATA[<blockquote>
-<p>Item 21: Always have comparison functions return false for equal values.</p>
-</blockquote>
-<h1 id="严格弱序-strict-weak-ordering"><a href="#严格弱序-strict-weak-ordering" class="headerlink" title="严格弱序( strict weak ordering )"></a>严格弱序( <code>strict weak ordering</code> )</h1><p>先补充下严格弱序的概念: 对两个变量 <code>x</code> 和 <code>y</code>：</p>
-<ul>
-<li><code>x &gt; y</code> 等同于 <code>y &lt; x</code></li>
-<li><code>x == y</code> 等同于 <code>!(x &lt; y) &amp;&amp; !(x &gt; y)</code></li>
-</ul>
-<p>要想严格弱序，就需要遵循如下规则：</p>
-<ul>
-<li>每个变量值必须等于其本身（<code>irreflexivity</code>）：<code>x &lt; x</code> 永远不能为 <code>true</code></li>
-<li>不对称性（<code>asymmetry</code>）：如果 <code>x &lt; y</code>，那么 <code>y &lt; x</code> 就不能为 <code>true</code></li>
-<li>有序性必须可传递性：如果 <code>x &lt; y</code> 并且 <code>y &lt; z</code>，那么 <code>x &lt; z</code></li>
-<li>值相同必须具有可传递性：如果 <code>x == y</code> 并且 <code>y == z</code>，那么 <code>x == z</code></li>
-</ul>
-<span id="more"></span>
+    <title>解决 由于没有公钥，无法验证下列签名 :NO_PUBKEY</title>
+    <url>/2022/04/19/linux/NO_PUBKEY/</url>
+    <content><![CDATA[<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ sudo apt update </span><br><span class="line">命中:1 https://pro-driver-packages.uniontech.com eagle InRelease</span><br><span class="line">获取:2 http://mirrors.tuna.tsinghua.edu.cn/ubuntu hirsute InRelease [269 kB]                                 </span><br><span class="line">命中:3 http://packages.microsoft.com/repos/code stable InRelease                                             </span><br><span class="line">命中:4 https://home-packages.chinauos.com/home plum InRelease                                                </span><br><span class="line">命中:5 https://home-packages.chinauos.com/home plum/beta InRelease   </span><br><span class="line">命中:6 https://home-packages.chinauos.com/printer eagle InRelease</span><br><span class="line">错误:2 http://mirrors.tuna.tsinghua.edu.cn/ubuntu hirsute InRelease</span><br><span class="line">  由于没有公钥，无法验证下列签名： NO_PUBKEY 871920D1991BC93C</span><br><span class="line">命中:7 https://home-store-img.uniontech.com/appstore eagle InRelease</span><br><span class="line">正在读取软件包列表... 完成</span><br><span class="line">W: GPG 错误：http://mirrors.tuna.tsinghua.edu.cn/ubuntu hirsute InRelease: 由于没有公钥，无法验证下列签名： NO_PUBKEY 871920D1991BC93C</span><br><span class="line">E: 仓库 “http://mirrors.tuna.tsinghua.edu.cn/ubuntu hirsute InRelease” 没有数字签名。</span><br><span class="line">N: 无法安全地用该源进行更新，所以默认禁用该源。</span><br><span class="line">N: 参见 apt-secure(8) 手册以了解仓库创建和用户配置方面的细节。</span><br></pre></td></tr></table></figure>
 
-<h1 id="为什么？"><a href="#为什么？" class="headerlink" title="为什么？"></a>为什么？</h1><h2 id="1-关联容器中的比较算法"><a href="#1-关联容器中的比较算法" class="headerlink" title="1. 关联容器中的比较算法"></a>1. 关联容器中的比较算法</h2><p>比如我们创建一个 <code>set</code> ， 用 <code>less_euqal</code> 作为比较类型，然后插入两个 <code>10</code> ：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">set&lt;<span class="type">int</span>, less_equal&lt;<span class="type">int</span>&gt;&gt; s;</span><br><span class="line">s.<span class="built_in">insert</span>(<span class="number">10</span>);</span><br><span class="line">s.<span class="built_in">insert</span>(<span class="number">10</span>);</span><br></pre></td></tr></table></figure>
-
-<p>我们将第一个 <code>10</code> 记为 <code>10A</code>, 第二个 <code>10</code> 记为 <code>10B</code>, 我们在插入 <code>10B</code> 的时候会检查是否与 <code>10A</code> 相同, 我们用的是 <code>less_equal</code>，下面的表达式会为假，就会重复插入，显然不合理。:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">!(10A &lt;= 10B) &amp;&amp; !(10B &lt;= 10A) //  !(true) &amp;&amp; !(true)</span><br></pre></td></tr></table></figure>
-
-<p>另外在 <code>multiset</code> 中也不行: </p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">multiset&lt;<span class="type">int</span>, less_equal&lt;<span class="type">int</span>&gt;&gt; s;</span><br><span class="line">s.<span class="built_in">insert</span>(<span class="number">10</span>); <span class="comment">// 插入10A</span></span><br><span class="line">s.<span class="built_in">insert</span>(<span class="number">10</span>); <span class="comment">// 插入10B</span></span><br></pre></td></tr></table></figure>
-
-<p>当我们想要一个 <code>equal_range</code>, <code>10A</code> 和 <code>10B</code> 同样认为是不等，永远不会在同一个区间。</p>
-<h2 id="2-sort-算法"><a href="#2-sort-算法" class="headerlink" title="2. sort 算法"></a>2. <code>sort</code> 算法</h2><p>对于 <code>std::sort</code>，当容器里面元素个数大于 <code>_S_threshold</code> 的值时（<code>16</code>），就会使用快速排序，会将所有的元素与中间值比较是无边界保护的，实现如下：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> _RandomAccessIterator, <span class="keyword">typename</span> _Tp, <span class="keyword">typename</span> _Compare&gt;</span><br><span class="line">     _RandomAccessIterator</span><br><span class="line">     __unguarded_partition(_RandomAccessIterator __first,</span><br><span class="line">               _RandomAccessIterator __last,</span><br><span class="line">               _Tp __pivot, _Compare __comp)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span> (<span class="literal">true</span>)</span><br><span class="line">    &#123;</span><br><span class="line">       <span class="keyword">while</span> (__comp(*__first, __pivot)) <span class="comment">// &lt;-------------------</span></span><br><span class="line">         ++__first;</span><br><span class="line">       --__last;</span><br><span class="line">       <span class="keyword">while</span> (__comp(__pivot, *__last))</span><br><span class="line">         --__last;</span><br><span class="line">       <span class="keyword">if</span> (!(__first &lt; __last))</span><br><span class="line">         <span class="keyword">return</span> __first;</span><br><span class="line">       std::<span class="built_in">iter_swap</span>(__first, __last);</span><br><span class="line">       ++__first;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>如果传入的 <code>vector</code> 中，后面的元素完全相等， <code>__comp()</code>函数一直返回 <code>true</code> ，在进行快速排序的时候，<code>++first</code> 就可能越界失效，导致 <code>coredump</code>。</p>
-]]></content>
+<p>执行：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 871920D1991BC93C</span><br></pre></td></tr></table></figure>]]></content>
       <categories>
-        <category>Effective-STL</category>
+        <category>Linux</category>
       </categories>
       <tags>
-        <tag>C++</tag>
-        <tag>Effective-STL</tag>
-        <tag>stl</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Effective-STL 9：慎重选择删除元素的方法</title>
-    <url>/2023/02/16/effective-stl/effective-stl-9/</url>
-    <content><![CDATA[<blockquote>
-<p>Item9. Choose carefully among easing options.</p>
-</blockquote>
-<h1 id="一、删除特定值"><a href="#一、删除特定值" class="headerlink" title="一、删除特定值"></a>一、删除特定值</h1><ol>
-<li><p>对于 <code>vector</code>、 <code>string</code> 或 <code>deque</code></p>
-<p> 最好使用 <code>erase-remove</code>习惯用法: </p>
- <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">erase</span>(<span class="built_in">remove</span>(c.<span class="built_in">begin</span>(), c.<span class="built_in">end</span>(), <span class="number">1963</span>, c.<span class="built_in">end</span>()));</span><br></pre></td></tr></table></figure></li>
-<li><p>对于 <code>list</code> 容器</p>
-<p> 直接使用 <code>remove</code> 方法:</p>
- <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">remove</span>(<span class="number">1963</span>);</span><br></pre></td></tr></table></figure></li>
-<li><p>对于标准关联容器</p>
-<p> 直接使用 <code>erase</code> 方法:</p>
- <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">erase</span>(<span class="number">1963</span>)</span><br></pre></td></tr></table></figure></li>
-</ol>
-<span id="more"></span>
-<h1 id="二、删除满足特定判定条件的值"><a href="#二、删除满足特定判定条件的值" class="headerlink" title="二、删除满足特定判定条件的值"></a>二、删除满足特定判定条件的值</h1><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">bool</span> <span class="title">badValue</span><span class="params">(<span class="type">int</span>)</span> </span>&#123; <span class="keyword">return</span> <span class="literal">true</span>; &#125; <span class="comment">// 返回x是否为&quot;坏值&quot;</span></span><br></pre></td></tr></table></figure>
-
-<ol>
-<li><p>对于 <code>vector</code>、 <code>string</code> 或 <code>deque</code><br> 使用 <code>erase-remove-if</code>方法: </p>
- <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">erase</span>(<span class="built_in">remove_if</span>(c.<span class="built_in">begin</span>(), c.<span class="built_in">end</span>(), badValue, c.<span class="built_in">end</span>()));</span><br></pre></td></tr></table></figure></li>
-<li><p>对于 <code>list</code> 容器<br> 直接使用 <code>remove_if</code> 方法:</p>
- <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">remove_if</span>(badValue);</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>对于标准关联容器</p>
-<p> <strong>把当前的i传给erase，i后缀递增</strong></p>
- <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (AssocContainer&lt;<span class="type">int</span>&gt;::iterator i = c.<span class="built_in">begin</span>(); i != c.<span class="built_in">end</span>();) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">badValue</span>(*i)) c3.<span class="built_in">erase</span>(i++); </span><br><span class="line">    <span class="keyword">else</span> ++i;                     </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-</ol>
-<h1 id="三、循环内部删除对象之外还要做某些事"><a href="#三、循环内部删除对象之外还要做某些事" class="headerlink" title="三、循环内部删除对象之外还要做某些事"></a>三、循环内部删除对象之外还要做某些事</h1><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">doSomething</span><span class="params">(<span class="type">int</span>)</span> </span>&#123; ... &#125;</span><br></pre></td></tr></table></figure>
-<ol>
-<li><p>对于 <code>vector</code>、 <code>string</code> 或 <code>deque</code></p>
-<p> <strong>接收 <code>erase</code>返回的迭代器值。</strong></p>
- <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (SeqContainer&lt;<span class="type">int</span>&gt;::iterator i = c.<span class="built_in">begin</span>(); i != c.<span class="built_in">end</span>();) &#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">badValue</span>(*i)) &#123;</span><br><span class="line">        <span class="built_in">doSomething</span>(*i);</span><br><span class="line">        i = c.<span class="built_in">rease</span>(i);</span><br><span class="line">    &#125; <span class="keyword">else</span> ++i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-<li><p>对于 <code>list</code> 容器</p>
-<p> 虽然也可以采用标准关联容器方法，但建议采用跟 <code>vector</code>、 <code>string</code> 或 <code>deque</code> 一致。</p>
-</li>
-<li><p>对于标准关联容器</p>
- <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (SeqContainer&lt;<span class="type">int</span>&gt;::iterator i = c.<span class="built_in">begin</span>(); i != c.<span class="built_in">end</span>();) &#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">badValue</span>(*i)) &#123;</span><br><span class="line">        <span class="built_in">doSomething</span>(*i);</span><br><span class="line">        c.<span class="built_in">rease</span>(i++);</span><br><span class="line">    &#125; <span class="keyword">else</span> ++i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-</ol>
-]]></content>
-      <categories>
-        <category>Effective-STL</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
-        <tag>Effective-STL</tag>
-        <tag>stl</tag>
+        <tag>Linux</tag>
+        <tag>apt</tag>
       </tags>
   </entry>
   <entry>
@@ -1485,21 +1500,6 @@
       </categories>
       <tags>
         <tag>Linux</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>解决 由于没有公钥，无法验证下列签名 :NO_PUBKEY</title>
-    <url>/2022/04/19/linux/NO_PUBKEY/</url>
-    <content><![CDATA[<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ sudo apt update </span><br><span class="line">命中:1 https://pro-driver-packages.uniontech.com eagle InRelease</span><br><span class="line">获取:2 http://mirrors.tuna.tsinghua.edu.cn/ubuntu hirsute InRelease [269 kB]                                 </span><br><span class="line">命中:3 http://packages.microsoft.com/repos/code stable InRelease                                             </span><br><span class="line">命中:4 https://home-packages.chinauos.com/home plum InRelease                                                </span><br><span class="line">命中:5 https://home-packages.chinauos.com/home plum/beta InRelease   </span><br><span class="line">命中:6 https://home-packages.chinauos.com/printer eagle InRelease</span><br><span class="line">错误:2 http://mirrors.tuna.tsinghua.edu.cn/ubuntu hirsute InRelease</span><br><span class="line">  由于没有公钥，无法验证下列签名： NO_PUBKEY 871920D1991BC93C</span><br><span class="line">命中:7 https://home-store-img.uniontech.com/appstore eagle InRelease</span><br><span class="line">正在读取软件包列表... 完成</span><br><span class="line">W: GPG 错误：http://mirrors.tuna.tsinghua.edu.cn/ubuntu hirsute InRelease: 由于没有公钥，无法验证下列签名： NO_PUBKEY 871920D1991BC93C</span><br><span class="line">E: 仓库 “http://mirrors.tuna.tsinghua.edu.cn/ubuntu hirsute InRelease” 没有数字签名。</span><br><span class="line">N: 无法安全地用该源进行更新，所以默认禁用该源。</span><br><span class="line">N: 参见 apt-secure(8) 手册以了解仓库创建和用户配置方面的细节。</span><br></pre></td></tr></table></figure>
-
-<p>执行：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 871920D1991BC93C</span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>Linux</category>
-      </categories>
-      <tags>
-        <tag>Linux</tag>
-        <tag>apt</tag>
       </tags>
   </entry>
   <entry>
@@ -1584,396 +1584,6 @@
       <tags>
         <tag>Linux</tag>
         <tag>mime</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>ARM64汇编入门</title>
-    <url>/2023/03/18/macos/ARM64%E6%B1%87%E7%BC%96%E5%85%A5%E9%97%A8/</url>
-    <content><![CDATA[<h1 id="ARM-指令概要介绍"><a href="#ARM-指令概要介绍" class="headerlink" title="ARM 指令概要介绍"></a><code>ARM</code> 指令概要介绍</h1><ul>
-<li><code>A64</code> 指令集只能运行在 <code>aarch64</code> 环境中</li>
-<li>所有的A64汇编指令都是 <code>32bits</code> 宽</li>
-<li><code>A64</code> 支持全部是大写或者全部是小写的书写方式</li>
-</ul>
-<p>寄存器名：</p>
-<table>
-<thead>
-<tr>
-<th align="left">Name</th>
-<th align="left">Size</th>
-<th align="left">Encoding</th>
-<th align="left">Description</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">Wn</td>
-<td align="left">32 bits</td>
-<td align="left">0-30</td>
-<td align="left">Genral-purpose register 0-30</td>
-</tr>
-<tr>
-<td align="left">Xn</td>
-<td align="left">64 bits</td>
-<td align="left">0-30</td>
-<td align="left">Genral-purpose register 0-30</td>
-</tr>
-<tr>
-<td align="left">WZR</td>
-<td align="left">32 bits</td>
-<td align="left">31</td>
-<td align="left">Zero register</td>
-</tr>
-<tr>
-<td align="left">XZR</td>
-<td align="left">64 bits</td>
-<td align="left">31</td>
-<td align="left">Zero register</td>
-</tr>
-<tr>
-<td align="left">WPS</td>
-<td align="left">32 bits</td>
-<td align="left">31</td>
-<td align="left">Current stack pointer</td>
-</tr>
-<tr>
-<td align="left">SP</td>
-<td align="left">64 bits</td>
-<td align="left">31</td>
-<td align="left">Current stack pointer</td>
-</tr>
-</tbody></table>
-<span id="more"></span>
-
-<h2 id="ARM-指令的分类"><a href="#ARM-指令的分类" class="headerlink" title="ARM 指令的分类"></a><code>ARM</code> 指令的分类</h2><ul>
-<li>内存加载和存储指令</li>
-<li>多字节内存加载和存储</li>
-<li>算术和位移指令</li>
-<li>移位操作</li>
-<li>位操作</li>
-<li>条件操作</li>
-<li>跳转指令</li>
-<li>独占访存指令</li>
-<li>内存屏障指令</li>
-<li>异常处理指令</li>
-<li>系统寄存器访问指令</li>
-</ul>
-<h2 id="ARM-指令的一般编码格式"><a href="#ARM-指令的一般编码格式" class="headerlink" title="ARM 指令的一般编码格式"></a><code>ARM</code> 指令的一般编码格式</h2><p>一条典型的 <code>ARM64</code> 指令语法格式如下所示：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;opcode&gt;&#123;&lt;cond&gt;&#125;&#123;S&#125; &lt;Rd&gt;, &lt;Rn&gt;, &lt;shifter_operand&gt;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><code>&lt;opcode&gt;</code>：是指令助记符，如 <code>ADD</code> 表示算术加操作指令。</li>
-<li><code>&#123;&lt;cond&gt;&#125;</code>：表示指令执行的条件。</li>
-<li><code>&#123;S&#125;</code>：决定指令的操作是否影响 <code>CPSR</code> 的值。</li>
-<li><code>&lt;Rd&gt;</code>：表示目标寄存器。</li>
-<li><code>&lt;Rn&gt;</code>：表示包含第 <code>1</code> 个操作数的寄存器。</li>
-<li><code>&lt;shifter_operand&gt;</code>：表示第 <code>2</code> 个操作数。</li>
-</ul>
-]]></content>
-      <categories>
-        <category>汇编</category>
-      </categories>
-      <tags>
-        <tag>arm64</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Disk Arbitration</title>
-    <url>/2023/02/16/macos/Disk-Arbitration/</url>
-    <content><![CDATA[<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p><code>Disk Arbitration framework</code> 是一个基于 <code>Core Foundation</code> 的低级框架。会在磁盘出现和消失时通知您的应用程序，并让您的应用程序影响该过程。借助 <code>Disk Arbitration</code>，我们可以：</p>
-<ul>
-<li>检测何时出现新磁盘</li>
-<li>阻止挂载</li>
-<li>使用不同的标志或在不同的安装点上安装卷</li>
-<li>卸载卷</li>
-<li>观察卷的变化</li>
-</ul>
-<span id="more"></span>
-
-<h1 id="使用磁盘仲裁通知和批准回调"><a href="#使用磁盘仲裁通知和批准回调" class="headerlink" title="使用磁盘仲裁通知和批准回调"></a>使用磁盘仲裁通知和批准回调</h1><ol>
-<li>通过调用创建会话对象 <code>DASessionCreate</code>。</li>
-<li>如果您想知道磁盘相关事件何时发生，请注册通知回调；如果您想积极参与仲裁过程，请注册批准回调。</li>
-<li>在运行循环或调度队列上安排会话对象（并在必要时启动运行循环或调度队列）。</li>
-<li>处理您的应用收到的任何回调。</li>
-<li>当应用程序不再需要接收回调时，取消调度会话对象并释放它。</li>
-</ol>
-<h2 id="创建会话"><a href="#创建会话" class="headerlink" title="创建会话"></a>创建会话</h2><p>编写磁盘仲裁通知客户端时必须做的第一件事是创建一个会话 (<code>DASessionRef</code>)。要创建磁盘仲裁会话，请调用<code>DASessionCreate</code>，如下所示：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">DASessionRef session;</span><br><span class="line">session = DASessionCreate(kCFAllocatorDefault);</span><br></pre></td></tr></table></figure>
-
-<h2 id="注册通知和批准"><a href="#注册通知和批准" class="headerlink" title="注册通知和批准"></a>注册通知和批准</h2><p>磁盘仲裁支持两种类型的回调。通知回调告诉您发生了某些事情。批准回调允许您阻止挂载、卸载或弹出操作发生。</p>
-<h3 id="通知回调"><a href="#通知回调" class="headerlink" title="通知回调"></a>通知回调</h3><ul>
-<li><code>DADiskAppearedCallback</code>—出现磁盘或出现分区时调用</li>
-<li><code>DADiskDescriptionChangedCallback</code>—当磁盘的描述发生变化时调用（在 <code>OS X v10.7</code> 及更高版本中，当首次安装卷时）</li>
-<li><code>DADiskDisappearedCallback</code>—弹出可移动磁盘时调用</li>
-<li><code>DADiskPeekCallback</code>—在首次探测磁盘时、自动挂载开始之前以及发送任何其他通知之前调用</li>
-</ul>
-<h3 id="注册函数"><a href="#注册函数" class="headerlink" title="注册函数"></a>注册函数</h3><ul>
-<li><code>DARegisterDiskAppearedCallback</code></li>
-<li><code>DARegisterDiskDescriptionChangedCallback</code></li>
-<li><code>DARegisterDiskDisappearedCallback</code></li>
-<li><code>DARegisterDiskPeekCallback</code></li>
-</ul>
-<p>这些注册函数中的大多数都采用匹配字典。您通常应该传递 <code>NULL``（以匹配所有磁盘）或传递标准匹配字典，例如kDADiskDescriptionMatchMediaUnformatted</code>. 这些匹配字典的详细匹配行为如下所示:</p>
-<table>
-<thead>
-<tr>
-<th align="left">标准字典</th>
-<th align="left">内容</th>
-<th align="left">描述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">kDADiskDescriptionMatchMediaUnformatted</td>
-<td align="left">kDADiskDescriptionMediaSizeKey价值为0</td>
-<td align="left">匹配未格式化的媒体（如空白 DVD）。</td>
-</tr>
-<tr>
-<td align="left">kDADiskDescriptionMatchMediaWhole</td>
-<td align="left">kDADiskDescriptionMediaWholeKey有价值true</td>
-<td align="left">仅匹配整盘媒体（&#x2F;dev&#x2F;disk0例如 ）。</td>
-</tr>
-<tr>
-<td align="left">kDADiskDescriptionMatchVolumeMountable</td>
-<td align="left">kDADiskDescriptionVolumeMountableKey有价值true</td>
-<td align="left">匹配可安装的卷。</td>
-</tr>
-<tr>
-<td align="left">kDADiskDescriptionMatchVolumeUnrecognized</td>
-<td align="left">kDADiskDescriptionVolumeMountableKey有价值false</td>
-<td align="left">匹配不可挂载的磁盘。</td>
-</tr>
-</tbody></table>
-<p>例如，要限制与 USB 连接媒体的匹配，您可以创建一个匹配字典，如下所示：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">CFMutableDictionaryRef matchingDict =</span><br><span class="line">    CFDictionaryCreateMutable(</span><br><span class="line">        kCFAllocatorDefault,</span><br><span class="line">        <span class="number">0</span>,</span><br><span class="line">        &amp;kCFTypeDictionaryKeyCallBacks,</span><br><span class="line">        &amp;kCFTypeDictionaryValueCallBacks);</span><br><span class="line"> </span><br><span class="line">CFDictionaryAddValue(matchingDict,</span><br><span class="line">    kDADiskDescriptionDeviceProtocolKey,</span><br><span class="line">    CFSTR(kIOPropertyPhysicalInterconnectTypeUSB));</span><br></pre></td></tr></table></figure>
-<p><a href="https://developer.apple.com/documentation/kernel/kiopropertyphysicalinterconnecttypeusb">IOStorageProtocolCharacteristics.h User-Space Reference</a>中描述了其他互连类型和其他相关常量。最后，只要磁盘事件与指定的匹配字典（或多个字典）和使用上下文指针的事件类型匹配，您就可以将任意数据传递给回调。通过传递不同的上下文指针，您可以使用不同的匹配字典多次注册相同的回调，并向回调提供指示哪个注册匹配的信息。如果您不需要提供此类上下文信息，只需传递NULL此参数即可。</p>
-<p>每个回调的详细信息在以下部分中有更详细的描述。</p>
-<h3 id="注销通回调"><a href="#注销通回调" class="headerlink" title="注销通回调"></a>注销通回调</h3><p>当您不再需要通知回调时，通过调用取消注册 <code>DAUnregisterCallback</code>。例如：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">DAUnregisterCallback(session, mycallbackfuntion, <span class="literal">NULL</span>);</span><br></pre></td></tr></table></figure>
-<p><strong>请务必传入注册函数时使用的原始上下文指针值</strong>。</p>
-<h3 id="批准回调"><a href="#批准回调" class="headerlink" title="批准回调"></a>批准回调</h3><p>通过三种方式在磁盘仲裁中注册批准回调，具体取决于您希望何时收到通知。</p>
-<ul>
-<li>如果您希望在弹出磁盘之前获得许可，请调用 <code>DARegisterDiskEjectApprovalCallback</code>.</li>
-<li>如果您希望在安装卷之前获得许可，请调用 <code>DARegisterDiskMountApprovalCallback</code>.</li>
-<li>如果您希望在卸载卷之前获得许可，请调用 <code>DARegisterDiskUnmountApprovalCallback</code>。</li>
-</ul>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">DADissenterRef <span class="title function_">allow_mount</span><span class="params">(DADiskRef disk, <span class="type">void</span> *context)</span>;</span><br><span class="line"> </span><br><span class="line">...</span><br><span class="line"> </span><br><span class="line">session = DASessionCreate(kCFAllocatorDefault);</span><br><span class="line"> </span><br><span class="line">DARegisterDiskMountApprovalCallback(session,</span><br><span class="line">                <span class="literal">NULL</span>, <span class="comment">/* Match all disks */</span></span><br><span class="line">                allow_mount,</span><br><span class="line">                <span class="literal">NULL</span>); <span class="comment">/* No context */</span></span><br><span class="line"> </span><br><span class="line">...</span><br><span class="line"> </span><br><span class="line">DADissenterRef <span class="title function_">allow_mount</span><span class="params">(</span></span><br><span class="line"><span class="params">        DADiskRef disk,</span></span><br><span class="line"><span class="params">        <span class="type">void</span> *context)</span></span><br><span class="line">&#123;</span><br><span class="line">        <span class="type">int</span> allow = <span class="number">0</span>;</span><br><span class="line"> </span><br><span class="line">        <span class="keyword">if</span> (allow) &#123;</span><br><span class="line">                <span class="comment">/* Return NULL to allow */</span></span><br><span class="line">                <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">&quot;allow_mount: allowing mount.\n&quot;</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">/* Return a dissenter to deny */</span></span><br><span class="line">                <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">&quot;allow_mount: refusing mount.\n&quot;</span>);</span><br><span class="line">                <span class="keyword">return</span> DADissenterCreate(</span><br><span class="line">                        kCFAllocatorDefault, kDAReturnExclusiveAccess,</span><br><span class="line">                        CFSTR(<span class="string">&quot;It&#x27;s mine!&quot;</span>));</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h3 id="注销批准回调"><a href="#注销批准回调" class="headerlink" title="注销批准回调"></a>注销批准回调</h3><p>当您不再需要批准回调时，您应该通过调用取消注册 <code>DAUnregisterApprovalCallback</code>。例如：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">DAUnregisterApprovalCallback(session, mycallbackfuntion, <span class="literal">NULL</span>);</span><br></pre></td></tr></table></figure>
-<p><strong>请务必传入注册函数时使用的原始上下文指针值</strong>。</p>
-<h2 id="使用调度队列"><a href="#使用调度队列" class="headerlink" title="使用调度队列"></a>使用调度队列</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* Schedule the session on a dispatch queue. */</span></span><br><span class="line">DASessionSetDispatchQueue(session, <span class="built_in">queue</span>);</span><br><span class="line"> </span><br><span class="line"><span class="comment">/* Unschedule the session on a dispatch queue. */</span></span><br><span class="line">DASessionSetDispatchQueue(session, <span class="literal">NULL</span>);</span><br><span class="line"> </span><br><span class="line"><span class="comment">/* Clean up the session resources. */</span></span><br><span class="line">CFRelease(session);</span><br></pre></td></tr></table></figure>
-<h2 id="使用运行循环"><a href="#使用运行循环" class="headerlink" title="使用运行循环"></a>使用运行循环</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* Schedule a disk arbitration session. */</span></span><br><span class="line">DASessionScheduleWithRunLoop(session, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode);</span><br><span class="line"> </span><br><span class="line"><span class="comment">/* Start the run loop.  (Don&#x27;t do this if you already have</span></span><br><span class="line"><span class="comment">   a running Core Foundation or Cocoa run loop.) */</span></span><br><span class="line">CFRunLoopRun();</span><br><span class="line"> </span><br><span class="line"><span class="comment">/* Clean up a session. */</span></span><br><span class="line">DASessionUnscheduleFromRunLoop(session,</span><br><span class="line">    CFRunLoopGetCurrent(), kCFRunLoopDefaultMode);</span><br><span class="line">CFRelease(session);</span><br></pre></td></tr></table></figure>
-
-<h1 id="操作磁盘和卷"><a href="#操作磁盘和卷" class="headerlink" title="操作磁盘和卷"></a>操作磁盘和卷</h1><h2 id="获取磁盘对象"><a href="#获取磁盘对象" class="headerlink" title="获取磁盘对象"></a>获取磁盘对象</h2><p>在您可以操作磁盘或卷之前，您必须<code>DADiskRef</code>为该磁盘或卷获取一个对象。通过四种方式获取对象：</p>
-<ul>
-<li>作为传递给事件回调的参数（在使用磁盘仲裁通知和批准回调中描述）</li>
-<li>通过调用从 <code>io_service_t</code>用户空间引用到有效设备切片的对象 <code>IOMediaDADiskCreateFromIOMedia</code></li>
-<li>您可以通过调用或io_service_t来获取对象的用户空间引用。</li>
-<li>从 <code>BSD</code> 设备名称（disk1s1例如）使用 <code>DADiskCreateFromBSDName</code></li>
-<li>从挂载点调用 <code>DADiskCreateFromVolumePath</code></li>
-</ul>
-<p>如果您有一个<code>io_service_t</code>对象或一个 <code>BSD</code> 设备名称，您的应用程序可以创建一个<code>DADiskRef</code>对象，如下所示：</p>
-<p><code>DASessionRef</code>按照创建会话中的描述创建一个对象。</p>
-<ul>
-<li>按照<code>Scheduling the Session with the Run Loop or Dispatch Queue</code>中的描述安排它。确保您的调度队列或运行循环正在运行。</li>
-<li>创建磁盘对象。</li>
-<li>根据需要操纵它们。</li>
-</ul>
-<h2 id="获取磁盘信息"><a href="#获取磁盘信息" class="headerlink" title="获取磁盘信息"></a>获取磁盘信息</h2><p>盘仲裁提供三个函数来获取有关磁盘和分区的附加信息：<code>DADiskCopyDescription</code> 、<code>DADiskGetBSDName</code> 和<code>DADiskCopyIOMedia</code>。通常，您可以通过调用 获得关于特定磁盘的几乎所有信息 <code>DADiskCopyDescription</code>。然而，对于一些相当深奥的信息，您可能必须<code>IOMedia</code>为磁盘获取一个对象并查询该对象。</p>
-<p>如果您需要磁盘或分区的 <code>BSD</code> 设备名称（<code>disk1s1</code>例如）作为 <code>C</code> 字符串（通常在使用 <code>POSIX</code> 级 <code>API</code> 时使用），请调用 <code>DADiskGetBSDName</code>.<br>对于大多数其他信息，请调用<code>DADiskCopyDescription</code>，如获取描述字典中所述。<br>如果无法通过 获得您需要的信息 <code>DADiskCopyDescription</code>，请调用DADiskCopyIOMedia。</p>
-<h3 id="获取描述字典"><a href="#获取描述字典" class="headerlink" title="获取描述字典"></a>获取描述字典</h3><p><code>DADiskCopyDescription</code>方法返回一个 <code>CFDictionaryRef</code> 对象，其中包含有关磁盘或分区的几十条信息。一些常用的数据包括：</p>
-<ul>
-<li>挂载点和卷名</li>
-<li><code>BSD</code> 设备节点名称和主要和次要编号</li>
-<li>有关硬件的信息（<code>设备 ID</code> 、<code>供应商 ID</code> 、<code>GUID</code> 等）</li>
-<li>连接信息（总线名称和路径</li>
-</ul>
-<p>您可以在磁盘仲裁框架的标头中找到完整的属性列表 <a href="https://developer.apple.com/documentation/diskarbitration/dadisk_h?language=objc">DADisk.h Reference.</a>，以及每个键值的预期数据类型的描述。</p>
-<h3 id="从-I-O-Kit-获取附加信息"><a href="#从-I-O-Kit-获取附加信息" class="headerlink" title="从 I/O Kit 获取附加信息"></a>从 <code>I/O Kit</code> 获取附加信息</h3><p>在极少数情况下，您可能需要获取有关磁盘的其他信息，而不是磁盘仲裁提供的信息。如果这样做，您可以调用<code>DADiskCopyIOMedia</code>以获取一个 <code>io_service_t</code>对象，该对象是对象的用户空间表示 <code>IOMedia</code>。您可以像操作任何 <code>I/O Registry</code> 对象一样操作此对象。</p>
-<p>例如，您可以通过调用 <code>IORegistryEntryCreateCFProperties</code>结果对象来获取具有媒体 <code>I/O</code> 注册表属性的 <code>Core Foundation</code> 字典。</p>
-<p><code>I/O Registry</code> 字典中的属性在 <code>I/O Kit Framework</code> 中定义。有关详细信息，请参阅<a href="https://developer.apple.com/documentation/iokit">I&#x2F;O Kit Framework Reference</a>。</p>
-<h2 id="安装和卸载卷"><a href="#安装和卸载卷" class="headerlink" title="安装和卸载卷"></a>安装和卸载卷</h2><ul>
-<li><p><code>DADiskMount</code></p>
-</li>
-<li><p><code>DADiskMountWithArguments</code></p>
-  <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">unsigned</span> <span class="type">char</span> *mppath = <span class="string">&quot;/mnt/mydisk&quot;</span>;</span><br><span class="line"></span><br><span class="line">path = CFURLCreateFromFileSystemRepresentation(</span><br><span class="line">    kCFAllocatorDefault,</span><br><span class="line">    mppath,</span><br><span class="line">    <span class="built_in">strlen</span>(mppath),</span><br><span class="line">    <span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line">DADiskMountWithArguments(disk, path, kDADiskMountOptionDefault,</span><br><span class="line">    mount_complete_callback, <span class="literal">NULL</span>,</span><br><span class="line">    <span class="literal">NULL</span>);</span><br></pre></td></tr></table></figure></li>
-<li><p><code>DADiskUnmount</code></p>
-  <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">unmount_done</span><span class="params">(DADiskRef disk,</span></span><br><span class="line"><span class="params">DADissenterRef dissenter,</span></span><br><span class="line"><span class="params"><span class="type">void</span> *context)</span>;</span><br><span class="line"> </span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">DADiskUnmount(disk, kDADiskUnmountOptionDefault,</span><br><span class="line">    unmount_done, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">unmount_done</span><span class="params">(DADiskRef disk,</span></span><br><span class="line"><span class="params">    DADissenterRef dissenter,</span></span><br><span class="line"><span class="params">    <span class="type">void</span> *context)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (dissenter) &#123;</span><br><span class="line">        <span class="comment">/* Unmount failed. */</span></span><br><span class="line">        <span class="type">char</span> buf[MAXPATHLEN];</span><br><span class="line">        <span class="keyword">if</span> (CFURLGetFileSystemRepresentation(fspath, <span class="literal">false</span>, (UInt8 *)buf, <span class="keyword">sizeof</span>(buf))) &#123;</span><br><span class="line">            <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">&quot;Unmount failed (Error: 0x%x Reason: %s).  Retrying.\n&quot;</span>,</span><br><span class="line">                DADissenterGetStatus(dissenter),</span><br><span class="line">                buf);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">/* Something is *really* wrong. */</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">/* Do something. */</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h2 id="弹出磁盘"><a href="#弹出磁盘" class="headerlink" title="弹出磁盘"></a>弹出磁盘</h2><p>在弹出磁盘之前，您必须卸载磁盘上的所有卷。首先调用 <code>DADiskUnmount</code>，将整个磁盘分区作为磁盘参数传递，并<code>kDADiskUnmountOptionWhole</code> 在卸载选项中设置标志。然后调用 <code>DADiskEject</code></p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">unmount_done</span><span class="params">(DADiskRef disk,</span></span><br><span class="line"><span class="params">    DADissenterRef dissenter,</span></span><br><span class="line"><span class="params">    <span class="type">void</span> *context)</span>;</span><br><span class="line"><span class="type">void</span> <span class="title function_">eject_done</span><span class="params">(DADiskRef disk,</span></span><br><span class="line"><span class="params">    DADissenterRef dissenter,</span></span><br><span class="line"><span class="params">    <span class="type">void</span> *context)</span>;</span><br><span class="line"> </span><br><span class="line">...</span><br><span class="line"> </span><br><span class="line"><span class="comment">/* Unmount all volumes */</span></span><br><span class="line">DADiskRef wholedisk = DADiskCopyWholeDisk(partition);</span><br><span class="line">DADiskUnmount(wholedisk, kDADiskUnmountOptionWhole,</span><br><span class="line">    unmount_done, <span class="literal">NULL</span>);</span><br><span class="line">CFRelease(wholedisk);</span><br><span class="line"> </span><br><span class="line">...</span><br><span class="line"> </span><br><span class="line"><span class="comment">/* In the unmount callback, eject the volume. */</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">unmount_done</span><span class="params">(DADiskRef disk,</span></span><br><span class="line"><span class="params">    DADissenterRef dissenter,</span></span><br><span class="line"><span class="params">    <span class="type">void</span> *context)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (dissenter) &#123;</span><br><span class="line">        ...</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        DADiskEject(disk, kDADiskEjectOptionDefault,</span><br><span class="line">            eject_done, <span class="literal">NULL</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/* Eject callback. */</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">eject_done</span><span class="params">(DADiskRef disk,</span></span><br><span class="line"><span class="params">    DADissenterRef dissenter,</span></span><br><span class="line"><span class="params">    <span class="type">void</span> *context)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (dissenter) &#123;</span><br><span class="line">        ...</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ul>
-<li><a href="https://developer.apple.com/library/archive/documentation/DriversKernelHardware/Conceptual/DiskArbitrationProgGuide/">Disk Arbitration Programming Guide</a></li>
-</ul>
-]]></content>
-      <categories>
-        <category>MacOS</category>
-      </categories>
-      <tags>
-        <tag>MacOS</tag>
-        <tag>Disk</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>@executable path, @load path 和 @rpath</title>
-    <url>/2023/08/25/macos/executable-path-load-path-%E5%92%8C-rpath/</url>
-    <content><![CDATA[<p>在 <code>macOS</code> 上，动态链接器使用特定的路径变量来解析运行时的库位置。这些路径变量包括：绝对路径、 <code>@executable_path</code>、<code>@loader_path</code> 和 <code>@rpath</code>。</p>
-<h1 id="绝对路径"><a href="#绝对路径" class="headerlink" title="绝对路径"></a>绝对路径</h1><p>对于安装在系统中共享位置的框架很有用，一般是 <code>/Library/Frameworks/xxx</code>、 <code>/usr/lib/xxx</code>, 但是查找嵌入在应用内部的动态库就很难使用，应用安装的位置都不固定，所以引出新的方式。</p>
-<h1 id="executable-path"><a href="#executable-path" class="headerlink" title="@executable path"></a>@executable path</h1><p><code>@executable_path</code> 是用于指代<strong>当前正在执行的程序或应用的路径</strong>。当你的应用程序或其动态库需要引用位于与可执行文件相同路径（或其子目录）下的其他动态库时，这会非常有用。</p>
-<span id="more"></span>
-<p>举例说明: </p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">MyApp/</span><br><span class="line">|-- MyApp.app/</span><br><span class="line">    |-- Contents/</span><br><span class="line">        |-- MacOS/</span><br><span class="line">            |-- MyApp (可执行文件)</span><br><span class="line">            |-- libA.dylib (动态库A)</span><br><span class="line">        |-- Frameworks/</span><br><span class="line">            |-- libB.dylib (动态库B)</span><br></pre></td></tr></table></figure>
-
-<p>假设 <code>MyApp</code> 依赖于 <code>libA.dylib</code>，而 <code>libA.dylib</code> 依赖于 <code>libB.dylib</code>。<br>如果你希望 <code>libA.dylib</code> 在运行时找到 <code>libB.dylib</code>，可以设置 <code>libB.dylib</code> 的安装名称为 <code>@executable_path/../Frameworks/libB.dylib</code>。当 <code>MyApp</code> 启动并加载 <code>libA.dylib</code> 时，<code>@executable_path</code> 将解析为 <code>MyApp.app/Contents/MacOS/</code>，因此 <code>libA.dylib</code> 会正确地找到 <code>libB.dylib</code> 在 <code>MyApp.app/Contents/Frameworks/</code> 目录下。</p>
-<h1 id="load-path"><a href="#load-path" class="headerlink" title="@load path"></a>@load path</h1><p><strong>加载的动态库的路径</strong>。在很多情况下，这个路径是基于正在加载该库的模块，因此它可能会随着加载该库的不同模块而变化。</p>
-<p>举例说明:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">MyApp/</span><br><span class="line">|-- MyApp.app/</span><br><span class="line">    |-- Contents/</span><br><span class="line">        |-- MacOS/</span><br><span class="line">            |-- MyApp (主应用程序)</span><br><span class="line">            |-- libMain.dylib (主应用的动态库)</span><br><span class="line">        |-- Plugins/</span><br><span class="line">            |-- PluginA.bundle/</span><br><span class="line">                |-- PluginA (插件)</span><br><span class="line">                |-- libPluginA.dylib (插件的动态库)</span><br></pre></td></tr></table></figure>
-<p>在这个例子中，<code>MyApp</code> 依赖 <code>libMain.dylib</code>，而 <code>PluginA</code> 依赖 <code>libPluginA.dylib</code>。</p>
-<ul>
-<li><p>使用 <code>@executable_path</code>：</p>
-<p>如果 <code>libMain.dylib</code> 需要引用与其位于同一目录下的另一个库，如 <code>libHelper.dylib</code>，它可以使用 <code>@executable_path/libHelper.dylib</code> 作为路径。但是，这对 <code>PluginA</code> 中的库不起作用，因为 <code>@executable_path</code> 总是指向 <code>MyApp.app/Contents/MacOS/</code>，不考虑加载它的实际模块。</p>
-</li>
-<li><p>使用 <code>@loader_path</code>：</p>
-<p>如果 <code>libPluginA.dylib</code> 需要引用与其位于同一目录下的另一个库，如 <code>libHelper.dylib</code>，它可以使用 <code>@loader_path/libHelper.dylib</code> 作为路径。这样，不管 <code>libPluginA.dylib</code> 被哪个模块加载，它都会正确地引用到相对于加载它的模块的库。</p>
-</li>
-</ul>
-<p><strong>如果是一个应用程序，那么 <code>@load path</code> 与 <code>@executable_path</code> 相同。</strong></p>
-<h1 id="rpath"><a href="#rpath" class="headerlink" title="@rpath"></a>@rpath</h1><p><code>@rpath (Runtime Search Path)</code> 提供了一种动态方式来指定和查找动态库。它的主要优势是提供了更多的灵活性，尤其是在面对多种可能的库位置或多个版本的库时。</p>
-<p>举例说明:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">MyApp/</span><br><span class="line">|-- MyApp.app/</span><br><span class="line">    |-- Contents/</span><br><span class="line">        |-- MacOS/</span><br><span class="line">            |-- MyApp (可执行文件)</span><br><span class="line">        |-- Frameworks/</span><br><span class="line">            |-- libA.dylib (动态库A版本1)</span><br><span class="line">        |-- Plugins/</span><br><span class="line">            |-- PluginA/</span><br><span class="line">                |-- libA.dylib (动态库A版本2)</span><br></pre></td></tr></table></figure>
-
-<p>假设 <code>MyApp</code> 可能需要加载两个版本中的任何一个 <code>libA.dylib</code>，具体取决于特定的运行时情境。使用<code> @rpath</code> 可以轻松管理这种情况。</p>
-<ul>
-<li><p>设置 <code>@rpath</code>:</p>
-<p>  在构建 <code>MyApp</code> 时，你可以设置多个运行时搜索路径（<code>rpaths</code>）:</p>
-<ul>
-<li><code>@executable_path/../Frameworks</code></li>
-<li><code>@executable_path/../Plugins/PluginA</code></li>
-</ul>
-</li>
-<li><p>使用 <code>@rpath</code> 在动态库中:</p>
-<p>  设 <code>libA.dylib</code> 的安装名称为 <code>@rpath/libA.dylib</code>。</p>
-</li>
-<li><p>运行时解析:</p>
-<p>  当 <code>MyApp</code> 需要加载 <code>libA.dylib</code> 时，它会沿着 <code>rpath</code> 列表搜索。首先在 <code>Frameworks</code> 文件夹中查找，然后在 <code>PluginA</code> 文件夹中查找。</p>
-</li>
-</ul>
-<p>这种方法的好处是，你可以轻松地将相同的库放在多个位置，而不需要为每个位置硬编码路径。此外，应用程序的用户或开发人员可以通过修改 <code>rpath</code> 来改变库的搜索顺序或位置。</p>
-<h1 id="install-name-tool"><a href="#install-name-tool" class="headerlink" title="install_name_tool"></a><code>install_name_tool</code></h1><p>要查看或修改一个可执行文件或动态库的 <code>rpath</code>，你可以使用 <code>otool</code> 和 <code>install_name_tool</code> 这两个命令行工具。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ otool -l WeChat</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">Load command 104</span><br><span class="line">          cmd LC_LOAD_DYLIB</span><br><span class="line">      cmdsize 64</span><br><span class="line">         name /usr/lib/swift/libswiftsimd.dylib (offset 24)</span><br><span class="line">   time stamp 2 Thu Jan  1 08:00:02 1970</span><br><span class="line">      current version 9.0.0</span><br><span class="line">compatibility version 1.0.0</span><br><span class="line">Load command 105</span><br><span class="line">          cmd LC_LOAD_DYLIB</span><br><span class="line">      cmdsize 64</span><br><span class="line">         name /usr/lib/swift/libswiftFoundation.dylib (offset 24)</span><br><span class="line">   time stamp 2 Thu Jan  1 08:00:02 1970</span><br><span class="line">      current version 1.0.0</span><br><span class="line">compatibility version 1.0.0</span><br><span class="line">Load command 106</span><br><span class="line">          cmd LC_RPATH</span><br><span class="line">      cmdsize 32</span><br><span class="line">         path /usr/lib/swift (offset 12)</span><br><span class="line">Load command 107</span><br><span class="line">          cmd LC_RPATH</span><br><span class="line">      cmdsize 48</span><br><span class="line">         path @executable_path/../Frameworks (offset 12)</span><br><span class="line">...</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>添加 <code>rpath</code>:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">install_name_tool -add_rpath @executable_path/. a.out</span><br></pre></td></tr></table></figure>
-
-<p>修改 <code>rpath</code>:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">install_name_tool -change libFoo @rpath/libFoo a.out</span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>MacOS</category>
-      </categories>
-      <tags>
-        <tag>DYLD</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>macOS 设置面板快捷链接</title>
-    <url>/2023/12/28/macos/macOS-%E8%AE%BE%E7%BD%AE%E9%9D%A2%E6%9D%BF%E5%BF%AB%E6%8D%B7%E9%93%BE%E6%8E%A5/</url>
-    <content><![CDATA[<h1 id="Accessibility-Preference-Pane"><a href="#Accessibility-Preference-Pane" class="headerlink" title="Accessibility Preference Pane"></a>Accessibility Preference Pane</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Main    x-apple.systempreferences:com.apple.preference.universalaccess</span><br><span class="line">Display x-apple.systempreferences:com.apple.preference.universalaccess?Seeing_Display</span><br><span class="line">Zoom    x-apple.systempreferences:com.apple.preference.universalaccess?Seeing_Zoom</span><br><span class="line">VoiceOver   x-apple.systempreferences:com.apple.preference.universalaccess?Seeing_VoiceOver</span><br><span class="line">Descriptions    x-apple.systempreferences:com.apple.preference.universalaccess?Media_Descriptions</span><br><span class="line">Captions    x-apple.systempreferences:com.apple.preference.universalaccess?Captioning</span><br><span class="line">Audio   x-apple.systempreferences:com.apple.preference.universalaccess?Hearing</span><br><span class="line">Keyboard    x-apple.systempreferences:com.apple.preference.universalaccess?Keyboard</span><br><span class="line">Mouse &amp; Trackpad    x-apple.systempreferences:com.apple.preference.universalaccess?Mouse</span><br><span class="line">Switch Control  x-apple.systempreferences:com.apple.preference.universalaccess?Switch</span><br><span class="line">Dictation   x-apple.systempreferences:com.apple.preference.universalaccess?SpeakableItems</span><br></pre></td></tr></table></figure>
-<span id="more"></span>
-
-<h1 id="Security-Privacy-Preference-Pane"><a href="#Security-Privacy-Preference-Pane" class="headerlink" title="Security &amp; Privacy Preference Pane"></a>Security &amp; Privacy Preference Pane</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Main    x-apple.systempreferences:com.apple.preference.security</span><br><span class="line">General x-apple.systempreferences:com.apple.preference.security?General</span><br><span class="line">FileVault   x-apple.systempreferences:com.apple.preference.security?FDE</span><br><span class="line">Firewall    x-apple.systempreferences:com.apple.preference.security?Firewall</span><br><span class="line">Advanced    x-apple.systempreferences:com.apple.preference.security?Advanced</span><br><span class="line">Privacy x-apple.systempreferences:com.apple.preference.security?Privacy</span><br><span class="line">Privacy-Camera x-apple.systempreferences:com.apple.preference.security?Privacy_Camera</span><br><span class="line">Privacy-Microphone  x-apple.systempreferences:com.apple.preference.security?Privacy_Microphone</span><br><span class="line">Privacy-Automation  x-apple.systempreferences:com.apple.preference.security?Privacy_Automation</span><br><span class="line">Privacy-AllFiles    x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles</span><br><span class="line">Privacy-Accessibility   x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility</span><br><span class="line">Privacy-Assistive   x-apple.systempreferences:com.apple.preference.security?Privacy_Assistive</span><br><span class="line">Privacy-Location Services   x-apple.systempreferences:com.apple.preference.security?Privacy_LocationServices</span><br><span class="line">Privacy-SystemServices  x-apple.systempreferences:com.apple.preference.security?Privacy_SystemServices</span><br><span class="line">Privacy-Advertising x-apple.systempreferences:com.apple.preference.security?Privacy_Advertising</span><br><span class="line">Privacy-Contacts    x-apple.systempreferences:com.apple.preference.security?Privacy_Contacts</span><br><span class="line">Privacy-Diagnostics &amp; Usage x-apple.systempreferences:com.apple.preference.security?Privacy_Diagnostics</span><br><span class="line">Privacy-Calendars   x-apple.systempreferences:com.apple.preference.security?Privacy_Calendars</span><br><span class="line">Privacy-Reminders   x-apple.systempreferences:com.apple.preference.security?Privacy_Reminders</span><br><span class="line">Privacy-Facebook    x-apple.systempreferences:com.apple.preference.security?Privacy_Facebook</span><br><span class="line">Privacy-LinkedIn    x-apple.systempreferences:com.apple.preference.security?Privacy_LinkedIn</span><br><span class="line">Privacy-Twitter x-apple.systempreferences:com.apple.preference.security?Privacy_Twitter</span><br><span class="line">Privacy-Weibo   x-apple.systempreferences:com.apple.preference.security?Privacy_Weibo</span><br><span class="line">Privacy-Tencent Weibo   x-apple.systempreferences:com.apple.preference.security?Privacy_TencentWeibo</span><br></pre></td></tr></table></figure>
-
-<h2 id="macOS-Catalina-10-15"><a href="#macOS-Catalina-10-15" class="headerlink" title="macOS Catalina 10.15"></a>macOS Catalina 10.15</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Privacy-ScreenCapture   x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture</span><br><span class="line">Privacy-DevTools    x-apple.systempreferences:com.apple.preference.security?Privacy_DevTools</span><br><span class="line">Privacy-InputMonitoring x-apple.systempreferences:com.apple.preference.security?Privacy_ListenEvent</span><br><span class="line">Privacy-DesktopFolder   x-apple.systempreferences:com.apple.preference.security?Privacy_DesktopFolder</span><br><span class="line">Privacy-DocumentsFolder x-apple.systempreferences:com.apple.preference.security?Privacy_DocumentsFolder</span><br><span class="line">Privacy-DownloadsFolder x-apple.systempreferences:com.apple.preference.security?Privacy_DownloadsFolder</span><br><span class="line">Privacy-NetworkVolume   x-apple.systempreferences:com.apple.preference.security?Privacy_NetworkVolume</span><br><span class="line">Privacy-RemovableVolume x-apple.systempreferences:com.apple.preference.security?Privacy_RemovableVolume</span><br><span class="line">Privacy-SpeechRecognition   x-apple.systempreferences:com.apple.preference.security?Privacy_SpeechRecognition</span><br></pre></td></tr></table></figure>
-<h1 id="Dictation-Speech-Preference-Pane"><a href="#Dictation-Speech-Preference-Pane" class="headerlink" title="Dictation &amp; Speech Preference Pane"></a>Dictation &amp; Speech Preference Pane</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Dictation   x-apple.systempreferences:com.apple.preference.speech?Dictation</span><br><span class="line">Text to Speech  x-apple.systempreferences:com.apple.preference.speech?TTS</span><br><span class="line">Sharing Preference Pane</span><br><span class="line">Main    x-apple.systempreferences:com.apple.preferences.sharing</span><br><span class="line">Screen Sharing  x-apple.systempreferences:com.apple.preferences.sharing?Services_ScreenSharing</span><br><span class="line">File Sharing    x-apple.systempreferences:com.apple.preferences.sharing?Services_PersonalFileSharing</span><br><span class="line">Printer Sharing x-apple.systempreferences:com.apple.preferences.sharing?Services_PrinterSharing</span><br><span class="line">Remote Login    x-apple.systempreferences:com.apple.preferences.sharing?Services_RemoteLogin</span><br><span class="line">Remote Management   x-apple.systempreferences:com.apple.preferences.sharing?Services_ARDService</span><br><span class="line">Remote Apple Events x-apple.systempreferences:com.apple.preferences.sharing?Services_RemoteAppleEvent</span><br><span class="line">Internet Sharing    x-apple.systempreferences:com.apple.preferences.sharing?Internet</span><br><span class="line">Bluetooth Sharing   x-apple.systempreferences:com.apple.preferences.sharing?Services_BluetoothSharing</span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>macOS</category>
-      </categories>
-      <tags>
-        <tag>macOS</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Mach-O 相关记录</title>
-    <url>/2023/03/10/macos/mach-o/</url>
-    <content><![CDATA[<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><h1 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h1>]]></content>
-      <categories>
-        <category>MacOS</category>
-      </categories>
-      <tags>
-        <tag>Mach-O</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>在MacOS平台上符号化崩溃报告</title>
-    <url>/2022/07/26/macos/%E5%9C%A8MacOS%E5%B9%B3%E5%8F%B0%E4%B8%8A%E7%AC%A6%E5%8F%B7%E5%8C%96%E5%B4%A9%E6%BA%83%E6%8A%A5%E5%91%8A/</url>
-    <content><![CDATA[<h1 id="dSYM"><a href="#dSYM" class="headerlink" title=".dSYM"></a><code>.dSYM</code></h1><p><code>.dSYM</code> (<code>debugging SYMbols</code>) 又称为调试符号表，是苹果为了方便调试和定位问题而使用的一种调试方案，本质上使用的是起源于贝尔实验室的 <code>DWARF</code>（<code>Debugging With Attributed Record Formats</code>），其在.xcarchive目录中的层次结构为：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">.xcarchive</span><br><span class="line">--dSYMs</span><br><span class="line">  |--Your.app.dSYM</span><br><span class="line">    |--Contents</span><br><span class="line">      |--Resources</span><br><span class="line">        |--DWARF</span><br></pre></td></tr></table></figure>
-<span id="more"></span>
-<p>如果在XCode中设置了带有 <code>dSYM</code> 文件的 <code>DWARF</code> 选项，则编译器会生成 <code>dSYM</code> 文件，并将其存储在您的构建中。<br><img src="/images/dsym.png"></p>
-<h1 id="确定符号表和崩溃日志的一致性"><a href="#确定符号表和崩溃日志的一致性" class="headerlink" title="确定符号表和崩溃日志的一致性"></a>确定符号表和崩溃日志的一致性</h1><h2 id="崩溃日志中获取UUID"><a href="#崩溃日志中获取UUID" class="headerlink" title="崩溃日志中获取UUID"></a>崩溃日志中获取UUID</h2><p>崩溃日志比较靠下的位置有个 <code>Binary Images</code> 模块，其第一行内容如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Binary Images:</span><br><span class="line">0x109724000 - 0x109cf7fff Your &lt;19a667b1-8910-3890-a0b0-03befee8876e&gt; /Library/Application Support/YourApp/*/YourApp.app/Contents/MacOS/YourApp</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<ul>
-<li>代码段的起终地址: <code>0x109724000 - 0x109cf7fff</code></li>
-<li>应用的UUID：<code>19a667b1-8910-3890-a0b0-03befee8876e</code>（不区分大小写）</li>
-</ul>
-<h2 id="从符号表中获取UUID"><a href="#从符号表中获取UUID" class="headerlink" title="从符号表中获取UUID"></a>从符号表中获取UUID</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ dwarfdump --uuid Your.app.dSYM</span><br></pre></td></tr></table></figure>
-<p>或者：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ dwarfdump --uuid Your.app.dSYM/Contents/Resources/DWARF/Your</span><br></pre></td></tr></table></figure>
-
-<p><strong>崩溃日志中和符号表中的UUID一致，才能正确解析</strong></p>
-<h1 id="计算崩溃符号表地址"><a href="#计算崩溃符号表地址" class="headerlink" title="计算崩溃符号表地址"></a>计算崩溃符号表地址</h1><h2 id="符号表堆栈地址计算方式"><a href="#符号表堆栈地址计算方式" class="headerlink" title="符号表堆栈地址计算方式"></a>符号表堆栈地址计算方式</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Thread 0::  Dispatch queue: com.apple.main-thread</span><br><span class="line">0   libsystem_kernel.dylib        	    0x7ff8159e775e write + 10</span><br><span class="line">1   libapr-1.0.dylib              	    0x10a6c1cee apr_file_write + 286</span><br><span class="line">2   liblog4cxx.10.0.0.dylib       	    0x10a369531 log4cxx::helpers::FileOutputStream::write(log4cxx::helpers::ByteBuffer&amp;, log4cxx::helpers::Pool&amp;) + 81</span><br><span class="line">3   Your      	                        0x10a3ae877❶  0x10a340000❷ + 452727❸</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>❶ 运行时堆栈地址 </li>
-<li>❷ 运行时起始地址</li>
-<li>❸ 偏移量</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">运行时堆栈地址 = 运行时起始地址 + 偏移量</span><br></pre></td></tr></table></figure>
-
-<p>崩溃堆栈中的起始地址和崩溃地址均为运行时地址，根据虚拟内存偏移量不变原理，只要提供了符号表TEXT段的起始地址，再加上偏移量就能得到符号表中的堆栈地址，即：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">符号表堆栈地址 = 符号表起始地址 + 偏移量</span><br></pre></td></tr></table></figure>
-
-<h2 id="符号表中TEXT段的起始地址可以通过以下命令获得："><a href="#符号表中TEXT段的起始地址可以通过以下命令获得：" class="headerlink" title="符号表中TEXT段的起始地址可以通过以下命令获得："></a>符号表中TEXT段的起始地址可以通过以下命令获得：</h2><p>使用 <code>otool</code> 查找 <code>LC_SEGMENT_64</code> 段和 <code>vmaddr</code> 条目</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ otool -l Your.app.dSYM/Contents/Resources/DWARF/Your</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Load command 4</span><br><span class="line">      cmd LC_SEGMENT_64</span><br><span class="line">  cmdsize 232</span><br><span class="line">  segname __TEXT</span><br><span class="line">   vmaddr 0x0000000100000000·</span><br><span class="line">   vmsize 0x0000000000004000</span><br><span class="line">  fileoff 0</span><br><span class="line"> filesize 0</span><br><span class="line">  maxprot 0x00000005</span><br><span class="line"> initprot 0x00000005</span><br><span class="line">   nsects 2</span><br><span class="line">    flags 0x0</span><br></pre></td></tr></table></figure>
-<p>其中的<code>vmaddr 0x0000000100000000</code>字段即为TEXT段的起始地址。</p>
-<h1 id="使用-LLDB-进行符号化"><a href="#使用-LLDB-进行符号化" class="headerlink" title="使用 LLDB 进行符号化"></a>使用 <code>LLDB</code> 进行符号化</h1><h2 id="crashlog"><a href="#crashlog" class="headerlink" title="crashlog"></a>crashlog</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ xcrun lldb</span><br><span class="line"></span><br><span class="line">(lldb) command script import lldb.macosx.crashlog</span><br><span class="line"></span><br><span class="line">(lldb) crashlog &lt;path/to/crashlog.crash&gt;</span><br></pre></td></tr></table></figure>
-<h2 id="Target"><a href="#Target" class="headerlink" title="Target"></a>Target</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">(lldb) target create --no-dependents --arch &lt;architecture&gt; &lt;path/to/dSYMs/App.app.dSYM/Contents/Resources/DWARF/App&gt;</span><br><span class="line"></span><br><span class="line">(lldb) image lookup --address &lt;symboladdress&gt;</span><br></pre></td></tr></table></figure>
-
-<h1 id="使用-ATOS-符号化"><a href="#使用-ATOS-符号化" class="headerlink" title="使用 ATOS 符号化"></a>使用 <code>ATOS</code> 符号化</h1><h2 id="符号表崩溃地址的解析方式"><a href="#符号表崩溃地址的解析方式" class="headerlink" title="符号表崩溃地址的解析方式"></a>符号表崩溃地址的解析方式</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ atos -arch &lt;architecture&gt; -o &lt;binary filename&gt; -l &lt;load address&gt; &lt;stack address 1&gt; &lt;stack address 2&gt; ...</span><br></pre></td></tr></table></figure>
-
-<h2 id="无需符号表崩溃地址的解析方式"><a href="#无需符号表崩溃地址的解析方式" class="headerlink" title="无需符号表崩溃地址的解析方式"></a>无需符号表崩溃地址的解析方式</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ atos -arch &lt;architecture&gt; -o &lt;binary filename&gt; &lt;symboladdress&gt;</span><br></pre></td></tr></table></figure>
-
-<h1 id="使用-Dwarfdump-符号化"><a href="#使用-Dwarfdump-符号化" class="headerlink" title="使用 Dwarfdump 符号化"></a>使用 <code>Dwarfdump</code> 符号化</h1><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ dwarfdump --arch x86_64 Your.app.dSYM --lookup symboladdress</span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>MacOS</category>
-      </categories>
-      <tags>
-        <tag>MacOS</tag>
-        <tag>Crash</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>存储和加载指令</title>
-    <url>/2023/03/18/macos/%E5%AD%98%E5%82%A8%E5%92%8C%E5%8A%A0%E8%BD%BD%E6%8C%87%E4%BB%A4/</url>
-    <content><![CDATA[<h3 id="存储和加载指令"><a href="#存储和加载指令" class="headerlink" title="存储和加载指令"></a>存储和加载指令</h3><h4 id="ldr-指令寻址之1：-地址偏移模式-unsigned-offset"><a href="#ldr-指令寻址之1：-地址偏移模式-unsigned-offset" class="headerlink" title="ldr 指令寻址之1： 地址偏移模式 (unsigned offset)"></a><code>ldr</code> 指令寻址之1： 地址偏移模式 (<code>unsigned offset</code>)</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">LDR Xd, [Xn, $offset]</span><br></pre></td></tr></table></figure>
-<p>首先在 <code>Xn</code> 寄存器的内容上加上一个 <code>offset</code> 偏移量后作为内存地址，加载此地址的内容到 <code>Xd</code> 寄存器。</p>
-<h4 id="ldr-指令寻址之2：-变基模式"><a href="#ldr-指令寻址之2：-变基模式" class="headerlink" title="ldr 指令寻址之2： 变基模式"></a><code>ldr</code> 指令寻址之2： 变基模式</h4><ul>
-<li>前变基模式（<code>pre-index</code> 模式）： 先更新偏移地址然后再访问内存。</li>
-<li>后变基模式（<code>post-index</code> 模式）：先访问内存地址然后再更新偏移地址。</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">LDR X0, [X1, #8]! // 前变基模式。先更新X1 的值为 X1+8，然后义新的X1值为地址，加载内存的值到X0</span><br><span class="line"></span><br><span class="line">LDR X0, [X1], #8  // 后变基模式。以x1的值为地址，加载该内存地址的值到X0，然后在更新X1寄存器为X1+8</span><br></pre></td></tr></table></figure>
-
-<h4 id="ldr-指令寻址之3：-标签（literal）"><a href="#ldr-指令寻址之3：-标签（literal）" class="headerlink" title="ldr 指令寻址之3： 标签（literal）"></a><code>ldr</code> 指令寻址之3： 标签（<code>literal</code>）</h4><p>PC + label offset</p>
-<h4 id="ldr-伪指令"><a href="#ldr-伪指令" class="headerlink" title="ldr 伪指令"></a>ldr 伪指令</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">LDR x7, =MY_LABEL</span><br></pre></td></tr></table></figure>
-
-<h4 id="move-指令"><a href="#move-指令" class="headerlink" title="move 指令"></a>move 指令</h4><ul>
-<li>16位立即数</li>
-<li>16立即数左移16，32，48位</li>
-</ul>
-<h4 id="多字节加载和存储指令-ldp-和stp"><a href="#多字节加载和存储指令-ldp-和stp" class="headerlink" title="多字节加载和存储指令 ldp 和stp"></a>多字节加载和存储指令 ldp 和stp</h4>]]></content>
-      <categories>
-        <category>汇编</category>
-      </categories>
-      <tags>
-        <tag>arm64</tag>
       </tags>
   </entry>
   <entry>
@@ -2624,6 +2234,429 @@
       </categories>
       <tags>
         <tag>mongodb</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ARM64汇编入门</title>
+    <url>/2023/03/18/macos/ARM64%E6%B1%87%E7%BC%96%E5%85%A5%E9%97%A8/</url>
+    <content><![CDATA[<h1 id="ARM-指令概要介绍"><a href="#ARM-指令概要介绍" class="headerlink" title="ARM 指令概要介绍"></a><code>ARM</code> 指令概要介绍</h1><ul>
+<li><code>A64</code> 指令集只能运行在 <code>aarch64</code> 环境中</li>
+<li>所有的A64汇编指令都是 <code>32bits</code> 宽</li>
+<li><code>A64</code> 支持全部是大写或者全部是小写的书写方式</li>
+</ul>
+<p>寄存器名：</p>
+<table>
+<thead>
+<tr>
+<th align="left">Name</th>
+<th align="left">Size</th>
+<th align="left">Encoding</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Wn</td>
+<td align="left">32 bits</td>
+<td align="left">0-30</td>
+<td align="left">Genral-purpose register 0-30</td>
+</tr>
+<tr>
+<td align="left">Xn</td>
+<td align="left">64 bits</td>
+<td align="left">0-30</td>
+<td align="left">Genral-purpose register 0-30</td>
+</tr>
+<tr>
+<td align="left">WZR</td>
+<td align="left">32 bits</td>
+<td align="left">31</td>
+<td align="left">Zero register</td>
+</tr>
+<tr>
+<td align="left">XZR</td>
+<td align="left">64 bits</td>
+<td align="left">31</td>
+<td align="left">Zero register</td>
+</tr>
+<tr>
+<td align="left">WPS</td>
+<td align="left">32 bits</td>
+<td align="left">31</td>
+<td align="left">Current stack pointer</td>
+</tr>
+<tr>
+<td align="left">SP</td>
+<td align="left">64 bits</td>
+<td align="left">31</td>
+<td align="left">Current stack pointer</td>
+</tr>
+</tbody></table>
+<span id="more"></span>
+
+<h2 id="ARM-指令的分类"><a href="#ARM-指令的分类" class="headerlink" title="ARM 指令的分类"></a><code>ARM</code> 指令的分类</h2><ul>
+<li>内存加载和存储指令</li>
+<li>多字节内存加载和存储</li>
+<li>算术和位移指令</li>
+<li>移位操作</li>
+<li>位操作</li>
+<li>条件操作</li>
+<li>跳转指令</li>
+<li>独占访存指令</li>
+<li>内存屏障指令</li>
+<li>异常处理指令</li>
+<li>系统寄存器访问指令</li>
+</ul>
+<h2 id="ARM-指令的一般编码格式"><a href="#ARM-指令的一般编码格式" class="headerlink" title="ARM 指令的一般编码格式"></a><code>ARM</code> 指令的一般编码格式</h2><p>一条典型的 <code>ARM64</code> 指令语法格式如下所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;opcode&gt;&#123;&lt;cond&gt;&#125;&#123;S&#125; &lt;Rd&gt;, &lt;Rn&gt;, &lt;shifter_operand&gt;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>&lt;opcode&gt;</code>：是指令助记符，如 <code>ADD</code> 表示算术加操作指令。</li>
+<li><code>&#123;&lt;cond&gt;&#125;</code>：表示指令执行的条件。</li>
+<li><code>&#123;S&#125;</code>：决定指令的操作是否影响 <code>CPSR</code> 的值。</li>
+<li><code>&lt;Rd&gt;</code>：表示目标寄存器。</li>
+<li><code>&lt;Rn&gt;</code>：表示包含第 <code>1</code> 个操作数的寄存器。</li>
+<li><code>&lt;shifter_operand&gt;</code>：表示第 <code>2</code> 个操作数。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>汇编</category>
+      </categories>
+      <tags>
+        <tag>arm64</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Disk Arbitration</title>
+    <url>/2023/02/16/macos/Disk-Arbitration/</url>
+    <content><![CDATA[<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p><code>Disk Arbitration framework</code> 是一个基于 <code>Core Foundation</code> 的低级框架。会在磁盘出现和消失时通知您的应用程序，并让您的应用程序影响该过程。借助 <code>Disk Arbitration</code>，我们可以：</p>
+<ul>
+<li>检测何时出现新磁盘</li>
+<li>阻止挂载</li>
+<li>使用不同的标志或在不同的安装点上安装卷</li>
+<li>卸载卷</li>
+<li>观察卷的变化</li>
+</ul>
+<span id="more"></span>
+
+<h1 id="使用磁盘仲裁通知和批准回调"><a href="#使用磁盘仲裁通知和批准回调" class="headerlink" title="使用磁盘仲裁通知和批准回调"></a>使用磁盘仲裁通知和批准回调</h1><ol>
+<li>通过调用创建会话对象 <code>DASessionCreate</code>。</li>
+<li>如果您想知道磁盘相关事件何时发生，请注册通知回调；如果您想积极参与仲裁过程，请注册批准回调。</li>
+<li>在运行循环或调度队列上安排会话对象（并在必要时启动运行循环或调度队列）。</li>
+<li>处理您的应用收到的任何回调。</li>
+<li>当应用程序不再需要接收回调时，取消调度会话对象并释放它。</li>
+</ol>
+<h2 id="创建会话"><a href="#创建会话" class="headerlink" title="创建会话"></a>创建会话</h2><p>编写磁盘仲裁通知客户端时必须做的第一件事是创建一个会话 (<code>DASessionRef</code>)。要创建磁盘仲裁会话，请调用<code>DASessionCreate</code>，如下所示：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">DASessionRef session;</span><br><span class="line">session = DASessionCreate(kCFAllocatorDefault);</span><br></pre></td></tr></table></figure>
+
+<h2 id="注册通知和批准"><a href="#注册通知和批准" class="headerlink" title="注册通知和批准"></a>注册通知和批准</h2><p>磁盘仲裁支持两种类型的回调。通知回调告诉您发生了某些事情。批准回调允许您阻止挂载、卸载或弹出操作发生。</p>
+<h3 id="通知回调"><a href="#通知回调" class="headerlink" title="通知回调"></a>通知回调</h3><ul>
+<li><code>DADiskAppearedCallback</code>—出现磁盘或出现分区时调用</li>
+<li><code>DADiskDescriptionChangedCallback</code>—当磁盘的描述发生变化时调用（在 <code>OS X v10.7</code> 及更高版本中，当首次安装卷时）</li>
+<li><code>DADiskDisappearedCallback</code>—弹出可移动磁盘时调用</li>
+<li><code>DADiskPeekCallback</code>—在首次探测磁盘时、自动挂载开始之前以及发送任何其他通知之前调用</li>
+</ul>
+<h3 id="注册函数"><a href="#注册函数" class="headerlink" title="注册函数"></a>注册函数</h3><ul>
+<li><code>DARegisterDiskAppearedCallback</code></li>
+<li><code>DARegisterDiskDescriptionChangedCallback</code></li>
+<li><code>DARegisterDiskDisappearedCallback</code></li>
+<li><code>DARegisterDiskPeekCallback</code></li>
+</ul>
+<p>这些注册函数中的大多数都采用匹配字典。您通常应该传递 <code>NULL``（以匹配所有磁盘）或传递标准匹配字典，例如kDADiskDescriptionMatchMediaUnformatted</code>. 这些匹配字典的详细匹配行为如下所示:</p>
+<table>
+<thead>
+<tr>
+<th align="left">标准字典</th>
+<th align="left">内容</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">kDADiskDescriptionMatchMediaUnformatted</td>
+<td align="left">kDADiskDescriptionMediaSizeKey价值为0</td>
+<td align="left">匹配未格式化的媒体（如空白 DVD）。</td>
+</tr>
+<tr>
+<td align="left">kDADiskDescriptionMatchMediaWhole</td>
+<td align="left">kDADiskDescriptionMediaWholeKey有价值true</td>
+<td align="left">仅匹配整盘媒体（&#x2F;dev&#x2F;disk0例如 ）。</td>
+</tr>
+<tr>
+<td align="left">kDADiskDescriptionMatchVolumeMountable</td>
+<td align="left">kDADiskDescriptionVolumeMountableKey有价值true</td>
+<td align="left">匹配可安装的卷。</td>
+</tr>
+<tr>
+<td align="left">kDADiskDescriptionMatchVolumeUnrecognized</td>
+<td align="left">kDADiskDescriptionVolumeMountableKey有价值false</td>
+<td align="left">匹配不可挂载的磁盘。</td>
+</tr>
+</tbody></table>
+<p>例如，要限制与 USB 连接媒体的匹配，您可以创建一个匹配字典，如下所示：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">CFMutableDictionaryRef matchingDict =</span><br><span class="line">    CFDictionaryCreateMutable(</span><br><span class="line">        kCFAllocatorDefault,</span><br><span class="line">        <span class="number">0</span>,</span><br><span class="line">        &amp;kCFTypeDictionaryKeyCallBacks,</span><br><span class="line">        &amp;kCFTypeDictionaryValueCallBacks);</span><br><span class="line"> </span><br><span class="line">CFDictionaryAddValue(matchingDict,</span><br><span class="line">    kDADiskDescriptionDeviceProtocolKey,</span><br><span class="line">    CFSTR(kIOPropertyPhysicalInterconnectTypeUSB));</span><br></pre></td></tr></table></figure>
+<p><a href="https://developer.apple.com/documentation/kernel/kiopropertyphysicalinterconnecttypeusb">IOStorageProtocolCharacteristics.h User-Space Reference</a>中描述了其他互连类型和其他相关常量。最后，只要磁盘事件与指定的匹配字典（或多个字典）和使用上下文指针的事件类型匹配，您就可以将任意数据传递给回调。通过传递不同的上下文指针，您可以使用不同的匹配字典多次注册相同的回调，并向回调提供指示哪个注册匹配的信息。如果您不需要提供此类上下文信息，只需传递NULL此参数即可。</p>
+<p>每个回调的详细信息在以下部分中有更详细的描述。</p>
+<h3 id="注销通回调"><a href="#注销通回调" class="headerlink" title="注销通回调"></a>注销通回调</h3><p>当您不再需要通知回调时，通过调用取消注册 <code>DAUnregisterCallback</code>。例如：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">DAUnregisterCallback(session, mycallbackfuntion, <span class="literal">NULL</span>);</span><br></pre></td></tr></table></figure>
+<p><strong>请务必传入注册函数时使用的原始上下文指针值</strong>。</p>
+<h3 id="批准回调"><a href="#批准回调" class="headerlink" title="批准回调"></a>批准回调</h3><p>通过三种方式在磁盘仲裁中注册批准回调，具体取决于您希望何时收到通知。</p>
+<ul>
+<li>如果您希望在弹出磁盘之前获得许可，请调用 <code>DARegisterDiskEjectApprovalCallback</code>.</li>
+<li>如果您希望在安装卷之前获得许可，请调用 <code>DARegisterDiskMountApprovalCallback</code>.</li>
+<li>如果您希望在卸载卷之前获得许可，请调用 <code>DARegisterDiskUnmountApprovalCallback</code>。</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">DADissenterRef <span class="title function_">allow_mount</span><span class="params">(DADiskRef disk, <span class="type">void</span> *context)</span>;</span><br><span class="line"> </span><br><span class="line">...</span><br><span class="line"> </span><br><span class="line">session = DASessionCreate(kCFAllocatorDefault);</span><br><span class="line"> </span><br><span class="line">DARegisterDiskMountApprovalCallback(session,</span><br><span class="line">                <span class="literal">NULL</span>, <span class="comment">/* Match all disks */</span></span><br><span class="line">                allow_mount,</span><br><span class="line">                <span class="literal">NULL</span>); <span class="comment">/* No context */</span></span><br><span class="line"> </span><br><span class="line">...</span><br><span class="line"> </span><br><span class="line">DADissenterRef <span class="title function_">allow_mount</span><span class="params">(</span></span><br><span class="line"><span class="params">        DADiskRef disk,</span></span><br><span class="line"><span class="params">        <span class="type">void</span> *context)</span></span><br><span class="line">&#123;</span><br><span class="line">        <span class="type">int</span> allow = <span class="number">0</span>;</span><br><span class="line"> </span><br><span class="line">        <span class="keyword">if</span> (allow) &#123;</span><br><span class="line">                <span class="comment">/* Return NULL to allow */</span></span><br><span class="line">                <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">&quot;allow_mount: allowing mount.\n&quot;</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">/* Return a dissenter to deny */</span></span><br><span class="line">                <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">&quot;allow_mount: refusing mount.\n&quot;</span>);</span><br><span class="line">                <span class="keyword">return</span> DADissenterCreate(</span><br><span class="line">                        kCFAllocatorDefault, kDAReturnExclusiveAccess,</span><br><span class="line">                        CFSTR(<span class="string">&quot;It&#x27;s mine!&quot;</span>));</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="注销批准回调"><a href="#注销批准回调" class="headerlink" title="注销批准回调"></a>注销批准回调</h3><p>当您不再需要批准回调时，您应该通过调用取消注册 <code>DAUnregisterApprovalCallback</code>。例如：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">DAUnregisterApprovalCallback(session, mycallbackfuntion, <span class="literal">NULL</span>);</span><br></pre></td></tr></table></figure>
+<p><strong>请务必传入注册函数时使用的原始上下文指针值</strong>。</p>
+<h2 id="使用调度队列"><a href="#使用调度队列" class="headerlink" title="使用调度队列"></a>使用调度队列</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* Schedule the session on a dispatch queue. */</span></span><br><span class="line">DASessionSetDispatchQueue(session, <span class="built_in">queue</span>);</span><br><span class="line"> </span><br><span class="line"><span class="comment">/* Unschedule the session on a dispatch queue. */</span></span><br><span class="line">DASessionSetDispatchQueue(session, <span class="literal">NULL</span>);</span><br><span class="line"> </span><br><span class="line"><span class="comment">/* Clean up the session resources. */</span></span><br><span class="line">CFRelease(session);</span><br></pre></td></tr></table></figure>
+<h2 id="使用运行循环"><a href="#使用运行循环" class="headerlink" title="使用运行循环"></a>使用运行循环</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* Schedule a disk arbitration session. */</span></span><br><span class="line">DASessionScheduleWithRunLoop(session, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode);</span><br><span class="line"> </span><br><span class="line"><span class="comment">/* Start the run loop.  (Don&#x27;t do this if you already have</span></span><br><span class="line"><span class="comment">   a running Core Foundation or Cocoa run loop.) */</span></span><br><span class="line">CFRunLoopRun();</span><br><span class="line"> </span><br><span class="line"><span class="comment">/* Clean up a session. */</span></span><br><span class="line">DASessionUnscheduleFromRunLoop(session,</span><br><span class="line">    CFRunLoopGetCurrent(), kCFRunLoopDefaultMode);</span><br><span class="line">CFRelease(session);</span><br></pre></td></tr></table></figure>
+
+<h1 id="操作磁盘和卷"><a href="#操作磁盘和卷" class="headerlink" title="操作磁盘和卷"></a>操作磁盘和卷</h1><h2 id="获取磁盘对象"><a href="#获取磁盘对象" class="headerlink" title="获取磁盘对象"></a>获取磁盘对象</h2><p>在您可以操作磁盘或卷之前，您必须<code>DADiskRef</code>为该磁盘或卷获取一个对象。通过四种方式获取对象：</p>
+<ul>
+<li>作为传递给事件回调的参数（在使用磁盘仲裁通知和批准回调中描述）</li>
+<li>通过调用从 <code>io_service_t</code>用户空间引用到有效设备切片的对象 <code>IOMediaDADiskCreateFromIOMedia</code></li>
+<li>您可以通过调用或io_service_t来获取对象的用户空间引用。</li>
+<li>从 <code>BSD</code> 设备名称（disk1s1例如）使用 <code>DADiskCreateFromBSDName</code></li>
+<li>从挂载点调用 <code>DADiskCreateFromVolumePath</code></li>
+</ul>
+<p>如果您有一个<code>io_service_t</code>对象或一个 <code>BSD</code> 设备名称，您的应用程序可以创建一个<code>DADiskRef</code>对象，如下所示：</p>
+<p><code>DASessionRef</code>按照创建会话中的描述创建一个对象。</p>
+<ul>
+<li>按照<code>Scheduling the Session with the Run Loop or Dispatch Queue</code>中的描述安排它。确保您的调度队列或运行循环正在运行。</li>
+<li>创建磁盘对象。</li>
+<li>根据需要操纵它们。</li>
+</ul>
+<h2 id="获取磁盘信息"><a href="#获取磁盘信息" class="headerlink" title="获取磁盘信息"></a>获取磁盘信息</h2><p>盘仲裁提供三个函数来获取有关磁盘和分区的附加信息：<code>DADiskCopyDescription</code> 、<code>DADiskGetBSDName</code> 和<code>DADiskCopyIOMedia</code>。通常，您可以通过调用 获得关于特定磁盘的几乎所有信息 <code>DADiskCopyDescription</code>。然而，对于一些相当深奥的信息，您可能必须<code>IOMedia</code>为磁盘获取一个对象并查询该对象。</p>
+<p>如果您需要磁盘或分区的 <code>BSD</code> 设备名称（<code>disk1s1</code>例如）作为 <code>C</code> 字符串（通常在使用 <code>POSIX</code> 级 <code>API</code> 时使用），请调用 <code>DADiskGetBSDName</code>.<br>对于大多数其他信息，请调用<code>DADiskCopyDescription</code>，如获取描述字典中所述。<br>如果无法通过 获得您需要的信息 <code>DADiskCopyDescription</code>，请调用DADiskCopyIOMedia。</p>
+<h3 id="获取描述字典"><a href="#获取描述字典" class="headerlink" title="获取描述字典"></a>获取描述字典</h3><p><code>DADiskCopyDescription</code>方法返回一个 <code>CFDictionaryRef</code> 对象，其中包含有关磁盘或分区的几十条信息。一些常用的数据包括：</p>
+<ul>
+<li>挂载点和卷名</li>
+<li><code>BSD</code> 设备节点名称和主要和次要编号</li>
+<li>有关硬件的信息（<code>设备 ID</code> 、<code>供应商 ID</code> 、<code>GUID</code> 等）</li>
+<li>连接信息（总线名称和路径</li>
+</ul>
+<p>您可以在磁盘仲裁框架的标头中找到完整的属性列表 <a href="https://developer.apple.com/documentation/diskarbitration/dadisk_h?language=objc">DADisk.h Reference.</a>，以及每个键值的预期数据类型的描述。</p>
+<h3 id="从-I-O-Kit-获取附加信息"><a href="#从-I-O-Kit-获取附加信息" class="headerlink" title="从 I/O Kit 获取附加信息"></a>从 <code>I/O Kit</code> 获取附加信息</h3><p>在极少数情况下，您可能需要获取有关磁盘的其他信息，而不是磁盘仲裁提供的信息。如果这样做，您可以调用<code>DADiskCopyIOMedia</code>以获取一个 <code>io_service_t</code>对象，该对象是对象的用户空间表示 <code>IOMedia</code>。您可以像操作任何 <code>I/O Registry</code> 对象一样操作此对象。</p>
+<p>例如，您可以通过调用 <code>IORegistryEntryCreateCFProperties</code>结果对象来获取具有媒体 <code>I/O</code> 注册表属性的 <code>Core Foundation</code> 字典。</p>
+<p><code>I/O Registry</code> 字典中的属性在 <code>I/O Kit Framework</code> 中定义。有关详细信息，请参阅<a href="https://developer.apple.com/documentation/iokit">I&#x2F;O Kit Framework Reference</a>。</p>
+<h2 id="安装和卸载卷"><a href="#安装和卸载卷" class="headerlink" title="安装和卸载卷"></a>安装和卸载卷</h2><ul>
+<li><p><code>DADiskMount</code></p>
+</li>
+<li><p><code>DADiskMountWithArguments</code></p>
+  <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">unsigned</span> <span class="type">char</span> *mppath = <span class="string">&quot;/mnt/mydisk&quot;</span>;</span><br><span class="line"></span><br><span class="line">path = CFURLCreateFromFileSystemRepresentation(</span><br><span class="line">    kCFAllocatorDefault,</span><br><span class="line">    mppath,</span><br><span class="line">    <span class="built_in">strlen</span>(mppath),</span><br><span class="line">    <span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line">DADiskMountWithArguments(disk, path, kDADiskMountOptionDefault,</span><br><span class="line">    mount_complete_callback, <span class="literal">NULL</span>,</span><br><span class="line">    <span class="literal">NULL</span>);</span><br></pre></td></tr></table></figure></li>
+<li><p><code>DADiskUnmount</code></p>
+  <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">unmount_done</span><span class="params">(DADiskRef disk,</span></span><br><span class="line"><span class="params">DADissenterRef dissenter,</span></span><br><span class="line"><span class="params"><span class="type">void</span> *context)</span>;</span><br><span class="line"> </span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">DADiskUnmount(disk, kDADiskUnmountOptionDefault,</span><br><span class="line">    unmount_done, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">unmount_done</span><span class="params">(DADiskRef disk,</span></span><br><span class="line"><span class="params">    DADissenterRef dissenter,</span></span><br><span class="line"><span class="params">    <span class="type">void</span> *context)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (dissenter) &#123;</span><br><span class="line">        <span class="comment">/* Unmount failed. */</span></span><br><span class="line">        <span class="type">char</span> buf[MAXPATHLEN];</span><br><span class="line">        <span class="keyword">if</span> (CFURLGetFileSystemRepresentation(fspath, <span class="literal">false</span>, (UInt8 *)buf, <span class="keyword">sizeof</span>(buf))) &#123;</span><br><span class="line">            <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">&quot;Unmount failed (Error: 0x%x Reason: %s).  Retrying.\n&quot;</span>,</span><br><span class="line">                DADissenterGetStatus(dissenter),</span><br><span class="line">                buf);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">/* Something is *really* wrong. */</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">/* Do something. */</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="弹出磁盘"><a href="#弹出磁盘" class="headerlink" title="弹出磁盘"></a>弹出磁盘</h2><p>在弹出磁盘之前，您必须卸载磁盘上的所有卷。首先调用 <code>DADiskUnmount</code>，将整个磁盘分区作为磁盘参数传递，并<code>kDADiskUnmountOptionWhole</code> 在卸载选项中设置标志。然后调用 <code>DADiskEject</code></p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">unmount_done</span><span class="params">(DADiskRef disk,</span></span><br><span class="line"><span class="params">    DADissenterRef dissenter,</span></span><br><span class="line"><span class="params">    <span class="type">void</span> *context)</span>;</span><br><span class="line"><span class="type">void</span> <span class="title function_">eject_done</span><span class="params">(DADiskRef disk,</span></span><br><span class="line"><span class="params">    DADissenterRef dissenter,</span></span><br><span class="line"><span class="params">    <span class="type">void</span> *context)</span>;</span><br><span class="line"> </span><br><span class="line">...</span><br><span class="line"> </span><br><span class="line"><span class="comment">/* Unmount all volumes */</span></span><br><span class="line">DADiskRef wholedisk = DADiskCopyWholeDisk(partition);</span><br><span class="line">DADiskUnmount(wholedisk, kDADiskUnmountOptionWhole,</span><br><span class="line">    unmount_done, <span class="literal">NULL</span>);</span><br><span class="line">CFRelease(wholedisk);</span><br><span class="line"> </span><br><span class="line">...</span><br><span class="line"> </span><br><span class="line"><span class="comment">/* In the unmount callback, eject the volume. */</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">unmount_done</span><span class="params">(DADiskRef disk,</span></span><br><span class="line"><span class="params">    DADissenterRef dissenter,</span></span><br><span class="line"><span class="params">    <span class="type">void</span> *context)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (dissenter) &#123;</span><br><span class="line">        ...</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        DADiskEject(disk, kDADiskEjectOptionDefault,</span><br><span class="line">            eject_done, <span class="literal">NULL</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/* Eject callback. */</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">eject_done</span><span class="params">(DADiskRef disk,</span></span><br><span class="line"><span class="params">    DADissenterRef dissenter,</span></span><br><span class="line"><span class="params">    <span class="type">void</span> *context)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (dissenter) &#123;</span><br><span class="line">        ...</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ul>
+<li><a href="https://developer.apple.com/library/archive/documentation/DriversKernelHardware/Conceptual/DiskArbitrationProgGuide/">Disk Arbitration Programming Guide</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>MacOS</category>
+      </categories>
+      <tags>
+        <tag>MacOS</tag>
+        <tag>Disk</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>@executable path, @load path 和 @rpath</title>
+    <url>/2023/08/25/macos/executable-path-load-path-%E5%92%8C-rpath/</url>
+    <content><![CDATA[<p>在 <code>macOS</code> 上，动态链接器使用特定的路径变量来解析运行时的库位置。这些路径变量包括：绝对路径、 <code>@executable_path</code>、<code>@loader_path</code> 和 <code>@rpath</code>。</p>
+<h1 id="绝对路径"><a href="#绝对路径" class="headerlink" title="绝对路径"></a>绝对路径</h1><p>对于安装在系统中共享位置的框架很有用，一般是 <code>/Library/Frameworks/xxx</code>、 <code>/usr/lib/xxx</code>, 但是查找嵌入在应用内部的动态库就很难使用，应用安装的位置都不固定，所以引出新的方式。</p>
+<h1 id="executable-path"><a href="#executable-path" class="headerlink" title="@executable path"></a>@executable path</h1><p><code>@executable_path</code> 是用于指代<strong>当前正在执行的程序或应用的路径</strong>。当你的应用程序或其动态库需要引用位于与可执行文件相同路径（或其子目录）下的其他动态库时，这会非常有用。</p>
+<span id="more"></span>
+<p>举例说明: </p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">MyApp/</span><br><span class="line">|-- MyApp.app/</span><br><span class="line">    |-- Contents/</span><br><span class="line">        |-- MacOS/</span><br><span class="line">            |-- MyApp (可执行文件)</span><br><span class="line">            |-- libA.dylib (动态库A)</span><br><span class="line">        |-- Frameworks/</span><br><span class="line">            |-- libB.dylib (动态库B)</span><br></pre></td></tr></table></figure>
+
+<p>假设 <code>MyApp</code> 依赖于 <code>libA.dylib</code>，而 <code>libA.dylib</code> 依赖于 <code>libB.dylib</code>。<br>如果你希望 <code>libA.dylib</code> 在运行时找到 <code>libB.dylib</code>，可以设置 <code>libB.dylib</code> 的安装名称为 <code>@executable_path/../Frameworks/libB.dylib</code>。当 <code>MyApp</code> 启动并加载 <code>libA.dylib</code> 时，<code>@executable_path</code> 将解析为 <code>MyApp.app/Contents/MacOS/</code>，因此 <code>libA.dylib</code> 会正确地找到 <code>libB.dylib</code> 在 <code>MyApp.app/Contents/Frameworks/</code> 目录下。</p>
+<h1 id="load-path"><a href="#load-path" class="headerlink" title="@load path"></a>@load path</h1><p><strong>加载的动态库的路径</strong>。在很多情况下，这个路径是基于正在加载该库的模块，因此它可能会随着加载该库的不同模块而变化。</p>
+<p>举例说明:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">MyApp/</span><br><span class="line">|-- MyApp.app/</span><br><span class="line">    |-- Contents/</span><br><span class="line">        |-- MacOS/</span><br><span class="line">            |-- MyApp (主应用程序)</span><br><span class="line">            |-- libMain.dylib (主应用的动态库)</span><br><span class="line">        |-- Plugins/</span><br><span class="line">            |-- PluginA.bundle/</span><br><span class="line">                |-- PluginA (插件)</span><br><span class="line">                |-- libPluginA.dylib (插件的动态库)</span><br></pre></td></tr></table></figure>
+<p>在这个例子中，<code>MyApp</code> 依赖 <code>libMain.dylib</code>，而 <code>PluginA</code> 依赖 <code>libPluginA.dylib</code>。</p>
+<ul>
+<li><p>使用 <code>@executable_path</code>：</p>
+<p>如果 <code>libMain.dylib</code> 需要引用与其位于同一目录下的另一个库，如 <code>libHelper.dylib</code>，它可以使用 <code>@executable_path/libHelper.dylib</code> 作为路径。但是，这对 <code>PluginA</code> 中的库不起作用，因为 <code>@executable_path</code> 总是指向 <code>MyApp.app/Contents/MacOS/</code>，不考虑加载它的实际模块。</p>
+</li>
+<li><p>使用 <code>@loader_path</code>：</p>
+<p>如果 <code>libPluginA.dylib</code> 需要引用与其位于同一目录下的另一个库，如 <code>libHelper.dylib</code>，它可以使用 <code>@loader_path/libHelper.dylib</code> 作为路径。这样，不管 <code>libPluginA.dylib</code> 被哪个模块加载，它都会正确地引用到相对于加载它的模块的库。</p>
+</li>
+</ul>
+<p><strong>如果是一个应用程序，那么 <code>@load path</code> 与 <code>@executable_path</code> 相同。</strong></p>
+<h1 id="rpath"><a href="#rpath" class="headerlink" title="@rpath"></a>@rpath</h1><p><code>@rpath (Runtime Search Path)</code> 提供了一种动态方式来指定和查找动态库。它的主要优势是提供了更多的灵活性，尤其是在面对多种可能的库位置或多个版本的库时。</p>
+<p>举例说明:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">MyApp/</span><br><span class="line">|-- MyApp.app/</span><br><span class="line">    |-- Contents/</span><br><span class="line">        |-- MacOS/</span><br><span class="line">            |-- MyApp (可执行文件)</span><br><span class="line">        |-- Frameworks/</span><br><span class="line">            |-- libA.dylib (动态库A版本1)</span><br><span class="line">        |-- Plugins/</span><br><span class="line">            |-- PluginA/</span><br><span class="line">                |-- libA.dylib (动态库A版本2)</span><br></pre></td></tr></table></figure>
+
+<p>假设 <code>MyApp</code> 可能需要加载两个版本中的任何一个 <code>libA.dylib</code>，具体取决于特定的运行时情境。使用<code> @rpath</code> 可以轻松管理这种情况。</p>
+<ul>
+<li><p>设置 <code>@rpath</code>:</p>
+<p>  在构建 <code>MyApp</code> 时，你可以设置多个运行时搜索路径（<code>rpaths</code>）:</p>
+<ul>
+<li><code>@executable_path/../Frameworks</code></li>
+<li><code>@executable_path/../Plugins/PluginA</code></li>
+</ul>
+</li>
+<li><p>使用 <code>@rpath</code> 在动态库中:</p>
+<p>  设 <code>libA.dylib</code> 的安装名称为 <code>@rpath/libA.dylib</code>。</p>
+</li>
+<li><p>运行时解析:</p>
+<p>  当 <code>MyApp</code> 需要加载 <code>libA.dylib</code> 时，它会沿着 <code>rpath</code> 列表搜索。首先在 <code>Frameworks</code> 文件夹中查找，然后在 <code>PluginA</code> 文件夹中查找。</p>
+</li>
+</ul>
+<p>这种方法的好处是，你可以轻松地将相同的库放在多个位置，而不需要为每个位置硬编码路径。此外，应用程序的用户或开发人员可以通过修改 <code>rpath</code> 来改变库的搜索顺序或位置。</p>
+<h1 id="install-name-tool"><a href="#install-name-tool" class="headerlink" title="install_name_tool"></a><code>install_name_tool</code></h1><p>要查看或修改一个可执行文件或动态库的 <code>rpath</code>，你可以使用 <code>otool</code> 和 <code>install_name_tool</code> 这两个命令行工具。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ otool -l WeChat</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">Load command 104</span><br><span class="line">          cmd LC_LOAD_DYLIB</span><br><span class="line">      cmdsize 64</span><br><span class="line">         name /usr/lib/swift/libswiftsimd.dylib (offset 24)</span><br><span class="line">   time stamp 2 Thu Jan  1 08:00:02 1970</span><br><span class="line">      current version 9.0.0</span><br><span class="line">compatibility version 1.0.0</span><br><span class="line">Load command 105</span><br><span class="line">          cmd LC_LOAD_DYLIB</span><br><span class="line">      cmdsize 64</span><br><span class="line">         name /usr/lib/swift/libswiftFoundation.dylib (offset 24)</span><br><span class="line">   time stamp 2 Thu Jan  1 08:00:02 1970</span><br><span class="line">      current version 1.0.0</span><br><span class="line">compatibility version 1.0.0</span><br><span class="line">Load command 106</span><br><span class="line">          cmd LC_RPATH</span><br><span class="line">      cmdsize 32</span><br><span class="line">         path /usr/lib/swift (offset 12)</span><br><span class="line">Load command 107</span><br><span class="line">          cmd LC_RPATH</span><br><span class="line">      cmdsize 48</span><br><span class="line">         path @executable_path/../Frameworks (offset 12)</span><br><span class="line">...</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>添加 <code>rpath</code>:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">install_name_tool -add_rpath @executable_path/. a.out</span><br></pre></td></tr></table></figure>
+
+<p>修改 <code>rpath</code>:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">install_name_tool -change libFoo @rpath/libFoo a.out</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>MacOS</category>
+      </categories>
+      <tags>
+        <tag>DYLD</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>macOS Ventura App 管理</title>
+    <url>/2024/01/04/macos/macOS-Ventura-App-%E7%AE%A1%E7%90%86/</url>
+    <content><![CDATA[<p>从 <code>macOS Monterey</code> 开始，如果应用程序被未由相同开发团队签名且未由 <code>NSUpdateSecurityPolicy</code> 允许的东西修改，<code>macOS</code> 将阻止修改并通知用户应用程序希望管理其他应用程序。点击通知会将用户发送到系统设置，他们可以在那里允许应用程序更新和修改其他应用程序。</p>
+<p><img src="/images/appmanager.png" alt="appmanager"></p>
+<span id="more"></span>
+
+<ul>
+<li>从 <code>macOS Ventura</code> 开始，<code>Gatekeeper</code> 将检查所有经过公证的应用程序的完整性，而不仅仅是隔离的应用程序。</li>
+<li>从 <code>macOS Ventura</code> 开始，如果您的认证应用程序的签名不再有效，<code>Gatekeeper</code> 将在<strong>首次启动</strong>时阻止其运行。<ul>
+<li><code>macOS Monterey</code> 及更早版本仅在修改后的已认证应用程序仍<strong>处于隔离状态</strong>时才会阻止首次启动。</li>
+</ul>
+</li>
+<li>从 <code>macOS Ventura</code> 开始，<code>Gatekeeper</code> 还将阻止应用以某些方式修改您的应用程序。</li>
+<li><strong>完全磁盘访问自动包含应用程序管理权限</strong>。即使在系统设置中禁用了应用程序管理权限。</li>
+<li>应用程序如何更新<ul>
+<li>由同一开发者帐户或团队有效签名的应用程序将继续能够互相更新。这将自动进行。</li>
+<li>要允许另一个开发团队更新您的应用程序或限制仅由您的更新程序更新，需要在 <code>info-plist</code>，添加 <code>NSUpdateSecurityPolicy</code> 。在 <code>NSUpdateSecurityPolicy</code> 内部，添加”<code>AllowProcesses</code>“，一个将团队标识符映射到签名标识符数组的字典。</li>
+</ul>
+</li>
+</ul>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ul>
+<li><a href="https://developer.apple.com/videos/play/wwdc2022/10096/">What’s new in privacy</a></li>
+<li><a href="https://lapcatsoftware.com/articles/AppManagement.html">How macOS Ventura App Management works and doesn’t work</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>macOS</category>
+      </categories>
+      <tags>
+        <tag>macOS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>macOS 设置面板快捷链接</title>
+    <url>/2023/12/28/macos/macOS-%E8%AE%BE%E7%BD%AE%E9%9D%A2%E6%9D%BF%E5%BF%AB%E6%8D%B7%E9%93%BE%E6%8E%A5/</url>
+    <content><![CDATA[<h1 id="Accessibility-Preference-Pane"><a href="#Accessibility-Preference-Pane" class="headerlink" title="Accessibility Preference Pane"></a>Accessibility Preference Pane</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Main    x-apple.systempreferences:com.apple.preference.universalaccess</span><br><span class="line">Display x-apple.systempreferences:com.apple.preference.universalaccess?Seeing_Display</span><br><span class="line">Zoom    x-apple.systempreferences:com.apple.preference.universalaccess?Seeing_Zoom</span><br><span class="line">VoiceOver   x-apple.systempreferences:com.apple.preference.universalaccess?Seeing_VoiceOver</span><br><span class="line">Descriptions    x-apple.systempreferences:com.apple.preference.universalaccess?Media_Descriptions</span><br><span class="line">Captions    x-apple.systempreferences:com.apple.preference.universalaccess?Captioning</span><br><span class="line">Audio   x-apple.systempreferences:com.apple.preference.universalaccess?Hearing</span><br><span class="line">Keyboard    x-apple.systempreferences:com.apple.preference.universalaccess?Keyboard</span><br><span class="line">Mouse &amp; Trackpad    x-apple.systempreferences:com.apple.preference.universalaccess?Mouse</span><br><span class="line">Switch Control  x-apple.systempreferences:com.apple.preference.universalaccess?Switch</span><br><span class="line">Dictation   x-apple.systempreferences:com.apple.preference.universalaccess?SpeakableItems</span><br></pre></td></tr></table></figure>
+<span id="more"></span>
+
+<h1 id="Security-Privacy-Preference-Pane"><a href="#Security-Privacy-Preference-Pane" class="headerlink" title="Security &amp; Privacy Preference Pane"></a>Security &amp; Privacy Preference Pane</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Main    x-apple.systempreferences:com.apple.preference.security</span><br><span class="line">General x-apple.systempreferences:com.apple.preference.security?General</span><br><span class="line">FileVault   x-apple.systempreferences:com.apple.preference.security?FDE</span><br><span class="line">Firewall    x-apple.systempreferences:com.apple.preference.security?Firewall</span><br><span class="line">Advanced    x-apple.systempreferences:com.apple.preference.security?Advanced</span><br><span class="line">Privacy x-apple.systempreferences:com.apple.preference.security?Privacy</span><br><span class="line">Privacy-Camera x-apple.systempreferences:com.apple.preference.security?Privacy_Camera</span><br><span class="line">Privacy-Microphone  x-apple.systempreferences:com.apple.preference.security?Privacy_Microphone</span><br><span class="line">Privacy-Automation  x-apple.systempreferences:com.apple.preference.security?Privacy_Automation</span><br><span class="line">Privacy-AllFiles    x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles</span><br><span class="line">Privacy-Accessibility   x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility</span><br><span class="line">Privacy-Assistive   x-apple.systempreferences:com.apple.preference.security?Privacy_Assistive</span><br><span class="line">Privacy-Location Services   x-apple.systempreferences:com.apple.preference.security?Privacy_LocationServices</span><br><span class="line">Privacy-SystemServices  x-apple.systempreferences:com.apple.preference.security?Privacy_SystemServices</span><br><span class="line">Privacy-Advertising x-apple.systempreferences:com.apple.preference.security?Privacy_Advertising</span><br><span class="line">Privacy-Contacts    x-apple.systempreferences:com.apple.preference.security?Privacy_Contacts</span><br><span class="line">Privacy-Diagnostics &amp; Usage x-apple.systempreferences:com.apple.preference.security?Privacy_Diagnostics</span><br><span class="line">Privacy-Calendars   x-apple.systempreferences:com.apple.preference.security?Privacy_Calendars</span><br><span class="line">Privacy-Reminders   x-apple.systempreferences:com.apple.preference.security?Privacy_Reminders</span><br><span class="line">Privacy-Facebook    x-apple.systempreferences:com.apple.preference.security?Privacy_Facebook</span><br><span class="line">Privacy-LinkedIn    x-apple.systempreferences:com.apple.preference.security?Privacy_LinkedIn</span><br><span class="line">Privacy-Twitter x-apple.systempreferences:com.apple.preference.security?Privacy_Twitter</span><br><span class="line">Privacy-Weibo   x-apple.systempreferences:com.apple.preference.security?Privacy_Weibo</span><br><span class="line">Privacy-Tencent Weibo   x-apple.systempreferences:com.apple.preference.security?Privacy_TencentWeibo</span><br></pre></td></tr></table></figure>
+
+<h2 id="macOS-Catalina-10-15"><a href="#macOS-Catalina-10-15" class="headerlink" title="macOS Catalina 10.15"></a>macOS Catalina 10.15</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Privacy-ScreenCapture   x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture</span><br><span class="line">Privacy-DevTools    x-apple.systempreferences:com.apple.preference.security?Privacy_DevTools</span><br><span class="line">Privacy-InputMonitoring x-apple.systempreferences:com.apple.preference.security?Privacy_ListenEvent</span><br><span class="line">Privacy-DesktopFolder   x-apple.systempreferences:com.apple.preference.security?Privacy_DesktopFolder</span><br><span class="line">Privacy-DocumentsFolder x-apple.systempreferences:com.apple.preference.security?Privacy_DocumentsFolder</span><br><span class="line">Privacy-DownloadsFolder x-apple.systempreferences:com.apple.preference.security?Privacy_DownloadsFolder</span><br><span class="line">Privacy-NetworkVolume   x-apple.systempreferences:com.apple.preference.security?Privacy_NetworkVolume</span><br><span class="line">Privacy-RemovableVolume x-apple.systempreferences:com.apple.preference.security?Privacy_RemovableVolume</span><br><span class="line">Privacy-SpeechRecognition   x-apple.systempreferences:com.apple.preference.security?Privacy_SpeechRecognition</span><br></pre></td></tr></table></figure>
+<h1 id="Dictation-Speech-Preference-Pane"><a href="#Dictation-Speech-Preference-Pane" class="headerlink" title="Dictation &amp; Speech Preference Pane"></a>Dictation &amp; Speech Preference Pane</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Dictation   x-apple.systempreferences:com.apple.preference.speech?Dictation</span><br><span class="line">Text to Speech  x-apple.systempreferences:com.apple.preference.speech?TTS</span><br><span class="line">Sharing Preference Pane</span><br><span class="line">Main    x-apple.systempreferences:com.apple.preferences.sharing</span><br><span class="line">Screen Sharing  x-apple.systempreferences:com.apple.preferences.sharing?Services_ScreenSharing</span><br><span class="line">File Sharing    x-apple.systempreferences:com.apple.preferences.sharing?Services_PersonalFileSharing</span><br><span class="line">Printer Sharing x-apple.systempreferences:com.apple.preferences.sharing?Services_PrinterSharing</span><br><span class="line">Remote Login    x-apple.systempreferences:com.apple.preferences.sharing?Services_RemoteLogin</span><br><span class="line">Remote Management   x-apple.systempreferences:com.apple.preferences.sharing?Services_ARDService</span><br><span class="line">Remote Apple Events x-apple.systempreferences:com.apple.preferences.sharing?Services_RemoteAppleEvent</span><br><span class="line">Internet Sharing    x-apple.systempreferences:com.apple.preferences.sharing?Internet</span><br><span class="line">Bluetooth Sharing   x-apple.systempreferences:com.apple.preferences.sharing?Services_BluetoothSharing</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>macOS</category>
+      </categories>
+      <tags>
+        <tag>macOS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Mach-O 相关记录</title>
+    <url>/2023/03/10/macos/mach-o/</url>
+    <content><![CDATA[<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><h1 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h1>]]></content>
+      <categories>
+        <category>MacOS</category>
+      </categories>
+      <tags>
+        <tag>Mach-O</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>在MacOS平台上符号化崩溃报告</title>
+    <url>/2022/07/26/macos/%E5%9C%A8MacOS%E5%B9%B3%E5%8F%B0%E4%B8%8A%E7%AC%A6%E5%8F%B7%E5%8C%96%E5%B4%A9%E6%BA%83%E6%8A%A5%E5%91%8A/</url>
+    <content><![CDATA[<h1 id="dSYM"><a href="#dSYM" class="headerlink" title=".dSYM"></a><code>.dSYM</code></h1><p><code>.dSYM</code> (<code>debugging SYMbols</code>) 又称为调试符号表，是苹果为了方便调试和定位问题而使用的一种调试方案，本质上使用的是起源于贝尔实验室的 <code>DWARF</code>（<code>Debugging With Attributed Record Formats</code>），其在.xcarchive目录中的层次结构为：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">.xcarchive</span><br><span class="line">--dSYMs</span><br><span class="line">  |--Your.app.dSYM</span><br><span class="line">    |--Contents</span><br><span class="line">      |--Resources</span><br><span class="line">        |--DWARF</span><br></pre></td></tr></table></figure>
+<span id="more"></span>
+<p>如果在XCode中设置了带有 <code>dSYM</code> 文件的 <code>DWARF</code> 选项，则编译器会生成 <code>dSYM</code> 文件，并将其存储在您的构建中。<br><img src="/images/dsym.png"></p>
+<h1 id="确定符号表和崩溃日志的一致性"><a href="#确定符号表和崩溃日志的一致性" class="headerlink" title="确定符号表和崩溃日志的一致性"></a>确定符号表和崩溃日志的一致性</h1><h2 id="崩溃日志中获取UUID"><a href="#崩溃日志中获取UUID" class="headerlink" title="崩溃日志中获取UUID"></a>崩溃日志中获取UUID</h2><p>崩溃日志比较靠下的位置有个 <code>Binary Images</code> 模块，其第一行内容如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Binary Images:</span><br><span class="line">0x109724000 - 0x109cf7fff Your &lt;19a667b1-8910-3890-a0b0-03befee8876e&gt; /Library/Application Support/YourApp/*/YourApp.app/Contents/MacOS/YourApp</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ul>
+<li>代码段的起终地址: <code>0x109724000 - 0x109cf7fff</code></li>
+<li>应用的UUID：<code>19a667b1-8910-3890-a0b0-03befee8876e</code>（不区分大小写）</li>
+</ul>
+<h2 id="从符号表中获取UUID"><a href="#从符号表中获取UUID" class="headerlink" title="从符号表中获取UUID"></a>从符号表中获取UUID</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ dwarfdump --uuid Your.app.dSYM</span><br></pre></td></tr></table></figure>
+<p>或者：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ dwarfdump --uuid Your.app.dSYM/Contents/Resources/DWARF/Your</span><br></pre></td></tr></table></figure>
+
+<p><strong>崩溃日志中和符号表中的UUID一致，才能正确解析</strong></p>
+<h1 id="计算崩溃符号表地址"><a href="#计算崩溃符号表地址" class="headerlink" title="计算崩溃符号表地址"></a>计算崩溃符号表地址</h1><h2 id="符号表堆栈地址计算方式"><a href="#符号表堆栈地址计算方式" class="headerlink" title="符号表堆栈地址计算方式"></a>符号表堆栈地址计算方式</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Thread 0::  Dispatch queue: com.apple.main-thread</span><br><span class="line">0   libsystem_kernel.dylib        	    0x7ff8159e775e write + 10</span><br><span class="line">1   libapr-1.0.dylib              	    0x10a6c1cee apr_file_write + 286</span><br><span class="line">2   liblog4cxx.10.0.0.dylib       	    0x10a369531 log4cxx::helpers::FileOutputStream::write(log4cxx::helpers::ByteBuffer&amp;, log4cxx::helpers::Pool&amp;) + 81</span><br><span class="line">3   Your      	                        0x10a3ae877❶  0x10a340000❷ + 452727❸</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>❶ 运行时堆栈地址 </li>
+<li>❷ 运行时起始地址</li>
+<li>❸ 偏移量</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">运行时堆栈地址 = 运行时起始地址 + 偏移量</span><br></pre></td></tr></table></figure>
+
+<p>崩溃堆栈中的起始地址和崩溃地址均为运行时地址，根据虚拟内存偏移量不变原理，只要提供了符号表TEXT段的起始地址，再加上偏移量就能得到符号表中的堆栈地址，即：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">符号表堆栈地址 = 符号表起始地址 + 偏移量</span><br></pre></td></tr></table></figure>
+
+<h2 id="符号表中TEXT段的起始地址可以通过以下命令获得："><a href="#符号表中TEXT段的起始地址可以通过以下命令获得：" class="headerlink" title="符号表中TEXT段的起始地址可以通过以下命令获得："></a>符号表中TEXT段的起始地址可以通过以下命令获得：</h2><p>使用 <code>otool</code> 查找 <code>LC_SEGMENT_64</code> 段和 <code>vmaddr</code> 条目</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ otool -l Your.app.dSYM/Contents/Resources/DWARF/Your</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Load command 4</span><br><span class="line">      cmd LC_SEGMENT_64</span><br><span class="line">  cmdsize 232</span><br><span class="line">  segname __TEXT</span><br><span class="line">   vmaddr 0x0000000100000000·</span><br><span class="line">   vmsize 0x0000000000004000</span><br><span class="line">  fileoff 0</span><br><span class="line"> filesize 0</span><br><span class="line">  maxprot 0x00000005</span><br><span class="line"> initprot 0x00000005</span><br><span class="line">   nsects 2</span><br><span class="line">    flags 0x0</span><br></pre></td></tr></table></figure>
+<p>其中的<code>vmaddr 0x0000000100000000</code>字段即为TEXT段的起始地址。</p>
+<h1 id="使用-LLDB-进行符号化"><a href="#使用-LLDB-进行符号化" class="headerlink" title="使用 LLDB 进行符号化"></a>使用 <code>LLDB</code> 进行符号化</h1><h2 id="crashlog"><a href="#crashlog" class="headerlink" title="crashlog"></a>crashlog</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ xcrun lldb</span><br><span class="line"></span><br><span class="line">(lldb) command script import lldb.macosx.crashlog</span><br><span class="line"></span><br><span class="line">(lldb) crashlog &lt;path/to/crashlog.crash&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="Target"><a href="#Target" class="headerlink" title="Target"></a>Target</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">(lldb) target create --no-dependents --arch &lt;architecture&gt; &lt;path/to/dSYMs/App.app.dSYM/Contents/Resources/DWARF/App&gt;</span><br><span class="line"></span><br><span class="line">(lldb) image lookup --address &lt;symboladdress&gt;</span><br></pre></td></tr></table></figure>
+
+<h1 id="使用-ATOS-符号化"><a href="#使用-ATOS-符号化" class="headerlink" title="使用 ATOS 符号化"></a>使用 <code>ATOS</code> 符号化</h1><h2 id="符号表崩溃地址的解析方式"><a href="#符号表崩溃地址的解析方式" class="headerlink" title="符号表崩溃地址的解析方式"></a>符号表崩溃地址的解析方式</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ atos -arch &lt;architecture&gt; -o &lt;binary filename&gt; -l &lt;load address&gt; &lt;stack address 1&gt; &lt;stack address 2&gt; ...</span><br></pre></td></tr></table></figure>
+
+<h2 id="无需符号表崩溃地址的解析方式"><a href="#无需符号表崩溃地址的解析方式" class="headerlink" title="无需符号表崩溃地址的解析方式"></a>无需符号表崩溃地址的解析方式</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ atos -arch &lt;architecture&gt; -o &lt;binary filename&gt; &lt;symboladdress&gt;</span><br></pre></td></tr></table></figure>
+
+<h1 id="使用-Dwarfdump-符号化"><a href="#使用-Dwarfdump-符号化" class="headerlink" title="使用 Dwarfdump 符号化"></a>使用 <code>Dwarfdump</code> 符号化</h1><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ dwarfdump --arch x86_64 Your.app.dSYM --lookup symboladdress</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>MacOS</category>
+      </categories>
+      <tags>
+        <tag>MacOS</tag>
+        <tag>Crash</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>存储和加载指令</title>
+    <url>/2023/03/18/macos/%E5%AD%98%E5%82%A8%E5%92%8C%E5%8A%A0%E8%BD%BD%E6%8C%87%E4%BB%A4/</url>
+    <content><![CDATA[<h3 id="存储和加载指令"><a href="#存储和加载指令" class="headerlink" title="存储和加载指令"></a>存储和加载指令</h3><h4 id="ldr-指令寻址之1：-地址偏移模式-unsigned-offset"><a href="#ldr-指令寻址之1：-地址偏移模式-unsigned-offset" class="headerlink" title="ldr 指令寻址之1： 地址偏移模式 (unsigned offset)"></a><code>ldr</code> 指令寻址之1： 地址偏移模式 (<code>unsigned offset</code>)</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">LDR Xd, [Xn, $offset]</span><br></pre></td></tr></table></figure>
+<p>首先在 <code>Xn</code> 寄存器的内容上加上一个 <code>offset</code> 偏移量后作为内存地址，加载此地址的内容到 <code>Xd</code> 寄存器。</p>
+<h4 id="ldr-指令寻址之2：-变基模式"><a href="#ldr-指令寻址之2：-变基模式" class="headerlink" title="ldr 指令寻址之2： 变基模式"></a><code>ldr</code> 指令寻址之2： 变基模式</h4><ul>
+<li>前变基模式（<code>pre-index</code> 模式）： 先更新偏移地址然后再访问内存。</li>
+<li>后变基模式（<code>post-index</code> 模式）：先访问内存地址然后再更新偏移地址。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">LDR X0, [X1, #8]! // 前变基模式。先更新X1 的值为 X1+8，然后义新的X1值为地址，加载内存的值到X0</span><br><span class="line"></span><br><span class="line">LDR X0, [X1], #8  // 后变基模式。以x1的值为地址，加载该内存地址的值到X0，然后在更新X1寄存器为X1+8</span><br></pre></td></tr></table></figure>
+
+<h4 id="ldr-指令寻址之3：-标签（literal）"><a href="#ldr-指令寻址之3：-标签（literal）" class="headerlink" title="ldr 指令寻址之3： 标签（literal）"></a><code>ldr</code> 指令寻址之3： 标签（<code>literal</code>）</h4><p>PC + label offset</p>
+<h4 id="ldr-伪指令"><a href="#ldr-伪指令" class="headerlink" title="ldr 伪指令"></a>ldr 伪指令</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">LDR x7, =MY_LABEL</span><br></pre></td></tr></table></figure>
+
+<h4 id="move-指令"><a href="#move-指令" class="headerlink" title="move 指令"></a>move 指令</h4><ul>
+<li>16位立即数</li>
+<li>16立即数左移16，32，48位</li>
+</ul>
+<h4 id="多字节加载和存储指令-ldp-和stp"><a href="#多字节加载和存储指令-ldp-和stp" class="headerlink" title="多字节加载和存储指令 ldp 和stp"></a>多字节加载和存储指令 ldp 和stp</h4>]]></content>
+      <categories>
+        <category>汇编</category>
+      </categories>
+      <tags>
+        <tag>arm64</tag>
       </tags>
   </entry>
   <entry>
