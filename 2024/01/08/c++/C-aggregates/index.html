@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yngty.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="什么是聚合类型(aggregate)在 C++03 中的定义 不能有用户声明的构造函数 没有私有或受保护的非静态数据成员，可以拥有任意数量的私有和受保护的成员函数（但不能是构造函数）以及任意数量的私有或受保护的静态数据成员和静态成员函数 可以具有用户声明或用户定义的复制赋值运算符和或析构函数 没有基类 没有虚函数 数组是聚合，即使它是非聚合类类型的数组">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++ aggregate">
+<meta property="og:url" content="https://yngty.github.io/2024/01/08/c++/C-aggregates/index.html">
+<meta property="og:site_name" content="Symbol Crash">
+<meta property="og:description" content="什么是聚合类型(aggregate)在 C++03 中的定义 不能有用户声明的构造函数 没有私有或受保护的非静态数据成员，可以拥有任意数量的私有和受保护的成员函数（但不能是构造函数）以及任意数量的私有或受保护的静态数据成员和静态成员函数 可以具有用户声明或用户定义的复制赋值运算符和或析构函数 没有基类 没有虚函数 数组是聚合，即使它是非聚合类类型的数组">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-01-08T13:55:00.000Z">
+<meta property="article:modified_time" content="2024-01-08T07:55:15.104Z">
+<meta property="article:author" content="yngty">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://yngty.github.io/2024/01/08/c++/C-aggregates/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>C++ aggregate | Symbol Crash</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Symbol Crash" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Symbol Crash</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">不学无术</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">66</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">11</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">34</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2024/01/08/c++/C-aggregates/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Symbol Crash">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          C++ aggregate
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-01-08 13:55:00 / 修改时间：07:55:15" itemprop="dateCreated datePublished" datetime="2024-01-08T13:55:00+00:00">2024-01-08</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C-C/" itemprop="url" rel="index"><span itemprop="name">C/C++</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.9k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>7 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="什么是聚合类型-aggregate"><a href="#什么是聚合类型-aggregate" class="headerlink" title="什么是聚合类型(aggregate)"></a>什么是聚合类型(aggregate)</h1><h2 id="在-C-03-中的定义"><a href="#在-C-03-中的定义" class="headerlink" title="在 C++03 中的定义"></a>在 C++03 中的定义</h2><ul>
+<li>不能有用户声明的构造函数</li>
+<li>没有私有或受保护的非静态数据成员，可以拥有任意数量的私有和受保护的成员函数（但不能是构造函数）以及任意数量的私有或受保护的静态数据成员和静态成员函数</li>
+<li>可以具有用户声明或用户定义的复制赋值运算符和或析构函数</li>
+<li>没有基类</li>
+<li>没有虚函数</li>
+<li>数组是聚合，即使它是非聚合类类型的数组</li>
+</ul>
+<span id="more"></span>
+<h2 id="聚合的作用"><a href="#聚合的作用" class="headerlink" title="聚合的作用"></a>聚合的作用</h2><h3 id="可以使用-初始化"><a href="#可以使用-初始化" class="headerlink" title="可以使用 {} 初始化"></a>可以使用 <code>&#123;&#125;</code> 初始化</h3><h4 id="数组初始化"><a href="#数组初始化" class="headerlink" title="数组初始化"></a>数组初始化</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Type array_name[n] = &#123;a1, a2, …, am&#125;;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>m &#x3D;&#x3D; n<ul>
+<li>数组的第 <code>i</code> 个 元素用 <code>ai</code> 初始化</li>
+</ul>
+</li>
+<li>m &lt; n <ul>
+<li>数组的前 <code>m</code> 个元素用 <code>a1</code>、 <code>a2</code>…<code>am</code> 初始化</li>
+<li>剩下的 <code>n - m</code> 个元素使用值初始化<ul>
+<li>标量类型对象用 <code>0</code>初始化</li>
+<li>具有用户声明的默认构造函数的类类型的对象被值初始化时，将调用其默认构造函数</li>
+<li>隐式定义默认构造函数，则所有非静态成员都会递归地进行值初始化，(成员是引用的会初始化失败)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>m &gt; n<ul>
+<li>编译报错</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">A</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="built_in">A</span>(<span class="type">int</span>) &#123;&#125; <span class="comment">//no default constructor</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">B</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="built_in">B</span>() &#123;&#125; <span class="comment">//default constructor available</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  A a1[<span class="number">3</span>] = &#123;<span class="built_in">A</span>(<span class="number">2</span>), <span class="built_in">A</span>(<span class="number">1</span>), <span class="built_in">A</span>(<span class="number">14</span>)&#125;; <span class="comment">//OK n == m</span></span><br><span class="line">  A a2[<span class="number">3</span>] = &#123;<span class="built_in">A</span>(<span class="number">2</span>)&#125;; <span class="comment">//ERROR A has no default constructor. Unable to value-initialize a2[1] and a2[2]</span></span><br><span class="line">  B b1[<span class="number">3</span>] = &#123;<span class="built_in">B</span>()&#125;; <span class="comment">//OK b1[1] and b1[2] are value initialized, in this case with the default-ctor</span></span><br><span class="line">  <span class="type">int</span> Array1[<span class="number">1000</span>] = &#123;<span class="number">0</span>&#125;; <span class="comment">//All elements are initialized with 0;</span></span><br><span class="line">  <span class="type">int</span> Array2[<span class="number">1000</span>] = &#123;<span class="number">1</span>&#125;; <span class="comment">//Attention: only the first element is 1, the rest are 0;</span></span><br><span class="line">  <span class="type">bool</span> Array3[<span class="number">1000</span>] = &#123;&#125;; <span class="comment">//the braces can be empty too. All elements initialized with false</span></span><br><span class="line">  <span class="type">int</span> Array4[<span class="number">1000</span>]; <span class="comment">//no initializer. This is different from an empty &#123;&#125; initializer in that</span></span><br><span class="line">  <span class="comment">//the elements in this case are not value-initialized, but have indeterminate values </span></span><br><span class="line">  <span class="comment">//(unless, of course, Array4 is a global array)</span></span><br><span class="line">  <span class="type">int</span> array[<span class="number">2</span>] = &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>&#125;; <span class="comment">//ERROR, too many initializers</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="类初始化"><a href="#类初始化" class="headerlink" title="类初始化"></a>类初始化</h3><ul>
+<li><p>按照非静态数据成员在类定义中出现的顺序（根据定义它们都是公共的）来初始化非静态数据成员</p>
+</li>
+<li><p>如果初始化器的数量少于成员，则其余的将进行值初始化</p>
+</li>
+<li><p>如果无法对未显式初始化的成员之一进行值初始化(例如成员是引用)，则会出现编译时错误</p>
+</li>
+<li><p>如果初始化程序多于必要的数量，我们也会收到编译时错误</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">X</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">int</span> i1;</span><br><span class="line">  <span class="type">int</span> i2;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Y</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">char</span> c;</span><br><span class="line">  X x;</span><br><span class="line">  <span class="type">int</span> i[<span class="number">2</span>];</span><br><span class="line">  <span class="type">float</span> f; </span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">  <span class="type">static</span> <span class="type">double</span> d;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">  <span class="function"><span class="type">void</span> <span class="title">g</span><span class="params">()</span></span>&#123;&#125;      </span><br><span class="line">&#125;; </span><br><span class="line"></span><br><span class="line">Y y = &#123;<span class="string">&#x27;a&#x27;</span>, &#123;<span class="number">10</span>, <span class="number">20</span>&#125;, &#123;<span class="number">20</span>, <span class="number">30</span>&#125;&#125;;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="C-11-的变化"><a href="#C-11-的变化" class="headerlink" title="C++11 的变化"></a>C++11 的变化</h2><h3 id="不能有用户提供的构造函数"><a href="#不能有用户提供的构造函数" class="headerlink" title="不能有用户提供的构造函数"></a>不能有用户提供的构造函数</h3><p>以前聚合不能有用户声明的构造函数，但现在它不能有用户提供的构造函数。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">Aggregate</span> &#123;</span><br><span class="line">  <span class="built_in">Aggregate</span>() = <span class="keyword">default</span>; <span class="comment">// 在 C++11 仍然是聚合类型</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="不能为非静态数据成员提供任何大括号或等号初始化程序"><a href="#不能为非静态数据成员提供任何大括号或等号初始化程序" class="headerlink" title="不能为非静态数据成员提供任何大括号或等号初始化程序"></a>不能为非静态数据成员提供任何大括号或等号初始化程序</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">NotAggregate</span> &#123;</span><br><span class="line">  <span class="type">int</span> x = <span class="number">5</span>; <span class="comment">// valid in C++11</span></span><br><span class="line">  std::vector&lt;<span class="type">int</span>&gt; s&#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>&#125;; <span class="comment">// also valid</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="C-14-的变化"><a href="#C-14-的变化" class="headerlink" title="C++14 的变化"></a>C++14 的变化</h2><h3 id="允许类内成员初始值"><a href="#允许类内成员初始值" class="headerlink" title="允许类内成员初始值"></a>允许类内成员初始值</h3><p> <a target="_blank" rel="noopener" href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3605.html">N3605: Member initializers and aggregates</a></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 在C++11 不是聚合，在C++14 是聚合</span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Aggregate</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">int</span> a = <span class="number">3</span>;</span><br><span class="line">  <span class="type">int</span> b = <span class="number">3</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="C-17-的变化"><a href="#C-17-的变化" class="headerlink" title="C++17 的变化"></a>C++17 的变化</h2><p><code>C++17</code> 扩展并增强了聚合和聚合初始化。标准库现在还包含一个 <code>std::is_aggregate</code> 类型特征</p>
+<h3 id="聚合类现可以具有公共的非虚拟基类。"><a href="#聚合类现可以具有公共的非虚拟基类。" class="headerlink" title="聚合类现可以具有公共的非虚拟基类。"></a>聚合类现可以具有公共的非虚拟基类。</h3><p>在新的扩展中，如果类存在继承关系，则额外满足以下条件：</p>
+<ul>
+<li>必须是公开的基类，不能是私有或者受保护的基类</li>
+<li>必须是非虚继承</li>
+</ul>
+<p>此外，<strong>不要求基类是聚合的</strong>。如果它们不是聚合，则它们是列表初始化的。</p>
+<p>聚合类的初始化顺序是按基类的声明顺序，然后按不是匿名联合成员的直接非静态数据成员声明顺序</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">B1</span> <span class="comment">// 不是聚合类，有用户提供的构造函数</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> i1;</span><br><span class="line">    <span class="built_in">B1</span>(<span class="type">int</span> a) : <span class="built_in">i1</span>(a) &#123; &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">B2</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> i2;</span><br><span class="line">    <span class="built_in">B2</span>() = <span class="keyword">default</span>;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">M</span> <span class="comment">// 不是聚合类，有用户提供的构造函数</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> m;</span><br><span class="line">    <span class="built_in">M</span>(<span class="type">int</span> a) : <span class="built_in">m</span>(a) &#123; &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">C</span> : B1, B2</span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> j;</span><br><span class="line">    M m;</span><br><span class="line">    <span class="built_in">C</span>() = <span class="keyword">default</span>;</span><br><span class="line">&#125;;</span><br><span class="line">C c &#123; &#123; <span class="number">1</span> &#125;, &#123; <span class="number">2</span> &#125;, <span class="number">3</span>, &#123; <span class="number">4</span> &#125; &#125;;</span><br><span class="line">cout</span><br><span class="line">    &lt;&lt; <span class="string">&quot;is C aggregate?: &quot;</span> &lt;&lt; (std::is_aggregate&lt;C&gt;::value ? <span class="string">&#x27;Y&#x27;</span> : <span class="string">&#x27;N&#x27;</span>)</span><br><span class="line">    &lt;&lt; <span class="string">&quot; i1: &quot;</span> &lt;&lt; c.i1 &lt;&lt; <span class="string">&quot; i2: &quot;</span> &lt;&lt; c.i2</span><br><span class="line">    &lt;&lt; <span class="string">&quot; j: &quot;</span> &lt;&lt; c.j &lt;&lt; <span class="string">&quot; m.m: &quot;</span> &lt;&lt; c.m.m &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line"><span class="comment">//输出: is C aggregate?: Y, i1=1 i2=2 j=3 m.m=4</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="没有用户提供的、显式的或继承的构造函数"><a href="#没有用户提供的、显式的或继承的构造函数" class="headerlink" title="没有用户提供的、显式的或继承的构造函数"></a>没有用户提供的、显式的或继承的构造函数</h3><ul>
+<li><p>不允许显式构造函数</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">D</span> <span class="comment">// not an aggregate</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> i = <span class="number">0</span>;</span><br><span class="line">    <span class="built_in">D</span>() = <span class="keyword">default</span>;</span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">D</span><span class="params">(D <span class="type">const</span>&amp;)</span> </span>= <span class="keyword">default</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
+<li><p>不允许继承构造函数</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">B1</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> i1;</span><br><span class="line">    <span class="built_in">B1</span>() : <span class="built_in">i1</span>(<span class="number">0</span>) &#123; &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">C</span> : B1 <span class="comment">// not an aggregate</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">using</span> B1::B1;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="扩展聚合类型的兼容问题"><a href="#扩展聚合类型的兼容问题" class="headerlink" title="扩展聚合类型的兼容问题"></a>扩展聚合类型的兼容问题</h3><p>例如以下代码:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">BaseData</span> &#123;</span><br><span class="line">  <span class="type">int</span> data_;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="function"><span class="type">int</span> <span class="title">Get</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> data_; &#125;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">  <span class="built_in">BaseData</span>() : <span class="built_in">data_</span>(<span class="number">11</span>) &#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">DerivedData</span> : <span class="keyword">public</span> BaseData &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  DerivedData d&#123;&#125;;</span><br><span class="line">  std::cout &lt;&lt; d.<span class="built_in">Get</span>() &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在 <code>c++17</code> 之前 <code>DerivedData</code> 不是聚合类型，所以会调用 <code>DerivedData</code> 的默认构造函数然后，调用 <code>BaseData</code> 的默认构造函数，虽然这里 <code>BaseData</code> 声明的是受保护的构造函数，但派生类是可以调用的，但在 <code>C++17</code> 之后发送了变化，<code>DerivedData</code> 是一个聚合类型，基类 <code>BaseData</code> 中的构造函数是受保护的关系，它<strong>不允许</strong>在聚合类型初始化中被调用导致编译失败，我可以可以通过添加一个默认构造函数使其不是聚合类型解决该问题。</p>
+<h2 id="C-20-的变化"><a href="#C-20-的变化" class="headerlink" title="C++20 的变化"></a>C++20 的变化</h2><h2 id="没有用户声明或继承的构造函数"><a href="#没有用户声明或继承的构造函数" class="headerlink" title="没有用户声明或继承的构造函数"></a>没有用户声明或继承的构造函数</h2><p>又改回<strong>没有用户声明</strong>的构造函数了。因为没有用户定义的构造函数有时候会导致一些误会，例如下面的情况：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">X</span> &#123;</span><br><span class="line">  <span class="built_in">X</span>() = <span class="keyword">default</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Y</span> &#123;</span><br><span class="line">  <span class="built_in">Y</span>() = <span class="keyword">delete</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  std::cout &lt;&lt; std::boolalpha </span><br><span class="line">      &lt;&lt; <span class="string">&quot;std::is_aggregate_v&lt;X&gt; : &quot;</span> &lt;&lt; std::is_aggregate_v&lt;X&gt; &lt;&lt; std::endl</span><br><span class="line">      &lt;&lt; <span class="string">&quot;std::is_aggregate_v&lt;Y&gt; : &quot;</span> &lt;&lt; std::is_aggregate_v&lt;Y&gt; &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 输出: std::is_aggregate_v&lt;X&gt; : true</span></span><br><span class="line"><span class="comment">//      std::is_aggregate_v&lt;Y&gt; : true</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Y y1;   <span class="comment">// 编译失败</span></span><br><span class="line">Y y1&#123;&#125;; <span class="comment">// 编译成功</span></span><br></pre></td></tr></table></figure>
+<p>除了删除默认构造函数，将其列入私有访问中也会有同样的问题，所以 <code>C++17</code> 增加了 <code>explicit</code> 修饰的构造函数，该类不是聚合类，但没有解决相同类型不同实例化方式表现不一致的尴尬问题。最后在 <code>C++20</code> 标准中禁止聚合类型使用用户声明的构造函数。</p>
+<h3 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h3><ul>
+<li>聚合类型对象的初始化可以用小括号列表来完成，其最终结果与大括号列表相同</li>
+<li>另外带大括号的列表初始化是<strong>不支持缩窄转换</strong>的，但是带小括号的列表初始化却是支持缩窄转换的</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">X</span> &#123;</span><br><span class="line">  <span class="type">int</span> i;</span><br><span class="line">  <span class="type">short</span> f;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    X x2&#123;<span class="number">1</span>, <span class="number">7.0</span>&#125;; <span class="comment">// 编译失败，7.0 从 double 转换到 short 是缩窄转换</span></span><br><span class="line">    <span class="function">X <span class="title">x2</span><span class="params">(<span class="number">1</span>, <span class="number">7.0</span>)</span></span>; <span class="comment">// 编译成功， c++20 之前，编译失败</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>值得注意的是，这个规则的修改会改变一些旧代码的意义，比如我们经常用到的禁止复制构造的方法：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">X</span> &#123;</span><br><span class="line">  std::string s;</span><br><span class="line">  std::vector&lt;<span class="type">int</span>&gt; v;</span><br><span class="line">  <span class="built_in">X</span>() = <span class="keyword">default</span>;</span><br><span class="line">  <span class="built_in">X</span>(<span class="type">const</span> X&amp;) = <span class="keyword">delete</span>;</span><br><span class="line">  <span class="built_in">X</span>(X&amp;&amp;) = <span class="keyword">default</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>在 <code>C++20 </code>中 <code>X</code> 不是聚合类，一个可行的解决方案是不要直接使用 <code>delete</code> 来删除复制构造函数，而是通过<strong>加入或者继承</strong>一个不可复制构造的类型来实现类型的不可复制。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">X</span> &#123;</span><br><span class="line">  std::string s;</span><br><span class="line">  std::vector&lt;<span class="type">int</span>&gt; v;</span><br><span class="line">  [[no_unique_address]] NonCopyable nc;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 或者</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">X</span> : NonCopyable &#123;</span><br><span class="line">  std::string s;</span><br><span class="line">  std::vector&lt;<span class="type">int</span>&gt; v;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/4178175/what-are-aggregates-and-trivial-types-pods-and-how-why-are-they-special">What are aggregates and trivial types&#x2F;PODs, and how&#x2F;why are they special?</a></li>
+<li><a target="_blank" rel="noopener" href="https://book.douban.com/subject/35602582">现代 C++ 语言核心特性解析</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/01/04/macos/macOS-Ventura-App-%E7%AE%A1%E7%90%86/" rel="prev" title="macOS Ventura App 管理">
+      <i class="fa fa-chevron-left"></i> macOS Ventura App 管理
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E8%81%9A%E5%90%88%E7%B1%BB%E5%9E%8B-aggregate"><span class="nav-number">1.</span> <span class="nav-text">什么是聚合类型(aggregate)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8-C-03-%E4%B8%AD%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="nav-number">1.1.</span> <span class="nav-text">在 C++03 中的定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%81%9A%E5%90%88%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="nav-number">1.2.</span> <span class="nav-text">聚合的作用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E4%BB%A5%E4%BD%BF%E7%94%A8-%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">1.2.1.</span> <span class="nav-text">可以使用 {} 初始化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E7%BB%84%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">数组初始化</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B1%BB%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">1.2.2.</span> <span class="nav-text">类初始化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#C-11-%E7%9A%84%E5%8F%98%E5%8C%96"><span class="nav-number">1.3.</span> <span class="nav-text">C++11 的变化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8D%E8%83%BD%E6%9C%89%E7%94%A8%E6%88%B7%E6%8F%90%E4%BE%9B%E7%9A%84%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0"><span class="nav-number">1.3.1.</span> <span class="nav-text">不能有用户提供的构造函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8D%E8%83%BD%E4%B8%BA%E9%9D%9E%E9%9D%99%E6%80%81%E6%95%B0%E6%8D%AE%E6%88%90%E5%91%98%E6%8F%90%E4%BE%9B%E4%BB%BB%E4%BD%95%E5%A4%A7%E6%8B%AC%E5%8F%B7%E6%88%96%E7%AD%89%E5%8F%B7%E5%88%9D%E5%A7%8B%E5%8C%96%E7%A8%8B%E5%BA%8F"><span class="nav-number">1.3.2.</span> <span class="nav-text">不能为非静态数据成员提供任何大括号或等号初始化程序</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#C-14-%E7%9A%84%E5%8F%98%E5%8C%96"><span class="nav-number">1.4.</span> <span class="nav-text">C++14 的变化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%81%E8%AE%B8%E7%B1%BB%E5%86%85%E6%88%90%E5%91%98%E5%88%9D%E5%A7%8B%E5%80%BC"><span class="nav-number">1.4.1.</span> <span class="nav-text">允许类内成员初始值</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#C-17-%E7%9A%84%E5%8F%98%E5%8C%96"><span class="nav-number">1.5.</span> <span class="nav-text">C++17 的变化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%81%9A%E5%90%88%E7%B1%BB%E7%8E%B0%E5%8F%AF%E4%BB%A5%E5%85%B7%E6%9C%89%E5%85%AC%E5%85%B1%E7%9A%84%E9%9D%9E%E8%99%9A%E6%8B%9F%E5%9F%BA%E7%B1%BB%E3%80%82"><span class="nav-number">1.5.1.</span> <span class="nav-text">聚合类现可以具有公共的非虚拟基类。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B2%A1%E6%9C%89%E7%94%A8%E6%88%B7%E6%8F%90%E4%BE%9B%E7%9A%84%E3%80%81%E6%98%BE%E5%BC%8F%E7%9A%84%E6%88%96%E7%BB%A7%E6%89%BF%E7%9A%84%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0"><span class="nav-number">1.5.2.</span> <span class="nav-text">没有用户提供的、显式的或继承的构造函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%A9%E5%B1%95%E8%81%9A%E5%90%88%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%85%BC%E5%AE%B9%E9%97%AE%E9%A2%98"><span class="nav-number">1.5.3.</span> <span class="nav-text">扩展聚合类型的兼容问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#C-20-%E7%9A%84%E5%8F%98%E5%8C%96"><span class="nav-number">1.6.</span> <span class="nav-text">C++20 的变化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B2%A1%E6%9C%89%E7%94%A8%E6%88%B7%E5%A3%B0%E6%98%8E%E6%88%96%E7%BB%A7%E6%89%BF%E7%9A%84%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0"><span class="nav-number">1.7.</span> <span class="nav-text">没有用户声明或继承的构造函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">1.7.1.</span> <span class="nav-text">初始化</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">2.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="yngty"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">yngty</p>
+  <div class="site-description" itemprop="description">预测未来的最好方式就是实现它</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">66</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">34</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yngty" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yngty" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yngty@foxmail.com" title="E-Mail → mailto:yngty@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yngty</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">37k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">2:16</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
