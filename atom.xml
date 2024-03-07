@@ -6,7 +6,7 @@
   <link href="https://yngty.github.io/atom.xml" rel="self"/>
   
   <link href="https://yngty.github.io/"/>
-  <updated>2024-01-08T07:58:24.236Z</updated>
+  <updated>2024-03-07T03:28:00.404Z</updated>
   <id>https://yngty.github.io/</id>
   
   <author>
@@ -17,11 +17,33 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>SUSE Linux 系统记录</title>
+    <link href="https://yngty.github.io/2024/03/07/linux/SUSE-Linux-%E7%B3%BB%E7%BB%9F%E8%AE%B0%E5%BD%95/"/>
+    <id>https://yngty.github.io/2024/03/07/linux/SUSE-Linux-%E7%B3%BB%E7%BB%9F%E8%AE%B0%E5%BD%95/</id>
+    <published>2024-03-07T11:18:01.000Z</published>
+    <updated>2024-03-07T03:28:00.404Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;最近接触到 &lt;code&gt;SUSE Linux&lt;/code&gt; 操作系统，一些命令不一样，这里记录下:&lt;/p&gt;
+&lt;h1 id=&quot;包管理器-zypper&quot;&gt;&lt;a href=&quot;#包管理器-zypper&quot; class=&quot;headerlink&quot; title=&quot;包管理器</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
     <title>C++ aggregate</title>
     <link href="https://yngty.github.io/2024/01/08/c++/C-aggregates/"/>
     <id>https://yngty.github.io/2024/01/08/c++/C-aggregates/</id>
     <published>2024-01-08T13:55:00.000Z</published>
-    <updated>2024-01-08T07:58:24.236Z</updated>
+    <updated>2024-03-07T03:28:00.404Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;什么是聚合类型-aggregate&quot;&gt;&lt;a href=&quot;#什么是聚合类型-aggregate&quot; class=&quot;headerlink&quot; title=&quot;什么是聚合类型(aggregate)&quot;&gt;&lt;/a&gt;什么是聚合类型(aggregate)&lt;/h1&gt;&lt;h2 id=&quot;在-C-03-中的定义&quot;&gt;&lt;a href=&quot;#在-C-03-中的定义&quot; class=&quot;headerlink&quot; title=&quot;在 C++03 中的定义&quot;&gt;&lt;/a&gt;在 C++03 中的定义&lt;/h2&gt;&lt;ul&gt;
@@ -45,7 +67,7 @@
     <link href="https://yngty.github.io/2024/01/04/macos/macOS-Ventura-App-%E7%AE%A1%E7%90%86/"/>
     <id>https://yngty.github.io/2024/01/04/macos/macOS-Ventura-App-%E7%AE%A1%E7%90%86/</id>
     <published>2024-01-04T14:34:10.000Z</published>
-    <updated>2024-01-08T07:58:24.240Z</updated>
+    <updated>2024-03-07T03:28:00.404Z</updated>
     
     
     <summary type="html">&lt;p&gt;从 &lt;code&gt;macOS Monterey&lt;/code&gt; 开始，如果应用程序被未由相同开发团队签名且未由 &lt;code&gt;NSUpdateSecurityPolicy&lt;/code&gt; 允许的东西修改，&lt;code&gt;macOS&lt;/code&gt; 将阻止修改并通知用户应用程序希望管理其他应用程序。点击通知会将用户发送到系统设置，他们可以在那里允许应用程序更新和修改其他应用程序。&lt;/p&gt;
@@ -65,7 +87,7 @@
     <link href="https://yngty.github.io/2023/12/29/c++/%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3C-20%E4%B8%AD%E7%9A%84consteval%E5%85%B3%E9%94%AE%E5%AD%97/"/>
     <id>https://yngty.github.io/2023/12/29/c++/%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3C-20%E4%B8%AD%E7%9A%84consteval%E5%85%B3%E9%94%AE%E5%AD%97/</id>
     <published>2023-12-29T18:16:18.000Z</published>
-    <updated>2024-01-08T07:58:24.240Z</updated>
+    <updated>2024-03-07T03:28:00.404Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot; class=&quot;headerlink&quot; title=&quot;简介&quot;&gt;&lt;/a&gt;简介&lt;/h1&gt;&lt;p&gt;用最简单的术语来说，一个只能应用于函数的 &lt;code&gt;consteval&lt;/code&gt; 关键字, 保证它产生一个编译时间常数。否则会导致编译错误。&lt;/p&gt;
@@ -97,7 +119,7 @@
     <link href="https://yngty.github.io/2023/12/29/c++/%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3C++20%E4%B8%AD%E7%9A%84constinit%E5%85%B3%E9%94%AE%E5%AD%97/"/>
     <id>https://yngty.github.io/2023/12/29/c++/%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3C++20%E4%B8%AD%E7%9A%84constinit%E5%85%B3%E9%94%AE%E5%AD%97/</id>
     <published>2023-12-29T17:41:16.000Z</published>
-    <updated>2024-01-08T07:58:24.240Z</updated>
+    <updated>2024-03-07T03:28:00.404Z</updated>
     
     
     <summary type="html">&lt;p&gt;在 &lt;code&gt;C++&lt;/code&gt; 中，存储变量的方式有几种：&lt;/p&gt;
@@ -137,7 +159,7 @@
     <link href="https://yngty.github.io/2023/12/28/macos/macOS-%E8%AE%BE%E7%BD%AE%E9%9D%A2%E6%9D%BF%E5%BF%AB%E6%8D%B7%E9%93%BE%E6%8E%A5/"/>
     <id>https://yngty.github.io/2023/12/28/macos/macOS-%E8%AE%BE%E7%BD%AE%E9%9D%A2%E6%9D%BF%E5%BF%AB%E6%8D%B7%E9%93%BE%E6%8E%A5/</id>
     <published>2023-12-28T17:41:12.000Z</published>
-    <updated>2024-01-08T07:58:24.240Z</updated>
+    <updated>2024-03-07T03:28:00.404Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;Accessibility-Preference-Pane&quot;&gt;&lt;a href=&quot;#Accessibility-Preference-Pane&quot; class=&quot;headerlink&quot; title=&quot;Accessibility Preference Pane&quot;&gt;&lt;/a&gt;Accessibility Preference Pane&lt;/h1&gt;&lt;figure class=&quot;highlight plaintext&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;Main    x-apple.systempreferences:com.apple.preference.universalaccess&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Display x-apple.systempreferences:com.apple.preference.universalaccess?Seeing_Display&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Zoom    x-apple.systempreferences:com.apple.preference.universalaccess?Seeing_Zoom&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;VoiceOver   x-apple.systempreferences:com.apple.preference.universalaccess?Seeing_VoiceOver&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Descriptions    x-apple.systempreferences:com.apple.preference.universalaccess?Media_Descriptions&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Captions    x-apple.systempreferences:com.apple.preference.universalaccess?Captioning&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Audio   x-apple.systempreferences:com.apple.preference.universalaccess?Hearing&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Keyboard    x-apple.systempreferences:com.apple.preference.universalaccess?Keyboard&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Mouse &amp;amp; Trackpad    x-apple.systempreferences:com.apple.preference.universalaccess?Mouse&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Switch Control  x-apple.systempreferences:com.apple.preference.universalaccess?Switch&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Dictation   x-apple.systempreferences:com.apple.preference.universalaccess?SpeakableItems&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
@@ -156,7 +178,7 @@
     <link href="https://yngty.github.io/2023/12/11/network/TLS/TLS-False-Start/"/>
     <id>https://yngty.github.io/2023/12/11/network/TLS/TLS-False-Start/</id>
     <published>2023-12-11T11:39:47.000Z</published>
-    <updated>2024-01-08T07:58:24.240Z</updated>
+    <updated>2024-03-07T03:28:00.404Z</updated>
     
     
       
@@ -179,7 +201,7 @@
     <link href="https://yngty.github.io/2023/12/11/network/TLS/ALPN/"/>
     <id>https://yngty.github.io/2023/12/11/network/TLS/ALPN/</id>
     <published>2023-12-11T10:07:03.000Z</published>
-    <updated>2024-01-08T07:58:24.240Z</updated>
+    <updated>2024-03-07T03:28:00.404Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;Introduction&quot;&gt;&lt;a href=&quot;#Introduction&quot; class=&quot;headerlink&quot; title=&quot;Introduction&quot;&gt;&lt;/a&gt;Introduction&lt;/h1&gt;&lt;p&gt;&lt;code&gt;ALPN&lt;/code&gt;(&lt;code&gt;Application-Layer Protocol Negotiation&lt;/code&gt;)应用层协议协商, 当单个服务器端口号（例如端口 &lt;code&gt;443&lt;/code&gt;）上支持多个应用程序协议时，客户端和服务器需要协商用于每个连接的应用程序协议。希望在不增加客户端和服务器之间的网络往返次数的情况下完成此协商，因为每次往返都会降低最终用户的体验。&lt;/p&gt;
@@ -197,7 +219,7 @@
     <link href="https://yngty.github.io/2023/11/20/network/TCP-Nagle%E7%AE%97%E6%B3%95%E4%B8%8EACK%E5%BB%B6%E8%BF%9F%E7%A1%AE%E8%AE%A4/"/>
     <id>https://yngty.github.io/2023/11/20/network/TCP-Nagle%E7%AE%97%E6%B3%95%E4%B8%8EACK%E5%BB%B6%E8%BF%9F%E7%A1%AE%E8%AE%A4/</id>
     <published>2023-11-20T11:30:52.000Z</published>
-    <updated>2024-01-08T07:58:24.240Z</updated>
+    <updated>2024-03-07T03:28:00.404Z</updated>
     
     
     
@@ -210,7 +232,7 @@
     <link href="https://yngty.github.io/2023/11/07/c++/c-Memory-Order/"/>
     <id>https://yngty.github.io/2023/11/07/c++/c-Memory-Order/</id>
     <published>2023-11-07T16:20:11.000Z</published>
-    <updated>2024-01-08T07:58:24.236Z</updated>
+    <updated>2024-03-07T03:28:00.404Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;背景&quot;&gt;&lt;a href=&quot;#背景&quot; class=&quot;headerlink&quot; title=&quot;背景&quot;&gt;&lt;/a&gt;背景&lt;/h1&gt;&lt;p&gt;高级语言经过编译器将源码转为机器指令运行，其中的运行顺序和代码中的顺序有很大差异，主要是下面三个原因: &lt;/p&gt;
@@ -248,7 +270,7 @@
     <link href="https://yngty.github.io/2023/11/03/c++/std-thread-%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/"/>
     <id>https://yngty.github.io/2023/11/03/c++/std-thread-%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/</id>
     <published>2023-11-03T14:35:22.000Z</published>
-    <updated>2024-01-08T07:58:24.240Z</updated>
+    <updated>2024-03-07T03:28:00.404Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;join-和-detach&quot;&gt;&lt;a href=&quot;#join-和-detach&quot; class=&quot;headerlink&quot; title=&quot;join 和 detach&quot;&gt;&lt;/a&gt;&lt;code&gt;join&lt;/code&gt; 和 &lt;code&gt;detach&lt;/code&gt;&lt;/h1&gt;&lt;ul&gt;
@@ -271,7 +293,7 @@
     <link href="https://yngty.github.io/2023/09/04/css/CSS-Layout/"/>
     <id>https://yngty.github.io/2023/09/04/css/CSS-Layout/</id>
     <published>2023-09-04T14:09:14.000Z</published>
-    <updated>2024-01-08T07:58:24.240Z</updated>
+    <updated>2024-03-07T03:28:00.404Z</updated>
     
     
       
@@ -294,7 +316,7 @@
     <link href="https://yngty.github.io/2023/08/31/mongodb/mongodb-%E5%85%A5%E9%97%A8-Aggregate/"/>
     <id>https://yngty.github.io/2023/08/31/mongodb/mongodb-%E5%85%A5%E9%97%A8-Aggregate/</id>
     <published>2023-08-31T10:48:46.000Z</published>
-    <updated>2024-01-08T07:58:24.240Z</updated>
+    <updated>2024-03-07T03:28:00.404Z</updated>
     
     
       
@@ -319,7 +341,7 @@
     <link href="https://yngty.github.io/2023/08/27/mongodb/mongodb-%E5%85%A5%E9%97%A8-CRUD/"/>
     <id>https://yngty.github.io/2023/08/27/mongodb/mongodb-%E5%85%A5%E9%97%A8-CRUD/</id>
     <published>2023-08-27T15:34:59.000Z</published>
-    <updated>2024-01-08T07:58:24.240Z</updated>
+    <updated>2024-03-07T03:28:00.404Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;文档主键&quot;&gt;&lt;a href=&quot;#文档主键&quot; class=&quot;headerlink&quot; title=&quot;文档主键&quot;&gt;&lt;/a&gt;文档主键&lt;/h1&gt;&lt;h2 id=&quot;文档主键-id&quot;&gt;&lt;a href=&quot;#文档主键-id&quot; class=&quot;headerlink&quot; title=&quot;文档主键 _id&quot;&gt;&lt;/a&gt;文档主键 &lt;code&gt;_id&lt;/code&gt;&lt;/h2&gt;&lt;p&gt;文档主键 &lt;code&gt;_id&lt;/code&gt; 是每篇文档必备的字段,具有以下特性:&lt;/p&gt;
@@ -356,7 +378,7 @@
     <link href="https://yngty.github.io/2023/08/26/mongodb/mongodb-%E5%85%A5%E9%97%A8-%E7%B4%A2%E5%BC%95/"/>
     <id>https://yngty.github.io/2023/08/26/mongodb/mongodb-%E5%85%A5%E9%97%A8-%E7%B4%A2%E5%BC%95/</id>
     <published>2023-08-26T14:30:06.000Z</published>
-    <updated>2024-01-08T07:58:24.240Z</updated>
+    <updated>2024-03-07T03:28:00.404Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;索引&quot;&gt;&lt;a href=&quot;#索引&quot; class=&quot;headerlink&quot; title=&quot;索引&quot;&gt;&lt;/a&gt;索引&lt;/h1&gt;&lt;ul&gt;
@@ -388,7 +410,7 @@
     <link href="https://yngty.github.io/2023/08/25/macos/executable-path-load-path-%E5%92%8C-rpath/"/>
     <id>https://yngty.github.io/2023/08/25/macos/executable-path-load-path-%E5%92%8C-rpath/</id>
     <published>2023-08-25T11:05:29.000Z</published>
-    <updated>2024-01-08T07:58:24.240Z</updated>
+    <updated>2024-03-07T03:28:00.404Z</updated>
     
     
     <summary type="html">&lt;p&gt;在 &lt;code&gt;macOS&lt;/code&gt; 上，动态链接器使用特定的路径变量来解析运行时的库位置。这些路径变量包括：绝对路径、 &lt;code&gt;@executable_path&lt;/code&gt;、&lt;code&gt;@loader_path&lt;/code&gt; 和 &lt;code&gt;@rpath&lt;/code&gt;。&lt;/p&gt;
@@ -409,7 +431,7 @@
     <link href="https://yngty.github.io/2023/08/23/network/libevent-%E4%BD%BF%E7%94%A8%E5%85%A5%E9%97%A8/"/>
     <id>https://yngty.github.io/2023/08/23/network/libevent-%E4%BD%BF%E7%94%A8%E5%85%A5%E9%97%A8/</id>
     <published>2023-08-23T10:07:43.000Z</published>
-    <updated>2024-01-08T07:58:24.240Z</updated>
+    <updated>2024-03-07T03:28:00.404Z</updated>
     
     
       
@@ -434,7 +456,7 @@
     <link href="https://yngty.github.io/2023/08/17/network/I-O-%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/"/>
     <id>https://yngty.github.io/2023/08/17/network/I-O-%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/</id>
     <published>2023-08-17T14:32:07.000Z</published>
-    <updated>2024-01-08T07:58:24.240Z</updated>
+    <updated>2024-03-07T03:28:00.404Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;select&quot;&gt;&lt;a href=&quot;#select&quot; class=&quot;headerlink&quot; title=&quot;select&quot;&gt;&lt;/a&gt;select&lt;/h1&gt;&lt;p&gt;&lt;code&gt;select&lt;/code&gt; 实现多路复用的方式是，将已连接的 &lt;code&gt;socket&lt;/code&gt; 都放到一个文件描述符集合，然后调用 &lt;code&gt;select&lt;/code&gt;函数将文件描述符集合拷贝到内核里，让内核来检查是否有网络事件产生，通过遍历文件描述符集合的方式，当检查到有事件产生后，将此 &lt;code&gt;socket&lt;/code&gt; 标记为可读或可写， 接着再把整个文件描述符集合拷贝回用户态里，然后用户态还需要再通过遍历的方法找到可读或可写的 &lt;code&gt;socket&lt;/code&gt;，然后再对其处理。&lt;/p&gt;
@@ -469,7 +491,7 @@
     <link href="https://yngty.github.io/2023/07/25/network/TCP-%E5%8D%8F%E8%AE%AE/"/>
     <id>https://yngty.github.io/2023/07/25/network/TCP-%E5%8D%8F%E8%AE%AE/</id>
     <published>2023-07-25T09:43:58.000Z</published>
-    <updated>2024-01-08T07:58:24.240Z</updated>
+    <updated>2024-03-07T03:28:00.404Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;TCP-基本认识&quot;&gt;&lt;a href=&quot;#TCP-基本认识&quot; class=&quot;headerlink&quot; title=&quot;TCP 基本认识&quot;&gt;&lt;/a&gt;&lt;code&gt;TCP&lt;/code&gt; 基本认识&lt;/h1&gt;&lt;p&gt;&lt;code&gt;TCP&lt;/code&gt; 是 &lt;strong&gt;面向连接的、可靠的、基于字节流&lt;/strong&gt;的传输层通信协议。&lt;/p&gt;
@@ -489,7 +511,7 @@
     <link href="https://yngty.github.io/2023/07/24/network/%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E4%BD%BF%E7%94%A8TCP/"/>
     <id>https://yngty.github.io/2023/07/24/network/%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E4%BD%BF%E7%94%A8TCP/</id>
     <published>2023-07-24T15:12:44.000Z</published>
-    <updated>2024-01-08T07:58:24.240Z</updated>
+    <updated>2024-03-07T03:28:00.404Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;SO-REUSEADDR&quot;&gt;&lt;a href=&quot;#SO-REUSEADDR&quot; class=&quot;headerlink&quot; title=&quot;SO_REUSEADDR&quot;&gt;&lt;/a&gt;SO_REUSEADDR&lt;/h1&gt;&lt;ul&gt;
@@ -504,36 +526,6 @@
     
     <category term="Network" scheme="https://yngty.github.io/categories/Network/"/>
     
-    
-    <category term="tcp" scheme="https://yngty.github.io/tags/tcp/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>socket 编程</title>
-    <link href="https://yngty.github.io/2023/07/24/network/socket-%E7%BC%96%E7%A8%8B/"/>
-    <id>https://yngty.github.io/2023/07/24/network/socket-%E7%BC%96%E7%A8%8B/</id>
-    <published>2023-07-24T10:38:44.000Z</published>
-    <updated>2024-01-08T07:58:24.240Z</updated>
-    
-    
-    <summary type="html">&lt;h1 id=&quot;1-socket地址结构&quot;&gt;&lt;a href=&quot;#1-socket地址结构&quot; class=&quot;headerlink&quot; title=&quot;1. socket地址结构&quot;&gt;&lt;/a&gt;1. socket地址结构&lt;/h1&gt;&lt;h2 id=&quot;sockaddr-in&quot;&gt;&lt;a href=&quot;#sockaddr-in&quot; class=&quot;headerlink&quot; title=&quot;sockaddr_in&quot;&gt;&lt;/a&gt;&lt;code&gt;sockaddr_in&lt;/code&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;ipv4&lt;/code&gt; 协议的地址结构是 &lt;code&gt;sockaddr_in&lt;/code&gt;，&lt;code&gt;ipv6&lt;/code&gt; 的地址结构是&lt;code&gt;sockaddr_in6&lt;/code&gt;。&lt;/p&gt;
-&lt;figure class=&quot;highlight c&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;#&lt;span class=&quot;keyword&quot;&gt;include&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;&amp;lt;arpa/inet.h&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;//#include&amp;lt;netinet/in.h&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;sockaddr_in&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;class&quot;&gt;&amp;#123;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;type&quot;&gt;sa_family_t&lt;/span&gt;     sin_family;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;type&quot;&gt;in_port_t&lt;/span&gt;       sin_port;	    &lt;span class=&quot;comment&quot;&gt;/* Port number.  */&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;in_addr&lt;/span&gt;  &lt;span class=&quot;title&quot;&gt;sin_addr&lt;/span&gt;;&lt;/span&gt;		&lt;span class=&quot;comment&quot;&gt;/* Internet address.  */&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;comment&quot;&gt;/* Pad to size of `struct sockaddr&amp;#x27;.  */&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;type&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;type&quot;&gt;char&lt;/span&gt; sin_zero[&lt;span class=&quot;keyword&quot;&gt;sizeof&lt;/span&gt; (&lt;span class=&quot;keyword&quot;&gt;struct&lt;/span&gt; sockaddr) -&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            __SOCKADDR_COMMON_SIZE -&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            &lt;span class=&quot;keyword&quot;&gt;sizeof&lt;/span&gt; (&lt;span class=&quot;type&quot;&gt;in_port_t&lt;/span&gt;) -&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;            &lt;span class=&quot;keyword&quot;&gt;sizeof&lt;/span&gt; (&lt;span class=&quot;keyword&quot;&gt;struct&lt;/span&gt; in_addr)];&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;sin_family&lt;/code&gt;：表示地址簇，&lt;code&gt;ipv4: AF_INET, ipv6: AF_INET6&lt;/code&gt;，&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;sin_port&lt;/code&gt;：16位的端口号&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;sin_addr&lt;/code&gt;：点分十进制。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id=&quot;通用地址结构&quot;&gt;&lt;a href=&quot;#通用地址结构&quot; class=&quot;headerlink&quot; title=&quot;通用地址结构&quot;&gt;&lt;/a&gt;通用地址结构&lt;/h2&gt;&lt;p&gt;结构体是 &lt;code&gt;sockaddr&lt;/code&gt;，方便可以接受 &lt;code&gt;ipv4/ipv6&lt;/code&gt; 的地址结构。之所以采用 &lt;code&gt;sockaddr&lt;/code&gt;，而不采用 &lt;code&gt;void*&lt;/code&gt;  是因为 &lt;code&gt;BSD&lt;/code&gt; 设计套接字的时候大约是 &lt;code&gt;1982&lt;/code&gt; 年，那个时候的 &lt;code&gt;C&lt;/code&gt; 语言还没有&lt;code&gt;void *&lt;/code&gt; 的支持。&lt;/p&gt;
-&lt;figure class=&quot;highlight c&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;sockaddr&lt;/span&gt; &amp;#123;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;type&quot;&gt;sa_family_t&lt;/span&gt;  sa_family;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;type&quot;&gt;char&lt;/span&gt;         ss_data[&lt;span class=&quot;number&quot;&gt;14&lt;/span&gt;];&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;;  &lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
-    
-    
-    
-    <category term="Network" scheme="https://yngty.github.io/categories/Network/"/>
-    
-    
-    <category term="socket" scheme="https://yngty.github.io/tags/socket/"/>
     
     <category term="tcp" scheme="https://yngty.github.io/tags/tcp/"/>
     
