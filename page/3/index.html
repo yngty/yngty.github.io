@@ -119,7 +119,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">67</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">73</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
@@ -129,7 +129,7 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">34</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">38</span></a>
 
   </li>
   </ul>
@@ -155,6 +155,749 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2023/08/26/mongodb/mongodb-%E5%85%A5%E9%97%A8-%E7%B4%A2%E5%BC%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Symbol Crash">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/08/26/mongodb/mongodb-%E5%85%A5%E9%97%A8-%E7%B4%A2%E5%BC%95/" class="post-title-link" itemprop="url">mongodb 入门-索引</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-08-26 14:30:06" itemprop="dateCreated datePublished" datetime="2023-08-26T14:30:06+00:00">2023-08-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-03-21 02:27:09" itemprop="dateModified" datetime="2024-03-21T02:27:09+00:00">2024-03-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/mongodb/" itemprop="url" rel="index"><span itemprop="name">mongodb</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>752</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h1><ul>
+<li>对文档部分内容进行排序的数据结构</li>
+<li>加快文档查询和文档排序的速度</li>
+<li>复合键索引只能支持前缀子查询</li>
+</ul>
+<h2 id="索引操作"><a href="#索引操作" class="headerlink" title="索引操作"></a>索引操作</h2><h3 id="创建索引"><a href="#创建索引" class="headerlink" title="创建索引"></a>创建索引</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.&lt;collection&gt;.createIndex(&lt;keys&gt;, &lt;options&gt;)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>&lt;keys&gt;</code> 文档指定了创建索引的字段</li>
+<li><code>&lt;options&gt;</code> 创建索引的参数和设定索引的特性</li>
+</ul>
+<h4 id="创建一个单键索引"><a href="#创建一个单键索引" class="headerlink" title="创建一个单键索引"></a>创建一个单键索引</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;name: 1&#125;)</span><br></pre></td></tr></table></figure>
+<h4 id="创建一个复合键索引"><a href="#创建一个复合键索引" class="headerlink" title="创建一个复合键索引"></a>创建一个复合键索引</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;name: 1, balance: -1&#125;)</span><br></pre></td></tr></table></figure>
+<h4 id="创建一个多键索引，创建在数组字段上-数组字段中的每一个元素都会在多键索引中创建一个键"><a href="#创建一个多键索引，创建在数组字段上-数组字段中的每一个元素都会在多键索引中创建一个键" class="headerlink" title="创建一个多键索引，创建在数组字段上, 数组字段中的每一个元素都会在多键索引中创建一个键"></a>创建一个多键索引，创建在数组字段上, 数组字段中的每一个元素都会在多键索引中创建一个键</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;currency: 1&#125;)</span><br></pre></td></tr></table></figure>
+<h4 id="列出集合中的索引"><a href="#列出集合中的索引" class="headerlink" title="列出集合中的索引"></a>列出集合中的索引</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.accountWithIndex.getIndexes()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/08/26/mongodb/mongodb-%E5%85%A5%E9%97%A8-%E7%B4%A2%E5%BC%95/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2023/08/25/macos/executable-path-load-path-%E5%92%8C-rpath/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Symbol Crash">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/08/25/macos/executable-path-load-path-%E5%92%8C-rpath/" class="post-title-link" itemprop="url">@executable path, @load path 和 @rpath</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-08-25 11:05:29" itemprop="dateCreated datePublished" datetime="2023-08-25T11:05:29+00:00">2023-08-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-03-21 02:27:09" itemprop="dateModified" datetime="2024-03-21T02:27:09+00:00">2024-03-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/MacOS/" itemprop="url" rel="index"><span itemprop="name">MacOS</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>982</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>在 <code>macOS</code> 上，动态链接器使用特定的路径变量来解析运行时的库位置。这些路径变量包括：绝对路径、 <code>@executable_path</code>、<code>@loader_path</code> 和 <code>@rpath</code>。</p>
+<h1 id="绝对路径"><a href="#绝对路径" class="headerlink" title="绝对路径"></a>绝对路径</h1><p>对于安装在系统中共享位置的框架很有用，一般是 <code>/Library/Frameworks/xxx</code>、 <code>/usr/lib/xxx</code>, 但是查找嵌入在应用内部的动态库就很难使用，应用安装的位置都不固定，所以引出新的方式。</p>
+<h1 id="executable-path"><a href="#executable-path" class="headerlink" title="@executable path"></a>@executable path</h1><p><code>@executable_path</code> 是用于指代<strong>当前正在执行的程序或应用的路径</strong>。当你的应用程序或其动态库需要引用位于与可执行文件相同路径（或其子目录）下的其他动态库时，这会非常有用。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/08/25/macos/executable-path-load-path-%E5%92%8C-rpath/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2023/08/23/network/libevent-%E4%BD%BF%E7%94%A8%E5%85%A5%E9%97%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Symbol Crash">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/08/23/network/libevent-%E4%BD%BF%E7%94%A8%E5%85%A5%E9%97%A8/" class="post-title-link" itemprop="url">libevent 使用入门</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-08-23 10:07:43" itemprop="dateCreated datePublished" datetime="2023-08-23T10:07:43+00:00">2023-08-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-03-21 02:27:09" itemprop="dateModified" datetime="2024-03-21T02:27:09+00:00">2024-03-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Network/" itemprop="url" rel="index"><span itemprop="name">Network</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>615</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p><code>libEvent</code>, 一个事件通知库。有以下特点：</p>
+<ul>
+<li>事件驱动，高性能；</li>
+<li>轻量级，专注于网络；</li>
+<li>跨平台，支持 <code>Windows</code>、<code>Linux</code>、<code>Mac</code> 等；</li>
+<li>支持多种 <code>I/O</code> 多路复用技术， <code>epoll</code>、<code>poll</code>、<code>dev/poll</code>、<code>select</code> 和 <code>kqueue</code> 等；</li>
+<li>支持 <code>I/O</code> ，定时器和信号等事件；</li>
+</ul>
+<h1 id="libevent接口分析"><a href="#libevent接口分析" class="headerlink" title="libevent接口分析"></a>libevent接口分析</h1><p>libevent 接口大概分为以下几类: </p>
+<ul>
+<li>环境配置和初始化<ul>
+<li><code>event_base_new</code></li>
+</ul>
+</li>
+<li><code>evutil socket</code> 函数封装<ul>
+<li><code>evutil_make_socket_nonblocking</code></li>
+<li><code>evutil_make_listen_socket_reuseable</code><ul>
+<li>set SO_REUSEADDR on Unix and does nothing on Windows</li>
+</ul>
+</li>
+<li><code>evutil_closesocket</code></li>
+</ul>
+</li>
+<li>事件<code>IO</code>处理<ul>
+<li><code>event_new</code></li>
+</ul>
+</li>
+<li>缓冲<code>IO</code><ul>
+<li><code>bufferevent</code></li>
+</ul>
+</li>
+<li>循环(<code>Loop</code>)<ul>
+<li><code>event_base_dispatch</code></li>
+</ul>
+</li>
+</ul>
+<h1 id="Libevent-API"><a href="#Libevent-API" class="headerlink" title="Libevent API"></a>Libevent API</h1><h2 id="libevent上下文创建"><a href="#libevent上下文创建" class="headerlink" title="libevent上下文创建"></a>libevent上下文创建</h2><ul>
+<li>event_base *event_base_new(void)</li>
+<li>event_base *event_base_new_with_config( const struct event_config *);<ul>
+<li>配置参数<ul>
+<li>event_config *event_config_new(void);</li>
+<li>void event_config_free(struct event_config * cfg);</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>event_reinit<ul>
+<li>int event_reinit(struct event_base *base); 调用 fork 之后可以正确工作</li>
+</ul>
+</li>
+<li>void event_base_free(struct event_base *); 释放event_base内部分配的空间及其本身对象的空间，不释放事件和socket和在回调函数中申请 的空间</li>
+<li>event_config_set_flag</li>
+<li>event_config_avoid_method(struct event_ config *cfg, const char *method);</li>
+<li>event_config_require_features</li>
+</ul>
+<p>event_base_config_flag</p>
+<ul>
+<li><p>EVENT_BASE_FLAG_NOLOCK: </p>
+<ul>
+<li>不要为event_base 分配锁。设置这个选项可以为event_base 节省一点用于锁定和解锁的时间，但是让在多个线程中访问event_base 成为不安全的。</li>
+</ul>
+</li>
+<li><p>EVENT_BASE_FLAG_IGNORE_ENV</p>
+<ul>
+<li>选择使用的后端时，不要检测EVENT_*环境变量。使用这个标志需要三思:这会让用户更难 调试你的程序与libevent 的交互。</li>
+</ul>
+</li>
+<li><p>EVENT_BASE_FLAG_STARTUP_IOCP</p>
+<ul>
+<li>仅用于Windows,启用任何必需的IOCP 分发逻辑</li>
+<li>iocp<ul>
+<li>event_config_set_num_cpus_hint</li>
+<li>event_config_set_flag(cfg, EVENT_BASE_ FLAG_STARTUP_IOCP)</li>
+<li>evthread_use_windows_threads();</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>EVENT_BASE_FLAG_NO_CACHE_TIME</p>
+<ul>
+<li>不是在事件循环每次准备执行超时回调时检测当前时间，而是在每次超时回调后进行检 测。注意:这会消耗更多的CPU 时间。</li>
+</ul>
+</li>
+<li><p>EVENT_BASE_FLAG_EPOLL_USE_ CHANGELIST</p>
+<ul>
+<li>epoll下有效，防止同一个fd多次激发事件，fd如果做复制会有bug</li>
+</ul>
+</li>
+<li><p>EVENT_BASE_FLAG_PRECISE_TIMER</p>
+<ul>
+<li>默认使用系统最快的记时机制，如果系统有较慢 且更精确的则采用</li>
+</ul>
+</li>
+</ul>
+<p>event_method_feature</p>
+<ul>
+<li>EV_FEATURE_ET &#x3D; 0x01<ul>
+<li>边沿触发的后端</li>
+</ul>
+</li>
+<li>EV_FEATURE_O1 &#x3D; 0x02,<ul>
+<li>要求添加、删除单个事件，或者确定哪个事件激 活的操作是O(1)复杂度的后端</li>
+</ul>
+</li>
+<li>EV_FEATURE_FDS &#x3D; 0x04,<ul>
+<li>要求支持任意文件描述符，而不仅仅是套接字的 后端</li>
+</ul>
+</li>
+<li>EV_FEATURE_EARLY_CLOSE &#x3D; 0x08<ul>
+<li>检测连接关闭事件。您可以使用它来检测连接何时关闭，而不必从连接中读取所有挂起的数据。 并非所有后端都支持EV_CLOSED。允许您使用EV_CLOSED，而不需要读取所有挂起的数据。无法在所有内核版本上</li>
+</ul>
+</li>
+</ul>
+<h2 id="事件Event处理"><a href="#事件Event处理" class="headerlink" title="事件Event处理"></a>事件Event处理</h2><h2 id="循环-loop"><a href="#循环-loop" class="headerlink" title="循环(loop)"></a>循环(loop)</h2><h2 id="缓冲-bufferevent"><a href="#缓冲-bufferevent" class="headerlink" title="缓冲 bufferevent"></a>缓冲 bufferevent</h2><h2 id="libevent-http"><a href="#libevent-http" class="headerlink" title="libevent http"></a>libevent http</h2>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2023/08/17/network/I-O-%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Symbol Crash">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/08/17/network/I-O-%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" class="post-title-link" itemprop="url">I/O 多路复用</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-08-17 14:32:07" itemprop="dateCreated datePublished" datetime="2023-08-17T14:32:07+00:00">2023-08-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-03-21 02:27:09" itemprop="dateModified" datetime="2024-03-21T02:27:09+00:00">2024-03-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Network/" itemprop="url" rel="index"><span itemprop="name">Network</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>5 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="select"><a href="#select" class="headerlink" title="select"></a>select</h1><p><code>select</code> 实现多路复用的方式是，将已连接的 <code>socket</code> 都放到一个文件描述符集合，然后调用 <code>select</code>函数将文件描述符集合拷贝到内核里，让内核来检查是否有网络事件产生，通过遍历文件描述符集合的方式，当检查到有事件产生后，将此 <code>socket</code> 标记为可读或可写， 接着再把整个文件描述符集合拷贝回用户态里，然后用户态还需要再通过遍历的方法找到可读或可写的 <code>socket</code>，然后再对其处理。</p>
+<p>所以，对于 <code>select</code> 这种方式，需要进行 <strong>2 次「遍历」文件描述符集合</strong>，一次是在内核态里，一个次是在用户态里 ，而且还会发生 <strong>2 次「拷贝」文件描述符集合</strong>，先从用户空间传入内核空间，由内核修改后，再传出到用户空间中。</p>
+<h2 id="select-函数原型"><a href="#select-函数原型" class="headerlink" title="select 函数原型"></a>select 函数原型</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/select.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">select</span><span class="params">(<span class="type">int</span> nfds, fd_set *<span class="keyword">restrict</span> readfds, fd_set *<span class="keyword">restrict</span> writefds, fd_set *<span class="keyword">restrict</span> errorfds, <span class="keyword">struct</span> timeval *<span class="keyword">restrict</span> timeout)</span>;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>返回值 <ul>
+<li>若有就绪描述符则为其数目，若超时则为 <code>0</code>，若出错则为 <code>-1</code></li>
+</ul>
+</li>
+<li>参数<ul>
+<li><code>maxfd</code>: 待测试的描述符基数，它的值是待测试的最大描述符加 <code>1</code></li>
+<li><code>readfds</code>：读描述符集合</li>
+<li><code>writefds</code>：写描述符集合</li>
+<li><code>errorfds</code>：异常描述符集合</li>
+<li><code>timeout</code>: 超时设置</li>
+</ul>
+</li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/08/17/network/I-O-%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2023/07/25/network/TCP-%E5%8D%8F%E8%AE%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Symbol Crash">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/07/25/network/TCP-%E5%8D%8F%E8%AE%AE/" class="post-title-link" itemprop="url">TCP 协议</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-07-25 09:43:58" itemprop="dateCreated datePublished" datetime="2023-07-25T09:43:58+00:00">2023-07-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-03-21 02:27:09" itemprop="dateModified" datetime="2024-03-21T02:27:09+00:00">2024-03-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Network/" itemprop="url" rel="index"><span itemprop="name">Network</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.1k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>8 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="TCP-基本认识"><a href="#TCP-基本认识" class="headerlink" title="TCP 基本认识"></a><code>TCP</code> 基本认识</h1><p><code>TCP</code> 是 <strong>面向连接的、可靠的、基于字节流</strong>的传输层通信协议。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"> 0                   1                   2                   3</span><br><span class="line"> 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|          Source Port          |       Destination Port        |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                        Sequence Number                        |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                    Acknowledgment Number                      |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|  Data |           |U|A|P|R|S|F|                               |</span><br><span class="line">| Offset| Reserved  |R|C|S|S|Y|I|            Window             |</span><br><span class="line">|       |           |G|K|H|T|N|N|                               |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|           Checksum            |         Urgent Pointer        |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                    Options                    |    Padding    |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                             data                              |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br></pre></td></tr></table></figure>
+<h2 id="源端口-Source-Port"><a href="#源端口-Source-Port" class="headerlink" title="源端口(Source Port)"></a>源端口(<code>Source Port</code>)</h2><p>源端口，<code>16</code> 位</p>
+<h2 id="目标端口-Destination-Port"><a href="#目标端口-Destination-Port" class="headerlink" title="目标端口(Destination Port)"></a>目标端口(<code>Destination Port</code>)</h2><p>目标端口，<code>16</code> 位</p>
+<h2 id="序列号-Sequence-Number"><a href="#序列号-Sequence-Number" class="headerlink" title="序列号 (Sequence Number)"></a>序列号 (<code>Sequence Number</code>)</h2><p><code>TCP</code> 是面向字节流的协议，通过 <code>TCP</code> 传输的字节流的每个字节都分配了序列号，序列号（<code>Sequence number</code>）指的是本报文段第一个字节的序列号。</p>
+<p>序列号加上报文的长度，就可以确定传输的是哪一段数据。序列号是一个 <code>32</code> 位的无符号整数，达到 <code>2^32-1</code> 后循环到 <code>0</code>。</p>
+<p>在 <code>SYN</code> 报文中，序列号用于交换彼此的初始序列号，在其它报文中，序列号用于保证包的顺序。</p>
+<p>因为网络层（<code>IP</code> 层）不保证包的顺序，<code>TCP</code> 协议利用序列号来解决网络包乱序、重复的问题，以保证数据包以正确的顺序组装传递给上层应用。</p>
+<h3 id="初始序列号-（Initial-Sequence-Number-ISN）"><a href="#初始序列号-（Initial-Sequence-Number-ISN）" class="headerlink" title="初始序列号 （Initial Sequence Number, ISN）"></a>初始序列号 （<code>Initial Sequence Number, ISN</code>）</h3><p>在建立连接之初，通信双方都会各自选择一个序列号，称之为初始序列号。在建立连接时，通信双方通过 <code>SYN</code> 报文交换彼此的 <code>ISN</code></p>
+<h3 id="序列号回绕"><a href="#序列号回绕" class="headerlink" title="序列号回绕"></a>序列号回绕</h3><h2 id="确认号-Acknowledgment-Number"><a href="#确认号-Acknowledgment-Number" class="headerlink" title="确认号 (Acknowledgment Number)"></a>确认号 (<code>Acknowledgment Number</code>)</h2><p><code>TCP</code> 使用确认号（<code>Acknowledgment number, ACK</code>）来告知对方下一个期望接收的序列号，小于此确认号的所有字节都已经收到</p>
+<h2 id="头部长度-Data-Offset"><a href="#头部长度-Data-Offset" class="headerlink" title="头部长度 (Data Offset ):"></a>头部长度 (<code>Data Offset </code>):</h2><p>只有 <code>4</code> 位, 取值范围 <code>0~15</code>, 表示 <code>TCP</code>头长度为 <code>32位(4字节)</code>的数量。<code>TCP</code> 头（甚至包括选项）的长度是 <code>32</code> 位的整数倍。例如 <code>DOffset</code>的值为 <code>0111</code>, 则该TCP包头的长度为 <code>7 * 4 = 28</code></p>
+<h2 id="TCP-Flags"><a href="#TCP-Flags" class="headerlink" title="TCP Flags"></a>TCP Flags</h2><ul>
+<li><code>SYN（Synchronize）</code>：用于发起连接数据包同步双方的初始序列号</li>
+<li><code>ACK（Acknowledge）</code>：确认数据包</li>
+<li><code>RST（Reset）</code>：这个标记用来强制断开连接，通常是之前建立的连接已经不在了、包不合法、或者实在无能为力处理</li>
+<li><code>FIN（Finish）</code>：通知对方我发完了所有数据，准备断开连接，后面我不会再发数据包给你了。</li>
+<li><code>PSH（Push）</code>：告知对方这些数据包收到以后应该马上交给上层应用，不能缓存起来</li>
+</ul>
+<h2 id="窗口大小-Window-Size"><a href="#窗口大小-Window-Size" class="headerlink" title="窗口大小 (Window Size)"></a>窗口大小 (<code>Window Size</code>)</h2><p><code>TCP</code> 协议窗口大小只有 <code>16</code> 位，最大窗口大小为 <code>65535</code> 字节(<code>64KB</code>), 在今天显然不够用，所以 <code>TCP</code> 协议引入了 <strong>TCP 窗口缩放</strong> 选项，作为窗口缩放的比例因子，比利因子的值在 <code>0～14</code>，其中 <code>0</code> 表示不缩放，最大值为  <code>14</code>。比例因子可以将窗口扩大到原来的 <code>2</code> 的 <code>n</code> 次方，比如窗口大小缩放前为 <code>1050</code>，缩放因子为 <code>7</code>，则真正的窗口大小为 <code>1050 * 128 = 134400</code></p>
+<h2 id="可选项-Options"><a href="#可选项-Options" class="headerlink" title="可选项 (Options)"></a>可选项 (<code>Options</code>)</h2><p>只有 (<code>DOffset &gt; 5</code>) 才有此数据,</p>
+<p>可选项的格式：</p>
+<ul>
+<li><p>一个字节的 <code>Kind</code></p>
+<ul>
+<li><code>No-Operation</code>: 无操作。</li>
+</ul>
+</li>
+<li><p>一个字节的 <code>Kind</code>, 一个字节的 <code>option-length</code>，和真实的 <code>option data</code></p>
+<ul>
+<li><code>MSS</code>：最大段大小选项，是 <code>TCP</code> 允许的从对方接收的最大报文段</li>
+<li><code>SACK</code>：选择确认选项</li>
+<li><code>Window Scale</code>：窗口缩放选项
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/07/25/network/TCP-%E5%8D%8F%E8%AE%AE/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2023/07/24/network/%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E4%BD%BF%E7%94%A8TCP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Symbol Crash">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/07/24/network/%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E4%BD%BF%E7%94%A8TCP/" class="post-title-link" itemprop="url">如何正确使用TCP</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-07-24 15:12:44" itemprop="dateCreated datePublished" datetime="2023-07-24T15:12:44+00:00">2023-07-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-03-21 02:27:09" itemprop="dateModified" datetime="2024-03-21T02:27:09+00:00">2024-03-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Network/" itemprop="url" rel="index"><span itemprop="name">Network</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>491</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="SO-REUSEADDR"><a href="#SO-REUSEADDR" class="headerlink" title="SO_REUSEADDR"></a>SO_REUSEADDR</h1><ul>
+<li><code>TCP</code> 服务器能够在杀掉或崩溃后快速重启</li>
+<li>也适用 <code>fork-per-connection</code> 服务器模型。</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> optval = <span class="number">1</span>;</span><br><span class="line"><span class="built_in">setsockopt</span>(sockfd, SOL_SOCKET, SO_REUSEADDR, &amp;optval, <span class="built_in">sizeof</span>(optval));</span><br></pre></td></tr></table></figure>
+<h1 id="忽略-SIGPIPE"><a href="#忽略-SIGPIPE" class="headerlink" title="忽略 SIGPIPE"></a>忽略 SIGPIPE</h1><p>程序向对方已经关闭的管道，写数据，会收到 <code>SIGPIPE</code> 信号。<code>write</code> 系统调用返回 <code>-1</code>收到 <code>errono EPIPE</code>。 <code>SIGPIPE</code> 信号默认行为终止进程。我们应该忽略 <code>SIGPIPE</code> 信号。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="built_in">signal</span>(SIGPIPE, SIG_IGN) == SIG_ERR) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/07/24/network/%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E4%BD%BF%E7%94%A8TCP/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -190,7 +933,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-03-07 03:28:00" itemprop="dateModified" datetime="2024-03-07T03:28:00+00:00">2024-03-07</time>
+                <time title="修改时间：2024-03-21 02:27:09" itemprop="dateModified" datetime="2024-03-21T02:27:09+00:00">2024-03-21</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -294,7 +1037,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-03-07 03:28:00" itemprop="dateModified" datetime="2024-03-07T03:28:00+00:00">2024-03-07</time>
+                <time title="修改时间：2024-03-21 02:27:09" itemprop="dateModified" datetime="2024-03-21T02:27:09+00:00">2024-03-21</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -312,14 +1055,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>74</span>
+              <span>1.3k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
+              <span>5 分钟</span>
             </span>
 
         </div>
@@ -333,6 +1076,20 @@
       
           <p><code>tcpdump</code> 命令行抓包工具。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">tcpdump [ -AbdDefhHIJKlLnNOpqStuUvxX# ] [ -B buffer_size ]</span><br><span class="line">        [ -c count ] [ --count ] [ -C file_size ]</span><br><span class="line">        [ -E spi@ipaddr algo:secret,...  ]</span><br><span class="line">        [ -F file ] [ -G rotate_seconds ] [ -i interface ]</span><br><span class="line">        [ --immediate-mode ] [ -j tstamp_type ] [ -k (metadata_arg) ]</span><br><span class="line">        [ -m module ]</span><br><span class="line">        [ -M secret ] [ --number ] [ --print ]</span><br><span class="line">        [ -Q packet-metadata-filter ] [ -Q in|out|inout ]</span><br><span class="line">        [ -r file ] [ -s snaplen ] [ -T type ] [ --version ]</span><br><span class="line">        [ -V file ] [ -w file ] [ -W filecount ] [ -y datalinktype ]</span><br><span class="line">        [ -z postrotate-command ] [ -Z user ]</span><br><span class="line">        [ --time-stamp-precision=tstamp_precision ]</span><br><span class="line">        [ --micro ] [ --nano ]</span><br><span class="line">        [ expression ]</span><br></pre></td></tr></table></figure>
+<p>需要 <code>root</code> 权限运行:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">sudo tcpdump -i any</span></span><br><span class="line">tcpdump: data link type LINUX_SLL2</span><br><span class="line">tcpdump: verbose output suppressed, use -v[v]... for full protocol decode</span><br><span class="line">listening on any, link-type LINUX_SLL2 (Linux cooked v2), snapshot length 262144 bytes</span><br><span class="line">15:01:28.921972 ens33 Out IP ept.55660 &gt; 123.208.120.34.bc.googleusercontent.com.https: Flags [P.], seq 1706429942:1706429981, ack 1072465052, win 63000, length 39</span><br><span class="line">15:01:28.922423 ens33 In  IP 123.208.120.34.bc.googleusercontent.com.https &gt; ept.55660: Flags [.], ack 39, win 64240, length 0</span><br><span class="line">15:01:28.971505 lo    In  IP localhost.33425 &gt; localhost.domain: 48367+ [1au] PTR? 123.208.120.34.in-addr.arpa. (56)</span><br><span class="line">15:01:28.971785 ens33 Out IP ept.50072 &gt; _gateway.domain: 32506+ PTR? 123.208.120.34.in-addr.arpa. (45)</span><br><span class="line">15:01:28.977216 ens33 In  IP _gateway.domain &gt; ept.50072: 32506 1/0/0 PTR 123.208.120.34.bc.googleusercontent.com. (98)</span><br><span class="line">15:01:28.977492 lo    In  IP localhost.domain &gt; localhost.33425: 48367 1/0/1 PTR 123.208.120.34.bc.googleusercontent.com. (109)</span><br><span class="line">15:01:28.977796 lo    In  IP localhost.45140 &gt; localhost.domain: 38317+ [1au] PTR? 168.14.168.192.in-addr.arpa. (56)</span><br><span class="line">15:01:28.978066 ens33 Out IP ept.50288 &gt; _gateway.domain: 21988+ PTR? 168.14.168.192.in-addr.arpa. (45)</span><br></pre></td></tr></table></figure>
+
+<p><code>-i</code> 表示指定哪一个网卡，<code>any</code> 表示任意。有哪些网卡可以用 <code>ifconfig</code> 来查看，在我的虚拟机上，<code>ifconfig</code> 输出结果如下</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">-&gt; </span><span class="language-bash">ifconfig</span></span><br><span class="line">ens33: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500</span><br><span class="line">        inet 192.168.14.168  netmask 255.255.255.0  broadcast 192.168.14.255</span><br><span class="line">        inet6 fe80::a421:b6c8:4404:333d  prefixlen 64  scopeid 0x20&lt;link&gt;</span><br><span class="line">        ether 00:0c:29:cc:cd:fb  txqueuelen 1000  (Ethernet)</span><br><span class="line">        RX packets 4548  bytes 5135525 (5.1 MB)</span><br><span class="line">        RX errors 0  dropped 0  overruns 0  frame 0</span><br><span class="line">        TX packets 2897  bytes 1689085 (1.6 MB)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line"></span><br><span class="line">lo: flags=73&lt;UP,LOOPBACK,RUNNING&gt;  mtu 65536</span><br><span class="line">        inet 127.0.0.1  netmask 255.0.0.0</span><br><span class="line">        inet6 ::1  prefixlen 128  scopeid 0x10&lt;host&gt;</span><br><span class="line">        loop  txqueuelen 1000  (Local Loopback)</span><br><span class="line">        RX packets 5307  bytes 391240 (391.2 KB)</span><br><span class="line">        RX errors 0  dropped 0  overruns 0  frame 0</span><br><span class="line">        TX packets 5307  bytes 391240 (391.2 KB)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br></pre></td></tr></table></figure>
+<p>如果只想查看 <code>ens33</code> 网卡经过的数据包，就可以使用 <code>tcpdump -i ens33</code>来指定。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/07/19/network/tcpdump-%E6%8A%93%E5%8C%85/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -382,7 +1139,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-03-07 03:28:00" itemprop="dateModified" datetime="2024-03-07T03:28:00+00:00">2024-03-07</time>
+                <time title="修改时间：2024-03-21 02:27:09" itemprop="dateModified" datetime="2024-03-21T02:27:09+00:00">2024-03-21</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -480,7 +1237,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-03-07 03:28:00" itemprop="dateModified" datetime="2024-03-07T03:28:00+00:00">2024-03-07</time>
+                <time title="修改时间：2024-03-21 02:27:09" itemprop="dateModified" datetime="2024-03-21T02:27:09+00:00">2024-03-21</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -596,643 +1353,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2023/04/07/cmake/CMake-%E8%B8%A9%E5%9D%91%E8%AE%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="yngty">
-      <meta itemprop="description" content="预测未来的最好方式就是实现它">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Symbol Crash">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/04/07/cmake/CMake-%E8%B8%A9%E5%9D%91%E8%AE%B0/" class="post-title-link" itemprop="url">CMake 踩坑记</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2023-04-07 10:26:10" itemprop="dateCreated datePublished" datetime="2023-04-07T10:26:10+00:00">2023-04-07</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-03-07 03:28:00" itemprop="dateModified" datetime="2024-03-07T03:28:00+00:00">2024-03-07</time>
-              </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>471</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>2 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="install-CODE-和-execute-process-配合"><a href="#install-CODE-和-execute-process-配合" class="headerlink" title="install(CODE) 和 execute_process 配合"></a><code>install(CODE)</code> 和 <code>execute_process</code> 配合</h1><h2 id="确保-WORKING-DIRECTORY-存在"><a href="#确保-WORKING-DIRECTORY-存在" class="headerlink" title="确保 WORKING_DIRECTORY 存在"></a>确保 <code>WORKING_DIRECTORY</code> 存在</h2><p>示例代码: </p>
-<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span>(CMAKE_INSTALL_PREFIX <span class="variable">$&#123;PROJECT_BINARY_DIR&#125;</span>/<span class="keyword">export</span>)</span><br><span class="line"><span class="keyword">install</span>(CODE <span class="string">&quot;</span></span><br><span class="line"><span class="string">    execute_process(COMMAND $&#123;CMAKE_COMMAND&#125; -E make_directory folder </span></span><br><span class="line"><span class="string">    WORKING_DIRECTORY \$&#123;CMAKE_INSTALL_PREFIX&#125;)</span></span><br><span class="line"><span class="string">    &quot;</span>) </span><br></pre></td></tr></table></figure>
-
-<p>注意确保 <code>CMAKE_INSTALL_PREFIX</code> 存在，可能执行这段代码时还没有 <code>install target</code> 导致 <code>CMAKE_INSTALL_PREFIX</code> 还没有生成。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2023/04/07/cmake/CMake-%E8%B8%A9%E5%9D%91%E8%AE%B0/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2023/03/18/macos/%E5%AD%98%E5%82%A8%E5%92%8C%E5%8A%A0%E8%BD%BD%E6%8C%87%E4%BB%A4/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="yngty">
-      <meta itemprop="description" content="预测未来的最好方式就是实现它">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Symbol Crash">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/03/18/macos/%E5%AD%98%E5%82%A8%E5%92%8C%E5%8A%A0%E8%BD%BD%E6%8C%87%E4%BB%A4/" class="post-title-link" itemprop="url">存储和加载指令</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2023-03-18 23:19:19" itemprop="dateCreated datePublished" datetime="2023-03-18T23:19:19+00:00">2023-03-18</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-03-07 03:28:00" itemprop="dateModified" datetime="2024-03-07T03:28:00+00:00">2024-03-07</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%B1%87%E7%BC%96/" itemprop="url" rel="index"><span itemprop="name">汇编</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>248</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="存储和加载指令"><a href="#存储和加载指令" class="headerlink" title="存储和加载指令"></a>存储和加载指令</h3><h4 id="ldr-指令寻址之1：-地址偏移模式-unsigned-offset"><a href="#ldr-指令寻址之1：-地址偏移模式-unsigned-offset" class="headerlink" title="ldr 指令寻址之1： 地址偏移模式 (unsigned offset)"></a><code>ldr</code> 指令寻址之1： 地址偏移模式 (<code>unsigned offset</code>)</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LDR Xd, [Xn, $offset]</span><br></pre></td></tr></table></figure>
-<p>首先在 <code>Xn</code> 寄存器的内容上加上一个 <code>offset</code> 偏移量后作为内存地址，加载此地址的内容到 <code>Xd</code> 寄存器。</p>
-<h4 id="ldr-指令寻址之2：-变基模式"><a href="#ldr-指令寻址之2：-变基模式" class="headerlink" title="ldr 指令寻址之2： 变基模式"></a><code>ldr</code> 指令寻址之2： 变基模式</h4><ul>
-<li>前变基模式（<code>pre-index</code> 模式）： 先更新偏移地址然后再访问内存。</li>
-<li>后变基模式（<code>post-index</code> 模式）：先访问内存地址然后再更新偏移地址。</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">LDR X0, [X1, #8]! // 前变基模式。先更新X1 的值为 X1+8，然后义新的X1值为地址，加载内存的值到X0</span><br><span class="line"></span><br><span class="line">LDR X0, [X1], #8  // 后变基模式。以x1的值为地址，加载该内存地址的值到X0，然后在更新X1寄存器为X1+8</span><br></pre></td></tr></table></figure>
-
-<h4 id="ldr-指令寻址之3：-标签（literal）"><a href="#ldr-指令寻址之3：-标签（literal）" class="headerlink" title="ldr 指令寻址之3： 标签（literal）"></a><code>ldr</code> 指令寻址之3： 标签（<code>literal</code>）</h4><p>PC + label offset</p>
-<h4 id="ldr-伪指令"><a href="#ldr-伪指令" class="headerlink" title="ldr 伪指令"></a>ldr 伪指令</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LDR x7, =MY_LABEL</span><br></pre></td></tr></table></figure>
-
-<h4 id="move-指令"><a href="#move-指令" class="headerlink" title="move 指令"></a>move 指令</h4><ul>
-<li>16位立即数</li>
-<li>16立即数左移16，32，48位</li>
-</ul>
-<h4 id="多字节加载和存储指令-ldp-和stp"><a href="#多字节加载和存储指令-ldp-和stp" class="headerlink" title="多字节加载和存储指令 ldp 和stp"></a>多字节加载和存储指令 ldp 和stp</h4>
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2023/03/18/macos/ARM64%E6%B1%87%E7%BC%96%E5%85%A5%E9%97%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="yngty">
-      <meta itemprop="description" content="预测未来的最好方式就是实现它">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Symbol Crash">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/03/18/macos/ARM64%E6%B1%87%E7%BC%96%E5%85%A5%E9%97%A8/" class="post-title-link" itemprop="url">ARM64汇编入门</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2023-03-18 15:02:42" itemprop="dateCreated datePublished" datetime="2023-03-18T15:02:42+00:00">2023-03-18</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-03-07 03:28:00" itemprop="dateModified" datetime="2024-03-07T03:28:00+00:00">2024-03-07</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%B1%87%E7%BC%96/" itemprop="url" rel="index"><span itemprop="name">汇编</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>288</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="ARM-指令概要介绍"><a href="#ARM-指令概要介绍" class="headerlink" title="ARM 指令概要介绍"></a><code>ARM</code> 指令概要介绍</h1><ul>
-<li><code>A64</code> 指令集只能运行在 <code>aarch64</code> 环境中</li>
-<li>所有的A64汇编指令都是 <code>32bits</code> 宽</li>
-<li><code>A64</code> 支持全部是大写或者全部是小写的书写方式</li>
-</ul>
-<p>寄存器名：</p>
-<table>
-<thead>
-<tr>
-<th align="left">Name</th>
-<th align="left">Size</th>
-<th align="left">Encoding</th>
-<th align="left">Description</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">Wn</td>
-<td align="left">32 bits</td>
-<td align="left">0-30</td>
-<td align="left">Genral-purpose register 0-30</td>
-</tr>
-<tr>
-<td align="left">Xn</td>
-<td align="left">64 bits</td>
-<td align="left">0-30</td>
-<td align="left">Genral-purpose register 0-30</td>
-</tr>
-<tr>
-<td align="left">WZR</td>
-<td align="left">32 bits</td>
-<td align="left">31</td>
-<td align="left">Zero register</td>
-</tr>
-<tr>
-<td align="left">XZR</td>
-<td align="left">64 bits</td>
-<td align="left">31</td>
-<td align="left">Zero register</td>
-</tr>
-<tr>
-<td align="left">WPS</td>
-<td align="left">32 bits</td>
-<td align="left">31</td>
-<td align="left">Current stack pointer</td>
-</tr>
-<tr>
-<td align="left">SP</td>
-<td align="left">64 bits</td>
-<td align="left">31</td>
-<td align="left">Current stack pointer</td>
-</tr>
-</tbody></table>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2023/03/18/macos/ARM64%E6%B1%87%E7%BC%96%E5%85%A5%E9%97%A8/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2023/03/11/c++/enable-shared-from-this%E7%9A%84%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="yngty">
-      <meta itemprop="description" content="预测未来的最好方式就是实现它">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Symbol Crash">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/03/11/c++/enable-shared-from-this%E7%9A%84%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/" class="post-title-link" itemprop="url">enable_shared_from_this的注意事项</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2023-03-11 10:09:57" itemprop="dateCreated datePublished" datetime="2023-03-11T10:09:57+00:00">2023-03-11</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-03-07 03:28:00" itemprop="dateModified" datetime="2024-03-07T03:28:00+00:00">2024-03-07</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C-C/" itemprop="url" rel="index"><span itemprop="name">C/C++</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>653</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>2 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h1><p>当我们在对象函数中需要返回或者使用自己的 <code>shared_ptr</code> 指针时，该怎么办呢？常见的错误写法如下：用不安全的表达式试图获得 <code>this</code> 的 <code>shared_ptr</code> 对象, 但可能会导致 <code>this</code> 被多个互不知晓的所有者析构.</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">Bad</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function">std::shared_ptr&lt;Bad&gt; <span class="title">getptr</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> std::<span class="built_in">shared_ptr</span>&lt;Bad&gt;(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    ~<span class="built_in">Bad</span>() &#123; std::cout &lt;&lt; <span class="string">&quot;Bad::~Bad() called\n&quot;</span>; &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    std::shared_ptr&lt;Bad&gt; bp1 = std::<span class="built_in">make_shared</span>&lt;Bad&gt;();</span><br><span class="line">    std::shared_ptr&lt;Bad&gt; bp2 = bp1-&gt;<span class="built_in">getptr</span>();</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;bp2.use_count() = &quot;</span> &lt;&lt; bp2.<span class="built_in">use_count</span>() &lt;&lt; <span class="string">&#x27;\n&#x27;</span>;</span><br><span class="line">&#125; <span class="comment">// UB: Bad 对象将会被删除两次</span></span><br></pre></td></tr></table></figure>
-<p>正确写法是将定义对象公开继承 <code>enable_shared_from_this</code>: </p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Good</span>: <span class="keyword">public</span> std::enable_shared_from_this&lt;Good&gt; <span class="comment">// 注意：继承</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function">std::shared_ptr&lt;Good&gt; <span class="title">getptr</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">shared_from_this</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2023/03/11/c++/enable-shared-from-this%E7%9A%84%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2023/03/10/effective-stl/effective-stl-21/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="yngty">
-      <meta itemprop="description" content="预测未来的最好方式就是实现它">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Symbol Crash">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/03/10/effective-stl/effective-stl-21/" class="post-title-link" itemprop="url">Effective-STL 21：总是让比较函数在等值情况下返回 false</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2023-03-10 21:05:20" itemprop="dateCreated datePublished" datetime="2023-03-10T21:05:20+00:00">2023-03-10</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-03-07 03:28:00" itemprop="dateModified" datetime="2024-03-07T03:28:00+00:00">2024-03-07</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Effective-STL/" itemprop="url" rel="index"><span itemprop="name">Effective-STL</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>461</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>2 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <blockquote>
-<p>Item 21: Always have comparison functions return false for equal values.</p>
-</blockquote>
-<h1 id="严格弱序-strict-weak-ordering"><a href="#严格弱序-strict-weak-ordering" class="headerlink" title="严格弱序( strict weak ordering )"></a>严格弱序( <code>strict weak ordering</code> )</h1><p>先补充下严格弱序的概念: 对两个变量 <code>x</code> 和 <code>y</code>：</p>
-<ul>
-<li><code>x &gt; y</code> 等同于 <code>y &lt; x</code></li>
-<li><code>x == y</code> 等同于 <code>!(x &lt; y) &amp;&amp; !(x &gt; y)</code></li>
-</ul>
-<p>要想严格弱序，就需要遵循如下规则：</p>
-<ul>
-<li>每个变量值必须等于其本身（<code>irreflexivity</code>）：<code>x &lt; x</code> 永远不能为 <code>true</code></li>
-<li>不对称性（<code>asymmetry</code>）：如果 <code>x &lt; y</code>，那么 <code>y &lt; x</code> 就不能为 <code>true</code></li>
-<li>有序性必须可传递性：如果 <code>x &lt; y</code> 并且 <code>y &lt; z</code>，那么 <code>x &lt; z</code></li>
-<li>值相同必须具有可传递性：如果 <code>x == y</code> 并且 <code>y == z</code>，那么 <code>x == z</code></li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2023/03/10/effective-stl/effective-stl-21/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2023/03/10/macos/mach-o/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="yngty">
-      <meta itemprop="description" content="预测未来的最好方式就是实现它">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Symbol Crash">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/03/10/macos/mach-o/" class="post-title-link" itemprop="url">Mach-O 相关记录</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2023-03-10 11:14:12" itemprop="dateCreated datePublished" datetime="2023-03-10T11:14:12+00:00">2023-03-10</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-03-07 03:28:00" itemprop="dateModified" datetime="2024-03-07T03:28:00+00:00">2024-03-07</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/MacOS/" itemprop="url" rel="index"><span itemprop="name">MacOS</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>4</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><h1 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h1>
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1300,7 +1424,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">67</span>
+          <span class="site-state-item-count">73</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1313,7 +1437,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">34</span>
+        <span class="site-state-item-count">38</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -1360,12 +1484,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">38k</span>
+    <span title="站点总字数">42k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">2:16</span>
+    <span title="站点阅读时长">2:31</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>
