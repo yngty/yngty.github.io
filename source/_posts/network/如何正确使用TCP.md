@@ -7,7 +7,7 @@ categories:
 - Network
 ---
 
-# SO_REUSEADDR
+# `SO_REUSEADDR`
 
 - `TCP` 服务器能够在杀掉或崩溃后快速重启
 - 也适用 `fork-per-connection` 服务器模型。
@@ -16,7 +16,7 @@ categories:
 int optval = 1;
 setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval));
 ```
-# 忽略 SIGPIPE
+# 忽略 `SIGPIPE`
 
 程序向对方已经关闭的管道，写数据，会收到 `SIGPIPE` 信号。`write` 系统调用返回 `-1`收到 `errono EPIPE`。 `SIGPIPE` 信号默认行为终止进程。我们应该忽略 `SIGPIPE` 信号。
 
@@ -31,7 +31,7 @@ if (signal(SIGPIPE, SIG_IGN) == SIG_ERR) {
 
 `Nagle` 算法避免发送大量的小包，防止小包泛滥于网络，理想情况下，对于一个 `TCP` 连接而言，只允许一个未被 `ACK`的包存在于网络。
 
-`Nagle` 算法规则: 
+`Nagle` 算法规则:
 - 如果包长度达到 `MSS`，则允许发送
 - 如果包含 `FIN`，则允许发送
 - 如果设置了 `TCP_NODELAY`，则允许发送
@@ -57,3 +57,5 @@ setsockopt(sockfd, IPPROTO_TCP, TCP_NODELAY, (char*)&flag, sizeof(int));
 如果遇到恶意或者是有 `bug` 的 `client`，一直不 `close`，发送方一直阻塞在 `read` , 建议加一个超时机制退出程序，这是为了程序安全 `security`，不是为了数据安全 `safety` 完整性 `Integrity`。
 
 依赖 `shutdown write` 会发送 `FIN`，`end of file`，更好的办法是设计协议，把数据长度包含进来，接收方可以主动判断数据是否收全。
+
+# `Socket` 选项之 `SO_LINGER`
