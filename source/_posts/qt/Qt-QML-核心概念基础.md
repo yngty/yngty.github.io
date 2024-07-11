@@ -17,11 +17,13 @@ categories:
 - 内置了 `javascript` 运行时环境, 提供逻辑处理： 界面逻辑，业务逻辑
 ## Qt Quick 是什么？
 
-    `Qt Quick` 是类型库，提供了可视化 `UI` 组件，软件开发框架，用于构建用户界面
+`Qt Quick` 是类型库，提供了可视化 `UI` 组件，软件开发框架，用于构建用户界面
+<!--more-->
 ## QML 应用程序
 ## 使用 qmlscene 运行 QML 程序
 ## C++ 应用程序使用 QML
 ### 使用 QML Engine
+
 只使用了 Qt Quick 框架，没有使用Qt Widgets
 
 ```c++

@@ -1,5 +1,5 @@
 ---
-title: 网络工）ttelnet、 nc、 netstat、ss
+title: 网络工具 telnet、 nc、 netstat、ss
 date: 2024-03-20 09:42:47
 tags:
 - tools
@@ -17,7 +17,7 @@ telnet [domainname or ip] [port]
 
 telnet 220.181.57.216 80
 ```
-
+<!--more-->
 # `netcat`
 
 ## 当服务器
