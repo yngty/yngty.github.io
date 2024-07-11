@@ -22,7 +22,8 @@ categories:
 ```
 <!--more-->
 如果在XCode中设置了带有 `dSYM` 文件的 `DWARF` 选项，则编译器会生成 `dSYM` 文件，并将其存储在您的构建中。
-![](/images/dsym.png)
+
+![](../../images/dsym.png)
 
 # 确定符号表和崩溃日志的一致性
 
@@ -60,7 +61,7 @@ Thread 0::  Dispatch queue: com.apple.main-thread
 3   Your      	                        0x10a3ae877❶  0x10a340000❷ + 452727❸
 ```
 
-- ❶ 运行时堆栈地址 
+- ❶ 运行时堆栈地址
 - ❷ 运行时起始地址
 - ❸ 偏移量
 
