@@ -20,19 +20,19 @@
     var CONFIG = {"hostname":"yngty.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="请求 Fast Open Cookie 的过程如下： 客户端发送一个 SYN 包，头部包含 Fast Open 选项，且该选项的 Cookie 为空，这表明客户端请求 Fast Open Cookie 服务端收取 SYN 包以后，生成一个 cookie 值（一串字符串） 服务端发送 SYN + ACK 包，在 Options 的 Fast Open 选项中设置 cookie 的值 客户端缓存服务端">
+  <meta name="description" content="请求 Fast Open Cookie 的过程如下： 客户端发送一个 SYN 包，头部包含 Fast Open 选项，且该选项的 Cookie 为空，这表明客户端请求 Fast Open Cookie  服务端收取 SYN 包以后，生成一个 cookie 值（一串字符串）  服务端发送 SYN + ACK 包，在 Options 的 Fast Open 选项中设置 cookie 的值  客户端缓存">
 <meta property="og:type" content="article">
 <meta property="og:title" content="TCP-TFO快速打开">
 <meta property="og:url" content="https://yngty.github.io/2024/03/21/network/TCP-TFO%E5%BF%AB%E9%80%9F%E6%89%93%E5%BC%80/index.html">
 <meta property="og:site_name" content="Symbol Crash">
-<meta property="og:description" content="请求 Fast Open Cookie 的过程如下： 客户端发送一个 SYN 包，头部包含 Fast Open 选项，且该选项的 Cookie 为空，这表明客户端请求 Fast Open Cookie 服务端收取 SYN 包以后，生成一个 cookie 值（一串字符串） 服务端发送 SYN + ACK 包，在 Options 的 Fast Open 选项中设置 cookie 的值 客户端缓存服务端">
+<meta property="og:description" content="请求 Fast Open Cookie 的过程如下： 客户端发送一个 SYN 包，头部包含 Fast Open 选项，且该选项的 Cookie 为空，这表明客户端请求 Fast Open Cookie  服务端收取 SYN 包以后，生成一个 cookie 值（一串字符串）  服务端发送 SYN + ACK 包，在 Options 的 Fast Open 选项中设置 cookie 的值  客户端缓存">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://yngty.github.io/images/tfo_curl.jpg">
 <meta property="og:image" content="https://yngty.github.io/images/tfo_2.jpg">
 <meta property="og:image" content="https://yngty.github.io/images/tfo_2_1.png">
 <meta property="og:image" content="https://yngty.github.io/images/tfo_2_2.png">
 <meta property="article:published_time" content="2024-03-21T11:25:45.000Z">
-<meta property="article:modified_time" content="2024-07-11T09:47:42.427Z">
+<meta property="article:modified_time" content="2024-07-11T09:49:23.933Z">
 <meta property="article:author" content="yngty">
 <meta property="article:tag" content="tcp">
 <meta property="article:tag" content="tfo">
@@ -199,7 +199,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-07-11 09:47:42" itemprop="dateModified" datetime="2024-07-11T09:47:42+00:00">2024-07-11</time>
+                <time title="修改时间：2024-07-11 09:49:23" itemprop="dateModified" datetime="2024-07-11T09:49:23+00:00">2024-07-11</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -217,7 +217,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>372</span>
+              <span>373</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -237,21 +237,28 @@
 
       
         <h1 id="请求-Fast-Open-Cookie-的过程如下："><a href="#请求-Fast-Open-Cookie-的过程如下：" class="headerlink" title="请求 Fast Open Cookie 的过程如下："></a>请求 <code>Fast Open Cookie</code> 的过程如下：</h1><ul>
-<li>客户端发送一个 <code>SYN</code> 包，头部包含 <code>Fast Open</code> 选项，且该选项的 <code>Cookie</code> 为空，这表明客户端请求 <code>Fast Open Cookie</code></li>
-<li>服务端收取 <code>SYN</code> 包以后，生成一个 <code>cookie</code> 值（一串字符串）</li>
-<li>服务端发送 <code>SYN</code> + <code>ACK</code> 包，在 <code>Options</code> 的 <code>Fast Open</code> 选项中设置 <code>cookie</code> 的值</li>
-<li>客户端缓存服务端的 <code>IP</code> 和收到的 <code>cookie</code> 值</li>
-</ul>
+<li><p>客户端发送一个 <code>SYN</code> 包，头部包含 <code>Fast Open</code> 选项，且该选项的 <code>Cookie</code> 为空，这表明客户端请求 <code>Fast Open Cookie</code></p>
+</li>
+<li><p>服务端收取 <code>SYN</code> 包以后，生成一个 <code>cookie</code> 值（一串字符串）</p>
+</li>
+<li><p>服务端发送 <code>SYN</code> + <code>ACK</code> 包，在 <code>Options</code> 的 <code>Fast Open</code> 选项中设置 <code>cookie</code> 的值</p>
+</li>
+<li><p>客户端缓存服务端的 <code>IP</code> 和收到的 <code>cookie</code> 值</p>
+<span id="more"></span>
 <p>第一次过后，客户端就有了缓存在本地的 <code>cookie</code> 值，后面的握手和数据传输过程如下：</p>
+</li>
+<li><p>客户端发送 <code>SYN</code> 数据包，里面包含数据和之前缓存在本地的 <code>Fast Open Cookie</code>。</p>
+</li>
+<li><p>服务端检验收到的 <code>TFO Cookie</code> 和传输的数据是否合法。</p>
 <ul>
-<li>客户端发送 <code>SYN</code> 数据包，里面包含数据和之前缓存在本地的 <code>Fast Open Cookie</code>。</li>
-<li>服务端检验收到的 <code>TFO Cookie</code> 和传输的数据是否合法。<ul>
 <li>如果合法就会返回 <code>SYN</code> + <code>ACK</code> 包进行确认并将数据包传递给应用层</li>
 <li>如果不合法就会丢弃数据包，走正常三次握手流程（只会确认 <code>SYN</code>）</li>
 </ul>
 </li>
-<li>服务端程序收到数据以后可以握手完成之前发送响应数据给客户端了</li>
-<li>客户端发送 <code>ACK</code> 包，确认第二步的 <code>SYN</code> 包和数据（如果有的话）<br>后面的过程就跟非 <code>TFO</code> 连接过程一样了</li>
+<li><p>服务端程序收到数据以后可以握手完成之前发送响应数据给客户端了</p>
+</li>
+<li><p>客户端发送 <code>ACK</code> 包，确认第二步的 <code>SYN</code> 包和数据（如果有的话）<br>后面的过程就跟非 <code>TFO</code> 连接过程一样了</p>
+</li>
 </ul>
 <p>我们看看 <code>curl</code> 如何支持 <code>fast open</code>, 通过 <code>strace</code> 抓下:</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">strace curl --tcp-fastopen http://192.168.14.168</span><br></pre></td></tr></table></figure>

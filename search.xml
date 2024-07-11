@@ -435,57 +435,6 @@
       </tags>
   </entry>
   <entry>
-    <title>深入了解 C++20 中的 constinit</title>
-    <url>/2023/12/29/c++/%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3C++20%E4%B8%AD%E7%9A%84constinit%E5%85%B3%E9%94%AE%E5%AD%97/</url>
-    <content><![CDATA[<p>在 <code>C++</code> 中，存储变量的方式有几种：</p>
-<ul>
-<li><p>存储期（<code>Storage Duration</code>）：<br>存储期是指变量在程序中存在的时间段。在 <code>C++</code> 中，有三种主要的存储期：</p>
-<ul>
-<li>自动存储期（<code>Automatic Storage Duration</code>）：变量在函数或代码块执行时创建，函数执行结束时销毁。</li>
-<li>动态存储期（<code>Dynamic Storage Duration</code>）： 使用 <code>new</code> 或 <code>malloc</code> 分配的内存，直到使用 <code>delete</code> 或 <code>free</code> 手动释放为止。</li>
-<li>静态存储期（<code>Static Storage Duration</code>）： 变量在程序启动时创建，在整个程序运行期间都存在，直到程序结束才销毁。</li>
-</ul>
-</li>
-<li><p>静态存储变量：</p>
-</li>
-</ul>
-<p>静态存储变量是在程序启动时创建，一直存在于整个程序运行期间的变量。这类变量有两种主要形式：</p>
-<ul>
-<li>全局变量（<code>Global Variables</code>）： 在函数外部声明的变量，可以被程序中的所有函数访问。</li>
-<li>静态局部变量（<code>Static Local Variables</code>）： 在函数内部使用 <code>static</code> 关键字声明的变量，与自动存储期变量不同，它在函数调用之间保持其值。</li>
-</ul>
-<p>在 <code>C++</code> 中，我们经常使用静态存储期变量，包括全局变量和使用 <code>static</code> 关键字声明的局部变量。然而，这些变量并不保证在程序执行前被初始化，除非它们被声明为 <code>const</code> 常量。为了解决这一问题，<code>C++20</code> 引入了 <code>constinit</code> 关键字，它为我们提供了一种保证变量在程序启动时被初始化的方式，从而增强了可预测性和可靠性。</p>
-<p>尽管 <code>constinit</code> 确保变量在程序启动时被初始化，但这并不意味着这些变量是不可修改的常量。相反，这个关键字允许变量在初始化后在运行时或编译时上下文中被修改。</p>
-<p>因此，<code>constinit</code> 关键字为我们提供了一种在使用静态存储期变量时获得初始化保证的方法，同时允许在初始化后对其进行适当的修改。</p>
-<span id="more"></span>
-
-<h1 id="constinit-和-constexpr-有什么区别？"><a href="#constinit-和-constexpr-有什么区别？" class="headerlink" title="constinit 和 constexpr 有什么区别？"></a>constinit 和 constexpr 有什么区别？</h1><p>如果一个变量被声明为 <code>constexpr</code> ，那么它隐含地具有了 <code>constinit</code> 的性质。 <code>constexpr</code> 关键字用于指示编译器，在编译时可以计算该变量的值，并要求该变量在程序启动时被静态初始化。因此，<code>constexpr</code> 的变量天然地拥有 <code>constinit</code> 的特性<br>但是反过来并不成立，即如果一个变量被声明为 <code>constinit</code>，并不意味着它就是 <code>constexpr</code>。<code>constinit</code>仅确保变量在程序启动时被静态初始化，但不要求在编译时就能确定其值。相反，<code>constexpr</code> 要求在编译时就能确定变量的值。</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;array&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">constexpr</span> std::<span class="type">size_t</span> <span class="title">getArraySizeBasedOnArchitecture</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">sizeof</span>(std::<span class="type">size_t</span>) * <span class="number">100</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">constinit</span> <span class="keyword">auto</span> arrSize2 = <span class="built_in">getArraySizeBasedOnArchitecture</span>();</span><br><span class="line"><span class="keyword">constexpr</span> <span class="keyword">auto</span> arrSize1 = <span class="built_in">getArraySizeBasedOnArchitecture</span>();</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">     std::array&lt;<span class="type">int</span>, arrSize1&gt; intArray1;  <span class="comment">// Ok</span></span><br><span class="line">     std::array&lt;<span class="type">int</span>, arrSize2&gt; intArray2;  <span class="comment">// compilation error</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>注意：<strong>constexpr 和 constinit 不能同时出现在变量上。这会导致编译错误</strong>。</p>
-<h1 id="constinit-有什么作用？"><a href="#constinit-有什么作用？" class="headerlink" title="constinit 有什么作用？"></a>constinit 有什么作用？</h1><ul>
-<li>保证变量在编译时初始化</li>
-<li>当变量不能在编译时初始化时编译器生成错误提示</li>
-<li>处理静态初始化顺序，<a href="https://isocpp.org/wiki/faq/ctors#static-init-order">static-init-order</a></li>
-</ul>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ul>
-<li><code>constinit</code> 说明符仅适用于变量</li>
-<li><code>constinit</code> 保证变量在编译过程中被初始化，否则我们会得到一个编译错误。</li>
-<li><code>constinit</code> 说明符表示静态存储持续时间，但反之则不成立</li>
-<li><code>constexpr</code> 变量意味着 <code>constinit</code> ，但反过来并不正确。</li>
-<li>一个变量只能出现 <code>constexpr</code> 和 <code>constinit</code> 说明符之一。</li>
-<li><code>constinit</code> 可以应用于 <code>const</code> 限定变量。</li>
-</ul>
-]]></content>
-      <categories>
-        <category>C/C++</category>
-      </categories>
-      <tags>
-        <tag>C++20</tag>
-        <tag>const</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>可变参数模板</title>
     <url>/2023/04/10/c++/%E5%8F%AF%E5%8F%98%E5%8F%82%E6%95%B0%E6%A8%A1%E6%9D%BF/</url>
     <content><![CDATA[<h1 id="可变参数模板的需求"><a href="#可变参数模板的需求" class="headerlink" title="可变参数模板的需求"></a>可变参数模板的需求</h1><p>可变参数模板有助于解决在编译时求值类型安全，不需要宏，不需要显式指定 参数的数量，可以编写可变参数函数模板和可变参数类模板。此外，也有可变参数变量模板和可变 参数别名模板。</p>
@@ -558,6 +507,57 @@
       </categories>
       <tags>
         <tag>template</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>深入了解 C++20 中的 constinit</title>
+    <url>/2023/12/29/c++/%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3C++20%E4%B8%AD%E7%9A%84constinit%E5%85%B3%E9%94%AE%E5%AD%97/</url>
+    <content><![CDATA[<p>在 <code>C++</code> 中，存储变量的方式有几种：</p>
+<ul>
+<li><p>存储期（<code>Storage Duration</code>）：<br>存储期是指变量在程序中存在的时间段。在 <code>C++</code> 中，有三种主要的存储期：</p>
+<ul>
+<li>自动存储期（<code>Automatic Storage Duration</code>）：变量在函数或代码块执行时创建，函数执行结束时销毁。</li>
+<li>动态存储期（<code>Dynamic Storage Duration</code>）： 使用 <code>new</code> 或 <code>malloc</code> 分配的内存，直到使用 <code>delete</code> 或 <code>free</code> 手动释放为止。</li>
+<li>静态存储期（<code>Static Storage Duration</code>）： 变量在程序启动时创建，在整个程序运行期间都存在，直到程序结束才销毁。</li>
+</ul>
+</li>
+<li><p>静态存储变量：</p>
+</li>
+</ul>
+<p>静态存储变量是在程序启动时创建，一直存在于整个程序运行期间的变量。这类变量有两种主要形式：</p>
+<ul>
+<li>全局变量（<code>Global Variables</code>）： 在函数外部声明的变量，可以被程序中的所有函数访问。</li>
+<li>静态局部变量（<code>Static Local Variables</code>）： 在函数内部使用 <code>static</code> 关键字声明的变量，与自动存储期变量不同，它在函数调用之间保持其值。</li>
+</ul>
+<p>在 <code>C++</code> 中，我们经常使用静态存储期变量，包括全局变量和使用 <code>static</code> 关键字声明的局部变量。然而，这些变量并不保证在程序执行前被初始化，除非它们被声明为 <code>const</code> 常量。为了解决这一问题，<code>C++20</code> 引入了 <code>constinit</code> 关键字，它为我们提供了一种保证变量在程序启动时被初始化的方式，从而增强了可预测性和可靠性。</p>
+<p>尽管 <code>constinit</code> 确保变量在程序启动时被初始化，但这并不意味着这些变量是不可修改的常量。相反，这个关键字允许变量在初始化后在运行时或编译时上下文中被修改。</p>
+<p>因此，<code>constinit</code> 关键字为我们提供了一种在使用静态存储期变量时获得初始化保证的方法，同时允许在初始化后对其进行适当的修改。</p>
+<span id="more"></span>
+
+<h1 id="constinit-和-constexpr-有什么区别？"><a href="#constinit-和-constexpr-有什么区别？" class="headerlink" title="constinit 和 constexpr 有什么区别？"></a>constinit 和 constexpr 有什么区别？</h1><p>如果一个变量被声明为 <code>constexpr</code> ，那么它隐含地具有了 <code>constinit</code> 的性质。 <code>constexpr</code> 关键字用于指示编译器，在编译时可以计算该变量的值，并要求该变量在程序启动时被静态初始化。因此，<code>constexpr</code> 的变量天然地拥有 <code>constinit</code> 的特性<br>但是反过来并不成立，即如果一个变量被声明为 <code>constinit</code>，并不意味着它就是 <code>constexpr</code>。<code>constinit</code>仅确保变量在程序启动时被静态初始化，但不要求在编译时就能确定其值。相反，<code>constexpr</code> 要求在编译时就能确定变量的值。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;array&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">constexpr</span> std::<span class="type">size_t</span> <span class="title">getArraySizeBasedOnArchitecture</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">sizeof</span>(std::<span class="type">size_t</span>) * <span class="number">100</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">constinit</span> <span class="keyword">auto</span> arrSize2 = <span class="built_in">getArraySizeBasedOnArchitecture</span>();</span><br><span class="line"><span class="keyword">constexpr</span> <span class="keyword">auto</span> arrSize1 = <span class="built_in">getArraySizeBasedOnArchitecture</span>();</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">     std::array&lt;<span class="type">int</span>, arrSize1&gt; intArray1;  <span class="comment">// Ok</span></span><br><span class="line">     std::array&lt;<span class="type">int</span>, arrSize2&gt; intArray2;  <span class="comment">// compilation error</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意：<strong>constexpr 和 constinit 不能同时出现在变量上。这会导致编译错误</strong>。</p>
+<h1 id="constinit-有什么作用？"><a href="#constinit-有什么作用？" class="headerlink" title="constinit 有什么作用？"></a>constinit 有什么作用？</h1><ul>
+<li>保证变量在编译时初始化</li>
+<li>当变量不能在编译时初始化时编译器生成错误提示</li>
+<li>处理静态初始化顺序，<a href="https://isocpp.org/wiki/faq/ctors#static-init-order">static-init-order</a></li>
+</ul>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ul>
+<li><code>constinit</code> 说明符仅适用于变量</li>
+<li><code>constinit</code> 保证变量在编译过程中被初始化，否则我们会得到一个编译错误。</li>
+<li><code>constinit</code> 说明符表示静态存储持续时间，但反之则不成立</li>
+<li><code>constexpr</code> 变量意味着 <code>constinit</code> ，但反过来并不正确。</li>
+<li>一个变量只能出现 <code>constexpr</code> 和 <code>constinit</code> 说明符之一。</li>
+<li><code>constinit</code> 可以应用于 <code>const</code> 限定变量。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>C/C++</category>
+      </categories>
+      <tags>
+        <tag>C++20</tag>
+        <tag>const</tag>
       </tags>
   </entry>
   <entry>
@@ -673,26 +673,98 @@
       </tags>
   </entry>
   <entry>
-    <title>Effective C++ 10：赋值运算符要返回自己的引用</title>
-    <url>/2021/11/01/effecitve-cpp/effective-cpp-10/</url>
+    <title>Effective-STL 21：总是让比较函数在等值情况下返回 false</title>
+    <url>/2023/03/10/effective-stl/effective-stl-21/</url>
     <content><![CDATA[<blockquote>
-<p>Item 10：Have assignment operators return a reference to *this.</p>
+<p>Item 21: Always have comparison functions return false for equal values.</p>
 </blockquote>
-<p>赋值运算符要返回自己的引用只是个协议，并无强制性。这份协议被所有内置类型和标准程序库提供的类型如<code>string</code>, <code>vector</code>, <code>complex</code> <code>std::shared_ptr</code>等共同遵守。可以用来支持链式的赋值语句。</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> x, y, z;</span><br><span class="line">x = y = z = <span class="number">15</span>; <span class="comment">//赋值连锁形式</span></span><br></pre></td></tr></table></figure>
+<h1 id="严格弱序-strict-weak-ordering"><a href="#严格弱序-strict-weak-ordering" class="headerlink" title="严格弱序( strict weak ordering )"></a>严格弱序( <code>strict weak ordering</code> )</h1><p>先补充下严格弱序的概念: 对两个变量 <code>x</code> 和 <code>y</code>：</p>
+<ul>
+<li><code>x &gt; y</code> 等同于 <code>y &lt; x</code></li>
+<li><code>x == y</code> 等同于 <code>!(x &lt; y) &amp;&amp; !(x &gt; y)</code></li>
+</ul>
+<p>要想严格弱序，就需要遵循如下规则：</p>
+<ul>
+<li>每个变量值必须等于其本身（<code>irreflexivity</code>）：<code>x &lt; x</code> 永远不能为 <code>true</code></li>
+<li>不对称性（<code>asymmetry</code>）：如果 <code>x &lt; y</code>，那么 <code>y &lt; x</code> 就不能为 <code>true</code></li>
+<li>有序性必须可传递性：如果 <code>x &lt; y</code> 并且 <code>y &lt; z</code>，那么 <code>x &lt; z</code></li>
+<li>值相同必须具有可传递性：如果 <code>x == y</code> 并且 <code>y == z</code>，那么 <code>x == z</code></li>
+</ul>
+<span id="more"></span>
 
-<p>相当于:</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">x = ( y = ( z = <span class="number">15</span> ) );</span><br></pre></td></tr></table></figure>
+<h1 id="为什么？"><a href="#为什么？" class="headerlink" title="为什么？"></a>为什么？</h1><h2 id="1-关联容器中的比较算法"><a href="#1-关联容器中的比较算法" class="headerlink" title="1. 关联容器中的比较算法"></a>1. 关联容器中的比较算法</h2><p>比如我们创建一个 <code>set</code> ， 用 <code>less_euqal</code> 作为比较类型，然后插入两个 <code>10</code> ：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">set&lt;<span class="type">int</span>, less_equal&lt;<span class="type">int</span>&gt;&gt; s;</span><br><span class="line">s.<span class="built_in">insert</span>(<span class="number">10</span>);</span><br><span class="line">s.<span class="built_in">insert</span>(<span class="number">10</span>);</span><br></pre></td></tr></table></figure>
 
-<p>我们自定义的对象最好也能支持链式的赋值，这需要重载&#x3D;运算符时返回当前对象的引用：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Widget</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    Widget&amp; <span class="keyword">operator</span>=(<span class="type">const</span> Widget&amp; rhs)&#123;   </span><br><span class="line">      <span class="keyword">return</span> *<span class="keyword">this</span>;                         </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//这个协议不仅适用于以上的标准赋值形式，也适用于所有赋值相关运算 +=, -=, *=, etc.</span></span><br><span class="line">    Widget&amp; <span class="keyword">operator</span>+=(<span class="type">const</span> Widget&amp; rhs)&#123;  </span><br><span class="line">       <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>我们将第一个 <code>10</code> 记为 <code>10A</code>, 第二个 <code>10</code> 记为 <code>10B</code>, 我们在插入 <code>10B</code> 的时候会检查是否与 <code>10A</code> 相同, 我们用的是 <code>less_equal</code>，下面的表达式会为假，就会重复插入，显然不合理。:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">!(10A &lt;= 10B) &amp;&amp; !(10B &lt;= 10A) //  !(true) &amp;&amp; !(true)</span><br></pre></td></tr></table></figure>
+
+<p>另外在 <code>multiset</code> 中也不行: </p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">multiset&lt;<span class="type">int</span>, less_equal&lt;<span class="type">int</span>&gt;&gt; s;</span><br><span class="line">s.<span class="built_in">insert</span>(<span class="number">10</span>); <span class="comment">// 插入10A</span></span><br><span class="line">s.<span class="built_in">insert</span>(<span class="number">10</span>); <span class="comment">// 插入10B</span></span><br></pre></td></tr></table></figure>
+
+<p>当我们想要一个 <code>equal_range</code>, <code>10A</code> 和 <code>10B</code> 同样认为是不等，永远不会在同一个区间。</p>
+<h2 id="2-sort-算法"><a href="#2-sort-算法" class="headerlink" title="2. sort 算法"></a>2. <code>sort</code> 算法</h2><p>对于 <code>std::sort</code>，当容器里面元素个数大于 <code>_S_threshold</code> 的值时（<code>16</code>），就会使用快速排序，会将所有的元素与中间值比较是无边界保护的，实现如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> _RandomAccessIterator, <span class="keyword">typename</span> _Tp, <span class="keyword">typename</span> _Compare&gt;</span><br><span class="line">     _RandomAccessIterator</span><br><span class="line">     __unguarded_partition(_RandomAccessIterator __first,</span><br><span class="line">               _RandomAccessIterator __last,</span><br><span class="line">               _Tp __pivot, _Compare __comp)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span> (<span class="literal">true</span>)</span><br><span class="line">    &#123;</span><br><span class="line">       <span class="keyword">while</span> (__comp(*__first, __pivot)) <span class="comment">// &lt;-------------------</span></span><br><span class="line">         ++__first;</span><br><span class="line">       --__last;</span><br><span class="line">       <span class="keyword">while</span> (__comp(__pivot, *__last))</span><br><span class="line">         --__last;</span><br><span class="line">       <span class="keyword">if</span> (!(__first &lt; __last))</span><br><span class="line">         <span class="keyword">return</span> __first;</span><br><span class="line">       std::<span class="built_in">iter_swap</span>(__first, __last);</span><br><span class="line">       ++__first;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果传入的 <code>vector</code> 中，后面的元素完全相等， <code>__comp()</code>函数一直返回 <code>true</code> ，在进行快速排序的时候，<code>++first</code> 就可能越界失效，导致 <code>coredump</code>。</p>
 ]]></content>
       <categories>
-        <category>Effective-C++</category>
+        <category>Effective-STL</category>
       </categories>
       <tags>
         <tag>C++</tag>
-        <tag>Effective-C++</tag>
+        <tag>Effective-STL</tag>
+        <tag>stl</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Effective-STL 9：慎重选择删除元素的方法</title>
+    <url>/2023/02/16/effective-stl/effective-stl-9/</url>
+    <content><![CDATA[<blockquote>
+<p>Item9. Choose carefully among easing options.</p>
+</blockquote>
+<h1 id="一、删除特定值"><a href="#一、删除特定值" class="headerlink" title="一、删除特定值"></a>一、删除特定值</h1><ol>
+<li><p>对于 <code>vector</code>、 <code>string</code> 或 <code>deque</code></p>
+<p> 最好使用 <code>erase-remove</code>习惯用法: </p>
+ <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">erase</span>(<span class="built_in">remove</span>(c.<span class="built_in">begin</span>(), c.<span class="built_in">end</span>(), <span class="number">1963</span>, c.<span class="built_in">end</span>()));</span><br></pre></td></tr></table></figure></li>
+<li><p>对于 <code>list</code> 容器</p>
+<p> 直接使用 <code>remove</code> 方法:</p>
+ <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">remove</span>(<span class="number">1963</span>);</span><br></pre></td></tr></table></figure></li>
+<li><p>对于标准关联容器</p>
+<p> 直接使用 <code>erase</code> 方法:</p>
+ <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">erase</span>(<span class="number">1963</span>)</span><br></pre></td></tr></table></figure></li>
+</ol>
+<span id="more"></span>
+<h1 id="二、删除满足特定判定条件的值"><a href="#二、删除满足特定判定条件的值" class="headerlink" title="二、删除满足特定判定条件的值"></a>二、删除满足特定判定条件的值</h1><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">bool</span> <span class="title">badValue</span><span class="params">(<span class="type">int</span>)</span> </span>&#123; <span class="keyword">return</span> <span class="literal">true</span>; &#125; <span class="comment">// 返回x是否为&quot;坏值&quot;</span></span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><p>对于 <code>vector</code>、 <code>string</code> 或 <code>deque</code><br> 使用 <code>erase-remove-if</code>方法: </p>
+ <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">erase</span>(<span class="built_in">remove_if</span>(c.<span class="built_in">begin</span>(), c.<span class="built_in">end</span>(), badValue, c.<span class="built_in">end</span>()));</span><br></pre></td></tr></table></figure></li>
+<li><p>对于 <code>list</code> 容器<br> 直接使用 <code>remove_if</code> 方法:</p>
+ <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">remove_if</span>(badValue);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>对于标准关联容器</p>
+<p> <strong>把当前的i传给erase，i后缀递增</strong></p>
+ <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (AssocContainer&lt;<span class="type">int</span>&gt;::iterator i = c.<span class="built_in">begin</span>(); i != c.<span class="built_in">end</span>();) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">badValue</span>(*i)) c<span class="number">3.</span><span class="built_in">erase</span>(i++); </span><br><span class="line">    <span class="keyword">else</span> ++i;                     </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h1 id="三、循环内部删除对象之外还要做某些事"><a href="#三、循环内部删除对象之外还要做某些事" class="headerlink" title="三、循环内部删除对象之外还要做某些事"></a>三、循环内部删除对象之外还要做某些事</h1><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">doSomething</span><span class="params">(<span class="type">int</span>)</span> </span>&#123; ... &#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li><p>对于 <code>vector</code>、 <code>string</code> 或 <code>deque</code></p>
+<p> <strong>接收 <code>erase</code>返回的迭代器值。</strong></p>
+ <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (SeqContainer&lt;<span class="type">int</span>&gt;::iterator i = c.<span class="built_in">begin</span>(); i != c.<span class="built_in">end</span>();) &#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">badValue</span>(*i)) &#123;</span><br><span class="line">        <span class="built_in">doSomething</span>(*i);</span><br><span class="line">        i = c.<span class="built_in">rease</span>(i);</span><br><span class="line">    &#125; <span class="keyword">else</span> ++i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>对于 <code>list</code> 容器</p>
+<p> 虽然也可以采用标准关联容器方法，但建议采用跟 <code>vector</code>、 <code>string</code> 或 <code>deque</code> 一致。</p>
+</li>
+<li><p>对于标准关联容器</p>
+ <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (SeqContainer&lt;<span class="type">int</span>&gt;::iterator i = c.<span class="built_in">begin</span>(); i != c.<span class="built_in">end</span>();) &#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">badValue</span>(*i)) &#123;</span><br><span class="line">        <span class="built_in">doSomething</span>(*i);</span><br><span class="line">        c.<span class="built_in">rease</span>(i++);</span><br><span class="line">    &#125; <span class="keyword">else</span> ++i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+]]></content>
+      <categories>
+        <category>Effective-STL</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>Effective-STL</tag>
+        <tag>stl</tag>
       </tags>
   </entry>
   <entry>
@@ -711,6 +783,29 @@
 <li><code>STL</code>。<code>STL</code>是一个特殊的模板库，它将容器、迭代器和算法优雅地结合在一起。</li>
 </ul>
 <p><code>C++</code> 程序设计的惯例并非一成不变，而是取决于你使用 <code>C++</code> 语言的哪一部分。例如， 在基于C语言的程序设计中，基本类型传参时传值比传引用更有效率。 然而当你接触 <code>Object-Oriented C++</code> 时会发现，传常量指针是更好的选择。运用<code>Template C++</code>时尤其如此，因为彼时你甚至不知道所处理的对象的类型。 但是你如果又碰到了<code>STL</code>，其中的迭代器和函数对象都是基于<code>C</code>语言的指针而设计的， 这时又回到了原来的规则：传值比传引用更好。</p>
+]]></content>
+      <categories>
+        <category>Effective-C++</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>Effective-C++</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Effective C++ 10：赋值运算符要返回自己的引用</title>
+    <url>/2021/11/01/effecitve-cpp/effective-cpp-10/</url>
+    <content><![CDATA[<blockquote>
+<p>Item 10：Have assignment operators return a reference to *this.</p>
+</blockquote>
+<p>赋值运算符要返回自己的引用只是个协议，并无强制性。这份协议被所有内置类型和标准程序库提供的类型如<code>string</code>, <code>vector</code>, <code>complex</code> <code>std::shared_ptr</code>等共同遵守。可以用来支持链式的赋值语句。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> x, y, z;</span><br><span class="line">x = y = z = <span class="number">15</span>; <span class="comment">//赋值连锁形式</span></span><br></pre></td></tr></table></figure>
+
+<p>相当于:</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">x = ( y = ( z = <span class="number">15</span> ) );</span><br></pre></td></tr></table></figure>
+
+<p>我们自定义的对象最好也能支持链式的赋值，这需要重载&#x3D;运算符时返回当前对象的引用：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Widget</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    Widget&amp; <span class="keyword">operator</span>=(<span class="type">const</span> Widget&amp; rhs)&#123;   </span><br><span class="line">      <span class="keyword">return</span> *<span class="keyword">this</span>;                         </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//这个协议不仅适用于以上的标准赋值形式，也适用于所有赋值相关运算 +=, -=, *=, etc.</span></span><br><span class="line">    Widget&amp; <span class="keyword">operator</span>+=(<span class="type">const</span> Widget&amp; rhs)&#123;  </span><br><span class="line">       <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 ]]></content>
       <categories>
         <category>Effective-C++</category>
@@ -1039,36 +1134,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Effective C++ 22：将成员变量声明为private</title>
-    <url>/2022/03/23/effecitve-cpp/effective-cpp-22/</url>
-    <content><![CDATA[<blockquote>
-<p>Item 22: Declare data members private.</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>Effective-C++</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
-        <tag>Effective-C++</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Effective C++ 23：用非成员函数、非友元函数替换成员函数</title>
-    <url>/2022/04/09/effecitve-cpp/effective-cpp-23/</url>
-    <content><![CDATA[<blockquote>
-<p>Item 23: Prefer non-member non-friend functions to member functions</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>Effective-C++</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
-        <tag>Effective-C++</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Effective C++ 21：需要返回对象时，不要返回引用</title>
     <url>/2022/03/23/effecitve-cpp/effective-cpp-21/</url>
     <content><![CDATA[<blockquote>
@@ -1115,32 +1180,26 @@
       </tags>
   </entry>
   <entry>
-    <title>Effective C++ 24：若所有参数皆需类型转换，请采用非成员函数</title>
-    <url>/2022/04/09/effecitve-cpp/effective-cpp-24/</url>
+    <title>Effective C++ 22：将成员变量声明为private</title>
+    <url>/2022/03/23/effecitve-cpp/effective-cpp-22/</url>
     <content><![CDATA[<blockquote>
-<p>Item 24: Declare non-member functions when type conversions should apply all parameters.</p>
+<p>Item 22: Declare data members private.</p>
 </blockquote>
-<p>令 <code>classes</code> 支持隐式转换通常是糟糕的设计，但也有例外，最常见的是在建立数值类型时。 比如设计一个有理数 <code>class</code> 允许整数隐式转换。</p>
-<span id="more"></span>
-
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Rational</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">Rational</span>(<span class="type">int</span> numerator = <span class="number">0</span>, <span class="type">int</span> denominator = <span class="number">1</span>); <span class="comment">//构造函数刻意不使用 explicit; 允许 int-to-Rational 隐式转换。</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">numerator</span><span class="params">()</span> <span class="type">const</span></span>;</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">denominator</span><span class="params">()</span> <span class="type">const</span></span>;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>这时我们想设计一个乘法，该使用 <code>member</code> 函数，还是 <code>non-member</code> 函数， 还是 <code>non-member-friend</code> 函数？</p>
-<p>我们先采用 <code>member</code> 函数看有什么问题？</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Rational</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    <span class="type">const</span> Rational <span class="keyword">operator</span>* (<span class="type">const</span> Rational&amp; rhs) <span class="type">const</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>我们使用如下没有什么问题：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">Rational <span class="title">oneEighth</span><span class="params">(<span class="number">1</span>, <span class="number">8</span>)</span></span>;</span><br><span class="line"><span class="function">Rational <span class="title">oneHalf</span><span class="params">(<span class="number">1</span>, <span class="number">2</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">Rational result = oneEighth * oneHalf; <span class="comment">//ok</span></span><br><span class="line">result = result * oneEighth;  <span class="comment">// ok</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>但当我们想支持混合运算，那 <code>Rational</code> 和 <code>ints</code> 相乘, 就只有一半行的通。</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">result = oneHalf * <span class="number">2</span>; <span class="comment">//ok  隐式转换</span></span><br><span class="line">result = <span class="number">2</span> * oneHalf;  <span class="comment">// no</span></span><br></pre></td></tr></table></figure>
-
-<p>当我们设计成 <code>non-member</code> 函数就都支持：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Rational</span> &#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">const</span> Rational <span class="keyword">operator</span>* (<span class="type">const</span> Rational&amp; lhs, <span class="type">const</span> Rational&amp; rhs) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Rational</span>(lhs.<span class="built_in">numerator</span>() * rhs.<span class="built_in">numerator</span>(), lhs.<span class="built_in">denominator</span>(), rhs.<span class="built_in">denominator</span>());</span><br><span class="line">&#125;</span><br><span class="line">    </span><br></pre></td></tr></table></figure>
-
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">Rational <span class="title">oneFourth</span><span class="params">(<span class="number">1</span>, <span class="number">4</span>)</span></span>;</span><br><span class="line">Rational result;</span><br><span class="line">result = oneFourth * <span class="number">2</span>;  <span class="comment">// ok</span></span><br><span class="line">result = <span class="number">2</span> * oneFourth;  <span class="comment">// ok </span></span><br></pre></td></tr></table></figure>
-
-<p><strong>如果需要为某个函数的所有参数进行类型转换，那这个函数必须是 <code>non-member</code></strong></p>
+]]></content>
+      <categories>
+        <category>Effective-C++</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>Effective-C++</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Effective C++ 23：用非成员函数、非友元函数替换成员函数</title>
+    <url>/2022/04/09/effecitve-cpp/effective-cpp-23/</url>
+    <content><![CDATA[<blockquote>
+<p>Item 23: Prefer non-member non-friend functions to member functions</p>
+</blockquote>
 ]]></content>
       <categories>
         <category>Effective-C++</category>
@@ -1196,6 +1255,42 @@
 <li>如果你写的是类而不是类模板，也可以特化 <code>std::swap</code>，同样地在里面调用你的成员函数。</li>
 <li>调用时，请首先用 <code>using</code> 使 <code>std::swap</code> 可见，然后直接调用 <code>swap</code>。</li>
 </ul>
+]]></content>
+      <categories>
+        <category>Effective-C++</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>Effective-C++</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Effective C++ 24：若所有参数皆需类型转换，请采用非成员函数</title>
+    <url>/2022/04/09/effecitve-cpp/effective-cpp-24/</url>
+    <content><![CDATA[<blockquote>
+<p>Item 24: Declare non-member functions when type conversions should apply all parameters.</p>
+</blockquote>
+<p>令 <code>classes</code> 支持隐式转换通常是糟糕的设计，但也有例外，最常见的是在建立数值类型时。 比如设计一个有理数 <code>class</code> 允许整数隐式转换。</p>
+<span id="more"></span>
+
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Rational</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">Rational</span>(<span class="type">int</span> numerator = <span class="number">0</span>, <span class="type">int</span> denominator = <span class="number">1</span>); <span class="comment">//构造函数刻意不使用 explicit; 允许 int-to-Rational 隐式转换。</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">numerator</span><span class="params">()</span> <span class="type">const</span></span>;</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">denominator</span><span class="params">()</span> <span class="type">const</span></span>;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>这时我们想设计一个乘法，该使用 <code>member</code> 函数，还是 <code>non-member</code> 函数， 还是 <code>non-member-friend</code> 函数？</p>
+<p>我们先采用 <code>member</code> 函数看有什么问题？</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Rational</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    <span class="type">const</span> Rational <span class="keyword">operator</span>* (<span class="type">const</span> Rational&amp; rhs) <span class="type">const</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>我们使用如下没有什么问题：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">Rational <span class="title">oneEighth</span><span class="params">(<span class="number">1</span>, <span class="number">8</span>)</span></span>;</span><br><span class="line"><span class="function">Rational <span class="title">oneHalf</span><span class="params">(<span class="number">1</span>, <span class="number">2</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">Rational result = oneEighth * oneHalf; <span class="comment">//ok</span></span><br><span class="line">result = result * oneEighth;  <span class="comment">// ok</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>但当我们想支持混合运算，那 <code>Rational</code> 和 <code>ints</code> 相乘, 就只有一半行的通。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">result = oneHalf * <span class="number">2</span>; <span class="comment">//ok  隐式转换</span></span><br><span class="line">result = <span class="number">2</span> * oneHalf;  <span class="comment">// no</span></span><br></pre></td></tr></table></figure>
+
+<p>当我们设计成 <code>non-member</code> 函数就都支持：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Rational</span> &#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">const</span> Rational <span class="keyword">operator</span>* (<span class="type">const</span> Rational&amp; lhs, <span class="type">const</span> Rational&amp; rhs) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Rational</span>(lhs.<span class="built_in">numerator</span>() * rhs.<span class="built_in">numerator</span>(), lhs.<span class="built_in">denominator</span>(), rhs.<span class="built_in">denominator</span>());</span><br><span class="line">&#125;</span><br><span class="line">    </span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">Rational <span class="title">oneFourth</span><span class="params">(<span class="number">1</span>, <span class="number">4</span>)</span></span>;</span><br><span class="line">Rational result;</span><br><span class="line">result = oneFourth * <span class="number">2</span>;  <span class="comment">// ok</span></span><br><span class="line">result = <span class="number">2</span> * oneFourth;  <span class="comment">// ok </span></span><br></pre></td></tr></table></figure>
+
+<p><strong>如果需要为某个函数的所有参数进行类型转换，那这个函数必须是 <code>non-member</code></strong></p>
 ]]></content>
       <categories>
         <category>Effective-C++</category>
@@ -1370,28 +1465,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Effective C++ 5：了解c++默默编写并调用哪些函数</title>
-    <url>/2021/10/24/effecitve-cpp/effective-cpp-5/</url>
-    <content><![CDATA[<blockquote>
-<p>Item 5: Know what functions C++ silently writes and calls</p>
-</blockquote>
-<h1 id="默认函数"><a href="#默认函数" class="headerlink" title="默认函数"></a>默认函数</h1><p>在 <code>C++</code> 中，一个类有八个默认函数：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Empty</span> &#123;</span><br><span class="line">    <span class="built_in">Empty</span> () &#123;&#125; <span class="comment">//默认构造函数    </span></span><br><span class="line">    <span class="built_in">Empty</span> (<span class="type">const</span> Empty &amp;) &#123;&#125; <span class="comment">// 默认拷贝构造函数</span></span><br><span class="line">    <span class="built_in">Empty</span> (<span class="type">const</span> Empty &amp;&amp;) &#123;&#125; <span class="comment">// 默认移动构造函数(`C++11`)</span></span><br><span class="line">    ~<span class="built_in">Empty</span>() &#123;&#125; <span class="comment">// 默认析构函数</span></span><br><span class="line">    Empty&amp; <span class="keyword">operator</span>=(<span class="type">const</span> Empty&amp;) &#123;&#125; <span class="comment">// 默认重载赋值运算符函数</span></span><br><span class="line">    Empty&amp; <span class="keyword">operator</span>=(<span class="type">const</span> Empty&amp;&amp;)&#123;&#125; <span class="comment">// 默认重载移动赋值操作符函数函数</span></span><br><span class="line">    Empty* <span class="keyword">operator</span> &amp;() &#123;&#125; <span class="comment">// 默认重载取址运算符函数</span></span><br><span class="line">    <span class="type">const</span> Empty* <span class="keyword">operator</span> &amp;() <span class="type">const</span> &#123;&#125; <span class="comment">// 默认重载取址运算符 `const` 函数</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<h1 id="调用时机"><a href="#调用时机" class="headerlink" title="调用时机"></a>调用时机</h1><p>只有你需要用到这些函数并且你又没有显示的声明这些函数的时候，编译器才会贴心的自动声明相应的函数。</p>
-<h1 id="引用成员"><a href="#引用成员" class="headerlink" title="引用成员"></a>引用成员</h1><p>如果你打算在一个“内含引用成员”或者“内含<code>const</code>成员”的类内支持赋值操作，就必须定义自己的默认拷贝赋值操作符。因为 <code>C++</code> 本身不允许引用改指不同的对象，也不允许更改 <code>const</code> 成员。</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Person</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    string &amp; name;</span><br><span class="line">    <span class="built_in">Person</span>(string &amp;str):<span class="built_in">name</span>(str) &#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">string s1 = <span class="string">&quot;hello&quot;</span>, s2 = <span class="string">&quot;world&quot;</span>;</span><br><span class="line"><span class="function">Person <span class="title">p1</span><span class="params">(s1)</span>, <span class="title">p2</span><span class="params">(s2)</span></span>;</span><br><span class="line">p1 = p2;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">error: object of type &#x27;Person&#x27; cannot be assigned because its copy assignment operator is implicitly deleted</span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>Effective-C++</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
-        <tag>Effective-C++</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Effective C++ 6：若不想使用编译器自动生成的函数，就该明确拒绝</title>
     <url>/2021/10/25/effecitve-cpp/effective-cpp-6/</url>
     <content><![CDATA[<blockquote>
@@ -1405,6 +1478,28 @@
 <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">namespace</span> noncopyable_ &#123;</span><br><span class="line">    <span class="keyword">class</span> <span class="title class_">noncopyable</span> &#123;</span><br><span class="line">        <span class="keyword">protected</span>:</span><br><span class="line">            <span class="built_in">noncopyable</span>() &#123;&#125;</span><br><span class="line">            ~<span class="built_in">noncopyable</span>()&#123;&#125;</span><br><span class="line">            <span class="comment">/** C++11</span></span><br><span class="line"><span class="comment">            noncopyable() = default;</span></span><br><span class="line"><span class="comment">            ~noncopyable() = default;</span></span><br><span class="line"><span class="comment">            */</span></span><br><span class="line">        <span class="keyword">private</span>:</span><br><span class="line">            <span class="built_in">noncopyable</span>(<span class="type">const</span> noncopyable&amp;);</span><br><span class="line">            noncopyable&amp; <span class="keyword">operator</span>=( <span class="type">const</span> noncopyable&amp; );</span><br><span class="line">            <span class="comment">/** C++11</span></span><br><span class="line"><span class="comment">            noncopyable( const noncopyable&amp; ) = delete;</span></span><br><span class="line"><span class="comment">            noncopyable&amp; operator=( const noncopyable&amp; ) = delete;</span></span><br><span class="line"><span class="comment">            */</span></span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">HomeForSale</span> : <span class="keyword">private</span> noncopyable_::noncopyable</span><br><span class="line">&#123;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">HomeForSale p1, p2;</span><br><span class="line">p1 = p2;</span><br><span class="line"></span><br><span class="line">error: object of type <span class="string">&#x27;HomeForSale&#x27;</span> cannot be assigned because its copy assignment <span class="keyword">operator</span> is implicitly deleted</span><br><span class="line">    p1 = p2;</span><br><span class="line">       ^</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>Effective-C++</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>Effective-C++</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Effective C++ 5：了解c++默默编写并调用哪些函数</title>
+    <url>/2021/10/24/effecitve-cpp/effective-cpp-5/</url>
+    <content><![CDATA[<blockquote>
+<p>Item 5: Know what functions C++ silently writes and calls</p>
+</blockquote>
+<h1 id="默认函数"><a href="#默认函数" class="headerlink" title="默认函数"></a>默认函数</h1><p>在 <code>C++</code> 中，一个类有八个默认函数：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Empty</span> &#123;</span><br><span class="line">    <span class="built_in">Empty</span> () &#123;&#125; <span class="comment">//默认构造函数    </span></span><br><span class="line">    <span class="built_in">Empty</span> (<span class="type">const</span> Empty &amp;) &#123;&#125; <span class="comment">// 默认拷贝构造函数</span></span><br><span class="line">    <span class="built_in">Empty</span> (<span class="type">const</span> Empty &amp;&amp;) &#123;&#125; <span class="comment">// 默认移动构造函数(`C++11`)</span></span><br><span class="line">    ~<span class="built_in">Empty</span>() &#123;&#125; <span class="comment">// 默认析构函数</span></span><br><span class="line">    Empty&amp; <span class="keyword">operator</span>=(<span class="type">const</span> Empty&amp;) &#123;&#125; <span class="comment">// 默认重载赋值运算符函数</span></span><br><span class="line">    Empty&amp; <span class="keyword">operator</span>=(<span class="type">const</span> Empty&amp;&amp;)&#123;&#125; <span class="comment">// 默认重载移动赋值操作符函数函数</span></span><br><span class="line">    Empty* <span class="keyword">operator</span> &amp;() &#123;&#125; <span class="comment">// 默认重载取址运算符函数</span></span><br><span class="line">    <span class="type">const</span> Empty* <span class="keyword">operator</span> &amp;() <span class="type">const</span> &#123;&#125; <span class="comment">// 默认重载取址运算符 `const` 函数</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h1 id="调用时机"><a href="#调用时机" class="headerlink" title="调用时机"></a>调用时机</h1><p>只有你需要用到这些函数并且你又没有显示的声明这些函数的时候，编译器才会贴心的自动声明相应的函数。</p>
+<h1 id="引用成员"><a href="#引用成员" class="headerlink" title="引用成员"></a>引用成员</h1><p>如果你打算在一个“内含引用成员”或者“内含<code>const</code>成员”的类内支持赋值操作，就必须定义自己的默认拷贝赋值操作符。因为 <code>C++</code> 本身不允许引用改指不同的对象，也不允许更改 <code>const</code> 成员。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Person</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    string &amp; name;</span><br><span class="line">    <span class="built_in">Person</span>(string &amp;str):<span class="built_in">name</span>(str) &#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">string s1 = <span class="string">&quot;hello&quot;</span>, s2 = <span class="string">&quot;world&quot;</span>;</span><br><span class="line"><span class="function">Person <span class="title">p1</span><span class="params">(s1)</span>, <span class="title">p2</span><span class="params">(s2)</span></span>;</span><br><span class="line">p1 = p2;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">error: object of type &#x27;Person&#x27; cannot be assigned because its copy assignment operator is implicitly deleted</span><br></pre></td></tr></table></figure>]]></content>
       <categories>
         <category>Effective-C++</category>
       </categories>
@@ -1475,50 +1570,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Effective-STL 21：总是让比较函数在等值情况下返回 false</title>
-    <url>/2023/03/10/effective-stl/effective-stl-21/</url>
-    <content><![CDATA[<blockquote>
-<p>Item 21: Always have comparison functions return false for equal values.</p>
-</blockquote>
-<h1 id="严格弱序-strict-weak-ordering"><a href="#严格弱序-strict-weak-ordering" class="headerlink" title="严格弱序( strict weak ordering )"></a>严格弱序( <code>strict weak ordering</code> )</h1><p>先补充下严格弱序的概念: 对两个变量 <code>x</code> 和 <code>y</code>：</p>
-<ul>
-<li><code>x &gt; y</code> 等同于 <code>y &lt; x</code></li>
-<li><code>x == y</code> 等同于 <code>!(x &lt; y) &amp;&amp; !(x &gt; y)</code></li>
-</ul>
-<p>要想严格弱序，就需要遵循如下规则：</p>
-<ul>
-<li>每个变量值必须等于其本身（<code>irreflexivity</code>）：<code>x &lt; x</code> 永远不能为 <code>true</code></li>
-<li>不对称性（<code>asymmetry</code>）：如果 <code>x &lt; y</code>，那么 <code>y &lt; x</code> 就不能为 <code>true</code></li>
-<li>有序性必须可传递性：如果 <code>x &lt; y</code> 并且 <code>y &lt; z</code>，那么 <code>x &lt; z</code></li>
-<li>值相同必须具有可传递性：如果 <code>x == y</code> 并且 <code>y == z</code>，那么 <code>x == z</code></li>
-</ul>
-<span id="more"></span>
-
-<h1 id="为什么？"><a href="#为什么？" class="headerlink" title="为什么？"></a>为什么？</h1><h2 id="1-关联容器中的比较算法"><a href="#1-关联容器中的比较算法" class="headerlink" title="1. 关联容器中的比较算法"></a>1. 关联容器中的比较算法</h2><p>比如我们创建一个 <code>set</code> ， 用 <code>less_euqal</code> 作为比较类型，然后插入两个 <code>10</code> ：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">set&lt;<span class="type">int</span>, less_equal&lt;<span class="type">int</span>&gt;&gt; s;</span><br><span class="line">s.<span class="built_in">insert</span>(<span class="number">10</span>);</span><br><span class="line">s.<span class="built_in">insert</span>(<span class="number">10</span>);</span><br></pre></td></tr></table></figure>
-
-<p>我们将第一个 <code>10</code> 记为 <code>10A</code>, 第二个 <code>10</code> 记为 <code>10B</code>, 我们在插入 <code>10B</code> 的时候会检查是否与 <code>10A</code> 相同, 我们用的是 <code>less_equal</code>，下面的表达式会为假，就会重复插入，显然不合理。:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">!(10A &lt;= 10B) &amp;&amp; !(10B &lt;= 10A) //  !(true) &amp;&amp; !(true)</span><br></pre></td></tr></table></figure>
-
-<p>另外在 <code>multiset</code> 中也不行: </p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">multiset&lt;<span class="type">int</span>, less_equal&lt;<span class="type">int</span>&gt;&gt; s;</span><br><span class="line">s.<span class="built_in">insert</span>(<span class="number">10</span>); <span class="comment">// 插入10A</span></span><br><span class="line">s.<span class="built_in">insert</span>(<span class="number">10</span>); <span class="comment">// 插入10B</span></span><br></pre></td></tr></table></figure>
-
-<p>当我们想要一个 <code>equal_range</code>, <code>10A</code> 和 <code>10B</code> 同样认为是不等，永远不会在同一个区间。</p>
-<h2 id="2-sort-算法"><a href="#2-sort-算法" class="headerlink" title="2. sort 算法"></a>2. <code>sort</code> 算法</h2><p>对于 <code>std::sort</code>，当容器里面元素个数大于 <code>_S_threshold</code> 的值时（<code>16</code>），就会使用快速排序，会将所有的元素与中间值比较是无边界保护的，实现如下：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> _RandomAccessIterator, <span class="keyword">typename</span> _Tp, <span class="keyword">typename</span> _Compare&gt;</span><br><span class="line">     _RandomAccessIterator</span><br><span class="line">     __unguarded_partition(_RandomAccessIterator __first,</span><br><span class="line">               _RandomAccessIterator __last,</span><br><span class="line">               _Tp __pivot, _Compare __comp)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span> (<span class="literal">true</span>)</span><br><span class="line">    &#123;</span><br><span class="line">       <span class="keyword">while</span> (__comp(*__first, __pivot)) <span class="comment">// &lt;-------------------</span></span><br><span class="line">         ++__first;</span><br><span class="line">       --__last;</span><br><span class="line">       <span class="keyword">while</span> (__comp(__pivot, *__last))</span><br><span class="line">         --__last;</span><br><span class="line">       <span class="keyword">if</span> (!(__first &lt; __last))</span><br><span class="line">         <span class="keyword">return</span> __first;</span><br><span class="line">       std::<span class="built_in">iter_swap</span>(__first, __last);</span><br><span class="line">       ++__first;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>如果传入的 <code>vector</code> 中，后面的元素完全相等， <code>__comp()</code>函数一直返回 <code>true</code> ，在进行快速排序的时候，<code>++first</code> 就可能越界失效，导致 <code>coredump</code>。</p>
-]]></content>
-      <categories>
-        <category>Effective-STL</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
-        <tag>Effective-STL</tag>
-        <tag>stl</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Effective C++ 9：绝不在构造和析构过程中调用 virtual 函数</title>
     <url>/2021/11/01/effecitve-cpp/effective-cpp-9/</url>
     <content><![CDATA[<blockquote>
@@ -1545,54 +1596,150 @@
       </tags>
   </entry>
   <entry>
-    <title>Effective-STL 9：慎重选择删除元素的方法</title>
-    <url>/2023/02/16/effective-stl/effective-stl-9/</url>
-    <content><![CDATA[<blockquote>
-<p>Item9. Choose carefully among easing options.</p>
-</blockquote>
-<h1 id="一、删除特定值"><a href="#一、删除特定值" class="headerlink" title="一、删除特定值"></a>一、删除特定值</h1><ol>
-<li><p>对于 <code>vector</code>、 <code>string</code> 或 <code>deque</code></p>
-<p> 最好使用 <code>erase-remove</code>习惯用法: </p>
- <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">erase</span>(<span class="built_in">remove</span>(c.<span class="built_in">begin</span>(), c.<span class="built_in">end</span>(), <span class="number">1963</span>, c.<span class="built_in">end</span>()));</span><br></pre></td></tr></table></figure></li>
-<li><p>对于 <code>list</code> 容器</p>
-<p> 直接使用 <code>remove</code> 方法:</p>
- <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">remove</span>(<span class="number">1963</span>);</span><br></pre></td></tr></table></figure></li>
-<li><p>对于标准关联容器</p>
-<p> 直接使用 <code>erase</code> 方法:</p>
- <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">erase</span>(<span class="number">1963</span>)</span><br></pre></td></tr></table></figure></li>
-</ol>
-<span id="more"></span>
-<h1 id="二、删除满足特定判定条件的值"><a href="#二、删除满足特定判定条件的值" class="headerlink" title="二、删除满足特定判定条件的值"></a>二、删除满足特定判定条件的值</h1><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">bool</span> <span class="title">badValue</span><span class="params">(<span class="type">int</span>)</span> </span>&#123; <span class="keyword">return</span> <span class="literal">true</span>; &#125; <span class="comment">// 返回x是否为&quot;坏值&quot;</span></span><br></pre></td></tr></table></figure>
+    <title>Linux命令之tr</title>
+    <url>/2021/11/17/linux/Linux%E5%91%BD%E4%BB%A4%E4%B9%8Btr/</url>
+    <content><![CDATA[<p><code>Linux</code> 中 <code>tr</code> 命令用于转换或删除文件中的字符。</p>
+<h3 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">tr</span> [OPTION] SET1 [SET2]</span></span><br></pre></td></tr></table></figure>
 
-<ol>
-<li><p>对于 <code>vector</code>、 <code>string</code> 或 <code>deque</code><br> 使用 <code>erase-remove-if</code>方法: </p>
- <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">erase</span>(<span class="built_in">remove_if</span>(c.<span class="built_in">begin</span>(), c.<span class="built_in">end</span>(), badValue, c.<span class="built_in">end</span>()));</span><br></pre></td></tr></table></figure></li>
-<li><p>对于 <code>list</code> 容器<br> 直接使用 <code>remove_if</code> 方法:</p>
- <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">remove_if</span>(badValue);</span><br></pre></td></tr></table></figure>
+<h3 id="选项"><a href="#选项" class="headerlink" title="选项"></a>选项</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">-c, --complerment：反选设定字符。也就是符合 SET1 的部份不做处理，不符合的剩余部份才进行转换;</span><br><span class="line">-d, --delete：删除所有属于第一字符集的字符；</span><br><span class="line">-s, --squeeze-repeats：把连续重复的字符以单独一个字符表示；</span><br><span class="line">-t, --truncate-set1：先删除第一字符集较第二字符集多出的字符;</span><br></pre></td></tr></table></figure>
+<span id="more"></span>
+<h3 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h3><ul>
+<li>字符集1(<code>SET1</code>)：指定要转换或删除的原字符集。当执行转换操作时，必须使用参数 “字符集2”指定转换的目标字符集。但执行删除操作时，不需要参数“字符集2”；</li>
+<li>字符集2(<code>SET2</code>)：指定要转换成的目标字符集。</li>
+</ul>
+<h3 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h3><ol>
+<li><p>小写字母转换为大写字母:</p>
+ <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ echo &quot;HELLO WORLD&quot; | tr &#x27;A-Z&#x27; &#x27;a-z&#x27;</span><br><span class="line">hello world</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>对于标准关联容器</p>
-<p> <strong>把当前的i传给erase，i后缀递增</strong></p>
- <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (AssocContainer&lt;<span class="type">int</span>&gt;::iterator i = c.<span class="built_in">begin</span>(); i != c.<span class="built_in">end</span>();) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">badValue</span>(*i)) c<span class="number">3.</span><span class="built_in">erase</span>(i++); </span><br><span class="line">    <span class="keyword">else</span> ++i;                     </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>删除字符：</p>
+ <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ echo &quot;hello 123 world 456&quot; | tr -d &#x27;0-9&#x27;</span><br><span class="line">hello  world</span><br><span class="line"></span><br><span class="line">➜ echo &quot;hello 123 world 456&quot; | tr -cd &#x27;0-9&#x27;</span><br><span class="line">123456</span><br></pre></td></tr></table></figure></li>
+<li><p>压缩字符</p>
+ <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ echo &quot;hello          world&quot; | tr -s &#x27;[:space:]&#x27;</span><br><span class="line">hello world</span><br><span class="line"></span><br><span class="line">➜  share echo &quot;hellooooo worldddddddddddd&quot; | tr -s &#x27;od&#x27; </span><br><span class="line">hello world</span><br></pre></td></tr></table></figure></li>
 </ol>
-<h1 id="三、循环内部删除对象之外还要做某些事"><a href="#三、循环内部删除对象之外还要做某些事" class="headerlink" title="三、循环内部删除对象之外还要做某些事"></a>三、循环内部删除对象之外还要做某些事</h1><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">doSomething</span><span class="params">(<span class="type">int</span>)</span> </span>&#123; ... &#125;</span><br></pre></td></tr></table></figure>
-<ol>
-<li><p>对于 <code>vector</code>、 <code>string</code> 或 <code>deque</code></p>
-<p> <strong>接收 <code>erase</code>返回的迭代器值。</strong></p>
- <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (SeqContainer&lt;<span class="type">int</span>&gt;::iterator i = c.<span class="built_in">begin</span>(); i != c.<span class="built_in">end</span>();) &#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">badValue</span>(*i)) &#123;</span><br><span class="line">        <span class="built_in">doSomething</span>(*i);</span><br><span class="line">        i = c.<span class="built_in">rease</span>(i);</span><br><span class="line">    &#125; <span class="keyword">else</span> ++i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-<li><p>对于 <code>list</code> 容器</p>
-<p> 虽然也可以采用标准关联容器方法，但建议采用跟 <code>vector</code>、 <code>string</code> 或 <code>deque</code> 一致。</p>
-</li>
-<li><p>对于标准关联容器</p>
- <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (SeqContainer&lt;<span class="type">int</span>&gt;::iterator i = c.<span class="built_in">begin</span>(); i != c.<span class="built_in">end</span>();) &#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">badValue</span>(*i)) &#123;</span><br><span class="line">        <span class="built_in">doSomething</span>(*i);</span><br><span class="line">        c.<span class="built_in">rease</span>(i++);</span><br><span class="line">    &#125; <span class="keyword">else</span> ++i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-</ol>
-]]></content>
+<h3 id="常用的字符类"><a href="#常用的字符类" class="headerlink" title="常用的字符类"></a>常用的字符类</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[:alnum:]：字母和数字</span><br><span class="line">[:alpha:]：字母</span><br><span class="line">[:cntrl:]：控制（非打印）字符</span><br><span class="line">[:digit:]：数字</span><br><span class="line">[:graph:]：图形字符</span><br><span class="line">[:lower:]：小写字母</span><br><span class="line">[:print:]：可打印字符</span><br><span class="line">[:punct:]：标点符号</span><br><span class="line">[:space:]：空白字符</span><br><span class="line">[:upper:]：大写字母</span><br><span class="line">[:xdigit:]：十六进制字符  </span><br></pre></td></tr></table></figure>]]></content>
       <categories>
-        <category>Effective-STL</category>
+        <category>Linux</category>
       </categories>
       <tags>
-        <tag>C++</tag>
-        <tag>Effective-STL</tag>
-        <tag>stl</tag>
+        <tag>Linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>解决 由于没有公钥，无法验证下列签名 :NO_PUBKEY</title>
+    <url>/2022/04/19/linux/NO_PUBKEY/</url>
+    <content><![CDATA[<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ sudo apt update </span><br><span class="line">命中:1 https://pro-driver-packages.uniontech.com eagle InRelease</span><br><span class="line">获取:2 http://mirrors.tuna.tsinghua.edu.cn/ubuntu hirsute InRelease [269 kB]                                 </span><br><span class="line">命中:3 http://packages.microsoft.com/repos/code stable InRelease                                             </span><br><span class="line">命中:4 https://home-packages.chinauos.com/home plum InRelease                                                </span><br><span class="line">命中:5 https://home-packages.chinauos.com/home plum/beta InRelease   </span><br><span class="line">命中:6 https://home-packages.chinauos.com/printer eagle InRelease</span><br><span class="line">错误:2 http://mirrors.tuna.tsinghua.edu.cn/ubuntu hirsute InRelease</span><br><span class="line">  由于没有公钥，无法验证下列签名： NO_PUBKEY 871920D1991BC93C</span><br><span class="line">命中:7 https://home-store-img.uniontech.com/appstore eagle InRelease</span><br><span class="line">正在读取软件包列表... 完成</span><br><span class="line">W: GPG 错误：http://mirrors.tuna.tsinghua.edu.cn/ubuntu hirsute InRelease: 由于没有公钥，无法验证下列签名： NO_PUBKEY 871920D1991BC93C</span><br><span class="line">E: 仓库 “http://mirrors.tuna.tsinghua.edu.cn/ubuntu hirsute InRelease” 没有数字签名。</span><br><span class="line">N: 无法安全地用该源进行更新，所以默认禁用该源。</span><br><span class="line">N: 参见 apt-secure(8) 手册以了解仓库创建和用户配置方面的细节。</span><br></pre></td></tr></table></figure>
+
+<p>执行：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 871920D1991BC93C</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>Linux</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+        <tag>apt</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SUSE Linux 系统记录</title>
+    <url>/2024/03/07/linux/SUSE-Linux-%E7%B3%BB%E7%BB%9F%E8%AE%B0%E5%BD%95/</url>
+    <content><![CDATA[<p>最近接触到 <code>SUSE Linux</code> 操作系统，一些命令不一样，这里记录下:</p>
+<h1 id="包管理器-zypper"><a href="#包管理器-zypper" class="headerlink" title="包管理器 zypper"></a>包管理器 <code>zypper</code></h1><ul>
+<li>包的安装</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo zypper install 包名</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>搜索包</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo zypper search 包名</span><br></pre></td></tr></table></figure>
+<h1 id="老旧版本系统的包查找"><a href="#老旧版本系统的包查找" class="headerlink" title="老旧版本系统的包查找"></a>老旧版本系统的包查找</h1><p>我用的系统是 <code>SUSE 12 SP5</code> 基本没有可用的在线 <code>Repositories</code>, 一些包很难找到了，可以通过<a href="https://www.suse.com/download/sle-sdk/">SUSE Linux Enterprise Software Development Kit</a> 下载对应的 <code>SDK ISO</code> 安装里面的 <code>rpm</code>。</p>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ul>
+<li><a href="https://www.cnblogs.com/unchch/p/12910463.html">SUSE 12 SP3 的源管理相关</a></li>
+</ul>
+]]></content>
+  </entry>
+  <entry>
+    <title>文件MIME类型</title>
+    <url>/2021/11/23/linux/%E6%96%87%E4%BB%B6MIME%E7%B1%BB%E5%9E%8B/</url>
+    <content><![CDATA[<h1 id="什么是-MIME-类型？"><a href="#什么是-MIME-类型？" class="headerlink" title="什么是 MIME 类型？"></a>什么是 MIME 类型？</h1><p><code>MIME</code>（多用途 <code>Internet</code> 邮件扩展）的类型来识别文件格式。 <code>MIME</code> 类型构成了 <code>Internet</code> 上对文件类型进行分类的标准方法。</p>
+<ul>
+<li><code>MIME Type</code>是用于描述文件的类型的一种表述方法，其将文件划分为多种类型，方便对其进行统一的管理。</li>
+<li><code>MIME Type</code>指定了文件的类型名称、描述、图标信息，同时通过与.desktop应用程序描述文件整合，指定了文件的打开方式。</li>
+</ul>
+<span id="more"></span>
+<p><code>MIME</code> 类型名字遵循指定的格式：</p>
+<p>类型和子类型， 在 MIME 类型中，类型和子类型不区分大小写。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">media-type/subtype-identifier</span><br></pre></td></tr></table></figure>
+
+<p>目前，有十种注册类型：<code>application</code>，<code>audio</code>，<code>example</code>，<code>font</code>，<code>image</code>，<code>message</code>，<code>model</code>，<code>multipart</code>，<code>text</code>和<code>video</code>。</p>
+<p>例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">multipart/form-data</span><br><span class="line">text/xml</span><br><span class="line">text/csv</span><br><span class="line">text/plain</span><br><span class="line">application/xml</span><br><span class="line">application/zip</span><br><span class="line">application/pdf</span><br></pre></td></tr></table></figure>
+
+<p>完整MIME 类型示例：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">application/vnd.api+json</span><br></pre></td></tr></table></figure>
+
+<p><code>application</code>作为类型，<code>api</code>作为子类型，<code>vnd</code>是厂商前缀，<code>+json</code>是后缀，表示可以解析为<code>JSON</code>。</p>
+<h1 id="获取文件的-MIME-类型"><a href="#获取文件的-MIME-类型" class="headerlink" title="获取文件的 MIME 类型"></a>获取文件的 MIME 类型</h1><h2 id="xdg-mime命令"><a href="#xdg-mime命令" class="headerlink" title="xdg-mime命令"></a>xdg-mime命令</h2><ul>
+<li><p>显示文件的<code>MIME</code>类型：</p>
+  <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">xdg-mime query filetype &#123;file&#125;</span><br></pre></td></tr></table></figure>
+<p>  例如：</p>
+  <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ xdg-mime query filetype one.jpg </span><br><span class="line">image/jpeg</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>显示<code>MIME</code> 类型的默认应用程序</p>
+  <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">xdg-mime query default &#123;mimetype&#125;</span><br></pre></td></tr></table></figure>
+<p>  例如：</p>
+  <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ xdg-mime query default image/jpeg</span><br><span class="line">/usr/share/applications/deepin-image-viewer.desktop</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+<li><p>显示文件默认应用程序的语法</p>
+  <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">xdg-mime query default &quot;$(xdg-mime query filetype &#123;file&#125;)&quot;</span><br></pre></td></tr></table></figure>
+
+<p>  例如：</p>
+  <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">xdg-mime query default \</span><br><span class="line">    `xdg-mime query filetype &quot;$(find ~ / -iname &#x27;*.png&#x27; -print -quit)&quot;`</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>设置<code>MIME</code> 类型的默认打开应用程序</p>
+  <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">xdg-mime default dekstop filetype</span><br></pre></td></tr></table></figure>
+
+<p>  例如：</p>
+  <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">xdg-mime default dde-file-manager.desktop inode/directtory</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="file-命令"><a href="#file-命令" class="headerlink" title="file 命令"></a>file 命令</h2><ul>
+<li><p>查询文件类型：</p>
+  <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">file --mime-type INPUT_FILE</span><br></pre></td></tr></table></figure>
+
+<p>  例如：</p>
+  <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">➜ file --mime-type one.jpg </span><br><span class="line">one.jpg: inode/symlink</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h1 id="自定义的-MIME-类型"><a href="#自定义的-MIME-类型" class="headerlink" title="自定义的 MIME 类型"></a>自定义的 MIME 类型</h1><p>如需为系统上的所有用户添加一个自定义的 <code>MIME</code> 类型，并为该 <code>MIME</code> 类型注册一个默认的应用程序，您需要在 <code>/usr/share/mime/packages/</code> 目录下创建一个新的 <code>MIME</code> 类型说明文件，在 <code>/usr/share/applications/</code> 目录下创建一个 <code>.desktop</code> 文件。</p>
+<p>比如我们创建一个<code>application/x-newtype</code>类型：</p>
+<ol>
+<li><p>创建 &#x2F;usr&#x2F;share&#x2F;mime&#x2F;packages&#x2F;application-x-newtype.xml 文件</p>
+ <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span><br><span class="line">&lt;mime-info xmlns=&quot;http://www.freedesktop.org/standards/shared-mime-info&quot;&gt;</span><br><span class="line">&lt;mime-type type=&quot;application/x-newtype&quot;&gt;</span><br><span class="line">    &lt;comment&gt;new mime type&lt;/comment&gt;</span><br><span class="line">    &lt;glob pattern=&quot;*.xyz&quot;/&gt;</span><br><span class="line">&lt;/mime-type&gt;</span><br><span class="line">&lt;/mime-info&gt;</span><br></pre></td></tr></table></figure>
+<p> 上述 <code>application-x-newtype.xml</code> 文件定义了一种新的 <code>MIME</code> 类型<code>application/x-newtype</code>，并指定拓展名是 <code>.xyz</code> 的文件为该 <code>MIME</code> 类型。</p>
+</li>
+<li><p>创建一个名为例如 <code>myapplication1.desktop</code> 的新的 <code>.desktop</code> 文件，并将它放置在 <code>/usr/share/applications/</code> 目录下：</p>
+ <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[Desktop Entry]</span><br><span class="line">Type=Application</span><br><span class="line">MimeType=application/x-newtype</span><br><span class="line">Name=My Application 1</span><br><span class="line">Exec=myapplication1</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>请以 <code>root</code> 身份更新 <code>MIME</code> 数据库以使您的更改生效：</p>
+ <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ update-mime-database /usr/share/mime</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>请以 <code>root</code> 身份更新应用程序数据库：</p>
+ <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ update-desktop-database /usr/share/applications</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>如需为个别用户添加自定义的 <code>MIME</code> 类型，并为该<code>MIME</code> 类型注册一个默认的应用程序，您需要在 <code>~/.local/share/mime/packages/</code> 目录下创建一个新的 <code>MIME</code> 类型说明文件，并在 <code>~/.local/share/applications/</code> 目录下创建一个 <code>.desktop</code> 文件。</p>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ul>
+<li><p><a href="https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/7/html/desktop_migration_and_administration_guide/file_formats">配置文件关联</a></p>
+</li>
+<li><p><a href="https://www.baeldung.com/linux/file-mime-types">file-mime-types</a></p>
+</li>
+<li><p><a href="https://specifications.freedesktop.org/mime-apps-spec/mime-apps-spec-latest.html">mime-apps-spec</a></p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Linux</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+        <tag>mime</tag>
       </tags>
   </entry>
   <entry>
@@ -1881,6 +2028,17 @@
       </tags>
   </entry>
   <entry>
+    <title>macOS 完全磁盘访问权限</title>
+    <url>/2024/01/05/macos/macOS-%E5%AE%8C%E5%85%A8%E7%A3%81%E7%9B%98%E8%AE%BF%E9%97%AE%E6%9D%83%E9%99%90/</url>
+    <content><![CDATA[]]></content>
+      <categories>
+        <category>macOS</category>
+      </categories>
+      <tags>
+        <tag>macOS</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>macOS Ventura App 管理</title>
     <url>/2024/01/04/macos/macOS-Ventura-App-%E7%AE%A1%E7%90%86/</url>
     <content><![CDATA[<p>从 <code>macOS Monterey</code> 开始，如果应用程序被未由相同开发团队签名且未由 <code>NSUpdateSecurityPolicy</code> 允许的东西修改，<code>macOS</code> 将阻止修改并通知用户应用程序希望管理其他应用程序。点击通知会将用户发送到系统设置，他们可以在那里允许应用程序更新和修改其他应用程序。</p>
@@ -1914,14 +2072,14 @@
       </tags>
   </entry>
   <entry>
-    <title>macOS 完全磁盘访问权限</title>
-    <url>/2024/01/05/macos/macOS-%E5%AE%8C%E5%85%A8%E7%A3%81%E7%9B%98%E8%AE%BF%E9%97%AE%E6%9D%83%E9%99%90/</url>
-    <content><![CDATA[]]></content>
+    <title>Mach-O 相关记录</title>
+    <url>/2023/03/10/macos/mach-o/</url>
+    <content><![CDATA[<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><h1 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h1>]]></content>
       <categories>
-        <category>macOS</category>
+        <category>MacOS</category>
       </categories>
       <tags>
-        <tag>macOS</tag>
+        <tag>Mach-O</tag>
       </tags>
   </entry>
   <entry>
@@ -1939,17 +2097,6 @@
       </categories>
       <tags>
         <tag>macOS</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Mach-O 相关记录</title>
-    <url>/2023/03/10/macos/mach-o/</url>
-    <content><![CDATA[<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><h1 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h1>]]></content>
-      <categories>
-        <category>MacOS</category>
-      </categories>
-      <tags>
-        <tag>Mach-O</tag>
       </tags>
   </entry>
   <entry>
@@ -2032,153 +2179,6 @@
       </tags>
   </entry>
   <entry>
-    <title>解决 由于没有公钥，无法验证下列签名 :NO_PUBKEY</title>
-    <url>/2022/04/19/linux/NO_PUBKEY/</url>
-    <content><![CDATA[<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ sudo apt update </span><br><span class="line">命中:1 https://pro-driver-packages.uniontech.com eagle InRelease</span><br><span class="line">获取:2 http://mirrors.tuna.tsinghua.edu.cn/ubuntu hirsute InRelease [269 kB]                                 </span><br><span class="line">命中:3 http://packages.microsoft.com/repos/code stable InRelease                                             </span><br><span class="line">命中:4 https://home-packages.chinauos.com/home plum InRelease                                                </span><br><span class="line">命中:5 https://home-packages.chinauos.com/home plum/beta InRelease   </span><br><span class="line">命中:6 https://home-packages.chinauos.com/printer eagle InRelease</span><br><span class="line">错误:2 http://mirrors.tuna.tsinghua.edu.cn/ubuntu hirsute InRelease</span><br><span class="line">  由于没有公钥，无法验证下列签名： NO_PUBKEY 871920D1991BC93C</span><br><span class="line">命中:7 https://home-store-img.uniontech.com/appstore eagle InRelease</span><br><span class="line">正在读取软件包列表... 完成</span><br><span class="line">W: GPG 错误：http://mirrors.tuna.tsinghua.edu.cn/ubuntu hirsute InRelease: 由于没有公钥，无法验证下列签名： NO_PUBKEY 871920D1991BC93C</span><br><span class="line">E: 仓库 “http://mirrors.tuna.tsinghua.edu.cn/ubuntu hirsute InRelease” 没有数字签名。</span><br><span class="line">N: 无法安全地用该源进行更新，所以默认禁用该源。</span><br><span class="line">N: 参见 apt-secure(8) 手册以了解仓库创建和用户配置方面的细节。</span><br></pre></td></tr></table></figure>
-
-<p>执行：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 871920D1991BC93C</span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>Linux</category>
-      </categories>
-      <tags>
-        <tag>Linux</tag>
-        <tag>apt</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Linux命令之tr</title>
-    <url>/2021/11/17/linux/Linux%E5%91%BD%E4%BB%A4%E4%B9%8Btr/</url>
-    <content><![CDATA[<p><code>Linux</code> 中 <code>tr</code> 命令用于转换或删除文件中的字符。</p>
-<h3 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">tr</span> [OPTION] SET1 [SET2]</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="选项"><a href="#选项" class="headerlink" title="选项"></a>选项</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">-c, --complerment：反选设定字符。也就是符合 SET1 的部份不做处理，不符合的剩余部份才进行转换;</span><br><span class="line">-d, --delete：删除所有属于第一字符集的字符；</span><br><span class="line">-s, --squeeze-repeats：把连续重复的字符以单独一个字符表示；</span><br><span class="line">-t, --truncate-set1：先删除第一字符集较第二字符集多出的字符;</span><br></pre></td></tr></table></figure>
-<span id="more"></span>
-<h3 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h3><ul>
-<li>字符集1(<code>SET1</code>)：指定要转换或删除的原字符集。当执行转换操作时，必须使用参数 “字符集2”指定转换的目标字符集。但执行删除操作时，不需要参数“字符集2”；</li>
-<li>字符集2(<code>SET2</code>)：指定要转换成的目标字符集。</li>
-</ul>
-<h3 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h3><ol>
-<li><p>小写字母转换为大写字母:</p>
- <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ echo &quot;HELLO WORLD&quot; | tr &#x27;A-Z&#x27; &#x27;a-z&#x27;</span><br><span class="line">hello world</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>删除字符：</p>
- <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ echo &quot;hello 123 world 456&quot; | tr -d &#x27;0-9&#x27;</span><br><span class="line">hello  world</span><br><span class="line"></span><br><span class="line">➜ echo &quot;hello 123 world 456&quot; | tr -cd &#x27;0-9&#x27;</span><br><span class="line">123456</span><br></pre></td></tr></table></figure></li>
-<li><p>压缩字符</p>
- <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ echo &quot;hello          world&quot; | tr -s &#x27;[:space:]&#x27;</span><br><span class="line">hello world</span><br><span class="line"></span><br><span class="line">➜  share echo &quot;hellooooo worldddddddddddd&quot; | tr -s &#x27;od&#x27; </span><br><span class="line">hello world</span><br></pre></td></tr></table></figure></li>
-</ol>
-<h3 id="常用的字符类"><a href="#常用的字符类" class="headerlink" title="常用的字符类"></a>常用的字符类</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[:alnum:]：字母和数字</span><br><span class="line">[:alpha:]：字母</span><br><span class="line">[:cntrl:]：控制（非打印）字符</span><br><span class="line">[:digit:]：数字</span><br><span class="line">[:graph:]：图形字符</span><br><span class="line">[:lower:]：小写字母</span><br><span class="line">[:print:]：可打印字符</span><br><span class="line">[:punct:]：标点符号</span><br><span class="line">[:space:]：空白字符</span><br><span class="line">[:upper:]：大写字母</span><br><span class="line">[:xdigit:]：十六进制字符  </span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>Linux</category>
-      </categories>
-      <tags>
-        <tag>Linux</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>SUSE Linux 系统记录</title>
-    <url>/2024/03/07/linux/SUSE-Linux-%E7%B3%BB%E7%BB%9F%E8%AE%B0%E5%BD%95/</url>
-    <content><![CDATA[<p>最近接触到 <code>SUSE Linux</code> 操作系统，一些命令不一样，这里记录下:</p>
-<h1 id="包管理器-zypper"><a href="#包管理器-zypper" class="headerlink" title="包管理器 zypper"></a>包管理器 <code>zypper</code></h1><ul>
-<li>包的安装</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo zypper install 包名</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>搜索包</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo zypper search 包名</span><br></pre></td></tr></table></figure>
-<h1 id="老旧版本系统的包查找"><a href="#老旧版本系统的包查找" class="headerlink" title="老旧版本系统的包查找"></a>老旧版本系统的包查找</h1><p>我用的系统是 <code>SUSE 12 SP5</code> 基本没有可用的在线 <code>Repositories</code>, 一些包很难找到了，可以通过<a href="https://www.suse.com/download/sle-sdk/">SUSE Linux Enterprise Software Development Kit</a> 下载对应的 <code>SDK ISO</code> 安装里面的 <code>rpm</code>。</p>
-<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ul>
-<li><a href="https://www.cnblogs.com/unchch/p/12910463.html">SUSE 12 SP3 的源管理相关</a></li>
-</ul>
-]]></content>
-  </entry>
-  <entry>
-    <title>文件MIME类型</title>
-    <url>/2021/11/23/linux/%E6%96%87%E4%BB%B6MIME%E7%B1%BB%E5%9E%8B/</url>
-    <content><![CDATA[<h1 id="什么是-MIME-类型？"><a href="#什么是-MIME-类型？" class="headerlink" title="什么是 MIME 类型？"></a>什么是 MIME 类型？</h1><p><code>MIME</code>（多用途 <code>Internet</code> 邮件扩展）的类型来识别文件格式。 <code>MIME</code> 类型构成了 <code>Internet</code> 上对文件类型进行分类的标准方法。</p>
-<ul>
-<li><code>MIME Type</code>是用于描述文件的类型的一种表述方法，其将文件划分为多种类型，方便对其进行统一的管理。</li>
-<li><code>MIME Type</code>指定了文件的类型名称、描述、图标信息，同时通过与.desktop应用程序描述文件整合，指定了文件的打开方式。</li>
-</ul>
-<span id="more"></span>
-<p><code>MIME</code> 类型名字遵循指定的格式：</p>
-<p>类型和子类型， 在 MIME 类型中，类型和子类型不区分大小写。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">media-type/subtype-identifier</span><br></pre></td></tr></table></figure>
-
-<p>目前，有十种注册类型：<code>application</code>，<code>audio</code>，<code>example</code>，<code>font</code>，<code>image</code>，<code>message</code>，<code>model</code>，<code>multipart</code>，<code>text</code>和<code>video</code>。</p>
-<p>例如：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">multipart/form-data</span><br><span class="line">text/xml</span><br><span class="line">text/csv</span><br><span class="line">text/plain</span><br><span class="line">application/xml</span><br><span class="line">application/zip</span><br><span class="line">application/pdf</span><br></pre></td></tr></table></figure>
-
-<p>完整MIME 类型示例：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">application/vnd.api+json</span><br></pre></td></tr></table></figure>
-
-<p><code>application</code>作为类型，<code>api</code>作为子类型，<code>vnd</code>是厂商前缀，<code>+json</code>是后缀，表示可以解析为<code>JSON</code>。</p>
-<h1 id="获取文件的-MIME-类型"><a href="#获取文件的-MIME-类型" class="headerlink" title="获取文件的 MIME 类型"></a>获取文件的 MIME 类型</h1><h2 id="xdg-mime命令"><a href="#xdg-mime命令" class="headerlink" title="xdg-mime命令"></a>xdg-mime命令</h2><ul>
-<li><p>显示文件的<code>MIME</code>类型：</p>
-  <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">xdg-mime query filetype &#123;file&#125;</span><br></pre></td></tr></table></figure>
-<p>  例如：</p>
-  <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ xdg-mime query filetype one.jpg </span><br><span class="line">image/jpeg</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>显示<code>MIME</code> 类型的默认应用程序</p>
-  <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">xdg-mime query default &#123;mimetype&#125;</span><br></pre></td></tr></table></figure>
-<p>  例如：</p>
-  <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ xdg-mime query default image/jpeg</span><br><span class="line">/usr/share/applications/deepin-image-viewer.desktop</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
-<li><p>显示文件默认应用程序的语法</p>
-  <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">xdg-mime query default &quot;$(xdg-mime query filetype &#123;file&#125;)&quot;</span><br></pre></td></tr></table></figure>
-
-<p>  例如：</p>
-  <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">xdg-mime query default \</span><br><span class="line">    `xdg-mime query filetype &quot;$(find ~ / -iname &#x27;*.png&#x27; -print -quit)&quot;`</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>设置<code>MIME</code> 类型的默认打开应用程序</p>
-  <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">xdg-mime default dekstop filetype</span><br></pre></td></tr></table></figure>
-
-<p>  例如：</p>
-  <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">xdg-mime default dde-file-manager.desktop inode/directtory</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h2 id="file-命令"><a href="#file-命令" class="headerlink" title="file 命令"></a>file 命令</h2><ul>
-<li><p>查询文件类型：</p>
-  <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">file --mime-type INPUT_FILE</span><br></pre></td></tr></table></figure>
-
-<p>  例如：</p>
-  <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">➜ file --mime-type one.jpg </span><br><span class="line">one.jpg: inode/symlink</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h1 id="自定义的-MIME-类型"><a href="#自定义的-MIME-类型" class="headerlink" title="自定义的 MIME 类型"></a>自定义的 MIME 类型</h1><p>如需为系统上的所有用户添加一个自定义的 <code>MIME</code> 类型，并为该 <code>MIME</code> 类型注册一个默认的应用程序，您需要在 <code>/usr/share/mime/packages/</code> 目录下创建一个新的 <code>MIME</code> 类型说明文件，在 <code>/usr/share/applications/</code> 目录下创建一个 <code>.desktop</code> 文件。</p>
-<p>比如我们创建一个<code>application/x-newtype</code>类型：</p>
-<ol>
-<li><p>创建 &#x2F;usr&#x2F;share&#x2F;mime&#x2F;packages&#x2F;application-x-newtype.xml 文件</p>
- <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span><br><span class="line">&lt;mime-info xmlns=&quot;http://www.freedesktop.org/standards/shared-mime-info&quot;&gt;</span><br><span class="line">&lt;mime-type type=&quot;application/x-newtype&quot;&gt;</span><br><span class="line">    &lt;comment&gt;new mime type&lt;/comment&gt;</span><br><span class="line">    &lt;glob pattern=&quot;*.xyz&quot;/&gt;</span><br><span class="line">&lt;/mime-type&gt;</span><br><span class="line">&lt;/mime-info&gt;</span><br></pre></td></tr></table></figure>
-<p> 上述 <code>application-x-newtype.xml</code> 文件定义了一种新的 <code>MIME</code> 类型<code>application/x-newtype</code>，并指定拓展名是 <code>.xyz</code> 的文件为该 <code>MIME</code> 类型。</p>
-</li>
-<li><p>创建一个名为例如 <code>myapplication1.desktop</code> 的新的 <code>.desktop</code> 文件，并将它放置在 <code>/usr/share/applications/</code> 目录下：</p>
- <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[Desktop Entry]</span><br><span class="line">Type=Application</span><br><span class="line">MimeType=application/x-newtype</span><br><span class="line">Name=My Application 1</span><br><span class="line">Exec=myapplication1</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>请以 <code>root</code> 身份更新 <code>MIME</code> 数据库以使您的更改生效：</p>
- <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ update-mime-database /usr/share/mime</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>请以 <code>root</code> 身份更新应用程序数据库：</p>
- <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ update-desktop-database /usr/share/applications</span><br></pre></td></tr></table></figure></li>
-</ol>
-<p>如需为个别用户添加自定义的 <code>MIME</code> 类型，并为该<code>MIME</code> 类型注册一个默认的应用程序，您需要在 <code>~/.local/share/mime/packages/</code> 目录下创建一个新的 <code>MIME</code> 类型说明文件，并在 <code>~/.local/share/applications/</code> 目录下创建一个 <code>.desktop</code> 文件。</p>
-<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ul>
-<li><p><a href="https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/7/html/desktop_migration_and_administration_guide/file_formats">配置文件关联</a></p>
-</li>
-<li><p><a href="https://www.baeldung.com/linux/file-mime-types">file-mime-types</a></p>
-</li>
-<li><p><a href="https://specifications.freedesktop.org/mime-apps-spec/mime-apps-spec-latest.html">mime-apps-spec</a></p>
-</li>
-</ul>
-]]></content>
-      <categories>
-        <category>Linux</category>
-      </categories>
-      <tags>
-        <tag>Linux</tag>
-        <tag>mime</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>mongodb 入门-Aggregate</title>
     <url>/2023/08/31/mongodb/mongodb-%E5%85%A5%E9%97%A8-Aggregate/</url>
     <content><![CDATA[<h1 id="聚合操作"><a href="#聚合操作" class="headerlink" title="聚合操作"></a>聚合操作</h1>]]></content>
@@ -2187,6 +2187,166 @@
       </categories>
       <tags>
         <tag>mongodb</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>mongodb 入门-索引</title>
+    <url>/2023/08/26/mongodb/mongodb-%E5%85%A5%E9%97%A8-%E7%B4%A2%E5%BC%95/</url>
+    <content><![CDATA[<h1 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h1><ul>
+<li>对文档部分内容进行排序的数据结构</li>
+<li>加快文档查询和文档排序的速度</li>
+<li>复合键索引只能支持前缀子查询</li>
+</ul>
+<h2 id="索引操作"><a href="#索引操作" class="headerlink" title="索引操作"></a>索引操作</h2><h3 id="创建索引"><a href="#创建索引" class="headerlink" title="创建索引"></a>创建索引</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">db.&lt;collection&gt;.createIndex(&lt;keys&gt;, &lt;options&gt;)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>&lt;keys&gt;</code> 文档指定了创建索引的字段</li>
+<li><code>&lt;options&gt;</code> 创建索引的参数和设定索引的特性</li>
+</ul>
+<h4 id="创建一个单键索引"><a href="#创建一个单键索引" class="headerlink" title="创建一个单键索引"></a>创建一个单键索引</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;name: 1&#125;)</span><br></pre></td></tr></table></figure>
+<h4 id="创建一个复合键索引"><a href="#创建一个复合键索引" class="headerlink" title="创建一个复合键索引"></a>创建一个复合键索引</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;name: 1, balance: -1&#125;)</span><br></pre></td></tr></table></figure>
+<h4 id="创建一个多键索引，创建在数组字段上-数组字段中的每一个元素都会在多键索引中创建一个键"><a href="#创建一个多键索引，创建在数组字段上-数组字段中的每一个元素都会在多键索引中创建一个键" class="headerlink" title="创建一个多键索引，创建在数组字段上, 数组字段中的每一个元素都会在多键索引中创建一个键"></a>创建一个多键索引，创建在数组字段上, 数组字段中的每一个元素都会在多键索引中创建一个键</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;currency: 1&#125;)</span><br></pre></td></tr></table></figure>
+<h4 id="列出集合中的索引"><a href="#列出集合中的索引" class="headerlink" title="列出集合中的索引"></a>列出集合中的索引</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.getIndexes()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<span id="more"></span>
+<h3 id="删除索引"><a href="#删除索引" class="headerlink" title="删除索引"></a>删除索引</h3><p>如果需要更改某些字段上已经创建的索引必须首先删除原有索引，再重新创建新索引，否则新索引不会包含原有字段</p>
+<h4 id="使用索引名字删除"><a href="#使用索引名字删除" class="headerlink" title="使用索引名字删除"></a>使用索引名字删除</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.dropIndex(&quot;name_1&quot;)</span><br></pre></td></tr></table></figure>
+<h4 id="使用索引定义删除"><a href="#使用索引定义删除" class="headerlink" title="使用索引定义删除"></a>使用索引定义删除</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.dropIndex( &#123; name: 1, balance: -1 &#125;)</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="索引类型"><a href="#索引类型" class="headerlink" title="索引类型"></a>索引类型</h2><ul>
+<li>单键索引</li>
+<li>复合键索引</li>
+<li>多键索引</li>
+</ul>
+<h2 id="索引特性"><a href="#索引特性" class="headerlink" title="索引特性"></a>索引特性</h2><h3 id="唯一性"><a href="#唯一性" class="headerlink" title="唯一性"></a>唯一性</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;balance:1&#125;,&#123;unique:true&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>如果已有文档中的某个字段出现了重复性，就不可以在这个字段上创建唯一性索引</p>
+<p>如果新增的文档不包含唯一性索引字段，只有第一篇缺失该字段的文档可以被写入数据库，索引中该文档的键值被默认为null</p>
+<h3 id="稀疏性"><a href="#稀疏性" class="headerlink" title="稀疏性"></a>稀疏性</h3><p>只将包含索引字段的文档加入到索引中(即使索引键字段为null)</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;balance:1&#125;, &#123; sparse:true&#125;)</span><br></pre></td></tr></table></figure>
+<p>如果同一个索引既具有唯一性，又具有稀疏性，就可以保存多篇缺失索引键值的文档了 </p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;balance:1&#125;, &#123; sparse:true, unique:true&#125;)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>复合键索引也可以具有稀疏性，在这种情况下，只有在缺失复合键所包含的所有字段的情况下，文档才不会加入到索引中</p>
+<h3 id="生存时间"><a href="#生存时间" class="headerlink" title="生存时间"></a>生存时间</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;lastAccess:1&#125;,&#123;expireAfterSeconds:20&#125;)</span><br></pre></td></tr></table></figure>
+
+<p><strong>复合键索引不具有生存时间特性</strong>，当索引键是包含日期元素的数组字段时，数组中<strong>最小</strong>的的日期将被用来计算文档是否过期。数据库使用一个后台线程来监测和删除过期文档，删除操作可能有一定的延迟。</p>
+<h2 id="查询分析"><a href="#查询分析" class="headerlink" title="查询分析"></a>查询分析</h2><h3 id="检视索引的效果-explain"><a href="#检视索引的效果-explain" class="headerlink" title="检视索引的效果 explain()"></a>检视索引的效果 <code>explain()</code></h3><ul>
+<li><p>命令操作格式:</p>
+  <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">db.&lt;collection&gt;.explain().&lt;method(...)&gt;</span><br></pre></td></tr></table></figure></li>
+<li><p>可以使用 <code>explain()</code> 进行分析的命令包括 <code>aggregate()</code>，<code>count()</code>，<code>distinct()</code>，<code>find()</code>，<code>group()</code>，<code>remove()</code>，<code>update()</code></p>
+</li>
+<li><p><code>explain()</code>返回结果中包含的 <code>winningPlan</code>字段表示数据库的查询方法</p>
+<ul>
+<li><code>stage</code><ul>
+<li><code>COLLSCAN</code> 完整查询整个集合</li>
+<li><code>FETCH</code> <code>IXSCAN</code> 通过索引查询，返回完整文档<br>  -<code> PROJECTION_COVERED</code>  <code>IXSCAN</code>, 直接使用索引存在的字段，无序完整文档，没有 <code>FETCH</code> 阶段</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>没有 <code>IXSCAN</code> 阶段，都耗费资源</p>
+<p>举个例子，<code>explain</code> 排序:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.explain().find().sort(&#123;name:1, balance: -1&#125;)</span><br></pre></td></tr></table></figure>
+<h2 id="索引的选择"><a href="#索引的选择" class="headerlink" title="索引的选择"></a>索引的选择</h2><ul>
+<li>如何创建一个合适的索引</li>
+<li>索引对数据库写入操作的影响</li>
+</ul>
+]]></content>
+      <categories>
+        <category>mongodb</category>
+      </categories>
+      <tags>
+        <tag>mongodb</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>I/O 多路复用</title>
+    <url>/2023/08/17/network/I-O-%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/</url>
+    <content><![CDATA[<h1 id="select"><a href="#select" class="headerlink" title="select"></a>select</h1><p><code>select</code> 实现多路复用的方式是，将已连接的 <code>socket</code> 都放到一个文件描述符集合，然后调用 <code>select</code>函数将文件描述符集合拷贝到内核里，让内核来检查是否有网络事件产生，通过遍历文件描述符集合的方式，当检查到有事件产生后，将此 <code>socket</code> 标记为可读或可写， 接着再把整个文件描述符集合拷贝回用户态里，然后用户态还需要再通过遍历的方法找到可读或可写的 <code>socket</code>，然后再对其处理。</p>
+<p>所以，对于 <code>select</code> 这种方式，需要进行 <strong>2 次「遍历」文件描述符集合</strong>，一次是在内核态里，一个次是在用户态里 ，而且还会发生 <strong>2 次「拷贝」文件描述符集合</strong>，先从用户空间传入内核空间，由内核修改后，再传出到用户空间中。</p>
+<h2 id="select-函数原型"><a href="#select-函数原型" class="headerlink" title="select 函数原型"></a>select 函数原型</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/select.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">select</span><span class="params">(<span class="type">int</span> nfds, fd_set *<span class="keyword">restrict</span> readfds, fd_set *<span class="keyword">restrict</span> writefds, fd_set *<span class="keyword">restrict</span> errorfds, <span class="keyword">struct</span> timeval *<span class="keyword">restrict</span> timeout)</span>;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>返回值 <ul>
+<li>若有就绪描述符则为其数目，若超时则为 <code>0</code>，若出错则为 <code>-1</code></li>
+</ul>
+</li>
+<li>参数<ul>
+<li><code>maxfd</code>: 待测试的描述符基数，它的值是待测试的最大描述符加 <code>1</code></li>
+<li><code>readfds</code>：读描述符集合</li>
+<li><code>writefds</code>：写描述符集合</li>
+<li><code>errorfds</code>：异常描述符集合</li>
+<li><code>timeout</code>: 超时设置</li>
+</ul>
+</li>
+</ul>
+<span id="more"></span>
+<h2 id="操作描述集合"><a href="#操作描述集合" class="headerlink" title="操作描述集合"></a>操作描述集合</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">FD_ZERO</span><span class="params">(fd_set *fdset)</span>;　　　　　　</span><br><span class="line"><span class="type">void</span> <span class="title function_">FD_SET</span><span class="params">(<span class="type">int</span> fd, fd_set *fdset)</span>;　　</span><br><span class="line"><span class="type">void</span> <span class="title function_">FD_CLR</span><span class="params">(<span class="type">int</span> fd, fd_set *fdset)</span>;　　　</span><br><span class="line"><span class="type">int</span>  <span class="title function_">FD_ISSET</span><span class="params">(<span class="type">int</span> fd, fd_set *fdset)</span>;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>FD_ZERO</code> 清空描述符集合；</li>
+<li><code>FD_SET</code> 向描述符集合增加 <code>fd</code>；</li>
+<li><code>FD_CLR</code> 向描述符集合删除 <code>fd</code>；</li>
+<li><code>FD_ISSET</code> 判断描述符集合中的 <code>fd</code> 是否有响应；</li>
+</ul>
+<h2 id="超时设置"><a href="#超时设置" class="headerlink" title="超时设置"></a>超时设置</h2><p><code>timeval</code> 结构体时间: </p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">timeval</span> &#123;</span></span><br><span class="line">  <span class="type">long</span>   tv_sec; <span class="comment">/* seconds */</span></span><br><span class="line">  <span class="type">long</span>   tv_usec; <span class="comment">/* microseconds */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>最后一个参数,可以设置 <code>3</code> 种值:</p>
+<ul>
+<li>设置成空 <code>(NULL)</code>，表示如果没有 <code>I/O</code> 事件发生，则 <code>select</code> 一直等待下去</li>
+<li>设置一个非零的值，等待超时时间阻塞返回</li>
+<li><code>tv_sec</code> 和 <code>tv_usec</code> 都设置成 <code>0</code>，表示不等待，检测完毕立即返回</li>
+</ul>
+<h2 id="使用-🌰"><a href="#使用-🌰" class="headerlink" title="使用 🌰"></a>使用 🌰</h2><p>在使用 <code>select</code> 时, 两个注意点:</p>
+<ul>
+<li><strong>描述符基数是当前最大描述符 +1；</strong></li>
+<li><strong>每次 <code>select</code> 调用完成之后，要重置待测试集合。</strong></li>
+</ul>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> socket_fd = ...;</span><br><span class="line">fd_set ready_fds;</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span>(<span class="literal">true</span>) &#123;</span><br><span class="line">   FD_ZERO(&amp;read_fds);</span><br><span class="line">   FD_SET(socket_fd, &amp;read_fds);</span><br><span class="line">   <span class="type">int</span> rc = select(socket_fd + <span class="number">1</span>, &amp;read_fds, <span class="literal">NULL</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br><span class="line">   <span class="keyword">if</span> (rc == <span class="number">-1</span>) &#123;</span><br><span class="line">       perror(<span class="string">&quot;select&quot;</span>);</span><br><span class="line">       <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (FD_ISSET(socket_fd, &amp;read_fds)) &#123;</span><br><span class="line">       ...</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>**<code>select</code> 有一个缺点，那就是所支持的文件描述符的个数是有限的。在 <code>Linux</code> 系统中，<code>select</code> 的默认最大值为 <code>1024</code>**。</p>
+<h1 id="poll"><a href="#poll" class="headerlink" title="poll"></a><code>poll</code></h1><p><code>poll</code> 可以突破 <code>select</code> 文件描述符的个数限制， 函数原型如下: </p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">poll</span><span class="params">(<span class="keyword">struct</span> pollfd *fds, <span class="type">unsigned</span> <span class="type">long</span> nfds, <span class="type">int</span> timeout)</span>;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>返回值<ul>
+<li>若有就绪描述符则为其数目，若超时则为 <code>0</code>，若出错则为 <code>-1</code></li>
+</ul>
+</li>
+<li>参数<ul>
+<li><code>fds</code>: <code>pollfd</code>数组</li>
+<li><code>nfds</code>: 描述 <code>fds</code>数组的大小</li>
+<li><code>timeout</code>: 超时设置, 单位 <code>ms</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="pollfd数组"><a href="#pollfd数组" class="headerlink" title="pollfd数组"></a><code>pollfd</code>数组</h2><p><code>pollfd</code> 结构如下:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">pollfd</span> &#123;</span></span><br><span class="line">    <span class="type">int</span>    fd;       <span class="comment">/* file descriptor */</span></span><br><span class="line">    <span class="type">short</span>  events;   <span class="comment">/* events to look for */</span></span><br><span class="line">    <span class="type">short</span>  revents;  <span class="comment">/* events returned */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>fd</code>: 文件描述</li>
+<li><code>events</code>: 待检测的事件类型</li>
+<li><code>revents</code>:  响应的事件类型</li>
+</ul>
+<p><code>events</code> 类型的事件可以分为三大类。</p>
+<p>第一类是可读事件，有以下几种：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> POLLIN          0x0001          <span class="comment">/* any readable data available */</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> POLLPRI         0x0002          <span class="comment">/* OOB/Urgent readable data */</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> POLLRDNORM      0x0040          <span class="comment">/* non-OOB/URG data available */</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> POLLRDBAND      0x0080          <span class="comment">/* OOB/Urgent readable data */</span></span></span><br></pre></td></tr></table></figure>
+<p>我们一般使用 <code>POLLIN</code>, 系统内核通知套接字缓冲区已准备好，通过 <code>read</code> 函数执行读操作不会被阻塞。</p>
+<p>第二类是可写事件，有以下几种：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> POLLOUT         0x0004          <span class="comment">/* file descriptor is writeable */</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> POLLWRNORM      POLLOUT         <span class="comment">/* no write type differentiation */</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> POLLWRBAND      0x0100          <span class="comment">/* OOB/Urgent data can be written */</span></span></span><br></pre></td></tr></table></figure>
+<p>我们一般使用 <code>POLLOUT</code>, 系统内核通知套接字缓冲区已准备好，通过 <code>write</code> 函数执行写操作不会被阻塞。</p>
+<p>还有另一大类是错误事件，没有办法通过 <code>poll</code> 向系统内核递交检测请求，只能通过 <code>returned events</code>来加以检测:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> POLLERR    0x0008    <span class="comment">/* 一些错误发送 */</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> POLLHUP    0x0010    <span class="comment">/* 描述符挂起 */</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> POLLNVAL   0x0020    <span class="comment">/* 请求的事件无效 */</span></span></span><br></pre></td></tr></table></figure>
+
+<p><strong>不想对某个 <code>pollfd</code> 结构进行事件检测</strong>，可以把它对应的 <code>pollfd</code> 结构的 <code>fd</code> 成员设置成一个<strong>负值</strong>。这样，<code>poll</code> 函数将忽略这样的 <code>events</code> 事件，检测完成以后，所对应的<code>returned events</code>的成员值也将设置为 <code>0</code>。</p>
+<h2 id="超时设置-1"><a href="#超时设置-1" class="headerlink" title="超时设置"></a>超时设置</h2><ul>
+<li><code>&lt; 0</code>，表示如果没有 <code>I/O</code> 事件发生，则 <code>poll</code> 一直等待下去</li>
+<li><code>&gt; 0</code>，等待超时时间阻塞返回</li>
+<li><code>= 0</code>，表示不等待，检测完毕立即返回</li>
+</ul>
+<h2 id="使用-🌰-1"><a href="#使用-🌰-1" class="headerlink" title="使用 🌰"></a>使用 🌰</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> INIT_SIZE 128</span></span><br><span class="line"> </span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> **argv)</span> &#123;</span><br><span class="line">    <span class="type">int</span> listen_fd, connected_fd;</span><br><span class="line">    <span class="type">int</span> ready_number;</span><br><span class="line">    <span class="type">ssize_t</span> n;</span><br><span class="line">    <span class="type">char</span> buf[MAXLINE];</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> <span class="title">client_addr</span>;</span></span><br><span class="line"> </span><br><span class="line">    listen_fd = tcp_server_listen(SERV_PORT);</span><br><span class="line"> </span><br><span class="line">    <span class="comment">// 初始化 pollfd 数组，这个数组的第一个元素是 listen_fd，其余的用来记录将要连接的 connect_fd</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">pollfd</span> <span class="title">event_set</span>[<span class="title">INIT_SIZE</span>];</span></span><br><span class="line">    event_set[<span class="number">0</span>].fd = listen_fd;</span><br><span class="line">    event_set[<span class="number">0</span>].events = POLLRDNORM;</span><br><span class="line"> </span><br><span class="line">    <span class="comment">// 用 -1 表示这个数组位置还没有被占用</span></span><br><span class="line">    <span class="type">int</span> i;</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">1</span>; i &lt; INIT_SIZE; i++) &#123;</span><br><span class="line">        event_set[i].fd = <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">        <span class="keyword">if</span> ((ready_number = poll(event_set, INIT_SIZE, <span class="number">-1</span>)) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            error(<span class="number">1</span>, errno, <span class="string">&quot;poll failed &quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line">        <span class="keyword">if</span> (event_set[<span class="number">0</span>].revents &amp; POLLRDNORM) &#123;</span><br><span class="line">            <span class="type">socklen_t</span> client_len = <span class="keyword">sizeof</span>(client_addr);</span><br><span class="line">            connected_fd = accept(listen_fd, (<span class="keyword">struct</span> sockaddr *) &amp;client_addr, &amp;client_len);</span><br><span class="line"> </span><br><span class="line">            <span class="comment">// 找到一个可以记录该连接套接字的位置</span></span><br><span class="line">            <span class="keyword">for</span> (i = <span class="number">1</span>; i &lt; INIT_SIZE; i++) &#123;</span><br><span class="line">                <span class="keyword">if</span> (event_set[i].fd &lt; <span class="number">0</span>) &#123;</span><br><span class="line">                    event_set[i].fd = connected_fd;</span><br><span class="line">                    event_set[i].events = POLLRDNORM;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"> </span><br><span class="line">            <span class="keyword">if</span> (i == INIT_SIZE) &#123;</span><br><span class="line">                error(<span class="number">1</span>, errno, <span class="string">&quot;can not hold so many clients&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line"> </span><br><span class="line">            <span class="keyword">if</span> (--ready_number &lt;= <span class="number">0</span>)</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line">        <span class="keyword">for</span> (i = <span class="number">1</span>; i &lt; INIT_SIZE; i++) &#123;</span><br><span class="line">            <span class="type">int</span> socket_fd;</span><br><span class="line">            <span class="keyword">if</span> ((socket_fd = event_set[i].fd) &lt; <span class="number">0</span>)</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            <span class="keyword">if</span> (event_set[i].revents &amp; (POLLRDNORM | POLLERR)) &#123;</span><br><span class="line">                <span class="keyword">if</span> ((n = read(socket_fd, buf, MAXLINE)) &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (write(socket_fd, buf, n) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">                        error(<span class="number">1</span>, errno, <span class="string">&quot;write error&quot;</span>);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> (n == <span class="number">0</span> || errno == ECONNRESET) &#123;</span><br><span class="line">                    close(socket_fd);</span><br><span class="line">                    event_set[i].fd = <span class="number">-1</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    error(<span class="number">1</span>, errno, <span class="string">&quot;read error&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line"> </span><br><span class="line">                <span class="keyword">if</span> (--ready_number &lt;= <span class="number">0</span>)</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="epoll"><a href="#epoll" class="headerlink" title="epoll"></a>epoll</h1>]]></content>
+      <categories>
+        <category>Network</category>
+      </categories>
+      <tags>
+        <tag>socket</tag>
       </tags>
   </entry>
   <entry>
@@ -2759,166 +2919,6 @@
       </tags>
   </entry>
   <entry>
-    <title>mongodb 入门-索引</title>
-    <url>/2023/08/26/mongodb/mongodb-%E5%85%A5%E9%97%A8-%E7%B4%A2%E5%BC%95/</url>
-    <content><![CDATA[<h1 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h1><ul>
-<li>对文档部分内容进行排序的数据结构</li>
-<li>加快文档查询和文档排序的速度</li>
-<li>复合键索引只能支持前缀子查询</li>
-</ul>
-<h2 id="索引操作"><a href="#索引操作" class="headerlink" title="索引操作"></a>索引操作</h2><h3 id="创建索引"><a href="#创建索引" class="headerlink" title="创建索引"></a>创建索引</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">db.&lt;collection&gt;.createIndex(&lt;keys&gt;, &lt;options&gt;)</span><br></pre></td></tr></table></figure>
-<ul>
-<li><code>&lt;keys&gt;</code> 文档指定了创建索引的字段</li>
-<li><code>&lt;options&gt;</code> 创建索引的参数和设定索引的特性</li>
-</ul>
-<h4 id="创建一个单键索引"><a href="#创建一个单键索引" class="headerlink" title="创建一个单键索引"></a>创建一个单键索引</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;name: 1&#125;)</span><br></pre></td></tr></table></figure>
-<h4 id="创建一个复合键索引"><a href="#创建一个复合键索引" class="headerlink" title="创建一个复合键索引"></a>创建一个复合键索引</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;name: 1, balance: -1&#125;)</span><br></pre></td></tr></table></figure>
-<h4 id="创建一个多键索引，创建在数组字段上-数组字段中的每一个元素都会在多键索引中创建一个键"><a href="#创建一个多键索引，创建在数组字段上-数组字段中的每一个元素都会在多键索引中创建一个键" class="headerlink" title="创建一个多键索引，创建在数组字段上, 数组字段中的每一个元素都会在多键索引中创建一个键"></a>创建一个多键索引，创建在数组字段上, 数组字段中的每一个元素都会在多键索引中创建一个键</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;currency: 1&#125;)</span><br></pre></td></tr></table></figure>
-<h4 id="列出集合中的索引"><a href="#列出集合中的索引" class="headerlink" title="列出集合中的索引"></a>列出集合中的索引</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.getIndexes()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<span id="more"></span>
-<h3 id="删除索引"><a href="#删除索引" class="headerlink" title="删除索引"></a>删除索引</h3><p>如果需要更改某些字段上已经创建的索引必须首先删除原有索引，再重新创建新索引，否则新索引不会包含原有字段</p>
-<h4 id="使用索引名字删除"><a href="#使用索引名字删除" class="headerlink" title="使用索引名字删除"></a>使用索引名字删除</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.dropIndex(&quot;name_1&quot;)</span><br></pre></td></tr></table></figure>
-<h4 id="使用索引定义删除"><a href="#使用索引定义删除" class="headerlink" title="使用索引定义删除"></a>使用索引定义删除</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.dropIndex( &#123; name: 1, balance: -1 &#125;)</span><br></pre></td></tr></table></figure>
-
-
-<h2 id="索引类型"><a href="#索引类型" class="headerlink" title="索引类型"></a>索引类型</h2><ul>
-<li>单键索引</li>
-<li>复合键索引</li>
-<li>多键索引</li>
-</ul>
-<h2 id="索引特性"><a href="#索引特性" class="headerlink" title="索引特性"></a>索引特性</h2><h3 id="唯一性"><a href="#唯一性" class="headerlink" title="唯一性"></a>唯一性</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;balance:1&#125;,&#123;unique:true&#125;)</span><br></pre></td></tr></table></figure>
-
-<p>如果已有文档中的某个字段出现了重复性，就不可以在这个字段上创建唯一性索引</p>
-<p>如果新增的文档不包含唯一性索引字段，只有第一篇缺失该字段的文档可以被写入数据库，索引中该文档的键值被默认为null</p>
-<h3 id="稀疏性"><a href="#稀疏性" class="headerlink" title="稀疏性"></a>稀疏性</h3><p>只将包含索引字段的文档加入到索引中(即使索引键字段为null)</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;balance:1&#125;, &#123; sparse:true&#125;)</span><br></pre></td></tr></table></figure>
-<p>如果同一个索引既具有唯一性，又具有稀疏性，就可以保存多篇缺失索引键值的文档了 </p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;balance:1&#125;, &#123; sparse:true, unique:true&#125;)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>复合键索引也可以具有稀疏性，在这种情况下，只有在缺失复合键所包含的所有字段的情况下，文档才不会加入到索引中</p>
-<h3 id="生存时间"><a href="#生存时间" class="headerlink" title="生存时间"></a>生存时间</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.createIndex(&#123;lastAccess:1&#125;,&#123;expireAfterSeconds:20&#125;)</span><br></pre></td></tr></table></figure>
-
-<p><strong>复合键索引不具有生存时间特性</strong>，当索引键是包含日期元素的数组字段时，数组中<strong>最小</strong>的的日期将被用来计算文档是否过期。数据库使用一个后台线程来监测和删除过期文档，删除操作可能有一定的延迟。</p>
-<h2 id="查询分析"><a href="#查询分析" class="headerlink" title="查询分析"></a>查询分析</h2><h3 id="检视索引的效果-explain"><a href="#检视索引的效果-explain" class="headerlink" title="检视索引的效果 explain()"></a>检视索引的效果 <code>explain()</code></h3><ul>
-<li><p>命令操作格式:</p>
-  <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">db.&lt;collection&gt;.explain().&lt;method(...)&gt;</span><br></pre></td></tr></table></figure></li>
-<li><p>可以使用 <code>explain()</code> 进行分析的命令包括 <code>aggregate()</code>，<code>count()</code>，<code>distinct()</code>，<code>find()</code>，<code>group()</code>，<code>remove()</code>，<code>update()</code></p>
-</li>
-<li><p><code>explain()</code>返回结果中包含的 <code>winningPlan</code>字段表示数据库的查询方法</p>
-<ul>
-<li><code>stage</code><ul>
-<li><code>COLLSCAN</code> 完整查询整个集合</li>
-<li><code>FETCH</code> <code>IXSCAN</code> 通过索引查询，返回完整文档<br>  -<code> PROJECTION_COVERED</code>  <code>IXSCAN</code>, 直接使用索引存在的字段，无序完整文档，没有 <code>FETCH</code> 阶段</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<p>没有 <code>IXSCAN</code> 阶段，都耗费资源</p>
-<p>举个例子，<code>explain</code> 排序:</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">db.accountWithIndex.explain().find().sort(&#123;name:1, balance: -1&#125;)</span><br></pre></td></tr></table></figure>
-<h2 id="索引的选择"><a href="#索引的选择" class="headerlink" title="索引的选择"></a>索引的选择</h2><ul>
-<li>如何创建一个合适的索引</li>
-<li>索引对数据库写入操作的影响</li>
-</ul>
-]]></content>
-      <categories>
-        <category>mongodb</category>
-      </categories>
-      <tags>
-        <tag>mongodb</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>I/O 多路复用</title>
-    <url>/2023/08/17/network/I-O-%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/</url>
-    <content><![CDATA[<h1 id="select"><a href="#select" class="headerlink" title="select"></a>select</h1><p><code>select</code> 实现多路复用的方式是，将已连接的 <code>socket</code> 都放到一个文件描述符集合，然后调用 <code>select</code>函数将文件描述符集合拷贝到内核里，让内核来检查是否有网络事件产生，通过遍历文件描述符集合的方式，当检查到有事件产生后，将此 <code>socket</code> 标记为可读或可写， 接着再把整个文件描述符集合拷贝回用户态里，然后用户态还需要再通过遍历的方法找到可读或可写的 <code>socket</code>，然后再对其处理。</p>
-<p>所以，对于 <code>select</code> 这种方式，需要进行 <strong>2 次「遍历」文件描述符集合</strong>，一次是在内核态里，一个次是在用户态里 ，而且还会发生 <strong>2 次「拷贝」文件描述符集合</strong>，先从用户空间传入内核空间，由内核修改后，再传出到用户空间中。</p>
-<h2 id="select-函数原型"><a href="#select-函数原型" class="headerlink" title="select 函数原型"></a>select 函数原型</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/select.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">select</span><span class="params">(<span class="type">int</span> nfds, fd_set *<span class="keyword">restrict</span> readfds, fd_set *<span class="keyword">restrict</span> writefds, fd_set *<span class="keyword">restrict</span> errorfds, <span class="keyword">struct</span> timeval *<span class="keyword">restrict</span> timeout)</span>;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>返回值 <ul>
-<li>若有就绪描述符则为其数目，若超时则为 <code>0</code>，若出错则为 <code>-1</code></li>
-</ul>
-</li>
-<li>参数<ul>
-<li><code>maxfd</code>: 待测试的描述符基数，它的值是待测试的最大描述符加 <code>1</code></li>
-<li><code>readfds</code>：读描述符集合</li>
-<li><code>writefds</code>：写描述符集合</li>
-<li><code>errorfds</code>：异常描述符集合</li>
-<li><code>timeout</code>: 超时设置</li>
-</ul>
-</li>
-</ul>
-<span id="more"></span>
-<h2 id="操作描述集合"><a href="#操作描述集合" class="headerlink" title="操作描述集合"></a>操作描述集合</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">FD_ZERO</span><span class="params">(fd_set *fdset)</span>;　　　　　　</span><br><span class="line"><span class="type">void</span> <span class="title function_">FD_SET</span><span class="params">(<span class="type">int</span> fd, fd_set *fdset)</span>;　　</span><br><span class="line"><span class="type">void</span> <span class="title function_">FD_CLR</span><span class="params">(<span class="type">int</span> fd, fd_set *fdset)</span>;　　　</span><br><span class="line"><span class="type">int</span>  <span class="title function_">FD_ISSET</span><span class="params">(<span class="type">int</span> fd, fd_set *fdset)</span>;</span><br></pre></td></tr></table></figure>
-<ul>
-<li><code>FD_ZERO</code> 清空描述符集合；</li>
-<li><code>FD_SET</code> 向描述符集合增加 <code>fd</code>；</li>
-<li><code>FD_CLR</code> 向描述符集合删除 <code>fd</code>；</li>
-<li><code>FD_ISSET</code> 判断描述符集合中的 <code>fd</code> 是否有响应；</li>
-</ul>
-<h2 id="超时设置"><a href="#超时设置" class="headerlink" title="超时设置"></a>超时设置</h2><p><code>timeval</code> 结构体时间: </p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">timeval</span> &#123;</span></span><br><span class="line">  <span class="type">long</span>   tv_sec; <span class="comment">/* seconds */</span></span><br><span class="line">  <span class="type">long</span>   tv_usec; <span class="comment">/* microseconds */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>最后一个参数,可以设置 <code>3</code> 种值:</p>
-<ul>
-<li>设置成空 <code>(NULL)</code>，表示如果没有 <code>I/O</code> 事件发生，则 <code>select</code> 一直等待下去</li>
-<li>设置一个非零的值，等待超时时间阻塞返回</li>
-<li><code>tv_sec</code> 和 <code>tv_usec</code> 都设置成 <code>0</code>，表示不等待，检测完毕立即返回</li>
-</ul>
-<h2 id="使用-🌰"><a href="#使用-🌰" class="headerlink" title="使用 🌰"></a>使用 🌰</h2><p>在使用 <code>select</code> 时, 两个注意点:</p>
-<ul>
-<li><strong>描述符基数是当前最大描述符 +1；</strong></li>
-<li><strong>每次 <code>select</code> 调用完成之后，要重置待测试集合。</strong></li>
-</ul>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> socket_fd = ...;</span><br><span class="line">fd_set ready_fds;</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span>(<span class="literal">true</span>) &#123;</span><br><span class="line">   FD_ZERO(&amp;read_fds);</span><br><span class="line">   FD_SET(socket_fd, &amp;read_fds);</span><br><span class="line">   <span class="type">int</span> rc = select(socket_fd + <span class="number">1</span>, &amp;read_fds, <span class="literal">NULL</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br><span class="line">   <span class="keyword">if</span> (rc == <span class="number">-1</span>) &#123;</span><br><span class="line">       perror(<span class="string">&quot;select&quot;</span>);</span><br><span class="line">       <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (FD_ISSET(socket_fd, &amp;read_fds)) &#123;</span><br><span class="line">       ...</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>**<code>select</code> 有一个缺点，那就是所支持的文件描述符的个数是有限的。在 <code>Linux</code> 系统中，<code>select</code> 的默认最大值为 <code>1024</code>**。</p>
-<h1 id="poll"><a href="#poll" class="headerlink" title="poll"></a><code>poll</code></h1><p><code>poll</code> 可以突破 <code>select</code> 文件描述符的个数限制， 函数原型如下: </p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">poll</span><span class="params">(<span class="keyword">struct</span> pollfd *fds, <span class="type">unsigned</span> <span class="type">long</span> nfds, <span class="type">int</span> timeout)</span>;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>返回值<ul>
-<li>若有就绪描述符则为其数目，若超时则为 <code>0</code>，若出错则为 <code>-1</code></li>
-</ul>
-</li>
-<li>参数<ul>
-<li><code>fds</code>: <code>pollfd</code>数组</li>
-<li><code>nfds</code>: 描述 <code>fds</code>数组的大小</li>
-<li><code>timeout</code>: 超时设置, 单位 <code>ms</code></li>
-</ul>
-</li>
-</ul>
-<h2 id="pollfd数组"><a href="#pollfd数组" class="headerlink" title="pollfd数组"></a><code>pollfd</code>数组</h2><p><code>pollfd</code> 结构如下:</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">pollfd</span> &#123;</span></span><br><span class="line">    <span class="type">int</span>    fd;       <span class="comment">/* file descriptor */</span></span><br><span class="line">    <span class="type">short</span>  events;   <span class="comment">/* events to look for */</span></span><br><span class="line">    <span class="type">short</span>  revents;  <span class="comment">/* events returned */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<ul>
-<li><code>fd</code>: 文件描述</li>
-<li><code>events</code>: 待检测的事件类型</li>
-<li><code>revents</code>:  响应的事件类型</li>
-</ul>
-<p><code>events</code> 类型的事件可以分为三大类。</p>
-<p>第一类是可读事件，有以下几种：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> POLLIN          0x0001          <span class="comment">/* any readable data available */</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> POLLPRI         0x0002          <span class="comment">/* OOB/Urgent readable data */</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> POLLRDNORM      0x0040          <span class="comment">/* non-OOB/URG data available */</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> POLLRDBAND      0x0080          <span class="comment">/* OOB/Urgent readable data */</span></span></span><br></pre></td></tr></table></figure>
-<p>我们一般使用 <code>POLLIN</code>, 系统内核通知套接字缓冲区已准备好，通过 <code>read</code> 函数执行读操作不会被阻塞。</p>
-<p>第二类是可写事件，有以下几种：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> POLLOUT         0x0004          <span class="comment">/* file descriptor is writeable */</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> POLLWRNORM      POLLOUT         <span class="comment">/* no write type differentiation */</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> POLLWRBAND      0x0100          <span class="comment">/* OOB/Urgent data can be written */</span></span></span><br></pre></td></tr></table></figure>
-<p>我们一般使用 <code>POLLOUT</code>, 系统内核通知套接字缓冲区已准备好，通过 <code>write</code> 函数执行写操作不会被阻塞。</p>
-<p>还有另一大类是错误事件，没有办法通过 <code>poll</code> 向系统内核递交检测请求，只能通过 <code>returned events</code>来加以检测:</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> POLLERR    0x0008    <span class="comment">/* 一些错误发送 */</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> POLLHUP    0x0010    <span class="comment">/* 描述符挂起 */</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> POLLNVAL   0x0020    <span class="comment">/* 请求的事件无效 */</span></span></span><br></pre></td></tr></table></figure>
-
-<p><strong>不想对某个 <code>pollfd</code> 结构进行事件检测</strong>，可以把它对应的 <code>pollfd</code> 结构的 <code>fd</code> 成员设置成一个<strong>负值</strong>。这样，<code>poll</code> 函数将忽略这样的 <code>events</code> 事件，检测完成以后，所对应的<code>returned events</code>的成员值也将设置为 <code>0</code>。</p>
-<h2 id="超时设置-1"><a href="#超时设置-1" class="headerlink" title="超时设置"></a>超时设置</h2><ul>
-<li><code>&lt; 0</code>，表示如果没有 <code>I/O</code> 事件发生，则 <code>poll</code> 一直等待下去</li>
-<li><code>&gt; 0</code>，等待超时时间阻塞返回</li>
-<li><code>= 0</code>，表示不等待，检测完毕立即返回</li>
-</ul>
-<h2 id="使用-🌰-1"><a href="#使用-🌰-1" class="headerlink" title="使用 🌰"></a>使用 🌰</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> INIT_SIZE 128</span></span><br><span class="line"> </span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> **argv)</span> &#123;</span><br><span class="line">    <span class="type">int</span> listen_fd, connected_fd;</span><br><span class="line">    <span class="type">int</span> ready_number;</span><br><span class="line">    <span class="type">ssize_t</span> n;</span><br><span class="line">    <span class="type">char</span> buf[MAXLINE];</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> <span class="title">client_addr</span>;</span></span><br><span class="line"> </span><br><span class="line">    listen_fd = tcp_server_listen(SERV_PORT);</span><br><span class="line"> </span><br><span class="line">    <span class="comment">// 初始化 pollfd 数组，这个数组的第一个元素是 listen_fd，其余的用来记录将要连接的 connect_fd</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">pollfd</span> <span class="title">event_set</span>[<span class="title">INIT_SIZE</span>];</span></span><br><span class="line">    event_set[<span class="number">0</span>].fd = listen_fd;</span><br><span class="line">    event_set[<span class="number">0</span>].events = POLLRDNORM;</span><br><span class="line"> </span><br><span class="line">    <span class="comment">// 用 -1 表示这个数组位置还没有被占用</span></span><br><span class="line">    <span class="type">int</span> i;</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">1</span>; i &lt; INIT_SIZE; i++) &#123;</span><br><span class="line">        event_set[i].fd = <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">        <span class="keyword">if</span> ((ready_number = poll(event_set, INIT_SIZE, <span class="number">-1</span>)) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            error(<span class="number">1</span>, errno, <span class="string">&quot;poll failed &quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line">        <span class="keyword">if</span> (event_set[<span class="number">0</span>].revents &amp; POLLRDNORM) &#123;</span><br><span class="line">            <span class="type">socklen_t</span> client_len = <span class="keyword">sizeof</span>(client_addr);</span><br><span class="line">            connected_fd = accept(listen_fd, (<span class="keyword">struct</span> sockaddr *) &amp;client_addr, &amp;client_len);</span><br><span class="line"> </span><br><span class="line">            <span class="comment">// 找到一个可以记录该连接套接字的位置</span></span><br><span class="line">            <span class="keyword">for</span> (i = <span class="number">1</span>; i &lt; INIT_SIZE; i++) &#123;</span><br><span class="line">                <span class="keyword">if</span> (event_set[i].fd &lt; <span class="number">0</span>) &#123;</span><br><span class="line">                    event_set[i].fd = connected_fd;</span><br><span class="line">                    event_set[i].events = POLLRDNORM;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"> </span><br><span class="line">            <span class="keyword">if</span> (i == INIT_SIZE) &#123;</span><br><span class="line">                error(<span class="number">1</span>, errno, <span class="string">&quot;can not hold so many clients&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line"> </span><br><span class="line">            <span class="keyword">if</span> (--ready_number &lt;= <span class="number">0</span>)</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line">        <span class="keyword">for</span> (i = <span class="number">1</span>; i &lt; INIT_SIZE; i++) &#123;</span><br><span class="line">            <span class="type">int</span> socket_fd;</span><br><span class="line">            <span class="keyword">if</span> ((socket_fd = event_set[i].fd) &lt; <span class="number">0</span>)</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            <span class="keyword">if</span> (event_set[i].revents &amp; (POLLRDNORM | POLLERR)) &#123;</span><br><span class="line">                <span class="keyword">if</span> ((n = read(socket_fd, buf, MAXLINE)) &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (write(socket_fd, buf, n) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">                        error(<span class="number">1</span>, errno, <span class="string">&quot;write error&quot;</span>);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> (n == <span class="number">0</span> || errno == ECONNRESET) &#123;</span><br><span class="line">                    close(socket_fd);</span><br><span class="line">                    event_set[i].fd = <span class="number">-1</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    error(<span class="number">1</span>, errno, <span class="string">&quot;read error&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line"> </span><br><span class="line">                <span class="keyword">if</span> (--ready_number &lt;= <span class="number">0</span>)</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h1 id="epoll"><a href="#epoll" class="headerlink" title="epoll"></a>epoll</h1>]]></content>
-      <categories>
-        <category>Network</category>
-      </categories>
-      <tags>
-        <tag>socket</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>MTU与MSS的奥秘</title>
     <url>/2024/03/18/network/MTU%E4%B8%8EMSS%E7%9A%84%E5%A5%A5%E7%A7%98/</url>
     <content><![CDATA[<h1 id="最大传输单元（Maximum-Transmission-Unit-MTU）"><a href="#最大传输单元（Maximum-Transmission-Unit-MTU）" class="headerlink" title="最大传输单元（Maximum Transmission Unit, MTU）"></a>最大传输单元（Maximum Transmission Unit, MTU）</h1><p>数据链路层传输的帧大小是有限制的，不能把一个太大的包直接塞给链路层，这个限制被称为「最大传输单元（<code>Maximum Transmission Unit, MTU</code>）」</p>
@@ -2935,6 +2935,38 @@
         <tag>MTU</tag>
         <tag>MSS</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>QUIC 协议初探</title>
+    <url>/2024/03/08/network/QUIC-%E5%8D%8F%E8%AE%AE%E5%88%9D%E6%8E%A2/</url>
+    <content><![CDATA[<p>Package Type</p>
+<ul>
+<li>Long Header Packets<ul>
+<li>Version Negotiation Packet</li>
+<li>Initial Packet</li>
+<li>0-RTT Packet</li>
+<li>Handshake Packet</li>
+<li>Retry Packet</li>
+</ul>
+</li>
+<li>Short Header Packets<ul>
+<li>1-RTT Packet</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">+=====================+=================+==================+</span><br><span class="line">| Packet Type         | Encryption Keys | PN Space         |</span><br><span class="line">+=====================+=================+==================+</span><br><span class="line">| Initial             | Initial secrets | Initial          |</span><br><span class="line">+---------------------+-----------------+------------------+</span><br><span class="line">| 0-RTT Protected     | 0-RTT           | Application data |</span><br><span class="line">+---------------------+-----------------+------------------+</span><br><span class="line">| Handshake           | Handshake       | Handshake        |</span><br><span class="line">+---------------------+-----------------+------------------+</span><br><span class="line">| Retry               | N/A             | N/A              |</span><br><span class="line">+---------------------+-----------------+------------------+</span><br><span class="line">| Version Negotiation | N/A             | N/A              |</span><br><span class="line">+---------------------+-----------------+------------------+</span><br><span class="line">| Short Header        | 1-RTT           | Application data |</span><br><span class="line">+---------------------+-----------------+------------------+</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>Network</category>
+      </categories>
+      <tags>
+        <tag>QUIC</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>TCP Nagle算法与ACK延迟确认</title>
+    <url>/2023/11/20/network/TCP-Nagle%E7%AE%97%E6%B3%95%E4%B8%8EACK%E5%BB%B6%E8%BF%9F%E7%A1%AE%E8%AE%A4/</url>
+    <content><![CDATA[]]></content>
   </entry>
   <entry>
     <title>Netfilter 框架浅析</title>
@@ -2990,51 +3022,31 @@
       </tags>
   </entry>
   <entry>
-    <title>QUIC 协议初探</title>
-    <url>/2024/03/08/network/QUIC-%E5%8D%8F%E8%AE%AE%E5%88%9D%E6%8E%A2/</url>
-    <content><![CDATA[<p>Package Type</p>
-<ul>
-<li>Long Header Packets<ul>
-<li>Version Negotiation Packet</li>
-<li>Initial Packet</li>
-<li>0-RTT Packet</li>
-<li>Handshake Packet</li>
-<li>Retry Packet</li>
-</ul>
-</li>
-<li>Short Header Packets<ul>
-<li>1-RTT Packet</li>
-</ul>
-</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">+=====================+=================+==================+</span><br><span class="line">| Packet Type         | Encryption Keys | PN Space         |</span><br><span class="line">+=====================+=================+==================+</span><br><span class="line">| Initial             | Initial secrets | Initial          |</span><br><span class="line">+---------------------+-----------------+------------------+</span><br><span class="line">| 0-RTT Protected     | 0-RTT           | Application data |</span><br><span class="line">+---------------------+-----------------+------------------+</span><br><span class="line">| Handshake           | Handshake       | Handshake        |</span><br><span class="line">+---------------------+-----------------+------------------+</span><br><span class="line">| Retry               | N/A             | N/A              |</span><br><span class="line">+---------------------+-----------------+------------------+</span><br><span class="line">| Version Negotiation | N/A             | N/A              |</span><br><span class="line">+---------------------+-----------------+------------------+</span><br><span class="line">| Short Header        | 1-RTT           | Application data |</span><br><span class="line">+---------------------+-----------------+------------------+</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>Network</category>
-      </categories>
-      <tags>
-        <tag>QUIC</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>TCP-TFO快速打开</title>
     <url>/2024/03/21/network/TCP-TFO%E5%BF%AB%E9%80%9F%E6%89%93%E5%BC%80/</url>
     <content><![CDATA[<h1 id="请求-Fast-Open-Cookie-的过程如下："><a href="#请求-Fast-Open-Cookie-的过程如下：" class="headerlink" title="请求 Fast Open Cookie 的过程如下："></a>请求 <code>Fast Open Cookie</code> 的过程如下：</h1><ul>
-<li>客户端发送一个 <code>SYN</code> 包，头部包含 <code>Fast Open</code> 选项，且该选项的 <code>Cookie</code> 为空，这表明客户端请求 <code>Fast Open Cookie</code></li>
-<li>服务端收取 <code>SYN</code> 包以后，生成一个 <code>cookie</code> 值（一串字符串）</li>
-<li>服务端发送 <code>SYN</code> + <code>ACK</code> 包，在 <code>Options</code> 的 <code>Fast Open</code> 选项中设置 <code>cookie</code> 的值</li>
-<li>客户端缓存服务端的 <code>IP</code> 和收到的 <code>cookie</code> 值</li>
-</ul>
+<li><p>客户端发送一个 <code>SYN</code> 包，头部包含 <code>Fast Open</code> 选项，且该选项的 <code>Cookie</code> 为空，这表明客户端请求 <code>Fast Open Cookie</code></p>
+</li>
+<li><p>服务端收取 <code>SYN</code> 包以后，生成一个 <code>cookie</code> 值（一串字符串）</p>
+</li>
+<li><p>服务端发送 <code>SYN</code> + <code>ACK</code> 包，在 <code>Options</code> 的 <code>Fast Open</code> 选项中设置 <code>cookie</code> 的值</p>
+</li>
+<li><p>客户端缓存服务端的 <code>IP</code> 和收到的 <code>cookie</code> 值</p>
+<span id="more"></span>
 <p>第一次过后，客户端就有了缓存在本地的 <code>cookie</code> 值，后面的握手和数据传输过程如下：</p>
+</li>
+<li><p>客户端发送 <code>SYN</code> 数据包，里面包含数据和之前缓存在本地的 <code>Fast Open Cookie</code>。</p>
+</li>
+<li><p>服务端检验收到的 <code>TFO Cookie</code> 和传输的数据是否合法。</p>
 <ul>
-<li>客户端发送 <code>SYN</code> 数据包，里面包含数据和之前缓存在本地的 <code>Fast Open Cookie</code>。</li>
-<li>服务端检验收到的 <code>TFO Cookie</code> 和传输的数据是否合法。<ul>
 <li>如果合法就会返回 <code>SYN</code> + <code>ACK</code> 包进行确认并将数据包传递给应用层</li>
 <li>如果不合法就会丢弃数据包，走正常三次握手流程（只会确认 <code>SYN</code>）</li>
 </ul>
 </li>
-<li>服务端程序收到数据以后可以握手完成之前发送响应数据给客户端了</li>
-<li>客户端发送 <code>ACK</code> 包，确认第二步的 <code>SYN</code> 包和数据（如果有的话）<br>后面的过程就跟非 <code>TFO</code> 连接过程一样了</li>
+<li><p>服务端程序收到数据以后可以握手完成之前发送响应数据给客户端了</p>
+</li>
+<li><p>客户端发送 <code>ACK</code> 包，确认第二步的 <code>SYN</code> 包和数据（如果有的话）<br>后面的过程就跟非 <code>TFO</code> 连接过程一样了</p>
+</li>
 </ul>
 <p>我们看看 <code>curl</code> 如何支持 <code>fast open</code>, 通过 <code>strace</code> 抓下:</p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">strace curl --tcp-fastopen http://192.168.14.168</span><br></pre></td></tr></table></figure>
@@ -3051,11 +3063,6 @@
         <tag>tcp</tag>
         <tag>tfo</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>TCP Nagle算法与ACK延迟确认</title>
-    <url>/2023/11/20/network/TCP-Nagle%E7%AE%97%E6%B3%95%E4%B8%8EACK%E5%BB%B6%E8%BF%9F%E7%A1%AE%E8%AE%A4/</url>
-    <content><![CDATA[]]></content>
   </entry>
   <entry>
     <title>TCP 协议</title>
@@ -3201,6 +3208,65 @@
       </tags>
   </entry>
   <entry>
+    <title>http协议</title>
+    <url>/2023/07/17/network/http%E5%8D%8F%E8%AE%AE/</url>
+    <content><![CDATA[<h1 id="HTTP-是什么？"><a href="#HTTP-是什么？" class="headerlink" title="HTTP 是什么？"></a>HTTP 是什么？</h1><p><code>HTTP</code> 是超文本传输协议，也就是 <code>HyperText Transfer Protocol</code>。</p>
+<h1 id="URI-的完整图解"><a href="#URI-的完整图解" class="headerlink" title="URI 的完整图解"></a>URI 的完整图解</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">  foo://example.com:8042/over/there?name=ferret#nose</span><br><span class="line">  \_/   \______________/\_________/ \_________/ \__/</span><br><span class="line">   |           |            |            |        |</span><br><span class="line">scheme     authority       path        query   fragment</span><br><span class="line">   |   _____________________|__</span><br><span class="line">  / \ /                        \</span><br><span class="line">  urn:example:animal:ferret:nose</span><br></pre></td></tr></table></figure>
+
+<h1 id="消息格式"><a href="#消息格式" class="headerlink" title="消息格式"></a>消息格式</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">start-line</span><br><span class="line">*( header-field CRLF )</span><br><span class="line">CRLF</span><br><span class="line">[ message-body ]</span><br></pre></td></tr></table></figure>
+<span id="more"></span>
+<h2 id="start-line"><a href="#start-line" class="headerlink" title="start-line"></a>start-line</h2><ul>
+<li>request line<ul>
+<li>method SP request-target SP HTTP-version CRLF</li>
+</ul>
+</li>
+<li>status line<ul>
+<li>HTTP-version SP status-code SP reason-phrase CRLF</li>
+</ul>
+</li>
+</ul>
+<h2 id="Header-Fields"><a href="#Header-Fields" class="headerlink" title="Header Fields"></a>Header Fields</h2><ul>
+<li>field-name “:” OWS field-value OWS</li>
+</ul>
+<h2 id="Message-Body"><a href="#Message-Body" class="headerlink" title="Message Body"></a>Message Body</h2><p>在一个请求中是否会出现消息体，以消息头中是否带有 <code>Content-Length</code> 或者 <code>Transfer-Encoding</code> 头字段作为信号</p>
+<h1 id="Proxy-代理"><a href="#Proxy-代理" class="headerlink" title="Proxy 代理"></a>Proxy 代理</h1><h2 id="普通代理"><a href="#普通代理" class="headerlink" title="普通代理"></a>普通代理</h2><p><a href="https://datatracker.ietf.org/doc/html/rfc7230#section-2.3">RFC 7230 - HTTP&#x2F;1.1: Message Syntax and Routing</a> 这种代理扮演的是「中间人」角色，对于连接到它的客户端来说，它是服务端；对于要连接的服务端来说，它是客户端。它就负责在两端之间来回传送 <code>HTTP</code> 报文。</p>
+<h2 id="隧道代理"><a href="#隧道代理" class="headerlink" title="隧道代理"></a>隧道代理</h2><p><a href="https://datatracker.ietf.org/doc/html/rfc7231#section-4.3.6">RFC 7231 - HTTP&#x2F;1.1: Semantics and Content</a> <code>HTTP</code> 客户端通过 <code>CONNECT</code> 方法请求隧道代理创建一条到达任意目的服务器和端口的 <code>TCP</code> 连接，并对客户端和服务器之间的后继数据进行盲转发。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">CONNECT server.example.com:80 HTTP/1.1</span><br></pre></td></tr></table></figure>
+
+
+<h1 id="HTTP-1-1、HTTP-2、HTTP-3-演变"><a href="#HTTP-1-1、HTTP-2、HTTP-3-演变" class="headerlink" title="HTTP/1.1、HTTP/2、HTTP/3 演变"></a><code>HTTP/1.1、HTTP/2、HTTP/3</code> 演变</h1><h2 id="HTTP-1-1-的优化"><a href="#HTTP-1-1-的优化" class="headerlink" title="HTTP/1.1 的优化"></a><code>HTTP/1.1</code> 的优化</h2><ul>
+<li>长连接</li>
+<li>支持管道 （<code>pipeline</code>）网络传输</li>
+</ul>
+<p>但 <code>HTTP/1.1</code> 还是有性能瓶颈：</p>
+<ul>
+<li>请求 &#x2F; 响应头部（<code>Header</code>）未经压缩就发送，首部信息越多延迟越大。只能压缩 <code>Body</code> 的部分；</li>
+<li>发送冗长的首部。每次互相发送相同的首部造成的浪费较多；</li>
+<li>服务器是按请求的顺序响应的，如果服务器响应慢，会招致客户端一直请求不到数据，也就是队头阻塞；</li>
+<li>没有请求优先级控制；</li>
+<li>请求只能从客户端开始，服务器只能被动响应。</li>
+</ul>
+<h2 id="HTTP-2-的优化"><a href="#HTTP-2-的优化" class="headerlink" title="HTTP/2 的优化"></a><code>HTTP/2</code> 的优化</h2><ul>
+<li>头部压缩</li>
+<li>二进制格式</li>
+<li>并发传输</li>
+<li>服务器主动推送资源</li>
+</ul>
+<h2 id="HTTP-3-的优化"><a href="#HTTP-3-的优化" class="headerlink" title="HTTP/3 的优化"></a><code>HTTP/3</code> 的优化</h2><p><code>HTTP/3</code> 基于 <code>UDP</code> 的 <code>QUIC</code> 协议 可以实现类似 <code>TCP</code> 的可靠性传输, 有以下 <code>3</code> 个特点。</p>
+<ul>
+<li>无队头阻塞</li>
+<li>更快的连接建立</li>
+<li>连接迁移</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Network</category>
+      </categories>
+      <tags>
+        <tag>http</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>libevent 使用入门</title>
     <url>/2023/08/23/network/libevent-%E4%BD%BF%E7%94%A8%E5%85%A5%E9%97%A8/</url>
     <content><![CDATA[<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p><code>libEvent</code>, 一个事件通知库。有以下特点：</p>
@@ -3322,65 +3388,6 @@
       </categories>
       <tags>
         <tag>libevent</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>http协议</title>
-    <url>/2023/07/17/network/http%E5%8D%8F%E8%AE%AE/</url>
-    <content><![CDATA[<h1 id="HTTP-是什么？"><a href="#HTTP-是什么？" class="headerlink" title="HTTP 是什么？"></a>HTTP 是什么？</h1><p><code>HTTP</code> 是超文本传输协议，也就是 <code>HyperText Transfer Protocol</code>。</p>
-<h1 id="URI-的完整图解"><a href="#URI-的完整图解" class="headerlink" title="URI 的完整图解"></a>URI 的完整图解</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">  foo://example.com:8042/over/there?name=ferret#nose</span><br><span class="line">  \_/   \______________/\_________/ \_________/ \__/</span><br><span class="line">   |           |            |            |        |</span><br><span class="line">scheme     authority       path        query   fragment</span><br><span class="line">   |   _____________________|__</span><br><span class="line">  / \ /                        \</span><br><span class="line">  urn:example:animal:ferret:nose</span><br></pre></td></tr></table></figure>
-
-<h1 id="消息格式"><a href="#消息格式" class="headerlink" title="消息格式"></a>消息格式</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">start-line</span><br><span class="line">*( header-field CRLF )</span><br><span class="line">CRLF</span><br><span class="line">[ message-body ]</span><br></pre></td></tr></table></figure>
-<span id="more"></span>
-<h2 id="start-line"><a href="#start-line" class="headerlink" title="start-line"></a>start-line</h2><ul>
-<li>request line<ul>
-<li>method SP request-target SP HTTP-version CRLF</li>
-</ul>
-</li>
-<li>status line<ul>
-<li>HTTP-version SP status-code SP reason-phrase CRLF</li>
-</ul>
-</li>
-</ul>
-<h2 id="Header-Fields"><a href="#Header-Fields" class="headerlink" title="Header Fields"></a>Header Fields</h2><ul>
-<li>field-name “:” OWS field-value OWS</li>
-</ul>
-<h2 id="Message-Body"><a href="#Message-Body" class="headerlink" title="Message Body"></a>Message Body</h2><p>在一个请求中是否会出现消息体，以消息头中是否带有 <code>Content-Length</code> 或者 <code>Transfer-Encoding</code> 头字段作为信号</p>
-<h1 id="Proxy-代理"><a href="#Proxy-代理" class="headerlink" title="Proxy 代理"></a>Proxy 代理</h1><h2 id="普通代理"><a href="#普通代理" class="headerlink" title="普通代理"></a>普通代理</h2><p><a href="https://datatracker.ietf.org/doc/html/rfc7230#section-2.3">RFC 7230 - HTTP&#x2F;1.1: Message Syntax and Routing</a> 这种代理扮演的是「中间人」角色，对于连接到它的客户端来说，它是服务端；对于要连接的服务端来说，它是客户端。它就负责在两端之间来回传送 <code>HTTP</code> 报文。</p>
-<h2 id="隧道代理"><a href="#隧道代理" class="headerlink" title="隧道代理"></a>隧道代理</h2><p><a href="https://datatracker.ietf.org/doc/html/rfc7231#section-4.3.6">RFC 7231 - HTTP&#x2F;1.1: Semantics and Content</a> <code>HTTP</code> 客户端通过 <code>CONNECT</code> 方法请求隧道代理创建一条到达任意目的服务器和端口的 <code>TCP</code> 连接，并对客户端和服务器之间的后继数据进行盲转发。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">CONNECT server.example.com:80 HTTP/1.1</span><br></pre></td></tr></table></figure>
-
-
-<h1 id="HTTP-1-1、HTTP-2、HTTP-3-演变"><a href="#HTTP-1-1、HTTP-2、HTTP-3-演变" class="headerlink" title="HTTP/1.1、HTTP/2、HTTP/3 演变"></a><code>HTTP/1.1、HTTP/2、HTTP/3</code> 演变</h1><h2 id="HTTP-1-1-的优化"><a href="#HTTP-1-1-的优化" class="headerlink" title="HTTP/1.1 的优化"></a><code>HTTP/1.1</code> 的优化</h2><ul>
-<li>长连接</li>
-<li>支持管道 （<code>pipeline</code>）网络传输</li>
-</ul>
-<p>但 <code>HTTP/1.1</code> 还是有性能瓶颈：</p>
-<ul>
-<li>请求 &#x2F; 响应头部（<code>Header</code>）未经压缩就发送，首部信息越多延迟越大。只能压缩 <code>Body</code> 的部分；</li>
-<li>发送冗长的首部。每次互相发送相同的首部造成的浪费较多；</li>
-<li>服务器是按请求的顺序响应的，如果服务器响应慢，会招致客户端一直请求不到数据，也就是队头阻塞；</li>
-<li>没有请求优先级控制；</li>
-<li>请求只能从客户端开始，服务器只能被动响应。</li>
-</ul>
-<h2 id="HTTP-2-的优化"><a href="#HTTP-2-的优化" class="headerlink" title="HTTP/2 的优化"></a><code>HTTP/2</code> 的优化</h2><ul>
-<li>头部压缩</li>
-<li>二进制格式</li>
-<li>并发传输</li>
-<li>服务器主动推送资源</li>
-</ul>
-<h2 id="HTTP-3-的优化"><a href="#HTTP-3-的优化" class="headerlink" title="HTTP/3 的优化"></a><code>HTTP/3</code> 的优化</h2><p><code>HTTP/3</code> 基于 <code>UDP</code> 的 <code>QUIC</code> 协议 可以实现类似 <code>TCP</code> 的可靠性传输, 有以下 <code>3</code> 个特点。</p>
-<ul>
-<li>无队头阻塞</li>
-<li>更快的连接建立</li>
-<li>连接迁移</li>
-</ul>
-]]></content>
-      <categories>
-        <category>Network</category>
-      </categories>
-      <tags>
-        <tag>http</tag>
       </tags>
   </entry>
   <entry>
@@ -3800,47 +3807,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Application-Layer Protocol Negotiation</title>
-    <url>/2023/12/11/network/TLS/ALPN/</url>
-    <content><![CDATA[<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p><code>ALPN</code>(<code>Application-Layer Protocol Negotiation</code>)应用层协议协商, 当单个服务器端口号（例如端口 <code>443</code>）上支持多个应用程序协议时，客户端和服务器需要协商用于每个连接的应用程序协议。希望在不增加客户端和服务器之间的网络往返次数的情况下完成此协商，因为每次往返都会降低最终用户的体验。</p>
-<p><code>ALPN</code> 作为 <code>TSL</code>的扩展，客户端会将支持的应用程序协议列表作为 <code>TLS ClientHello</code> 消息的一部分发送给服务器，服务器选择一个协议，并将所选协议作为 <code>TLS ServerHello</code> 消息的一部分发送给客户端。因此，可以在 <code>TLS</code> 握手中完成应用协议协商，而无需添加网络往返，并且允许服务器根据需要，将不同的证书与每个应用协议相关联。</p>
-<span id="more"></span>
-<p>通过 <code>OpenSSL</code> 命令行工具，快速查看 <code>HTTP/2</code> 服务是否支持 <code>ALPN</code> 扩展：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">openssl s_client -alpn h2 -servername ipinfo.io -connect ipinfo.io:443 &lt; /dev/null | grep ALPN </span><br></pre></td></tr></table></figure>
-<ul>
-<li>提示 <code>unknown option -alpn</code>:  <code>OpenSSL</code> 版本太低, <code>OpenSSL 1.0.2</code> 才开始支持 <code>ALPN</code> 需要升级高版本</li>
-<li>结果包含 <code>ALPN protocol: h2</code>，说明服务端支持 <code>ALPN</code></li>
-<li>结果包含 <code>No ALPN negotiated</code>，说明服务端不支持 <code>ALPN</code></li>
-</ul>
-<h1 id="Application-Layer-Protocol-Negotiation"><a href="#Application-Layer-Protocol-Negotiation" class="headerlink" title="Application-Layer Protocol Negotiation"></a><code>Application-Layer Protocol Negotiation</code></h1><h2 id="The-Application-Layer-Protocol-Negotiation-Extension"><a href="#The-Application-Layer-Protocol-Negotiation-Extension" class="headerlink" title="The Application-Layer Protocol Negotiation Extension"></a><code>The Application-Layer Protocol Negotiation Extension</code></h2><p>定义新的扩展类型（<code>application_layer_protocol_negotiation（16</code>），并且可以由客户端包括在其 <code>ClientHello</code> 消息中。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> &#123;</span></span><br><span class="line">    application_layer_protocol_negotiation(<span class="number">16</span>), (<span class="number">65535</span>)</span><br><span class="line">&#125; ExtensionType;</span><br></pre></td></tr></table></figure>
-
-<p>（<code>application_layer_protocol_negotiation（16</code>）扩展的 <code>extension_data</code> 字段应包含<code>ProtocolNameList</code> 值。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">opaque ProtocolName&lt;<span class="number">1.</span><span class="number">.2</span>^<span class="number">8</span><span class="number">-1</span>&gt;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    ProtocolName protocol_name_list&lt;<span class="number">2.</span><span class="number">.2</span>^<span class="number">16</span><span class="number">-1</span>&gt;</span><br><span class="line">&#125; ProtocolNameList;</span><br></pre></td></tr></table></figure>
-
-<p><code>ProtocolNameList</code> 按优先级从高到低包含客户端发布的协议列表。 协议是由 <code>IANA</code> 注册的不透明非空字节串命名的。不能包含空字符串，并且不能截断字节字符串。</p>
-<p>接收到包含 <code>application_layer_protocol_negotiation</code> 扩展名的 <code>ClientHello</code> 的服务器可以向客户端返回合适的协议选择作为响应。服务器将忽略它无法识别的任何协议名称。一个新的 <code>ServerHello</code> 扩展类型(<code>application_layer_protocol_negotiation(16)</code>) 可以在 <code>ServerHello</code> 消息扩展中返回给客户端。(<code>application_layer_protocol_negotiation(16)</code>) 扩展名的 <code>extension_data</code> 字段的结构与上述针对客户端 <code>extension_data</code> 的描述相同，只是 <code>ProtocolNameList</code> 必须包含一个 <code>ProtocolName</code>。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Client                                              Server</span><br><span class="line">ClientHello                     --------&gt;       ServerHello</span><br><span class="line">  (ALPN extension &amp;                               (ALPN extension &amp;</span><br><span class="line">   list of protocols)                              selected protocol)</span><br><span class="line">                                                Certificate*</span><br><span class="line">                                                ServerKeyExchange*</span><br><span class="line">                                                CertificateRequest*</span><br><span class="line">                                &lt;--------       ServerHelloDone</span><br><span class="line">Certificate*</span><br><span class="line">ClientKeyExchange</span><br><span class="line">CertificateVerify*</span><br><span class="line">[ChangeCipherSpec]</span><br><span class="line">Finished                        --------&gt;</span><br><span class="line">                                                [ChangeCipherSpec]</span><br><span class="line">                                &lt;--------       Finished</span><br><span class="line">Application Data                &lt;-------&gt;       Application Data</span><br></pre></td></tr></table></figure>
-
-<h2 id="Protocol-Selection"><a href="#Protocol-Selection" class="headerlink" title="Protocol Selection"></a>Protocol Selection</h2><p>期望服务器将具有优先级支持的协议列表，并且仅在客户端支持的情况下才选择协议。在这种情况下，服务器应该选择它所支持的，并且也是由客户端发布的最优先的协议。如果服务器不支持客户端传过来的协议，则服务器应以 <code>&quot;no_application_protocol&quot;</code> <code>alert</code> 错误回应。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> &#123;</span></span><br><span class="line">    no_application_protocol(<span class="number">120</span>),</span><br><span class="line">    (<span class="number">255</span>)</span><br><span class="line">&#125; AlertDescription;</span><br></pre></td></tr></table></figure>
-
-<h2 id="Wireshark-抓包"><a href="#Wireshark-抓包" class="headerlink" title="Wireshark 抓包"></a><code>Wireshark</code> 抓包</h2><p>在 <code>TLS1.3</code> 中:</p>
-<ul>
-<li><p><code>ClientHello</code>消息:<br><img src="/images/alpn_client_hello_tls1_3.png" alt="ClientHello"></p>
-</li>
-<li><p><code>ServerHello</code>消息:<br><img src="/images/alpn_server_hello_tls1_3.png" alt="ServerHello"></p>
-</li>
-</ul>
-<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ul>
-<li><a href="https://datatracker.ietf.org/doc/html/rfc7301">Application-Layer Protocol Negotiation Extension</a></li>
-</ul>
-]]></content>
-      <tags>
-        <tag>SSL/TLS</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Qt 之 焦点处理</title>
     <url>/2023/02/15/qt/Qt-%E4%B9%8B-%E7%84%A6%E7%82%B9%E5%A4%84%E7%90%86/</url>
     <content><![CDATA[<h1 id="焦点事件"><a href="#焦点事件" class="headerlink" title="焦点事件"></a>焦点事件</h1><p>当焦点从一个 <code>widget</code> 移动到另一个 <code>widget</code> 时，会触发 <code>QFocusEvent</code> 事件，这个事件会被发送给原焦点窗口和当前焦点窗口，原焦点窗口执行 <code>focusOutEvent()</code> ，新焦点窗口执行 <code>focusInEvent()</code>。 相关函数如下：</p>
@@ -3958,6 +3924,47 @@
       <tags>
         <tag>Qt</tag>
         <tag>焦点</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Application-Layer Protocol Negotiation</title>
+    <url>/2023/12/11/network/TLS/ALPN/</url>
+    <content><![CDATA[<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p><code>ALPN</code>(<code>Application-Layer Protocol Negotiation</code>)应用层协议协商, 当单个服务器端口号（例如端口 <code>443</code>）上支持多个应用程序协议时，客户端和服务器需要协商用于每个连接的应用程序协议。希望在不增加客户端和服务器之间的网络往返次数的情况下完成此协商，因为每次往返都会降低最终用户的体验。</p>
+<p><code>ALPN</code> 作为 <code>TSL</code>的扩展，客户端会将支持的应用程序协议列表作为 <code>TLS ClientHello</code> 消息的一部分发送给服务器，服务器选择一个协议，并将所选协议作为 <code>TLS ServerHello</code> 消息的一部分发送给客户端。因此，可以在 <code>TLS</code> 握手中完成应用协议协商，而无需添加网络往返，并且允许服务器根据需要，将不同的证书与每个应用协议相关联。</p>
+<span id="more"></span>
+<p>通过 <code>OpenSSL</code> 命令行工具，快速查看 <code>HTTP/2</code> 服务是否支持 <code>ALPN</code> 扩展：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">openssl s_client -alpn h2 -servername ipinfo.io -connect ipinfo.io:443 &lt; /dev/null | grep ALPN </span><br></pre></td></tr></table></figure>
+<ul>
+<li>提示 <code>unknown option -alpn</code>:  <code>OpenSSL</code> 版本太低, <code>OpenSSL 1.0.2</code> 才开始支持 <code>ALPN</code> 需要升级高版本</li>
+<li>结果包含 <code>ALPN protocol: h2</code>，说明服务端支持 <code>ALPN</code></li>
+<li>结果包含 <code>No ALPN negotiated</code>，说明服务端不支持 <code>ALPN</code></li>
+</ul>
+<h1 id="Application-Layer-Protocol-Negotiation"><a href="#Application-Layer-Protocol-Negotiation" class="headerlink" title="Application-Layer Protocol Negotiation"></a><code>Application-Layer Protocol Negotiation</code></h1><h2 id="The-Application-Layer-Protocol-Negotiation-Extension"><a href="#The-Application-Layer-Protocol-Negotiation-Extension" class="headerlink" title="The Application-Layer Protocol Negotiation Extension"></a><code>The Application-Layer Protocol Negotiation Extension</code></h2><p>定义新的扩展类型（<code>application_layer_protocol_negotiation（16</code>），并且可以由客户端包括在其 <code>ClientHello</code> 消息中。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> &#123;</span></span><br><span class="line">    application_layer_protocol_negotiation(<span class="number">16</span>), (<span class="number">65535</span>)</span><br><span class="line">&#125; ExtensionType;</span><br></pre></td></tr></table></figure>
+
+<p>（<code>application_layer_protocol_negotiation（16</code>）扩展的 <code>extension_data</code> 字段应包含<code>ProtocolNameList</code> 值。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">opaque ProtocolName&lt;<span class="number">1.</span><span class="number">.2</span>^<span class="number">8</span><span class="number">-1</span>&gt;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    ProtocolName protocol_name_list&lt;<span class="number">2.</span><span class="number">.2</span>^<span class="number">16</span><span class="number">-1</span>&gt;</span><br><span class="line">&#125; ProtocolNameList;</span><br></pre></td></tr></table></figure>
+
+<p><code>ProtocolNameList</code> 按优先级从高到低包含客户端发布的协议列表。 协议是由 <code>IANA</code> 注册的不透明非空字节串命名的。不能包含空字符串，并且不能截断字节字符串。</p>
+<p>接收到包含 <code>application_layer_protocol_negotiation</code> 扩展名的 <code>ClientHello</code> 的服务器可以向客户端返回合适的协议选择作为响应。服务器将忽略它无法识别的任何协议名称。一个新的 <code>ServerHello</code> 扩展类型(<code>application_layer_protocol_negotiation(16)</code>) 可以在 <code>ServerHello</code> 消息扩展中返回给客户端。(<code>application_layer_protocol_negotiation(16)</code>) 扩展名的 <code>extension_data</code> 字段的结构与上述针对客户端 <code>extension_data</code> 的描述相同，只是 <code>ProtocolNameList</code> 必须包含一个 <code>ProtocolName</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Client                                              Server</span><br><span class="line">ClientHello                     --------&gt;       ServerHello</span><br><span class="line">  (ALPN extension &amp;                               (ALPN extension &amp;</span><br><span class="line">   list of protocols)                              selected protocol)</span><br><span class="line">                                                Certificate*</span><br><span class="line">                                                ServerKeyExchange*</span><br><span class="line">                                                CertificateRequest*</span><br><span class="line">                                &lt;--------       ServerHelloDone</span><br><span class="line">Certificate*</span><br><span class="line">ClientKeyExchange</span><br><span class="line">CertificateVerify*</span><br><span class="line">[ChangeCipherSpec]</span><br><span class="line">Finished                        --------&gt;</span><br><span class="line">                                                [ChangeCipherSpec]</span><br><span class="line">                                &lt;--------       Finished</span><br><span class="line">Application Data                &lt;-------&gt;       Application Data</span><br></pre></td></tr></table></figure>
+
+<h2 id="Protocol-Selection"><a href="#Protocol-Selection" class="headerlink" title="Protocol Selection"></a>Protocol Selection</h2><p>期望服务器将具有优先级支持的协议列表，并且仅在客户端支持的情况下才选择协议。在这种情况下，服务器应该选择它所支持的，并且也是由客户端发布的最优先的协议。如果服务器不支持客户端传过来的协议，则服务器应以 <code>&quot;no_application_protocol&quot;</code> <code>alert</code> 错误回应。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> &#123;</span></span><br><span class="line">    no_application_protocol(<span class="number">120</span>),</span><br><span class="line">    (<span class="number">255</span>)</span><br><span class="line">&#125; AlertDescription;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Wireshark-抓包"><a href="#Wireshark-抓包" class="headerlink" title="Wireshark 抓包"></a><code>Wireshark</code> 抓包</h2><p>在 <code>TLS1.3</code> 中:</p>
+<ul>
+<li><p><code>ClientHello</code>消息:<br><img src="/images/alpn_client_hello_tls1_3.png" alt="ClientHello"></p>
+</li>
+<li><p><code>ServerHello</code>消息:<br><img src="/images/alpn_server_hello_tls1_3.png" alt="ServerHello"></p>
+</li>
+</ul>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ul>
+<li><a href="https://datatracker.ietf.org/doc/html/rfc7301">Application-Layer Protocol Negotiation Extension</a></li>
+</ul>
+]]></content>
+      <tags>
+        <tag>SSL/TLS</tag>
       </tags>
   </entry>
   <entry>
