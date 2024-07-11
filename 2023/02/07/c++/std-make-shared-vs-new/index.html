@@ -28,7 +28,7 @@
 <meta property="og:description" content="内存分配std::make_shared 执行一次堆分配，而调用std::shared_ptr 构造函数执行两次。 在一个典型的实现中 std::shared_ptr 管理两个实体：  控制块（存储元数据，如引用计数、类型擦除删除器等） 被管理的对象  控制块是一个动态分配的对象，它包含：  指向托管对象的指针或托管对象本身； 删除器 (类型擦除) 分配器 (类型擦除) 拥有被管理对象的 shar">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-02-07T10:30:24.000Z">
-<meta property="article:modified_time" content="2024-07-02T03:24:55.598Z">
+<meta property="article:modified_time" content="2024-07-11T09:47:42.423Z">
 <meta property="article:author" content="yngty">
 <meta property="article:tag" content="C++">
 <meta property="article:tag" content="智能指针">
@@ -123,7 +123,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">74</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">75</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
@@ -133,7 +133,7 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">39</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">40</span></a>
 
   </li>
   </ul>
@@ -194,7 +194,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-07-02 03:24:55" itemprop="dateModified" datetime="2024-07-02T03:24:55+00:00">2024-07-02</time>
+                <time title="修改时间：2024-07-11 09:47:42" itemprop="dateModified" datetime="2024-07-11T09:47:42+00:00">2024-07-11</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -271,7 +271,7 @@
 
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Allocated: 105553162522944 //分配一次</span><br><span class="line">Widget::~Widget() // 没有 shared_ptr 指针，只调用析构函数</span><br><span class="line">No std::shared_ptr&#x27;s anymore.</span><br><span class="line">Deallocated: 105553162522944 //没有 `weak_ptr` 释放整个内存块</span><br><span class="line">No std::weak_ptr&#x27;s anymore.</span><br><span class="line">---------------------</span><br><span class="line">Allocated: 105553164599312</span><br><span class="line">Allocated: 105553162522944 //分配两次</span><br><span class="line">Widget::~Widget()</span><br><span class="line">Deallocated: 105553164599312 //立即释放</span><br><span class="line">No std::shared_ptr&#x27;s anymore.</span><br><span class="line">Deallocated: 105553162522944</span><br><span class="line">No std::weak_ptr&#x27;s anymore.</span><br></pre></td></tr></table></figure>
 
-<h2 id="无法访问公共构造函数"><a href="#无法访问公共构造函数" class="headerlink" title="无法访问公共构造函数"></a>无法访问公共构造函数</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">A</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">A</span>(): <span class="built_in">val</span>(<span class="number">0</span>)&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// make_shared 无法调用 A(int) </span></span><br><span class="line">    <span class="comment">// std::shared_ptr&lt;A&gt; createNext()&#123; </span></span><br><span class="line">    <span class="comment">//     return std::make_shared&lt;A&gt;(val+1); </span></span><br><span class="line">    <span class="comment">//&#125;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 可以调用 A(int) </span></span><br><span class="line">    <span class="function">std::shared_ptr&lt;A&gt; <span class="title">createNext</span><span class="params">()</span></span>&#123; </span><br><span class="line">        <span class="keyword">return</span> std::<span class="built_in">shared_ptr</span>&lt;A&gt;(<span class="keyword">new</span> <span class="built_in">A</span>(val+<span class="number">1</span>)); </span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="type">int</span> val;</span><br><span class="line">    <span class="built_in">A</span>(<span class="type">int</span> v): <span class="built_in">val</span>(v)&#123;&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="无法访问公共构造函数"><a href="#无法访问公共构造函数" class="headerlink" title="无法访问公共构造函数"></a>无法访问公共构造函数</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">A</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">A</span>(): <span class="built_in">val</span>(<span class="number">0</span>)&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// make_shared 无法调用 A(int) </span></span><br><span class="line">    <span class="comment">// std::shared_ptr&lt;A&gt; createNext()&#123; </span></span><br><span class="line">    <span class="comment">//     return std::make_shared&lt;A&gt;(val+1); </span></span><br><span class="line">    <span class="comment">//&#125;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 可以调用 A(int) </span></span><br><span class="line">    <span class="function">std::shared_ptr&lt;A&gt; <span class="title">createNext</span><span class="params">()</span></span>&#123; </span><br><span class="line">        <span class="keyword">return</span> std::<span class="built_in">shared_ptr</span>&lt;A&gt;(<span class="keyword">new</span> <span class="built_in">A</span>(val<span class="number">+1</span>)); </span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="type">int</span> val;</span><br><span class="line">    <span class="built_in">A</span>(<span class="type">int</span> v): <span class="built_in">val</span>(v)&#123;&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
 <h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ul>
 <li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/20895648/difference-in-make-shared-and-normal-shared-ptr-in-c">Difference in make_shared and normal shared_ptr in C++</a></li>
@@ -378,7 +378,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">74</span>
+          <span class="site-state-item-count">75</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -391,7 +391,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-count">40</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -438,12 +438,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">43k</span>
+    <span title="站点总字数">44k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">2:35</span>
+    <span title="站点阅读时长">2:39</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>

@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yngty.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Netfilter，在 Linux 内核中的一个软件框架，用于管理网络数据包。不仅具有网络地址转换（NAT）的功能，也具备数据包内容修改、以及数据包过滤等防火墙功能。利用运作于用户空间的应用软件，如 iptables 、nftables 、ebtables 和 arptables 等，来控制 Netfilter，系统管理者可以管理通过Linux操作系统的各种网络数据包。1990 年代，Netfil">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Netfilter 框架浅析">
+<meta property="og:url" content="https://yngty.github.io/2024/07/11/network/Netfilter-%E6%A1%86%E6%9E%B6%E6%B5%85%E6%9E%90/index.html">
+<meta property="og:site_name" content="Symbol Crash">
+<meta property="og:description" content="Netfilter，在 Linux 内核中的一个软件框架，用于管理网络数据包。不仅具有网络地址转换（NAT）的功能，也具备数据包内容修改、以及数据包过滤等防火墙功能。利用运作于用户空间的应用软件，如 iptables 、nftables 、ebtables 和 arptables 等，来控制 Netfilter，系统管理者可以管理通过Linux操作系统的各种网络数据包。1990 年代，Netfil">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yngty.github.io/images/%E7%BD%91%E7%BB%9C%E6%95%B0%E6%8D%AE%E5%8C%85%E9%80%9A%E8%BF%87Netfilter%E6%97%B6%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%B5%81%E5%90%91.png">
+<meta property="og:image" content="https://yngty.github.io/images/netlfilter%E6%A1%86%E6%9E%B6.png">
+<meta property="article:published_time" content="2024-07-11T17:42:47.000Z">
+<meta property="article:modified_time" content="2024-07-11T09:47:42.427Z">
+<meta property="article:author" content="yngty">
+<meta property="article:tag" content="Netfilter">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yngty.github.io/images/%E7%BD%91%E7%BB%9C%E6%95%B0%E6%8D%AE%E5%8C%85%E9%80%9A%E8%BF%87Netfilter%E6%97%B6%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%B5%81%E5%90%91.png">
+
+<link rel="canonical" href="https://yngty.github.io/2024/07/11/network/Netfilter-%E6%A1%86%E6%9E%B6%E6%B5%85%E6%9E%90/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Netfilter 框架浅析 | Symbol Crash</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Symbol Crash" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Symbol Crash</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">不学无术</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">75</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">11</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">40</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2024/07/11/network/Netfilter-%E6%A1%86%E6%9E%B6%E6%B5%85%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Symbol Crash">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Netfilter 框架浅析
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-07-11 17:42:47 / 修改时间：09:47:42" itemprop="dateCreated datePublished" datetime="2024-07-11T17:42:47+00:00">2024-07-11</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Network/" itemprop="url" rel="index"><span itemprop="name">Network</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>993</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><code>Netfilter</code>，在 <code>Linux</code> 内核中的一个软件框架，用于管理网络数据包。不仅具有网络地址转换（<code>NAT</code>）的功能，也具备数据包内容修改、以及数据包过滤等防火墙功能。利用运作于用户空间的应用软件，如 <code>iptables</code> 、<code>nftables</code> 、<code>ebtables</code> 和 <code>arptables</code> 等，来控制 <code>Netfilter</code>，系统管理者可以管理通过Linux操作系统的各种网络数据包。<code>1990</code> 年代，<code>Netfilter</code> 在 <code>Linux 2.3.15</code> 版时进入Linux内核，正式应用于 <code>Linux 2.4</code> 版。</p>
+<span id="more"></span>
+
+<p>下图为网络数据包通过 <code>Netfilter</code> 时的工作流向图：</p>
+<p><img src="/../../images/%E7%BD%91%E7%BB%9C%E6%95%B0%E6%8D%AE%E5%8C%85%E9%80%9A%E8%BF%87Netfilter%E6%97%B6%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%B5%81%E5%90%91.png" alt="网络数据包通过Netfilter时的工作流向"></p>
+<h1 id="Netlfilter-框架"><a href="#Netlfilter-框架" class="headerlink" title="Netlfilter 框架"></a>Netlfilter 框架</h1><p><img src="/../../images/netlfilter%E6%A1%86%E6%9E%B6.png" alt="netlfilter框架"></p>
+<p><code>Netlfilter</code> 有 <code>5</code> 个 <code>HOOK</code> 点：</p>
+<ul>
+<li><code>PREROUTING</code>：数据包进入路由表之前</li>
+<li><code>INPUT</code>：通过路由表后目的地为本机</li>
+<li><code>FORWARD</code>：通过路由表后，目的地不为本机</li>
+<li><code>OUTPUT</code>：由本机产生，向外发送</li>
+<li><code>POSTROUTIONG</code>：发送到网卡接口之前。</li>
+</ul>
+<p>从图中可以看到，三个方向的数据包需要经过的钩子节点不完全相同：</p>
+<ul>
+<li>发往本地：<code>NF_INET_PRE_ROUTING --&gt; NF_INET_LOCAL_IN</code></li>
+<li>转发：<code>NF_INET_PRE_ROUTING--&gt;NF_INET_FORWARD--&gt;NF_INET_POST_ROUTING</code></li>
+<li>本地发出：<code>NF_INET_LOCAL_OUT--&gt;NF_INET_POST_ROUTING</code></li>
+</ul>
+<h1 id="Netfilter-重要数据结构及相关函数"><a href="#Netfilter-重要数据结构及相关函数" class="headerlink" title="Netfilter 重要数据结构及相关函数"></a>Netfilter 重要数据结构及相关函数</h1><h2 id="钩子操作数据结构"><a href="#钩子操作数据结构" class="headerlink" title="钩子操作数据结构"></a>钩子操作数据结构</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// file: include/linux/netfilter.h</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">nf_hook_ops</span> &#123;</span></span><br><span class="line">	<span class="comment">/* User fills in from here down. */</span></span><br><span class="line">	nf_hookfn		*hook;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">net_device</span>	*<span class="title">dev</span>;</span></span><br><span class="line">	<span class="type">void</span>			*priv;</span><br><span class="line">	<span class="type">u_int8_t</span>		pf;</span><br><span class="line">	<span class="type">unsigned</span> <span class="type">int</span>		hooknum;</span><br><span class="line">	<span class="comment">/* Hooks are ordered in ascending priority. */</span></span><br><span class="line">	<span class="type">int</span>			priority;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>这个结构体中存储了自定义的钩子函数（<code>nf_hookfn</code>），函数优先级（<code>priority</code>），处理协议类型（<code>pf</code>），钩子函数生效的钩子节点（<code>hooknum</code>）等信息。</p>
+<h2 id="钩子点枚举类型"><a href="#钩子点枚举类型" class="headerlink" title="钩子点枚举类型"></a>钩子点枚举类型</h2><p>上面提到的网络层中 <code>Netfilter</code> 的几个钩子节点，在内核中是以枚举数据类型进行标记的</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// file: include/uapi/linux/netfilter.h</span></span><br><span class="line"><span class="comment">// linux/netfilter.h 会引入uapi/linux/netfilter.h</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">nf_inet_hooks</span> &#123;</span></span><br><span class="line">    NF_INET_PRE_ROUTING,</span><br><span class="line">    NF_INET_LOCAL_IN,</span><br><span class="line">    NF_INET_FORWARD,</span><br><span class="line">    NF_INET_LOCAL_OUT,</span><br><span class="line">    NF_INET_POST_ROUTING,</span><br><span class="line">    NF_INET_NUMHOOKS</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="钩子函数声明"><a href="#钩子函数声明" class="headerlink" title="钩子函数声明"></a>钩子函数声明</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// include/linux/netfilter.h</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">nf_hook_state</span> &#123;</span></span><br><span class="line">	<span class="type">unsigned</span> <span class="type">int</span> hook;</span><br><span class="line">	<span class="type">u_int8_t</span> pf;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">net_device</span> *<span class="title">in</span>;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">net_device</span> *<span class="title">out</span>;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">sock</span> *<span class="title">sk</span>;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">net</span> *<span class="title">net</span>;</span></span><br><span class="line">	<span class="type">int</span> (*okfn)(<span class="keyword">struct</span> net *, <span class="keyword">struct</span> sock *, <span class="keyword">struct</span> sk_buff *);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="type">unsigned</span> <span class="type">int</span> <span class="title function_">nf_hookfn</span><span class="params">(<span class="type">void</span> *priv,</span></span><br><span class="line"><span class="params">			       <span class="keyword">struct</span> sk_buff *skb,</span></span><br><span class="line"><span class="params">			       <span class="type">const</span> <span class="keyword">struct</span> nf_hook_state *state)</span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="注册和解注册钩子函数"><a href="#注册和解注册钩子函数" class="headerlink" title="注册和解注册钩子函数"></a>注册和解注册钩子函数</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// file: include/linux/netfilter.h</span></span><br><span class="line"><span class="comment">/* Function to register/unregister hook points. */</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">nf_register_net_hook</span><span class="params">(<span class="keyword">struct</span> net *net, <span class="type">const</span> <span class="keyword">struct</span> nf_hook_ops *ops)</span>;</span><br><span class="line"><span class="type">void</span> <span class="title function_">nf_unregister_net_hook</span><span class="params">(<span class="keyword">struct</span> net *net, <span class="type">const</span> <span class="keyword">struct</span> nf_hook_ops *ops)</span>;</span><br><span class="line"><span class="type">int</span> <span class="title function_">nf_register_net_hooks</span><span class="params">(<span class="keyword">struct</span> net *net, <span class="type">const</span> <span class="keyword">struct</span> nf_hook_ops *reg,</span></span><br><span class="line"><span class="params">			  <span class="type">unsigned</span> <span class="type">int</span> n)</span>;</span><br><span class="line"><span class="type">void</span> <span class="title function_">nf_unregister_net_hooks</span><span class="params">(<span class="keyword">struct</span> net *net, <span class="type">const</span> <span class="keyword">struct</span> nf_hook_ops *reg,</span></span><br><span class="line"><span class="params">			     <span class="type">unsigned</span> <span class="type">int</span> n)</span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="钩子函数返回的动作"><a href="#钩子函数返回的动作" class="headerlink" title="钩子函数返回的动作"></a>钩子函数返回的动作</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// file: include/uapi/linux/netfilter.h</span></span><br><span class="line"><span class="comment">// linux/netfilter.h 会引入uapi/linux/netfilter.h</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> NF_DROP 0</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> NF_ACCEPT 1</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> NF_STOLEN 2</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> NF_QUEUE 3</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> NF_REPEAT 4</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> NF_STOP 5	<span class="comment">/* Deprecated, for userspace nf_queue compatibility. */</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> NF_MAX_VERDICT NF_STOP</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="处理协议类型-pf"><a href="#处理协议类型-pf" class="headerlink" title="处理协议类型 pf"></a>处理协议类型 <code>pf</code></h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// file: include/uapi/linux/netfilter.h</span></span><br><span class="line"><span class="comment">// linux/netfilter.h 会引入uapi/linux/netfilter.h</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">enum</span> &#123;</span></span><br><span class="line">	NFPROTO_UNSPEC =  <span class="number">0</span>,</span><br><span class="line">	NFPROTO_INET   =  <span class="number">1</span>,</span><br><span class="line">	NFPROTO_IPV4   =  <span class="number">2</span>,</span><br><span class="line">	NFPROTO_ARP    =  <span class="number">3</span>,</span><br><span class="line">	NFPROTO_NETDEV =  <span class="number">5</span>,</span><br><span class="line">	NFPROTO_BRIDGE =  <span class="number">7</span>,</span><br><span class="line">	NFPROTO_IPV6   = <span class="number">10</span>,</span><br><span class="line">	NFPROTO_DECNET = <span class="number">12</span>,</span><br><span class="line">	NFPROTO_NUMPROTO,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="优先级-priorities"><a href="#优先级-priorities" class="headerlink" title="优先级 priorities"></a>优先级 priorities</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// file: include/uapi/linux/netfilter_ipv4.h</span></span><br><span class="line"><span class="comment">// include/netfilter_ipv4.h 会引入uapi/linux/netfilter_ipv4.h</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">nf_ip_hook_priorities</span> &#123;</span></span><br><span class="line">	NF_IP_PRI_FIRST = INT_MIN,</span><br><span class="line">	NF_IP_PRI_RAW_BEFORE_DEFRAG = <span class="number">-450</span>,</span><br><span class="line">	NF_IP_PRI_CONNTRACK_DEFRAG = <span class="number">-400</span>,</span><br><span class="line">	NF_IP_PRI_RAW = <span class="number">-300</span>,</span><br><span class="line">	NF_IP_PRI_SELINUX_FIRST = <span class="number">-225</span>,</span><br><span class="line">	NF_IP_PRI_CONNTRACK = <span class="number">-200</span>,</span><br><span class="line">	NF_IP_PRI_MANGLE = <span class="number">-150</span>,</span><br><span class="line">	NF_IP_PRI_NAT_DST = <span class="number">-100</span>,</span><br><span class="line">	NF_IP_PRI_FILTER = <span class="number">0</span>,</span><br><span class="line">	NF_IP_PRI_SECURITY = <span class="number">50</span>,</span><br><span class="line">	NF_IP_PRI_NAT_SRC = <span class="number">100</span>,</span><br><span class="line">	NF_IP_PRI_SELINUX_LAST = <span class="number">225</span>,</span><br><span class="line">	NF_IP_PRI_CONNTRACK_HELPER = <span class="number">300</span>,</span><br><span class="line">	NF_IP_PRI_CONNTRACK_CONFIRM = INT_MAX,</span><br><span class="line">	NF_IP_PRI_LAST = INT_MAX,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="一个-demo"><a href="#一个-demo" class="headerlink" title="一个 demo"></a>一个 <code>demo</code></h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/module.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/kernel.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/netfilter.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/netfilter_ipv4.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/ip.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/tcp.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/udp.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/version.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/if_ether.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line">MODULE_LICENSE(<span class="string">&quot;GPLv3&quot;</span>);</span><br><span class="line">MODULE_AUTHOR(<span class="string">&quot;TY&quot;</span>);</span><br><span class="line">MODULE_DESCRIPTION(<span class="string">&quot;Netfliter test&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">unsigned</span> <span class="type">int</span> <span class="title function_">nf_test_in_hook</span><span class="params">(<span class="type">void</span> *priv,</span></span><br><span class="line"><span class="params">                               <span class="keyword">struct</span> sk_buff *skb,</span></span><br><span class="line"><span class="params">                               <span class="type">const</span> <span class="keyword">struct</span> nf_hook_state *state)</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="class"><span class="keyword">struct</span> <span class="title">nf_hook_ops</span> <span class="title">nf_test_ops</span>[] __<span class="title">read_mostly</span> =</span> &#123;</span><br><span class="line">  &#123;</span><br><span class="line">    .hook = nf_test_in_hook,</span><br><span class="line">    .pf = NFPROTO_IPV4,</span><br><span class="line">    .hooknum = NF_INET_LOCAL_IN,</span><br><span class="line">    .priority = NF_IP_PRI_FIRST,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">hdr_dump</span><span class="params">(<span class="keyword">struct</span> ethhdr *ehdr)</span> &#123;</span><br><span class="line">    printk(<span class="string">&quot;[MAC_DES:%x,%x,%x,%x,%x,%x&quot;</span></span><br><span class="line">           <span class="string">&quot;MAC_SRC: %x,%x,%x,%x,%x,%x Prot:%x]\n&quot;</span>,</span><br><span class="line">           ehdr-&gt;h_dest[<span class="number">0</span>],ehdr-&gt;h_dest[<span class="number">1</span>],ehdr-&gt;h_dest[<span class="number">2</span>],ehdr-&gt;h_dest[<span class="number">3</span>],</span><br><span class="line">           ehdr-&gt;h_dest[<span class="number">4</span>],ehdr-&gt;h_dest[<span class="number">5</span>],ehdr-&gt;h_source[<span class="number">0</span>],ehdr-&gt;h_source[<span class="number">1</span>],</span><br><span class="line">           ehdr-&gt;h_source[<span class="number">2</span>],ehdr-&gt;h_source[<span class="number">3</span>],ehdr-&gt;h_source[<span class="number">4</span>],</span><br><span class="line">           ehdr-&gt;h_source[<span class="number">5</span>],ehdr-&gt;h_proto);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> NIPQUAD(addr) \</span></span><br><span class="line"><span class="meta">        ((unsigned char *)&amp;addr)[0], \</span></span><br><span class="line"><span class="meta">        ((unsigned char *)&amp;addr)[1], \</span></span><br><span class="line"><span class="meta">        ((unsigned char *)&amp;addr)[2], \</span></span><br><span class="line"><span class="meta">        ((unsigned char *)&amp;addr)[3]</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> NIPQUAD_FMT <span class="string">&quot;%u.%u.%u.%u&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">unsigned</span> <span class="type">int</span> <span class="title function_">nf_test_in_hook</span><span class="params">(<span class="type">void</span> *priv,</span></span><br><span class="line"><span class="params">                               <span class="keyword">struct</span> sk_buff *skb,</span></span><br><span class="line"><span class="params">                               <span class="type">const</span> <span class="keyword">struct</span> nf_hook_state *state)</span> &#123;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">ethhdr</span> *<span class="title">eth_header</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">iphdr</span> *<span class="title">ip_header</span>;</span></span><br><span class="line">  eth_header = (<span class="keyword">struct</span> ethhdr *)(skb_mac_header(skb));</span><br><span class="line">  ip_header = (<span class="keyword">struct</span> iphdr *)(skb_network_header(skb));</span><br><span class="line">  hdr_dump(eth_header);</span><br><span class="line">  printk(<span class="string">&quot;src IP:&#x27;&quot;</span>NIPQUAD_FMT<span class="string">&quot;&#x27;, dst IP:&#x27;&quot;</span>NIPQUAD_FMT<span class="string">&quot;&#x27; \n&quot;</span>,</span><br><span class="line">         NIPQUAD(ip_header-&gt;saddr), NIPQUAD(ip_header-&gt;daddr));</span><br><span class="line">  <span class="keyword">return</span> NF_ACCEPT;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">int</span> __init <span class="title function_">init_nf_test</span><span class="params">(<span class="type">void</span>)</span> &#123;</span><br><span class="line">  <span class="type">int</span> ret;</span><br><span class="line">  ret = nf_register_hooks(nf_test_ops, ARRAY_SIZE(nf_test_ops));</span><br><span class="line">  <span class="keyword">if</span> (ret &lt; <span class="number">0</span>) &#123;</span><br><span class="line">    printk(<span class="string">&quot;register nf hook fail\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> ret;</span><br><span class="line">  &#125;</span><br><span class="line">  printk(KERN_NOTICE <span class="string">&quot;register nf test hook\n&quot;</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">void</span> __exit <span class="title function_">exit_nf_test</span><span class="params">(<span class="type">void</span>)</span> &#123;</span><br><span class="line">  nf_unregister_hooks(nf_test_ops, ARRAY_SIZE(nf_test_ops));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">module_init(init_nf_test);</span><br><span class="line">module_exit(exit_nf_test);=</span><br></pre></td></tr></table></figure>
+<h1 id="Makefile"><a href="#Makefile" class="headerlink" title="Makefile"></a>Makefile</h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">obj-m += nf_test.o</span><br><span class="line"></span><br><span class="line">all:</span><br><span class="line">	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules</span><br><span class="line"></span><br><span class="line">clean:</span><br><span class="line">	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/Netfilter">Netfilter Wiki</a></li>
+<li><a target="_blank" rel="noopener" href="https://wiki.dreamrunner.org/public_html/Linux/Networks/netfilter.html">Linux Netfilter and Traffic Control</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/lianhunqianr1/article/details/117538796">Linux Kernel TCP&#x2F;IP Stack|Linux网络硬核系列</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Netfilter/" rel="tag"># Netfilter</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/03/21/network/TCP-TFO%E5%BF%AB%E9%80%9F%E6%89%93%E5%BC%80/" rel="prev" title="TCP-TFO快速打开">
+      <i class="fa fa-chevron-left"></i> TCP-TFO快速打开
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Netlfilter-%E6%A1%86%E6%9E%B6"><span class="nav-number">1.</span> <span class="nav-text">Netlfilter 框架</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Netfilter-%E9%87%8D%E8%A6%81%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%8F%8A%E7%9B%B8%E5%85%B3%E5%87%BD%E6%95%B0"><span class="nav-number">2.</span> <span class="nav-text">Netfilter 重要数据结构及相关函数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%92%A9%E5%AD%90%E6%93%8D%E4%BD%9C%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-number">2.1.</span> <span class="nav-text">钩子操作数据结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%92%A9%E5%AD%90%E7%82%B9%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.2.</span> <span class="nav-text">钩子点枚举类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%92%A9%E5%AD%90%E5%87%BD%E6%95%B0%E5%A3%B0%E6%98%8E"><span class="nav-number">2.3.</span> <span class="nav-text">钩子函数声明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E5%86%8C%E5%92%8C%E8%A7%A3%E6%B3%A8%E5%86%8C%E9%92%A9%E5%AD%90%E5%87%BD%E6%95%B0"><span class="nav-number">2.4.</span> <span class="nav-text">注册和解注册钩子函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%92%A9%E5%AD%90%E5%87%BD%E6%95%B0%E8%BF%94%E5%9B%9E%E7%9A%84%E5%8A%A8%E4%BD%9C"><span class="nav-number">2.5.</span> <span class="nav-text">钩子函数返回的动作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%84%E7%90%86%E5%8D%8F%E8%AE%AE%E7%B1%BB%E5%9E%8B-pf"><span class="nav-number">2.6.</span> <span class="nav-text">处理协议类型 pf</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%98%E5%85%88%E7%BA%A7-priorities"><span class="nav-number">2.7.</span> <span class="nav-text">优先级 priorities</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E4%B8%AA-demo"><span class="nav-number">2.8.</span> <span class="nav-text">一个 demo</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Makefile"><span class="nav-number">3.</span> <span class="nav-text">Makefile</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">4.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="yngty"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">yngty</p>
+  <div class="site-description" itemprop="description">预测未来的最好方式就是实现它</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">75</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yngty" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yngty" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yngty@foxmail.com" title="E-Mail → mailto:yngty@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yngty</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">44k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">2:39</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
