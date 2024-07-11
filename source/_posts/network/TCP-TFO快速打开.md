@@ -15,7 +15,7 @@ categories:
 - 服务端收取 `SYN` 包以后，生成一个 `cookie` 值（一串字符串）
 - 服务端发送 `SYN` + `ACK` 包，在 `Options` 的 `Fast Open` 选项中设置 `cookie` 的值
 - 客户端缓存服务端的 `IP` 和收到的 `cookie` 值
-
+<!--more-->
 第一次过后，客户端就有了缓存在本地的 `cookie` 值，后面的握手和数据传输过程如下：
 
 - 客户端发送 `SYN` 数据包，里面包含数据和之前缓存在本地的 `Fast Open Cookie`。
