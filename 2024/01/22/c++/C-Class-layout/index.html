@@ -28,7 +28,7 @@
 <meta property="og:description" content="C++ Class在类定义中，只有非静态数据声明会增加类对象的大小 Empty Class一个空类在C++中没有非静态数据成员、没有虚函数，也没有虚基类。这样的类通常被称为“无状态”，因为它们不封装任何状态或数据。然而，即使一个空类没有显式的数据成员，它仍然需要占用一些内存空间。 C++标准规定，不同类型的对象必须具有不同的地址。因此，一个空类对象必须在内存中具有唯一的地址。这确保了即使一个空类对">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-01-22T10:24:40.000Z">
-<meta property="article:modified_time" content="2024-07-11T09:49:23.929Z">
+<meta property="article:modified_time" content="2024-07-11T09:54:18.289Z">
 <meta property="article:author" content="yngty">
 <meta name="twitter:card" content="summary">
 
@@ -192,7 +192,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-07-11 09:49:23" itemprop="dateModified" datetime="2024-07-11T09:49:23+00:00">2024-07-11</time>
+                <time title="修改时间：2024-07-11 09:54:18" itemprop="dateModified" datetime="2024-07-11T09:54:18+00:00">2024-07-11</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -210,7 +210,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>619</span>
+              <span>620</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -232,6 +232,7 @@
         <h1 id="C-Class"><a href="#C-Class" class="headerlink" title="C++ Class"></a>C++ Class</h1><p>在类定义中，只有非静态数据声明会增加类对象的大小</p>
 <h1 id="Empty-Class"><a href="#Empty-Class" class="headerlink" title="Empty Class"></a>Empty Class</h1><p>一个空类在C++中没有非静态数据成员、没有虚函数，也没有虚基类。这样的类通常被称为“无状态”，因为它们不封装任何状态或数据。然而，即使一个空类没有显式的数据成员，它仍然需要占用一些内存空间。</p>
 <p>C++标准规定，不同类型的对象必须具有不同的地址。因此，一个空类对象必须在内存中具有唯一的地址。这确保了即使一个空类对象没有任何可见的数据成员或行为，它也必须占用至少一个字节的内存，以区分它与具有不同类型的其他对象。</p>
+<span id="more"></span>
 <h2 id="C-20-no-unique-address"><a href="#C-20-no-unique-address" class="headerlink" title="C++20 no_unique_address"></a>C++20 no_unique_address</h2><h2 id="Empty-Base-Class"><a href="#Empty-Base-Class" class="headerlink" title="Empty Base Class"></a>Empty Base Class</h2><p>空基类优化（<code>Empty Base Class Optimization</code>，<code>EBCO</code>）</p>
 <ul>
 <li>对于多重继承，重新排列基类的顺序以便空基类首先出现在基类列表上通常是有意义的。</li>

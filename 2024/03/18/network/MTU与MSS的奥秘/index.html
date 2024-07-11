@@ -20,15 +20,15 @@
     var CONFIG = {"hostname":"yngty.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="最大传输单元（Maximum Transmission Unit, MTU）数据链路层传输的帧大小是有限制的，不能把一个太大的包直接塞给链路层，这个限制被称为「最大传输单元（Maximum Transmission Unit, MTU）」 不同的数据链路层的 MTU 是不同的。通过 netstat -i 可以查看网卡的 mtu，比如在 我的 ubuntu 机器上可以看到 12345-&gt; ne">
+  <meta name="description" content="最大传输单元（Maximum Transmission Unit, MTU）数据链路层传输的帧大小是有限制的，不能把一个太大的包直接塞给链路层，这个限制被称为「最大传输单元（Maximum Transmission Unit, MTU）」">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MTU与MSS的奥秘">
 <meta property="og:url" content="https://yngty.github.io/2024/03/18/network/MTU%E4%B8%8EMSS%E7%9A%84%E5%A5%A5%E7%A7%98/index.html">
 <meta property="og:site_name" content="Symbol Crash">
-<meta property="og:description" content="最大传输单元（Maximum Transmission Unit, MTU）数据链路层传输的帧大小是有限制的，不能把一个太大的包直接塞给链路层，这个限制被称为「最大传输单元（Maximum Transmission Unit, MTU）」 不同的数据链路层的 MTU 是不同的。通过 netstat -i 可以查看网卡的 mtu，比如在 我的 ubuntu 机器上可以看到 12345-&gt; ne">
+<meta property="og:description" content="最大传输单元（Maximum Transmission Unit, MTU）数据链路层传输的帧大小是有限制的，不能把一个太大的包直接塞给链路层，这个限制被称为「最大传输单元（Maximum Transmission Unit, MTU）」">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-03-18T14:44:24.000Z">
-<meta property="article:modified_time" content="2024-07-11T09:49:23.933Z">
+<meta property="article:modified_time" content="2024-07-11T09:54:18.289Z">
 <meta property="article:author" content="yngty">
 <meta property="article:tag" content="tcp">
 <meta property="article:tag" content="MTU">
@@ -195,7 +195,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-07-11 09:49:23" itemprop="dateModified" datetime="2024-07-11T09:49:23+00:00">2024-07-11</time>
+                <time title="修改时间：2024-07-11 09:54:18" itemprop="dateModified" datetime="2024-07-11T09:54:18+00:00">2024-07-11</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -213,7 +213,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>241</span>
+              <span>242</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -233,10 +233,11 @@
 
       
         <h1 id="最大传输单元（Maximum-Transmission-Unit-MTU）"><a href="#最大传输单元（Maximum-Transmission-Unit-MTU）" class="headerlink" title="最大传输单元（Maximum Transmission Unit, MTU）"></a>最大传输单元（Maximum Transmission Unit, MTU）</h1><p>数据链路层传输的帧大小是有限制的，不能把一个太大的包直接塞给链路层，这个限制被称为「最大传输单元（<code>Maximum Transmission Unit, MTU</code>）」</p>
-<p>不同的数据链路层的 <code>MTU</code> 是不同的。通过 <code>netstat -i</code> 可以查看网卡的 mtu，比如在 我的 <code>ubuntu</code> 机器上可以看到</p>
+<span id="more"></span>
+<p>不同的数据链路层的 <code>MTU</code> 是不同的。通过 <code>netstat -i</code> 可以查看网卡的 <code>MTU</code>，比如在 我的 <code>ubuntu</code> 机器上可以看到</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">-&gt; </span><span class="language-bash">netstat -i</span></span><br><span class="line">Kernel Interface table</span><br><span class="line">Iface      MTU    RX-OK RX-ERR RX-DRP RX-OVR    TX-OK TX-ERR TX-DRP TX-OVR Flg</span><br><span class="line">ens33     1500     4513      0      0 0          2872      0      0      0 BMRU</span><br><span class="line">lo       65536     5307      0      0 0          5307      0      0      0 LRU</span><br></pre></td></tr></table></figure>
 
-<h1 id="IP-分段"><a href="#IP-分段" class="headerlink" title="IP 分段"></a>IP 分段</h1><h1 id="网络中的木桶效应：路径-MTU"><a href="#网络中的木桶效应：路径-MTU" class="headerlink" title="网络中的木桶效应：路径 MTU"></a>网络中的木桶效应：路径 MTU</h1><h1 id="TCP-最大段大小（Max-Segment-Size，MSS）"><a href="#TCP-最大段大小（Max-Segment-Size，MSS）" class="headerlink" title="TCP 最大段大小（Max Segment Size，MSS）"></a>TCP 最大段大小（Max Segment Size，MSS）</h1><h1 id="为什么有时候抓包看到的单个数据包大于-MTU"><a href="#为什么有时候抓包看到的单个数据包大于-MTU" class="headerlink" title="为什么有时候抓包看到的单个数据包大于 MTU"></a>为什么有时候抓包看到的单个数据包大于 MTU</h1><h1 id="TCP-套接字选项-TCP-MAXSEG"><a href="#TCP-套接字选项-TCP-MAXSEG" class="headerlink" title="TCP 套接字选项 TCP_MAXSEG"></a>TCP 套接字选项 TCP_MAXSEG</h1><h1 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h1><p>IP 数据包长度在超过链路的 MTU 时在发送之前需要分片，而 TCP 层为了 IP 层不用分片主动将包切割成 MSS 大小。</p>
+<h1 id="IP-分段"><a href="#IP-分段" class="headerlink" title="IP 分段"></a><code>IP</code> 分段</h1><h1 id="网络中的木桶效应：路径-MTU"><a href="#网络中的木桶效应：路径-MTU" class="headerlink" title="网络中的木桶效应：路径 MTU"></a>网络中的木桶效应：路径 <code>MTU</code></h1><h1 id="TCP-最大段大小（Max-Segment-Size，MSS）"><a href="#TCP-最大段大小（Max-Segment-Size，MSS）" class="headerlink" title="TCP 最大段大小（Max Segment Size，MSS）"></a><code>TCP</code> 最大段大小（<code>Max Segment Size</code>，<code>MSS</code>）</h1><h1 id="为什么有时候抓包看到的单个数据包大于-MTU"><a href="#为什么有时候抓包看到的单个数据包大于-MTU" class="headerlink" title="为什么有时候抓包看到的单个数据包大于 MTU"></a>为什么有时候抓包看到的单个数据包大于 <code>MTU</code></h1><h1 id="TCP-套接字选项-TCP-MAXSEG"><a href="#TCP-套接字选项-TCP-MAXSEG" class="headerlink" title="TCP 套接字选项 TCP_MAXSEG"></a><code>TCP</code> 套接字选项 <code>TCP_MAXSEG</code></h1><h1 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h1><p><code>IP</code> 数据包长度在超过链路的 MTU 时在发送之前需要分片，而 <code>TCP</code> 层为了 <code>IP</code> 层不用分片主动将包切割成 <code>MSS</code> 大小。</p>
 
     </div>
 
@@ -261,8 +262,8 @@
       <i class="fa fa-chevron-left"></i> QUIC 协议初探
     </a></div>
       <div class="post-nav-item">
-    <a href="/2024/03/20/network/%E7%BD%91%E7%BB%9C%E5%B7%A5%E5%85%B7%20telnet%E3%80%81-nc%E3%80%81-netstat/" rel="next" title="网络工）ttelnet、 nc、 netstat、ss">
-      网络工）ttelnet、 nc、 netstat、ss <i class="fa fa-chevron-right"></i>
+    <a href="/2024/03/20/network/%E7%BD%91%E7%BB%9C%E5%B7%A5%E5%85%B7%20telnet%E3%80%81-nc%E3%80%81-netstat/" rel="next" title="网络工具 telnet、 nc、 netstat、ss">
+      网络工具 telnet、 nc、 netstat、ss <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>

@@ -20,15 +20,15 @@
     var CONFIG = {"hostname":"yngty.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="telnet检查端口是否打开123telnet [domainname or ip] [port]telnet 220.181.57.216 80  netcat当服务器123nc -l [port]nc -l 9090 连接服务器123nc [host or ip] [port]nc 10.211.55.5 9090  查看远程端口是否打开1nc -zv [host or ip] [port]">
+  <meta name="description" content="telnet检查端口是否打开123telnet [domainname or ip] [port]telnet 220.181.57.216 80">
 <meta property="og:type" content="article">
-<meta property="og:title" content="网络工）ttelnet、 nc、 netstat、ss">
+<meta property="og:title" content="网络工具 telnet、 nc、 netstat、ss">
 <meta property="og:url" content="https://yngty.github.io/2024/03/20/network/%E7%BD%91%E7%BB%9C%E5%B7%A5%E5%85%B7%20telnet%E3%80%81-nc%E3%80%81-netstat/index.html">
 <meta property="og:site_name" content="Symbol Crash">
-<meta property="og:description" content="telnet检查端口是否打开123telnet [domainname or ip] [port]telnet 220.181.57.216 80  netcat当服务器123nc -l [port]nc -l 9090 连接服务器123nc [host or ip] [port]nc 10.211.55.5 9090  查看远程端口是否打开1nc -zv [host or ip] [port]">
+<meta property="og:description" content="telnet检查端口是否打开123telnet [domainname or ip] [port]telnet 220.181.57.216 80">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-03-20T09:42:47.000Z">
-<meta property="article:modified_time" content="2024-07-11T09:49:23.933Z">
+<meta property="article:modified_time" content="2024-07-11T09:54:18.293Z">
 <meta property="article:author" content="yngty">
 <meta property="article:tag" content="tools">
 <meta property="article:tag" content="network">
@@ -47,7 +47,7 @@
   };
 </script>
 
-  <title>网络工）ttelnet、 nc、 netstat、ss | Symbol Crash</title>
+  <title>网络工具 telnet、 nc、 netstat、ss | Symbol Crash</title>
   
 
 
@@ -177,7 +177,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          网络工）ttelnet、 nc、 netstat、ss
+          网络工具 telnet、 nc、 netstat、ss
         </h1>
 
         <div class="post-meta">
@@ -194,7 +194,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-07-11 09:49:23" itemprop="dateModified" datetime="2024-07-11T09:49:23+00:00">2024-07-11</time>
+                <time title="修改时间：2024-07-11 09:54:18" itemprop="dateModified" datetime="2024-07-11T09:54:18+00:00">2024-07-11</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -212,7 +212,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>386</span>
+              <span>387</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -232,7 +232,7 @@
 
       
         <h1 id="telnet"><a href="#telnet" class="headerlink" title="telnet"></a><code>telnet</code></h1><h2 id="检查端口是否打开"><a href="#检查端口是否打开" class="headerlink" title="检查端口是否打开"></a>检查端口是否打开</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">telnet [domainname or ip] [port]</span><br><span class="line"></span><br><span class="line">telnet 220.181.57.216 80</span><br></pre></td></tr></table></figure>
-
+<span id="more"></span>
 <h1 id="netcat"><a href="#netcat" class="headerlink" title="netcat"></a><code>netcat</code></h1><h2 id="当服务器"><a href="#当服务器" class="headerlink" title="当服务器"></a>当服务器</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">nc -l [port]</span><br><span class="line"></span><br><span class="line">nc -l 9090</span><br></pre></td></tr></table></figure>
 <h2 id="连接服务器"><a href="#连接服务器" class="headerlink" title="连接服务器"></a>连接服务器</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">nc [host or ip] [port]</span><br><span class="line"></span><br><span class="line">nc 10.211.55.5 9090</span><br></pre></td></tr></table></figure>
 

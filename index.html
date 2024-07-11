@@ -184,7 +184,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2024-07-11 17:42:47 / 修改时间：09:49:23" itemprop="dateCreated datePublished" datetime="2024-07-11T17:42:47+00:00">2024-07-11</time>
+              <time title="创建时间：2024-07-11 17:42:47 / 修改时间：09:54:18" itemprop="dateCreated datePublished" datetime="2024-07-11T17:42:47+00:00">2024-07-11</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -279,7 +279,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-07-11 09:49:23" itemprop="dateModified" datetime="2024-07-11T09:49:23+00:00">2024-07-11</time>
+                <time title="修改时间：2024-07-11 09:54:18" itemprop="dateModified" datetime="2024-07-11T09:54:18+00:00">2024-07-11</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -364,7 +364,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2024/03/20/network/%E7%BD%91%E7%BB%9C%E5%B7%A5%E5%85%B7%20telnet%E3%80%81-nc%E3%80%81-netstat/" class="post-title-link" itemprop="url">网络工）ttelnet、 nc、 netstat、ss</a>
+            <a href="/2024/03/20/network/%E7%BD%91%E7%BB%9C%E5%B7%A5%E5%85%B7%20telnet%E3%80%81-nc%E3%80%81-netstat/" class="post-title-link" itemprop="url">网络工具 telnet、 nc、 netstat、ss</a>
         </h2>
 
         <div class="post-meta">
@@ -381,7 +381,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-07-11 09:49:23" itemprop="dateModified" datetime="2024-07-11T09:49:23+00:00">2024-07-11</time>
+                <time title="修改时间：2024-07-11 09:54:18" itemprop="dateModified" datetime="2024-07-11T09:54:18+00:00">2024-07-11</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -399,7 +399,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>386</span>
+              <span>387</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -419,38 +419,14 @@
 
       
           <h1 id="telnet"><a href="#telnet" class="headerlink" title="telnet"></a><code>telnet</code></h1><h2 id="检查端口是否打开"><a href="#检查端口是否打开" class="headerlink" title="检查端口是否打开"></a>检查端口是否打开</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">telnet [domainname or ip] [port]</span><br><span class="line"></span><br><span class="line">telnet 220.181.57.216 80</span><br></pre></td></tr></table></figure>
-
-<h1 id="netcat"><a href="#netcat" class="headerlink" title="netcat"></a><code>netcat</code></h1><h2 id="当服务器"><a href="#当服务器" class="headerlink" title="当服务器"></a>当服务器</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">nc -l [port]</span><br><span class="line"></span><br><span class="line">nc -l 9090</span><br></pre></td></tr></table></figure>
-<h2 id="连接服务器"><a href="#连接服务器" class="headerlink" title="连接服务器"></a>连接服务器</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">nc [host or ip] [port]</span><br><span class="line"></span><br><span class="line">nc 10.211.55.5 9090</span><br></pre></td></tr></table></figure>
-
-<h2 id="查看远程端口是否打开"><a href="#查看远程端口是否打开" class="headerlink" title="查看远程端口是否打开"></a>查看远程端口是否打开</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc -zv [host or ip] [port]</span><br></pre></td></tr></table></figure>
-
-<p>其中 <code>-z</code> 参数表示不发送任何数据包，<code>tcp</code> 三次握手完后自动退出进程。有了 <code>-v</code> 参数则会输出更多详细信息（<code>verbose</code>）</p>
-<h1 id="netstat"><a href="#netstat" class="headerlink" title="netstat"></a>netstat</h1><p><code>netstat</code> 用来显示套接字的状态。</p>
-<h2 id="列出所有套接字"><a href="#列出所有套接字" class="headerlink" title="列出所有套接字"></a>列出所有套接字</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">netstat -a</span><br></pre></td></tr></table></figure>
-<ul>
-<li><code>-a</code> 命令可以输出所有的套接字，包括监听的和未监听的套接字。 示例输出：</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">➜  ~ netstat -a</span><br><span class="line">Active Internet connections (including servers)</span><br><span class="line">Proto Recv-Q Send-Q  Local Address          Foreign Address        (state)</span><br><span class="line">tcp4       0      0  yanghao.51628          43.134.115.68.https    ESTABLISHED</span><br><span class="line">tcp4       0      0  localhost.hydap        localhost.51627        ESTABLISHED</span><br><span class="line">tcp4       0      0  localhost.51627        localhost.hydap        ESTABLISHED</span><br><span class="line">tcp4       0      0  localhost.ddi-tcp-2    localhost.51626        ESTABLISHED</span><br><span class="line">tcp4       0      0  localhost.51626        localhost.ddi-tcp-2    ESTABLISHED</span><br></pre></td></tr></table></figure>
-
-<h2 id="只列出-TCP-连接"><a href="#只列出-TCP-连接" class="headerlink" title="只列出 TCP 连接"></a>只列出 <code>TCP</code> 连接</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">netstat -at</span><br></pre></td></tr></table></figure>
-
-<h2 id="只列出-UDP-连接"><a href="#只列出-UDP-连接" class="headerlink" title="只列出 UDP 连接"></a>只列出 <code>UDP</code> 连接</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">netstat -au</span><br></pre></td></tr></table></figure>
-<h2 id="只列出处于监听状态的连接"><a href="#只列出处于监听状态的连接" class="headerlink" title="只列出处于监听状态的连接"></a>只列出处于监听状态的连接</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">netstat -l</span><br></pre></td></tr></table></figure>
-<ul>
-<li><code>-l</code> 选项用来指定处于 <code>LISTEN</code> 状态的连接</li>
-</ul>
-<h2 id="禁用端口-和-IP-映射"><a href="#禁用端口-和-IP-映射" class="headerlink" title="禁用端口 和 IP 映射"></a>禁用端口 和 IP 映射</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">netstat -ltn</span><br></pre></td></tr></table></figure>
-<ul>
-<li>常用端口都被映射为了名字，比如 <code>22</code> 端口输出显示为 <code>ssh</code>，<code>8080</code> 端口被映射为 <code>webcache</code>。大部分情况下，我们并不想 <code>netstat</code> 帮我们做这样的事情，可以加上 <code>-n</code> 禁用</li>
-</ul>
-<h2 id="显示进程"><a href="#显示进程" class="headerlink" title="显示进程"></a>显示进程</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">netstat -ltnp</span><br></pre></td></tr></table></figure>
-<ul>
-<li><code>-p</code> 命令可以显示连接归属的进程信息，在查看端口被哪个进程占用时非常有用.</li>
-</ul>
-<h2 id="显示所有的网卡信息"><a href="#显示所有的网卡信息" class="headerlink" title="显示所有的网卡信息"></a>显示所有的网卡信息</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">netstat -i</span><br></pre></td></tr></table></figure>
-
-<h2 id="ss"><a href="#ss" class="headerlink" title="ss"></a><code>ss</code></h2>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/03/20/network/%E7%BD%91%E7%BB%9C%E5%B7%A5%E5%85%B7%20telnet%E3%80%81-nc%E3%80%81-netstat/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -500,7 +476,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-07-11 09:49:23" itemprop="dateModified" datetime="2024-07-11T09:49:23+00:00">2024-07-11</time>
+                <time title="修改时间：2024-07-11 09:54:18" itemprop="dateModified" datetime="2024-07-11T09:54:18+00:00">2024-07-11</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -518,7 +494,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>241</span>
+              <span>242</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -538,11 +514,14 @@
 
       
           <h1 id="最大传输单元（Maximum-Transmission-Unit-MTU）"><a href="#最大传输单元（Maximum-Transmission-Unit-MTU）" class="headerlink" title="最大传输单元（Maximum Transmission Unit, MTU）"></a>最大传输单元（Maximum Transmission Unit, MTU）</h1><p>数据链路层传输的帧大小是有限制的，不能把一个太大的包直接塞给链路层，这个限制被称为「最大传输单元（<code>Maximum Transmission Unit, MTU</code>）」</p>
-<p>不同的数据链路层的 <code>MTU</code> 是不同的。通过 <code>netstat -i</code> 可以查看网卡的 mtu，比如在 我的 <code>ubuntu</code> 机器上可以看到</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">-&gt; </span><span class="language-bash">netstat -i</span></span><br><span class="line">Kernel Interface table</span><br><span class="line">Iface      MTU    RX-OK RX-ERR RX-DRP RX-OVR    TX-OK TX-ERR TX-DRP TX-OVR Flg</span><br><span class="line">ens33     1500     4513      0      0 0          2872      0      0      0 BMRU</span><br><span class="line">lo       65536     5307      0      0 0          5307      0      0      0 LRU</span><br></pre></td></tr></table></figure>
-
-<h1 id="IP-分段"><a href="#IP-分段" class="headerlink" title="IP 分段"></a>IP 分段</h1><h1 id="网络中的木桶效应：路径-MTU"><a href="#网络中的木桶效应：路径-MTU" class="headerlink" title="网络中的木桶效应：路径 MTU"></a>网络中的木桶效应：路径 MTU</h1><h1 id="TCP-最大段大小（Max-Segment-Size，MSS）"><a href="#TCP-最大段大小（Max-Segment-Size，MSS）" class="headerlink" title="TCP 最大段大小（Max Segment Size，MSS）"></a>TCP 最大段大小（Max Segment Size，MSS）</h1><h1 id="为什么有时候抓包看到的单个数据包大于-MTU"><a href="#为什么有时候抓包看到的单个数据包大于-MTU" class="headerlink" title="为什么有时候抓包看到的单个数据包大于 MTU"></a>为什么有时候抓包看到的单个数据包大于 MTU</h1><h1 id="TCP-套接字选项-TCP-MAXSEG"><a href="#TCP-套接字选项-TCP-MAXSEG" class="headerlink" title="TCP 套接字选项 TCP_MAXSEG"></a>TCP 套接字选项 TCP_MAXSEG</h1><h1 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h1><p>IP 数据包长度在超过链路的 MTU 时在发送之前需要分片，而 TCP 层为了 IP 层不用分片主动将包切割成 MSS 大小。</p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/03/18/network/MTU%E4%B8%8EMSS%E7%9A%84%E5%A5%A5%E7%A7%98/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -592,7 +571,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-07-11 09:49:23" itemprop="dateModified" datetime="2024-07-11T09:49:23+00:00">2024-07-11</time>
+                <time title="修改时间：2024-07-11 09:54:18" itemprop="dateModified" datetime="2024-07-11T09:54:18+00:00">2024-07-11</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -695,7 +674,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-07-11 09:49:23" itemprop="dateModified" datetime="2024-07-11T09:49:23+00:00">2024-07-11</time>
+                <time title="修改时间：2024-07-11 09:54:18" itemprop="dateModified" datetime="2024-07-11T09:54:18+00:00">2024-07-11</time>
               </span>
 
           <br>
@@ -787,7 +766,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-07-11 09:49:23" itemprop="dateModified" datetime="2024-07-11T09:49:23+00:00">2024-07-11</time>
+                <time title="修改时间：2024-07-11 09:54:18" itemprop="dateModified" datetime="2024-07-11T09:54:18+00:00">2024-07-11</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -805,7 +784,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>751</span>
+              <span>752</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -829,90 +808,15 @@
 <li><code>QML</code> 模块 类型库</li>
 <li>内置了 <code>javascript</code> 运行时环境, 提供逻辑处理： 界面逻辑，业务逻辑</li>
 </ul>
-<h2 id="Qt-Quick-是什么？"><a href="#Qt-Quick-是什么？" class="headerlink" title="Qt Quick 是什么？"></a>Qt Quick 是什么？</h2><pre><code>`Qt Quick` 是类型库，提供了可视化 `UI` 组件，软件开发框架，用于构建用户界面
-</code></pre>
-<h2 id="QML-应用程序"><a href="#QML-应用程序" class="headerlink" title="QML 应用程序"></a>QML 应用程序</h2><h2 id="使用-qmlscene-运行-QML-程序"><a href="#使用-qmlscene-运行-QML-程序" class="headerlink" title="使用 qmlscene 运行 QML 程序"></a>使用 qmlscene 运行 QML 程序</h2><h2 id="C-应用程序使用-QML"><a href="#C-应用程序使用-QML" class="headerlink" title="C++ 应用程序使用 QML"></a>C++ 应用程序使用 QML</h2><h3 id="使用-QML-Engine"><a href="#使用-QML-Engine" class="headerlink" title="使用 QML Engine"></a>使用 QML Engine</h3><p>只使用了 Qt Quick 框架，没有使用Qt Widgets</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;QQmlApplicationEngine&gt;</span></span></span><br><span class="line"></span><br><span class="line">QQmlApplicationEngine engine;</span><br><span class="line">engine.<span class="built_in">load</span>(<span class="built_in">QUrl</span>(<span class="built_in">QStringLiteral</span>(<span class="string">&quot;qrc:/main.qml&quot;</span>)));</span><br><span class="line"><span class="keyword">if</span> (engine.<span class="built_in">rootObjects</span>().<span class="built_in">isEmpty</span>())</span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1</span>;</span><br></pre></td></tr></table></figure>
-<h3 id="使用-QML-View"><a href="#使用-QML-View" class="headerlink" title="使用 QML View"></a>使用 QML View</h3><p>只使用了 Qt Quick 框架，没有使用 QWidget, QQuickView 不支持 window 作为根节点</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;QQuickView&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">const</span> QUrl <span class="title">url</span><span class="params">(QStringLiteral(<span class="string">&quot;qrc:/main.qml&quot;</span>))</span></span>;</span><br><span class="line">QQuickView* view = <span class="keyword">new</span> QQuickView;</span><br><span class="line">view-&gt;<span class="built_in">setSource</span>(url);</span><br><span class="line">view-&gt;<span class="built_in">show</span>();</span><br></pre></td></tr></table></figure>
-<h3 id="使用-QML-Widget"><a href="#使用-QML-Widget" class="headerlink" title="使用 QML Widget"></a>使用 QML Widget</h3><p>支持混合使用Qt Quick 框架和 Qt Widgets 框架, 不支持 window 作为根节点</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;QApplication&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;QQuickWidget&gt;</span></span></span><br><span class="line"></span><br><span class="line">QCoreApplication::<span class="built_in">setAttribute</span>(Qt::AA_EnableHighDpiScaling);</span><br><span class="line"><span class="function">QApplication <span class="title">app</span><span class="params">(argc, argv)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">const</span> QUrl <span class="title">url</span><span class="params">(QStringLiteral(<span class="string">&quot;qrc:/main.qml&quot;</span>))</span></span>;</span><br><span class="line">QQuickWidget *view = <span class="keyword">new</span> QQuickWidget;</span><br><span class="line">view-&gt;<span class="built_in">setSource</span>(url);</span><br><span class="line">view-&gt;<span class="built_in">show</span>();</span><br></pre></td></tr></table></figure>
-
-<h1 id="Qt-QML-语法基础"><a href="#Qt-QML-语法基础" class="headerlink" title="Qt QML 语法基础"></a>Qt QML 语法基础</h1><h2 id="QML-术语表"><a href="#QML-术语表" class="headerlink" title="QML 术语表"></a>QML 术语表</h2><table>
-<thead>
-<tr>
-<th>术语</th>
-<th>含义</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>QML</td>
-<td>1. QML 是一种应用编程语言 2. QML模块实现了QML语言的架构和引擎</td>
-</tr>
-<tr>
-<td>Qt Quick</td>
-<td>1 基于QML实现的类型和功能的标准库 2. Qt Quick 模块实现了这些类型和功能</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>1. QML 基础类型 2. QML对象类型</td>
-</tr>
-<tr>
-<td>Basic Type</td>
-<td>QML 内置类型。 int、bool、string等</td>
-</tr>
-<tr>
-<td>Object Type</td>
-<td>QML代码定义的对象类型 c++代码定义的对象类型</td>
-</tr>
-<tr>
-<td>Object</td>
-<td>对象由QML引擎创建，1. 在对象定义时实例化 2.延迟实例化</td>
-</tr>
-<tr>
-<td>Component</td>
-<td>组件是用于创建QML对象或者对象树的模板 1. QML文档加载时由QML引擎创建 2. 在QML 文档内部内联定义创建</td>
-</tr>
-<tr>
-<td>Document</td>
-<td>QML 文档包含了一些QML源代码，文档名以大写字母开头 1. 可以位于 QML 源代码文件 2. 可以位于一个文本字符串中</td>
-</tr>
-<tr>
-<td>Property</td>
-<td>一个对象可以有一个或多个属性 1. 属性名称 2.属性的值</td>
-</tr>
-<tr>
-<td>Binding</td>
-<td>属性绑定到一个javascript 表达式，任何时候属性的值由整个 javascript表达式估值决定</td>
-</tr>
-<tr>
-<td>Signal</td>
-<td>对象可以发射一个信号  其他对象可以接受并通过信号处理器处理这个信号</td>
-</tr>
-<tr>
-<td>Signal Handler</td>
-<td>信号处理</td>
-</tr>
-<tr>
-<td>Lazy Instance</td>
-<td>对象可以延迟初始化，已避免不必要的工作</td>
-</tr>
-</tbody></table>
-<h2 id="QML-导入语句"><a href="#QML-导入语句" class="headerlink" title="QML 导入语句"></a>QML 导入语句</h2><ul>
-<li>import 模块标识 主版本.次版本 as 模块名称</li>
-<li>import “目录路径” as 模块名称</li>
-<li>import “javascript文件名称” as 模块名称</li>
-</ul>
-<h2 id="QML-对象定义语句"><a href="#QML-对象定义语句" class="headerlink" title="QML 对象定义语句"></a>QML 对象定义语句</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">对象类型 &#123;</span><br><span class="line">    属性： 属性值</span><br><span class="line">    信号</span><br><span class="line">    信号处理器</span><br><span class="line">    函数</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="QML-注释"><a href="#QML-注释" class="headerlink" title="QML 注释"></a>QML 注释</h2><p>跟 <code>C++</code> 一样，单行和多行</p>
-<h1 id="QML-调试"><a href="#QML-调试" class="headerlink" title="QML 调试"></a>QML 调试</h1><h2 id="日志"><a href="#日志" class="headerlink" title="日志"></a>日志</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">console.log(&quot;宽度: &quot;, width, &quot;高度: &quot;, height);</span><br><span class="line">console.debug(&quot;宽度: &quot;, width, &quot;高度: &quot;, height);</span><br><span class="line">console.info(&quot;宽度: &quot;, width, &quot;高度: &quot;, height);</span><br><span class="line">console.warn(&quot;宽度: &quot;, width, &quot;高度: &quot;, height);</span><br><span class="line">console.error(&quot;宽度: &quot;, width, &quot;高度: &quot;, height);</span><br></pre></td></tr></table></figure>
-<h2 id="断言"><a href="#断言" class="headerlink" title="断言"></a>断言</h2><p><strong>断言失败不影响之后的代码运行</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">console.assert(width &gt; 600, &quot;assert failed&quot;)</span><br></pre></td></tr></table></figure>
-<h2 id="计时器"><a href="#计时器" class="headerlink" title="计时器"></a>计时器</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">console.time(&quot;ty&quot;);</span><br><span class="line">...</span><br><span class="line">console.timeEnd(&quot;ty&quot;);</span><br></pre></td></tr></table></figure>
-<h2 id="跟踪"><a href="#跟踪" class="headerlink" title="跟踪"></a>跟踪</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">console.trace();</span><br></pre></td></tr></table></figure>
-<h2 id="计数"><a href="#计数" class="headerlink" title="计数"></a>计数</h2><p>统计函数执行了多少次</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">console.count();</span><br></pre></td></tr></table></figure>
-
+<h2 id="Qt-Quick-是什么？"><a href="#Qt-Quick-是什么？" class="headerlink" title="Qt Quick 是什么？"></a>Qt Quick 是什么？</h2><p><code>Qt Quick</code> 是类型库，提供了可视化 <code>UI</code> 组件，软件开发框架，用于构建用户界面</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/02/26/qt/Qt-QML-%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5%E5%9F%BA%E7%A1%80/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -962,7 +866,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-07-11 09:49:23" itemprop="dateModified" datetime="2024-07-11T09:49:23+00:00">2024-07-11</time>
+                <time title="修改时间：2024-07-11 09:54:18" itemprop="dateModified" datetime="2024-07-11T09:54:18+00:00">2024-07-11</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -980,7 +884,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>619</span>
+              <span>620</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -1002,36 +906,14 @@
           <h1 id="C-Class"><a href="#C-Class" class="headerlink" title="C++ Class"></a>C++ Class</h1><p>在类定义中，只有非静态数据声明会增加类对象的大小</p>
 <h1 id="Empty-Class"><a href="#Empty-Class" class="headerlink" title="Empty Class"></a>Empty Class</h1><p>一个空类在C++中没有非静态数据成员、没有虚函数，也没有虚基类。这样的类通常被称为“无状态”，因为它们不封装任何状态或数据。然而，即使一个空类没有显式的数据成员，它仍然需要占用一些内存空间。</p>
 <p>C++标准规定，不同类型的对象必须具有不同的地址。因此，一个空类对象必须在内存中具有唯一的地址。这确保了即使一个空类对象没有任何可见的数据成员或行为，它也必须占用至少一个字节的内存，以区分它与具有不同类型的其他对象。</p>
-<h2 id="C-20-no-unique-address"><a href="#C-20-no-unique-address" class="headerlink" title="C++20 no_unique_address"></a>C++20 no_unique_address</h2><h2 id="Empty-Base-Class"><a href="#Empty-Base-Class" class="headerlink" title="Empty Base Class"></a>Empty Base Class</h2><p>空基类优化（<code>Empty Base Class Optimization</code>，<code>EBCO</code>）</p>
-<ul>
-<li>对于多重继承，重新排列基类的顺序以便空基类首先出现在基类列表上通常是有意义的。</li>
-<li><code>C++</code> 标准并没有规定编译器必须对空基类进行存储优化</li>
-</ul>
-<h1 id="标准布局类"><a href="#标准布局类" class="headerlink" title="标准布局类"></a>标准布局类</h1><ul>
-<li><code>C++</code> 只为标准布局类型提供布局保证</li>
-<li>标准布局类型本质上是一种C类型:<ul>
-<li>标量类型(算术、枚举或指针类型)</li>
-<li>具有标准布局类型元素的数组</li>
-<li>一个标准布局类(可能声明为结构或联合)</li>
-</ul>
-</li>
-</ul>
-<p>标准布局类可以具有:</p>
-<ul>
-<li>无虚函数或虚基类</li>
-<li>标准布局类类型的零个或多个基类。</li>
-<li>没有两个相同类型的基类</li>
-<li>标准布局类型的零个或多个非静态数据成员，例如:所有成员具有相同的访问控制，并且</li>
-<li>所有成员都声明在最派生的类中或在同一个基类中标准布局类- 可以具有非虚和静态成员函数、静态数据成员和嵌套类型</li>
-</ul>
-<h2 id="布局保证"><a href="#布局保证" class="headerlink" title="布局保证"></a>布局保证</h2><p>关于标准布局类的布局，<code>C++</code> 只保证:</p>
-<ul>
-<li>第一个非静态数据成员位于偏移量为零</li>
-<li>这意味着将指向标准布局类对象的指针 <code>reinterpret_cast</code> 转换为指向其第一个非静态数据成员的指针是合理的</li>
-<li>每一个后续的非静态数据成员的偏移量都大于在它之前声明的非静态数据会员的偏移量</li>
-<li>类的对象存储在连续内存中</li>
-</ul>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/01/22/c++/C-Class-layout/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1081,7 +963,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-07-11 09:49:23" itemprop="dateModified" datetime="2024-07-11T09:49:23+00:00">2024-07-11</time>
+                <time title="修改时间：2024-07-11 09:54:18" itemprop="dateModified" datetime="2024-07-11T09:54:18+00:00">2024-07-11</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1183,7 +1065,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-07-11 09:49:23" itemprop="dateModified" datetime="2024-07-11T09:49:23+00:00">2024-07-11</time>
+                <time title="修改时间：2024-07-11 09:54:18" itemprop="dateModified" datetime="2024-07-11T09:54:18+00:00">2024-07-11</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
