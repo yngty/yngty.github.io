@@ -6,7 +6,7 @@
   <link href="https://yngty.github.io/atom.xml" rel="self"/>
   
   <link href="https://yngty.github.io/"/>
-  <updated>2024-07-18T02:24:46.938Z</updated>
+  <updated>2024-07-18T03:19:33.780Z</updated>
   <id>https://yngty.github.io/</id>
   
   <author>
@@ -17,11 +17,38 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>译 SO_REUSEADDR 和 SO_REUSEPORT 有何不同？</title>
+    <link href="https://yngty.github.io/2024/07/18/network/SO-REUSEADDR-%E5%92%8C-SO-REUSEPORT-%E6%9C%89%E4%BD%95%E4%B8%8D%E5%90%8C%EF%BC%9F/"/>
+    <id>https://yngty.github.io/2024/07/18/network/SO-REUSEADDR-%E5%92%8C-SO-REUSEPORT-%E6%9C%89%E4%BD%95%E4%B8%8D%E5%90%8C%EF%BC%9F/</id>
+    <published>2024-07-18T10:54:35.000Z</published>
+    <updated>2024-07-18T03:19:33.780Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;Socket-编程中的端口复用：SO-REUSEADDR-和-SO-REUSEPORT&quot;&gt;&lt;a href=&quot;#Socket-编程中的端口复用：SO-REUSEADDR-和-SO-REUSEPORT&quot; class=&quot;headerlink&quot; title=&quot;Socket 编程中的端口复用：SO_REUSEADDR 和 SO_REUSEPORT&quot;&gt;&lt;/a&gt;Socket 编程中的端口复用：SO_REUSEADDR 和 SO_REUSEPORT&lt;/h1&gt;&lt;p&gt;欢迎来到一个充满移植性挑战的世界！在深入分析这两个选项之前，我们首先需要了解 &lt;code&gt;BSD&lt;/code&gt; 套接字实现是所有套接字实现的鼻祖。几乎所有其他系统都在某个时间点复制了 &lt;code&gt;BSD&lt;/code&gt; 套接字实现，或至少是其接口，然后在此基础上发展演变。当然，&lt;code&gt;BSD&lt;/code&gt; 套接字实现本身也在不断演变，因此那些更晚期复制它的系统获得了更早期系统所缺乏的功能。理解 &lt;code&gt;BSD&lt;/code&gt; 套接字实现是理解其他所有套接字实现的关键，即使你不打算为 &lt;code&gt;BSD&lt;/code&gt; 系统编写代码，也应该了解它。&lt;/p&gt;
+&lt;p&gt;在深入探讨 &lt;code&gt;SO_REUSEADDR&lt;/code&gt; 和 &lt;code&gt;SO_REUSEPORT&lt;/code&gt; 之前，你需要了解一些基本知识。一个 &lt;code&gt;TCP/UDP&lt;/code&gt; 连接由五个值组成的元组标识：&lt;/p&gt;
+&lt;figure class=&quot;highlight plaintext&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&amp;#123;&amp;lt;协议&amp;gt;, &amp;lt;源地址&amp;gt;, &amp;lt;源端口&amp;gt;, &amp;lt;目标地址&amp;gt;, &amp;lt;目标端口&amp;gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;任何唯一的这些值组合标识一个连接。因此，没有两个连接可以具有相同的五个值，否则系统将无法区分这些连接。&lt;/p&gt;
+&lt;h2 id=&quot;套接字的基本操作&quot;&gt;&lt;a href=&quot;#套接字的基本操作&quot; class=&quot;headerlink&quot; title=&quot;套接字的基本操作&quot;&gt;&lt;/a&gt;套接字的基本操作&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;创建套接字：使用 &lt;code&gt;socket()&lt;/code&gt; 函数设置套接字的协议。&lt;/li&gt;
+&lt;li&gt;绑定地址和端口：使用 &lt;code&gt;bind()&lt;/code&gt; 函数设置源地址和端口。&lt;/li&gt;
+&lt;li&gt;连接目标地址和端口：使用 &lt;code&gt;connect()&lt;/code&gt; 函数设置目标地址和端口。&lt;br&gt;对于 &lt;code&gt;UDP&lt;/code&gt;，由于它是无连接协议，可以在不连接的情况下使用。然而，在某些情况下连接它是有益的。在无连接模式下，如果未显式绑定，&lt;code&gt;UDP&lt;/code&gt; 套接字通常会在第一次发送数据时由系统自动绑定，因为未绑定的 &lt;code&gt;UDP&lt;/code&gt; 套接字无法接收任何（回复）数据。对于未绑定的 TCP 套接字也是如此，它在连接之前会自动绑定。&lt;/li&gt;
+&lt;/ol&gt;</summary>
+    
+    
+    
+    <category term="Network" scheme="https://yngty.github.io/categories/Network/"/>
+    
+    
+    <category term="tcp" scheme="https://yngty.github.io/tags/tcp/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Netfilter 框架浅析</title>
     <link href="https://yngty.github.io/2024/07/11/network/Netfilter-%E6%A1%86%E6%9E%B6%E6%B5%85%E6%9E%90/"/>
     <id>https://yngty.github.io/2024/07/11/network/Netfilter-%E6%A1%86%E6%9E%B6%E6%B5%85%E6%9E%90/</id>
     <published>2024-07-11T17:42:47.000Z</published>
-    <updated>2024-07-18T02:24:46.938Z</updated>
+    <updated>2024-07-18T03:19:33.780Z</updated>
     
     
     <summary type="html">&lt;p&gt;&lt;code&gt;Netfilter&lt;/code&gt;，在 &lt;code&gt;Linux&lt;/code&gt; 内核中的一个软件框架，用于管理网络数据包。不仅具有网络地址转换（&lt;code&gt;NAT&lt;/code&gt;）的功能，也具备数据包内容修改、以及数据包过滤等防火墙功能。利用运作于用户空间的应用软件，如 &lt;code&gt;iptables&lt;/code&gt; 、&lt;code&gt;nftables&lt;/code&gt; 、&lt;code&gt;ebtables&lt;/code&gt; 和 &lt;code&gt;arptables&lt;/code&gt; 等，来控制 &lt;code&gt;Netfilter&lt;/code&gt;，系统管理者可以管理通过Linux操作系统的各种网络数据包。&lt;code&gt;1990&lt;/code&gt; 年代，&lt;code&gt;Netfilter&lt;/code&gt; 在 &lt;code&gt;Linux 2.3.15&lt;/code&gt; 版时进入Linux内核，正式应用于 &lt;code&gt;Linux 2.4&lt;/code&gt; 版。&lt;/p&gt;</summary>
@@ -40,7 +67,7 @@
     <link href="https://yngty.github.io/2024/03/21/network/TCP-TFO%E5%BF%AB%E9%80%9F%E6%89%93%E5%BC%80/"/>
     <id>https://yngty.github.io/2024/03/21/network/TCP-TFO%E5%BF%AB%E9%80%9F%E6%89%93%E5%BC%80/</id>
     <published>2024-03-21T11:25:45.000Z</published>
-    <updated>2024-07-18T02:24:46.938Z</updated>
+    <updated>2024-07-18T03:19:33.780Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot; class=&quot;headerlink&quot; title=&quot;简介&quot;&gt;&lt;/a&gt;简介&lt;/h1&gt;&lt;p&gt;&lt;code&gt;TCP&lt;/code&gt; 快速打开（&lt;code&gt;TCP Fast Open&lt;/code&gt;，简称&lt;code&gt;TFO&lt;/code&gt;）是对计算机网络中传输控制协议（&lt;code&gt;TCP&lt;/code&gt;）连接的一种简化握手手续的拓展，用于提高两端点间连接的打开速度。&lt;/p&gt;
@@ -73,7 +100,7 @@
     <link href="https://yngty.github.io/2024/03/20/network/%E7%BD%91%E7%BB%9C%E5%B7%A5%E5%85%B7%20telnet%E3%80%81-nc%E3%80%81-netstat/"/>
     <id>https://yngty.github.io/2024/03/20/network/%E7%BD%91%E7%BB%9C%E5%B7%A5%E5%85%B7%20telnet%E3%80%81-nc%E3%80%81-netstat/</id>
     <published>2024-03-20T09:42:47.000Z</published>
-    <updated>2024-07-18T02:24:46.942Z</updated>
+    <updated>2024-07-18T03:19:33.784Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;telnet&quot;&gt;&lt;a href=&quot;#telnet&quot; class=&quot;headerlink&quot; title=&quot;telnet&quot;&gt;&lt;/a&gt;&lt;code&gt;telnet&lt;/code&gt;&lt;/h1&gt;&lt;h2 id=&quot;检查端口是否打开&quot;&gt;&lt;a href=&quot;#检查端口是否打开&quot; class=&quot;headerlink&quot; title=&quot;检查端口是否打开&quot;&gt;&lt;/a&gt;检查端口是否打开&lt;/h2&gt;&lt;figure class=&quot;highlight shell&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;telnet [domainname or ip] [port]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;telnet 220.181.57.216 80&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
@@ -94,7 +121,7 @@
     <link href="https://yngty.github.io/2024/03/18/network/MTU%E4%B8%8EMSS%E7%9A%84%E5%A5%A5%E7%A7%98/"/>
     <id>https://yngty.github.io/2024/03/18/network/MTU%E4%B8%8EMSS%E7%9A%84%E5%A5%A5%E7%A7%98/</id>
     <published>2024-03-18T14:44:24.000Z</published>
-    <updated>2024-07-18T02:24:46.938Z</updated>
+    <updated>2024-07-18T03:19:33.780Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;最大传输单元（Maximum-Transmission-Unit-MTU）&quot;&gt;&lt;a href=&quot;#最大传输单元（Maximum-Transmission-Unit-MTU）&quot; class=&quot;headerlink&quot; title=&quot;最大传输单元（Maximum Transmission Unit, MTU）&quot;&gt;&lt;/a&gt;最大传输单元（Maximum Transmission Unit, MTU）&lt;/h1&gt;&lt;p&gt;数据链路层传输的帧大小是有限制的，不能把一个太大的包直接塞给链路层，这个限制被称为「最大传输单元（&lt;code&gt;Maximum Transmission Unit, MTU&lt;/code&gt;）」&lt;/p&gt;</summary>
@@ -117,7 +144,7 @@
     <link href="https://yngty.github.io/2024/03/08/network/QUIC-%E5%8D%8F%E8%AE%AE%E5%88%9D%E6%8E%A2/"/>
     <id>https://yngty.github.io/2024/03/08/network/QUIC-%E5%8D%8F%E8%AE%AE%E5%88%9D%E6%8E%A2/</id>
     <published>2024-03-08T14:24:01.000Z</published>
-    <updated>2024-07-18T02:24:46.938Z</updated>
+    <updated>2024-07-18T03:19:33.780Z</updated>
     
     
       
@@ -147,7 +174,7 @@
     <link href="https://yngty.github.io/2024/03/07/linux/SUSE-Linux-%E7%B3%BB%E7%BB%9F%E8%AE%B0%E5%BD%95/"/>
     <id>https://yngty.github.io/2024/03/07/linux/SUSE-Linux-%E7%B3%BB%E7%BB%9F%E8%AE%B0%E5%BD%95/</id>
     <published>2024-03-07T11:18:01.000Z</published>
-    <updated>2024-07-18T02:24:46.938Z</updated>
+    <updated>2024-07-18T03:19:33.780Z</updated>
     
     
       
@@ -169,7 +196,7 @@
     <link href="https://yngty.github.io/2024/02/26/qt/Qt-QML-%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5%E5%9F%BA%E7%A1%80/"/>
     <id>https://yngty.github.io/2024/02/26/qt/Qt-QML-%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5%E5%9F%BA%E7%A1%80/</id>
     <published>2024-02-26T09:50:56.000Z</published>
-    <updated>2024-07-18T02:24:46.942Z</updated>
+    <updated>2024-07-18T03:19:33.784Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;Qt-QML-简介&quot;&gt;&lt;a href=&quot;#Qt-QML-简介&quot; class=&quot;headerlink&quot; title=&quot;Qt QML 简介&quot;&gt;&lt;/a&gt;Qt QML 简介&lt;/h1&gt;&lt;h2 id=&quot;QML-是什么？&quot;&gt;&lt;a href=&quot;#QML-是什么？&quot; class=&quot;headerlink&quot; title=&quot;QML 是什么？&quot;&gt;&lt;/a&gt;QML 是什么？&lt;/h2&gt;&lt;ul&gt;
@@ -195,7 +222,7 @@
     <link href="https://yngty.github.io/2024/01/22/c++/C-Class-layout/"/>
     <id>https://yngty.github.io/2024/01/22/c++/C-Class-layout/</id>
     <published>2024-01-22T10:24:40.000Z</published>
-    <updated>2024-07-18T02:24:46.938Z</updated>
+    <updated>2024-07-18T03:19:33.780Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;C-Class&quot;&gt;&lt;a href=&quot;#C-Class&quot; class=&quot;headerlink&quot; title=&quot;C++ Class&quot;&gt;&lt;/a&gt;C++ Class&lt;/h1&gt;&lt;p&gt;在类定义中，只有非静态数据声明会增加类对象的大小&lt;/p&gt;
@@ -214,7 +241,7 @@
     <link href="https://yngty.github.io/2024/01/08/c++/C-aggregates/"/>
     <id>https://yngty.github.io/2024/01/08/c++/C-aggregates/</id>
     <published>2024-01-08T13:55:00.000Z</published>
-    <updated>2024-07-18T02:24:46.938Z</updated>
+    <updated>2024-07-18T03:19:33.780Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;什么是聚合类型-aggregate&quot;&gt;&lt;a href=&quot;#什么是聚合类型-aggregate&quot; class=&quot;headerlink&quot; title=&quot;什么是聚合类型(aggregate)&quot;&gt;&lt;/a&gt;什么是聚合类型(aggregate)&lt;/h1&gt;&lt;h2 id=&quot;在-C-03-中的定义&quot;&gt;&lt;a href=&quot;#在-C-03-中的定义&quot; class=&quot;headerlink&quot; title=&quot;在 C++03 中的定义&quot;&gt;&lt;/a&gt;在 C++03 中的定义&lt;/h2&gt;&lt;ul&gt;
@@ -238,7 +265,7 @@
     <link href="https://yngty.github.io/2024/01/05/macos/macOS-%E5%AE%8C%E5%85%A8%E7%A3%81%E7%9B%98%E8%AE%BF%E9%97%AE%E6%9D%83%E9%99%90/"/>
     <id>https://yngty.github.io/2024/01/05/macos/macOS-%E5%AE%8C%E5%85%A8%E7%A3%81%E7%9B%98%E8%AE%BF%E9%97%AE%E6%9D%83%E9%99%90/</id>
     <published>2024-01-05T11:12:37.000Z</published>
-    <updated>2024-07-18T02:24:46.938Z</updated>
+    <updated>2024-07-18T03:19:33.780Z</updated>
     
     
     
@@ -255,7 +282,7 @@
     <link href="https://yngty.github.io/2024/01/04/macos/macOS-Ventura-App-%E7%AE%A1%E7%90%86/"/>
     <id>https://yngty.github.io/2024/01/04/macos/macOS-Ventura-App-%E7%AE%A1%E7%90%86/</id>
     <published>2024-01-04T14:34:10.000Z</published>
-    <updated>2024-07-18T02:24:46.938Z</updated>
+    <updated>2024-07-18T03:19:33.780Z</updated>
     
     
     <summary type="html">&lt;p&gt;从 &lt;code&gt;macOS Monterey&lt;/code&gt; 开始，如果应用程序被未由相同开发团队签名且未由 &lt;code&gt;NSUpdateSecurityPolicy&lt;/code&gt; 允许的东西修改，&lt;code&gt;macOS&lt;/code&gt; 将阻止修改并通知用户应用程序希望管理其他应用程序。点击通知会将用户发送到系统设置，他们可以在那里允许应用程序更新和修改其他应用程序。&lt;/p&gt;
@@ -275,7 +302,7 @@
     <link href="https://yngty.github.io/2023/12/29/c++/%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3C-20%E4%B8%AD%E7%9A%84consteval%E5%85%B3%E9%94%AE%E5%AD%97/"/>
     <id>https://yngty.github.io/2023/12/29/c++/%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3C-20%E4%B8%AD%E7%9A%84consteval%E5%85%B3%E9%94%AE%E5%AD%97/</id>
     <published>2023-12-29T18:16:18.000Z</published>
-    <updated>2024-07-18T02:24:46.938Z</updated>
+    <updated>2024-07-18T03:19:33.780Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot; class=&quot;headerlink&quot; title=&quot;简介&quot;&gt;&lt;/a&gt;简介&lt;/h1&gt;&lt;p&gt;用最简单的术语来说，一个只能应用于函数的 &lt;code&gt;consteval&lt;/code&gt; 关键字, 保证它产生一个编译时间常数。否则会导致编译错误。&lt;/p&gt;
@@ -307,7 +334,7 @@
     <link href="https://yngty.github.io/2023/12/29/c++/%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3C++20%E4%B8%AD%E7%9A%84constinit%E5%85%B3%E9%94%AE%E5%AD%97/"/>
     <id>https://yngty.github.io/2023/12/29/c++/%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3C++20%E4%B8%AD%E7%9A%84constinit%E5%85%B3%E9%94%AE%E5%AD%97/</id>
     <published>2023-12-29T17:41:16.000Z</published>
-    <updated>2024-07-18T02:24:46.938Z</updated>
+    <updated>2024-07-18T03:19:33.780Z</updated>
     
     
     <summary type="html">&lt;p&gt;在 &lt;code&gt;C++&lt;/code&gt; 中，存储变量的方式有几种：&lt;/p&gt;
@@ -347,7 +374,7 @@
     <link href="https://yngty.github.io/2023/12/28/macos/macOS-%E8%AE%BE%E7%BD%AE%E9%9D%A2%E6%9D%BF%E5%BF%AB%E6%8D%B7%E9%93%BE%E6%8E%A5/"/>
     <id>https://yngty.github.io/2023/12/28/macos/macOS-%E8%AE%BE%E7%BD%AE%E9%9D%A2%E6%9D%BF%E5%BF%AB%E6%8D%B7%E9%93%BE%E6%8E%A5/</id>
     <published>2023-12-28T17:41:12.000Z</published>
-    <updated>2024-07-18T02:24:46.938Z</updated>
+    <updated>2024-07-18T03:19:33.780Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;Accessibility-Preference-Pane&quot;&gt;&lt;a href=&quot;#Accessibility-Preference-Pane&quot; class=&quot;headerlink&quot; title=&quot;Accessibility Preference Pane&quot;&gt;&lt;/a&gt;Accessibility Preference Pane&lt;/h1&gt;&lt;figure class=&quot;highlight plaintext&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;Main    x-apple.systempreferences:com.apple.preference.universalaccess&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Display x-apple.systempreferences:com.apple.preference.universalaccess?Seeing_Display&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Zoom    x-apple.systempreferences:com.apple.preference.universalaccess?Seeing_Zoom&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;VoiceOver   x-apple.systempreferences:com.apple.preference.universalaccess?Seeing_VoiceOver&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Descriptions    x-apple.systempreferences:com.apple.preference.universalaccess?Media_Descriptions&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Captions    x-apple.systempreferences:com.apple.preference.universalaccess?Captioning&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Audio   x-apple.systempreferences:com.apple.preference.universalaccess?Hearing&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Keyboard    x-apple.systempreferences:com.apple.preference.universalaccess?Keyboard&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Mouse &amp;amp; Trackpad    x-apple.systempreferences:com.apple.preference.universalaccess?Mouse&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Switch Control  x-apple.systempreferences:com.apple.preference.universalaccess?Switch&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;Dictation   x-apple.systempreferences:com.apple.preference.universalaccess?SpeakableItems&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
@@ -366,7 +393,7 @@
     <link href="https://yngty.github.io/2023/12/11/network/TLS/TLS-False-Start/"/>
     <id>https://yngty.github.io/2023/12/11/network/TLS/TLS-False-Start/</id>
     <published>2023-12-11T11:39:47.000Z</published>
-    <updated>2024-07-18T02:24:46.938Z</updated>
+    <updated>2024-07-18T03:19:33.784Z</updated>
     
     
       
@@ -389,7 +416,7 @@
     <link href="https://yngty.github.io/2023/12/11/network/TLS/ALPN/"/>
     <id>https://yngty.github.io/2023/12/11/network/TLS/ALPN/</id>
     <published>2023-12-11T10:07:03.000Z</published>
-    <updated>2024-07-18T02:24:46.938Z</updated>
+    <updated>2024-07-18T03:19:33.784Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;Introduction&quot;&gt;&lt;a href=&quot;#Introduction&quot; class=&quot;headerlink&quot; title=&quot;Introduction&quot;&gt;&lt;/a&gt;Introduction&lt;/h1&gt;&lt;p&gt;&lt;code&gt;ALPN&lt;/code&gt;(&lt;code&gt;Application-Layer Protocol Negotiation&lt;/code&gt;)应用层协议协商, 当单个服务器端口号（例如端口 &lt;code&gt;443&lt;/code&gt;）上支持多个应用程序协议时，客户端和服务器需要协商用于每个连接的应用程序协议。希望在不增加客户端和服务器之间的网络往返次数的情况下完成此协商，因为每次往返都会降低最终用户的体验。&lt;/p&gt;
@@ -407,7 +434,7 @@
     <link href="https://yngty.github.io/2023/11/20/network/TCP-Nagle%E7%AE%97%E6%B3%95%E4%B8%8EACK%E5%BB%B6%E8%BF%9F%E7%A1%AE%E8%AE%A4/"/>
     <id>https://yngty.github.io/2023/11/20/network/TCP-Nagle%E7%AE%97%E6%B3%95%E4%B8%8EACK%E5%BB%B6%E8%BF%9F%E7%A1%AE%E8%AE%A4/</id>
     <published>2023-11-20T11:30:52.000Z</published>
-    <updated>2024-07-18T02:24:46.938Z</updated>
+    <updated>2024-07-18T03:19:33.780Z</updated>
     
     
     
@@ -420,7 +447,7 @@
     <link href="https://yngty.github.io/2023/11/07/c++/c-Memory-Order/"/>
     <id>https://yngty.github.io/2023/11/07/c++/c-Memory-Order/</id>
     <published>2023-11-07T16:20:11.000Z</published>
-    <updated>2024-07-18T02:24:46.938Z</updated>
+    <updated>2024-07-18T03:19:33.780Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;背景&quot;&gt;&lt;a href=&quot;#背景&quot; class=&quot;headerlink&quot; title=&quot;背景&quot;&gt;&lt;/a&gt;背景&lt;/h1&gt;&lt;p&gt;高级语言经过编译器将源码转为机器指令运行，其中的运行顺序和代码中的顺序有很大差异，主要是下面三个原因: &lt;/p&gt;
@@ -458,7 +485,7 @@
     <link href="https://yngty.github.io/2023/11/03/c++/std-thread-%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/"/>
     <id>https://yngty.github.io/2023/11/03/c++/std-thread-%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/</id>
     <published>2023-11-03T14:35:22.000Z</published>
-    <updated>2024-07-18T02:24:46.938Z</updated>
+    <updated>2024-07-18T03:19:33.780Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;join-和-detach&quot;&gt;&lt;a href=&quot;#join-和-detach&quot; class=&quot;headerlink&quot; title=&quot;join 和 detach&quot;&gt;&lt;/a&gt;&lt;code&gt;join&lt;/code&gt; 和 &lt;code&gt;detach&lt;/code&gt;&lt;/h1&gt;&lt;ul&gt;
@@ -473,29 +500,6 @@
     
     
     <category term="thread" scheme="https://yngty.github.io/tags/thread/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>CSS Layout</title>
-    <link href="https://yngty.github.io/2023/09/04/css/CSS-Layout/"/>
-    <id>https://yngty.github.io/2023/09/04/css/CSS-Layout/</id>
-    <published>2023-09-04T14:09:14.000Z</published>
-    <updated>2024-07-18T02:24:46.938Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;Grid&quot;&gt;&lt;a href=&quot;#Grid&quot; class=&quot;headerlink&quot; title=&quot;Grid&quot;&gt;&lt;/a&gt;Grid&lt;/h1&gt;&lt;h2 id=&quot;fr&quot;&gt;&lt;a href=&quot;#fr&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    
-    <category term="css" scheme="https://yngty.github.io/tags/css/"/>
     
   </entry>
   

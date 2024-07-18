@@ -139,6 +139,81 @@
       </categories>
   </entry>
   <entry>
+    <title>C++ 中 malloc 和 new 的区别</title>
+    <url>/2021/11/08/c++/C-%E4%B8%ADmalloc%E5%92%8Cnew%E7%9A%84%E5%8C%BA%E5%88%AB/</url>
+    <content><![CDATA[<table>
+<thead>
+<tr>
+<th align="center">特征</th>
+<th align="center">new</th>
+<th align="center">malloc</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">类型</td>
+<td align="center">关键字</td>
+<td align="center">标准库函数</td>
+</tr>
+<tr>
+<td align="center">支持语言</td>
+<td align="center"><code>C/C++</code></td>
+<td align="center">只在 <code>C++</code></td>
+</tr>
+<tr>
+<td align="center">申请内存的位置</td>
+<td align="center">自由存储区 <code>free store</code></td>
+<td align="center">堆</td>
+</tr>
+<tr>
+<td align="center">分配内存的大小</td>
+<td align="center">编译器根据类型信息自行计算</td>
+<td align="center">显示指定字节数</td>
+</tr>
+<tr>
+<td align="center">内存分配失败</td>
+<td align="center">抛出 <code>bac_alloc</code> 异常, 不会返回 <code>NULL</code></td>
+<td align="center">返回 <code>NULL</code></td>
+</tr>
+<tr>
+<td align="center">返回类型</td>
+<td align="center">返回对象类型的指针</td>
+<td align="center">返回<code>void</code> 指针，需要转换</td>
+</tr>
+<tr>
+<td align="center">是否调用构造函数&#x2F;析构函数</td>
+<td align="center">调用</td>
+<td align="center">不调用</td>
+</tr>
+<tr>
+<td align="center">处理数组</td>
+<td align="center"><code>new[]</code></td>
+<td align="center">手动指定数组的大小</td>
+</tr>
+<tr>
+<td align="center">是否支持重载</td>
+<td align="center">支持</td>
+<td align="center">不支持</td>
+</tr>
+<tr>
+<td align="center">是否支持内存扩充</td>
+<td align="center">不支持</td>
+<td align="center"><code>realloc</code></td>
+</tr>
+<tr>
+<td align="center">内存释放方式</td>
+<td align="center"><code>new/delete</code>, <code>new[]/delete[]</code></td>
+<td align="center"><code>malloc/free</code></td>
+</tr>
+</tbody></table>
+]]></content>
+      <categories>
+        <category>C/C++</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>c++ Memory Order</title>
     <url>/2023/11/07/c++/c-Memory-Order/</url>
     <content><![CDATA[<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>高级语言经过编译器将源码转为机器指令运行，其中的运行顺序和代码中的顺序有很大差异，主要是下面三个原因: </p>
@@ -277,81 +352,6 @@
       </tags>
   </entry>
   <entry>
-    <title>C++ 中 malloc 和 new 的区别</title>
-    <url>/2021/11/08/c++/C-%E4%B8%ADmalloc%E5%92%8Cnew%E7%9A%84%E5%8C%BA%E5%88%AB/</url>
-    <content><![CDATA[<table>
-<thead>
-<tr>
-<th align="center">特征</th>
-<th align="center">new</th>
-<th align="center">malloc</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">类型</td>
-<td align="center">关键字</td>
-<td align="center">标准库函数</td>
-</tr>
-<tr>
-<td align="center">支持语言</td>
-<td align="center"><code>C/C++</code></td>
-<td align="center">只在 <code>C++</code></td>
-</tr>
-<tr>
-<td align="center">申请内存的位置</td>
-<td align="center">自由存储区 <code>free store</code></td>
-<td align="center">堆</td>
-</tr>
-<tr>
-<td align="center">分配内存的大小</td>
-<td align="center">编译器根据类型信息自行计算</td>
-<td align="center">显示指定字节数</td>
-</tr>
-<tr>
-<td align="center">内存分配失败</td>
-<td align="center">抛出 <code>bac_alloc</code> 异常, 不会返回 <code>NULL</code></td>
-<td align="center">返回 <code>NULL</code></td>
-</tr>
-<tr>
-<td align="center">返回类型</td>
-<td align="center">返回对象类型的指针</td>
-<td align="center">返回<code>void</code> 指针，需要转换</td>
-</tr>
-<tr>
-<td align="center">是否调用构造函数&#x2F;析构函数</td>
-<td align="center">调用</td>
-<td align="center">不调用</td>
-</tr>
-<tr>
-<td align="center">处理数组</td>
-<td align="center"><code>new[]</code></td>
-<td align="center">手动指定数组的大小</td>
-</tr>
-<tr>
-<td align="center">是否支持重载</td>
-<td align="center">支持</td>
-<td align="center">不支持</td>
-</tr>
-<tr>
-<td align="center">是否支持内存扩充</td>
-<td align="center">不支持</td>
-<td align="center"><code>realloc</code></td>
-</tr>
-<tr>
-<td align="center">内存释放方式</td>
-<td align="center"><code>new/delete</code>, <code>new[]/delete[]</code></td>
-<td align="center"><code>malloc/free</code></td>
-</tr>
-</tbody></table>
-]]></content>
-      <categories>
-        <category>C/C++</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>std::make_shared vs. new</title>
     <url>/2023/02/07/c++/std-make-shared-vs-new/</url>
     <content><![CDATA[<h1 id="内存分配"><a href="#内存分配" class="headerlink" title="内存分配"></a>内存分配</h1><p><code>std::make_shared</code> 执行<strong>一次</strong>堆分配，而调用<code>std::shared_ptr</code> 构造函数执行<strong>两次</strong>。</p>
@@ -406,8 +406,8 @@
         <category>C/C++</category>
       </categories>
       <tags>
-        <tag>智能指针</tag>
         <tag>C++</tag>
+        <tag>智能指针</tag>
       </tags>
   </entry>
   <entry>
@@ -433,57 +433,6 @@
       </categories>
       <tags>
         <tag>thread</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>深入了解 C++20 中的 constinit</title>
-    <url>/2023/12/29/c++/%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3C++20%E4%B8%AD%E7%9A%84constinit%E5%85%B3%E9%94%AE%E5%AD%97/</url>
-    <content><![CDATA[<p>在 <code>C++</code> 中，存储变量的方式有几种：</p>
-<ul>
-<li><p>存储期（<code>Storage Duration</code>）：<br>存储期是指变量在程序中存在的时间段。在 <code>C++</code> 中，有三种主要的存储期：</p>
-<ul>
-<li>自动存储期（<code>Automatic Storage Duration</code>）：变量在函数或代码块执行时创建，函数执行结束时销毁。</li>
-<li>动态存储期（<code>Dynamic Storage Duration</code>）： 使用 <code>new</code> 或 <code>malloc</code> 分配的内存，直到使用 <code>delete</code> 或 <code>free</code> 手动释放为止。</li>
-<li>静态存储期（<code>Static Storage Duration</code>）： 变量在程序启动时创建，在整个程序运行期间都存在，直到程序结束才销毁。</li>
-</ul>
-</li>
-<li><p>静态存储变量：</p>
-</li>
-</ul>
-<p>静态存储变量是在程序启动时创建，一直存在于整个程序运行期间的变量。这类变量有两种主要形式：</p>
-<ul>
-<li>全局变量（<code>Global Variables</code>）： 在函数外部声明的变量，可以被程序中的所有函数访问。</li>
-<li>静态局部变量（<code>Static Local Variables</code>）： 在函数内部使用 <code>static</code> 关键字声明的变量，与自动存储期变量不同，它在函数调用之间保持其值。</li>
-</ul>
-<p>在 <code>C++</code> 中，我们经常使用静态存储期变量，包括全局变量和使用 <code>static</code> 关键字声明的局部变量。然而，这些变量并不保证在程序执行前被初始化，除非它们被声明为 <code>const</code> 常量。为了解决这一问题，<code>C++20</code> 引入了 <code>constinit</code> 关键字，它为我们提供了一种保证变量在程序启动时被初始化的方式，从而增强了可预测性和可靠性。</p>
-<p>尽管 <code>constinit</code> 确保变量在程序启动时被初始化，但这并不意味着这些变量是不可修改的常量。相反，这个关键字允许变量在初始化后在运行时或编译时上下文中被修改。</p>
-<p>因此，<code>constinit</code> 关键字为我们提供了一种在使用静态存储期变量时获得初始化保证的方法，同时允许在初始化后对其进行适当的修改。</p>
-<span id="more"></span>
-
-<h1 id="constinit-和-constexpr-有什么区别？"><a href="#constinit-和-constexpr-有什么区别？" class="headerlink" title="constinit 和 constexpr 有什么区别？"></a>constinit 和 constexpr 有什么区别？</h1><p>如果一个变量被声明为 <code>constexpr</code> ，那么它隐含地具有了 <code>constinit</code> 的性质。 <code>constexpr</code> 关键字用于指示编译器，在编译时可以计算该变量的值，并要求该变量在程序启动时被静态初始化。因此，<code>constexpr</code> 的变量天然地拥有 <code>constinit</code> 的特性<br>但是反过来并不成立，即如果一个变量被声明为 <code>constinit</code>，并不意味着它就是 <code>constexpr</code>。<code>constinit</code>仅确保变量在程序启动时被静态初始化，但不要求在编译时就能确定其值。相反，<code>constexpr</code> 要求在编译时就能确定变量的值。</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;array&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">constexpr</span> std::<span class="type">size_t</span> <span class="title">getArraySizeBasedOnArchitecture</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">sizeof</span>(std::<span class="type">size_t</span>) * <span class="number">100</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">constinit</span> <span class="keyword">auto</span> arrSize2 = <span class="built_in">getArraySizeBasedOnArchitecture</span>();</span><br><span class="line"><span class="keyword">constexpr</span> <span class="keyword">auto</span> arrSize1 = <span class="built_in">getArraySizeBasedOnArchitecture</span>();</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">     std::array&lt;<span class="type">int</span>, arrSize1&gt; intArray1;  <span class="comment">// Ok</span></span><br><span class="line">     std::array&lt;<span class="type">int</span>, arrSize2&gt; intArray2;  <span class="comment">// compilation error</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>注意：<strong>constexpr 和 constinit 不能同时出现在变量上。这会导致编译错误</strong>。</p>
-<h1 id="constinit-有什么作用？"><a href="#constinit-有什么作用？" class="headerlink" title="constinit 有什么作用？"></a>constinit 有什么作用？</h1><ul>
-<li>保证变量在编译时初始化</li>
-<li>当变量不能在编译时初始化时编译器生成错误提示</li>
-<li>处理静态初始化顺序，<a href="https://isocpp.org/wiki/faq/ctors#static-init-order">static-init-order</a></li>
-</ul>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ul>
-<li><code>constinit</code> 说明符仅适用于变量</li>
-<li><code>constinit</code> 保证变量在编译过程中被初始化，否则我们会得到一个编译错误。</li>
-<li><code>constinit</code> 说明符表示静态存储持续时间，但反之则不成立</li>
-<li><code>constexpr</code> 变量意味着 <code>constinit</code> ，但反过来并不正确。</li>
-<li>一个变量只能出现 <code>constexpr</code> 和 <code>constinit</code> 说明符之一。</li>
-<li><code>constinit</code> 可以应用于 <code>const</code> 限定变量。</li>
-</ul>
-]]></content>
-      <categories>
-        <category>C/C++</category>
-      </categories>
-      <tags>
-        <tag>C++20</tag>
-        <tag>const</tag>
       </tags>
   </entry>
   <entry>
@@ -562,6 +511,95 @@
       </tags>
   </entry>
   <entry>
+    <title>深入了解 C++20 中的 constinit</title>
+    <url>/2023/12/29/c++/%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3C++20%E4%B8%AD%E7%9A%84constinit%E5%85%B3%E9%94%AE%E5%AD%97/</url>
+    <content><![CDATA[<p>在 <code>C++</code> 中，存储变量的方式有几种：</p>
+<ul>
+<li><p>存储期（<code>Storage Duration</code>）：<br>存储期是指变量在程序中存在的时间段。在 <code>C++</code> 中，有三种主要的存储期：</p>
+<ul>
+<li>自动存储期（<code>Automatic Storage Duration</code>）：变量在函数或代码块执行时创建，函数执行结束时销毁。</li>
+<li>动态存储期（<code>Dynamic Storage Duration</code>）： 使用 <code>new</code> 或 <code>malloc</code> 分配的内存，直到使用 <code>delete</code> 或 <code>free</code> 手动释放为止。</li>
+<li>静态存储期（<code>Static Storage Duration</code>）： 变量在程序启动时创建，在整个程序运行期间都存在，直到程序结束才销毁。</li>
+</ul>
+</li>
+<li><p>静态存储变量：</p>
+</li>
+</ul>
+<p>静态存储变量是在程序启动时创建，一直存在于整个程序运行期间的变量。这类变量有两种主要形式：</p>
+<ul>
+<li>全局变量（<code>Global Variables</code>）： 在函数外部声明的变量，可以被程序中的所有函数访问。</li>
+<li>静态局部变量（<code>Static Local Variables</code>）： 在函数内部使用 <code>static</code> 关键字声明的变量，与自动存储期变量不同，它在函数调用之间保持其值。</li>
+</ul>
+<p>在 <code>C++</code> 中，我们经常使用静态存储期变量，包括全局变量和使用 <code>static</code> 关键字声明的局部变量。然而，这些变量并不保证在程序执行前被初始化，除非它们被声明为 <code>const</code> 常量。为了解决这一问题，<code>C++20</code> 引入了 <code>constinit</code> 关键字，它为我们提供了一种保证变量在程序启动时被初始化的方式，从而增强了可预测性和可靠性。</p>
+<p>尽管 <code>constinit</code> 确保变量在程序启动时被初始化，但这并不意味着这些变量是不可修改的常量。相反，这个关键字允许变量在初始化后在运行时或编译时上下文中被修改。</p>
+<p>因此，<code>constinit</code> 关键字为我们提供了一种在使用静态存储期变量时获得初始化保证的方法，同时允许在初始化后对其进行适当的修改。</p>
+<span id="more"></span>
+
+<h1 id="constinit-和-constexpr-有什么区别？"><a href="#constinit-和-constexpr-有什么区别？" class="headerlink" title="constinit 和 constexpr 有什么区别？"></a>constinit 和 constexpr 有什么区别？</h1><p>如果一个变量被声明为 <code>constexpr</code> ，那么它隐含地具有了 <code>constinit</code> 的性质。 <code>constexpr</code> 关键字用于指示编译器，在编译时可以计算该变量的值，并要求该变量在程序启动时被静态初始化。因此，<code>constexpr</code> 的变量天然地拥有 <code>constinit</code> 的特性<br>但是反过来并不成立，即如果一个变量被声明为 <code>constinit</code>，并不意味着它就是 <code>constexpr</code>。<code>constinit</code>仅确保变量在程序启动时被静态初始化，但不要求在编译时就能确定其值。相反，<code>constexpr</code> 要求在编译时就能确定变量的值。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;array&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">constexpr</span> std::<span class="type">size_t</span> <span class="title">getArraySizeBasedOnArchitecture</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">sizeof</span>(std::<span class="type">size_t</span>) * <span class="number">100</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">constinit</span> <span class="keyword">auto</span> arrSize2 = <span class="built_in">getArraySizeBasedOnArchitecture</span>();</span><br><span class="line"><span class="keyword">constexpr</span> <span class="keyword">auto</span> arrSize1 = <span class="built_in">getArraySizeBasedOnArchitecture</span>();</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">     std::array&lt;<span class="type">int</span>, arrSize1&gt; intArray1;  <span class="comment">// Ok</span></span><br><span class="line">     std::array&lt;<span class="type">int</span>, arrSize2&gt; intArray2;  <span class="comment">// compilation error</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意：<strong>constexpr 和 constinit 不能同时出现在变量上。这会导致编译错误</strong>。</p>
+<h1 id="constinit-有什么作用？"><a href="#constinit-有什么作用？" class="headerlink" title="constinit 有什么作用？"></a>constinit 有什么作用？</h1><ul>
+<li>保证变量在编译时初始化</li>
+<li>当变量不能在编译时初始化时编译器生成错误提示</li>
+<li>处理静态初始化顺序，<a href="https://isocpp.org/wiki/faq/ctors#static-init-order">static-init-order</a></li>
+</ul>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ul>
+<li><code>constinit</code> 说明符仅适用于变量</li>
+<li><code>constinit</code> 保证变量在编译过程中被初始化，否则我们会得到一个编译错误。</li>
+<li><code>constinit</code> 说明符表示静态存储持续时间，但反之则不成立</li>
+<li><code>constexpr</code> 变量意味着 <code>constinit</code> ，但反过来并不正确。</li>
+<li>一个变量只能出现 <code>constexpr</code> 和 <code>constinit</code> 说明符之一。</li>
+<li><code>constinit</code> 可以应用于 <code>const</code> 限定变量。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>C/C++</category>
+      </categories>
+      <tags>
+        <tag>C++20</tag>
+        <tag>const</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>深入了解 C++20 中的 consteval</title>
+    <url>/2023/12/29/c++/%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3C-20%E4%B8%AD%E7%9A%84consteval%E5%85%B3%E9%94%AE%E5%AD%97/</url>
+    <content><![CDATA[<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>用最简单的术语来说，一个只能应用于函数的 <code>consteval</code> 关键字, 保证它产生一个编译时间常数。否则会导致编译错误。</p>
+<p><code>cppreference</code> 页面对 <code>consteval</code> 说明符有如下描述：</p>
+<blockquote>
+<p><code>consteval</code> 指定函数是立即函数，也就是说，对该函数的每次调用都必须产生一个编译时常量</p>
+</blockquote>
+<p>什么是立即函数？</p>
+<ul>
+<li>不能是协程</li>
+<li>函数主体中不能有 <code>throw</code> 语句</li>
+<li>不能有 <code>goto</code> 语句或标签语句，除了 <code>case</code> 和 <code>default</code></li>
+<li>参数和返回类型必须是<a href="https://en.cppreference.com/w/cpp/named_req/LiteralType">LiteralType</a>,简单地说，是一个可以在编译时计算的类型（比如所有可以在 <code>constexpr</code> 上下文中使用的类型）</li>
+</ul>
+<span id="more"></span>
+
+<h1 id="consteval-和-constexpr-方法的区别"><a href="#consteval-和-constexpr-方法的区别" class="headerlink" title="consteval 和 constexpr 方法的区别"></a><code>consteval</code> 和 <code>constexpr</code> 方法的区别</h1><p>他们最大的区别：<code>consteval</code> 保证编译时生成，不能编译时生成时会报错，但 <code>constexpr</code> 不一定，当编译时不能生成就转为运行时函数。</p>
+<h1 id="从汇编看-consteval-和-constexpr-函数"><a href="#从汇编看-consteval-和-constexpr-函数" class="headerlink" title="从汇编看 consteval 和 constexpr 函数"></a>从汇编看 <code>consteval</code> 和 <code>constexpr</code> 函数</h1><h2 id="定义函数"><a href="#定义函数" class="headerlink" title="定义函数"></a>定义函数</h2><p>对于定义的普通函数、 <code>consteval</code> 函数、 <code>constexpr</code> 函数, 只有普通函数会生成汇编代码<br><img src="/images/consteval1.png" alt="consteval1"></p>
+<h2 id="在编译时上下文调用-consteval-和-constexpr-函数"><a href="#在编译时上下文调用-consteval-和-constexpr-函数" class="headerlink" title="在编译时上下文调用 consteval 和 constexpr 函数"></a>在编译时上下文调用 <code>consteval</code> 和 <code>constexpr</code> 函数</h2><p>在编译时直接生成结果，不会生成对应的函数汇编代码和调用汇编指令<br><img src="/images/consteval2.png" alt="consteval2"></p>
+<h2 id="在非编译时上下文调用-consteval-和-constexpr-函数"><a href="#在非编译时上下文调用-consteval-和-constexpr-函数" class="headerlink" title="在非编译时上下文调用 consteval 和 constexpr 函数"></a>在非编译时上下文调用 <code>consteval</code> 和 <code>constexpr</code> 函数</h2><p>会生成 <code>constexpr</code>函数的汇编代码和调用函数汇编指令<br><img src="/images/consteval3.png" alt="consteval3"></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ul>
+<li><code>consteval</code> 说明符只能应用于函数和构造函数</li>
+<li>带有 <code>consteval</code> 的函数称为立即函数</li>
+<li><code>constexpr</code> 函数在编译时上下文中执行时，与<code>consteval</code> 函数行为相同</li>
+<li>当 <code>consteval</code> 函数不能产生编译时错误时，会导致错误，而对于 <code>constexpr</code> 函数则不会。</li>
+<li>当需要对函数的编译时求值进行保证时，首选 <code>consteval</code></li>
+<li>优先使用 <code>consteval</code> 函数而不是预处理器宏函数。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>C/C++</category>
+      </categories>
+      <tags>
+        <tag>C++20</tag>
+        <tag>const</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>CMake 踩坑记</title>
     <url>/2023/04/07/cmake/CMake-%E8%B8%A9%E5%9D%91%E8%AE%B0/</url>
     <content><![CDATA[<h1 id="install-CODE-和-execute-process-配合"><a href="#install-CODE-和-execute-process-配合" class="headerlink" title="install(CODE) 和 execute_process 配合"></a><code>install(CODE)</code> 和 <code>execute_process</code> 配合</h1><h2 id="确保-WORKING-DIRECTORY-存在"><a href="#确保-WORKING-DIRECTORY-存在" class="headerlink" title="确保 WORKING_DIRECTORY 存在"></a>确保 <code>WORKING_DIRECTORY</code> 存在</h2><p>示例代码: </p>
@@ -613,44 +651,6 @@
       </tags>
   </entry>
   <entry>
-    <title>深入了解 C++20 中的 consteval</title>
-    <url>/2023/12/29/c++/%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3C-20%E4%B8%AD%E7%9A%84consteval%E5%85%B3%E9%94%AE%E5%AD%97/</url>
-    <content><![CDATA[<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>用最简单的术语来说，一个只能应用于函数的 <code>consteval</code> 关键字, 保证它产生一个编译时间常数。否则会导致编译错误。</p>
-<p><code>cppreference</code> 页面对 <code>consteval</code> 说明符有如下描述：</p>
-<blockquote>
-<p><code>consteval</code> 指定函数是立即函数，也就是说，对该函数的每次调用都必须产生一个编译时常量</p>
-</blockquote>
-<p>什么是立即函数？</p>
-<ul>
-<li>不能是协程</li>
-<li>函数主体中不能有 <code>throw</code> 语句</li>
-<li>不能有 <code>goto</code> 语句或标签语句，除了 <code>case</code> 和 <code>default</code></li>
-<li>参数和返回类型必须是<a href="https://en.cppreference.com/w/cpp/named_req/LiteralType">LiteralType</a>,简单地说，是一个可以在编译时计算的类型（比如所有可以在 <code>constexpr</code> 上下文中使用的类型）</li>
-</ul>
-<span id="more"></span>
-
-<h1 id="consteval-和-constexpr-方法的区别"><a href="#consteval-和-constexpr-方法的区别" class="headerlink" title="consteval 和 constexpr 方法的区别"></a><code>consteval</code> 和 <code>constexpr</code> 方法的区别</h1><p>他们最大的区别：<code>consteval</code> 保证编译时生成，不能编译时生成时会报错，但 <code>constexpr</code> 不一定，当编译时不能生成就转为运行时函数。</p>
-<h1 id="从汇编看-consteval-和-constexpr-函数"><a href="#从汇编看-consteval-和-constexpr-函数" class="headerlink" title="从汇编看 consteval 和 constexpr 函数"></a>从汇编看 <code>consteval</code> 和 <code>constexpr</code> 函数</h1><h2 id="定义函数"><a href="#定义函数" class="headerlink" title="定义函数"></a>定义函数</h2><p>对于定义的普通函数、 <code>consteval</code> 函数、 <code>constexpr</code> 函数, 只有普通函数会生成汇编代码<br><img src="/images/consteval1.png" alt="consteval1"></p>
-<h2 id="在编译时上下文调用-consteval-和-constexpr-函数"><a href="#在编译时上下文调用-consteval-和-constexpr-函数" class="headerlink" title="在编译时上下文调用 consteval 和 constexpr 函数"></a>在编译时上下文调用 <code>consteval</code> 和 <code>constexpr</code> 函数</h2><p>在编译时直接生成结果，不会生成对应的函数汇编代码和调用汇编指令<br><img src="/images/consteval2.png" alt="consteval2"></p>
-<h2 id="在非编译时上下文调用-consteval-和-constexpr-函数"><a href="#在非编译时上下文调用-consteval-和-constexpr-函数" class="headerlink" title="在非编译时上下文调用 consteval 和 constexpr 函数"></a>在非编译时上下文调用 <code>consteval</code> 和 <code>constexpr</code> 函数</h2><p>会生成 <code>constexpr</code>函数的汇编代码和调用函数汇编指令<br><img src="/images/consteval3.png" alt="consteval3"></p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ul>
-<li><code>consteval</code> 说明符只能应用于函数和构造函数</li>
-<li>带有 <code>consteval</code> 的函数称为立即函数</li>
-<li><code>constexpr</code> 函数在编译时上下文中执行时，与<code>consteval</code> 函数行为相同</li>
-<li>当 <code>consteval</code> 函数不能产生编译时错误时，会导致错误，而对于 <code>constexpr</code> 函数则不会。</li>
-<li>当需要对函数的编译时求值进行保证时，首选 <code>consteval</code></li>
-<li>优先使用 <code>consteval</code> 函数而不是预处理器宏函数。</li>
-</ul>
-]]></content>
-      <categories>
-        <category>C/C++</category>
-      </categories>
-      <tags>
-        <tag>C++20</tag>
-        <tag>const</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Reactor pattern</title>
     <url>/2023/03/06/design/reactor-pattern/</url>
     <content><![CDATA[<h1 id="什么是Reactor模式"><a href="#什么是Reactor模式" class="headerlink" title="什么是Reactor模式"></a>什么是Reactor模式</h1><h1 id="Reactor模式结构"><a href="#Reactor模式结构" class="headerlink" title="Reactor模式结构"></a>Reactor模式结构</h1><ul>
@@ -671,101 +671,6 @@
       </categories>
       <tags>
         <tag>Reactor</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Effective-STL 21：总是让比较函数在等值情况下返回 false</title>
-    <url>/2023/03/10/effective-stl/effective-stl-21/</url>
-    <content><![CDATA[<blockquote>
-<p>Item 21: Always have comparison functions return false for equal values.</p>
-</blockquote>
-<h1 id="严格弱序-strict-weak-ordering"><a href="#严格弱序-strict-weak-ordering" class="headerlink" title="严格弱序( strict weak ordering )"></a>严格弱序( <code>strict weak ordering</code> )</h1><p>先补充下严格弱序的概念: 对两个变量 <code>x</code> 和 <code>y</code>：</p>
-<ul>
-<li><code>x &gt; y</code> 等同于 <code>y &lt; x</code></li>
-<li><code>x == y</code> 等同于 <code>!(x &lt; y) &amp;&amp; !(x &gt; y)</code></li>
-</ul>
-<p>要想严格弱序，就需要遵循如下规则：</p>
-<ul>
-<li>每个变量值必须等于其本身（<code>irreflexivity</code>）：<code>x &lt; x</code> 永远不能为 <code>true</code></li>
-<li>不对称性（<code>asymmetry</code>）：如果 <code>x &lt; y</code>，那么 <code>y &lt; x</code> 就不能为 <code>true</code></li>
-<li>有序性必须可传递性：如果 <code>x &lt; y</code> 并且 <code>y &lt; z</code>，那么 <code>x &lt; z</code></li>
-<li>值相同必须具有可传递性：如果 <code>x == y</code> 并且 <code>y == z</code>，那么 <code>x == z</code></li>
-</ul>
-<span id="more"></span>
-
-<h1 id="为什么？"><a href="#为什么？" class="headerlink" title="为什么？"></a>为什么？</h1><h2 id="1-关联容器中的比较算法"><a href="#1-关联容器中的比较算法" class="headerlink" title="1. 关联容器中的比较算法"></a>1. 关联容器中的比较算法</h2><p>比如我们创建一个 <code>set</code> ， 用 <code>less_euqal</code> 作为比较类型，然后插入两个 <code>10</code> ：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">set&lt;<span class="type">int</span>, less_equal&lt;<span class="type">int</span>&gt;&gt; s;</span><br><span class="line">s.<span class="built_in">insert</span>(<span class="number">10</span>);</span><br><span class="line">s.<span class="built_in">insert</span>(<span class="number">10</span>);</span><br></pre></td></tr></table></figure>
-
-<p>我们将第一个 <code>10</code> 记为 <code>10A</code>, 第二个 <code>10</code> 记为 <code>10B</code>, 我们在插入 <code>10B</code> 的时候会检查是否与 <code>10A</code> 相同, 我们用的是 <code>less_equal</code>，下面的表达式会为假，就会重复插入，显然不合理。:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">!(10A &lt;= 10B) &amp;&amp; !(10B &lt;= 10A) //  !(true) &amp;&amp; !(true)</span><br></pre></td></tr></table></figure>
-
-<p>另外在 <code>multiset</code> 中也不行: </p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">multiset&lt;<span class="type">int</span>, less_equal&lt;<span class="type">int</span>&gt;&gt; s;</span><br><span class="line">s.<span class="built_in">insert</span>(<span class="number">10</span>); <span class="comment">// 插入10A</span></span><br><span class="line">s.<span class="built_in">insert</span>(<span class="number">10</span>); <span class="comment">// 插入10B</span></span><br></pre></td></tr></table></figure>
-
-<p>当我们想要一个 <code>equal_range</code>, <code>10A</code> 和 <code>10B</code> 同样认为是不等，永远不会在同一个区间。</p>
-<h2 id="2-sort-算法"><a href="#2-sort-算法" class="headerlink" title="2. sort 算法"></a>2. <code>sort</code> 算法</h2><p>对于 <code>std::sort</code>，当容器里面元素个数大于 <code>_S_threshold</code> 的值时（<code>16</code>），就会使用快速排序，会将所有的元素与中间值比较是无边界保护的，实现如下：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> _RandomAccessIterator, <span class="keyword">typename</span> _Tp, <span class="keyword">typename</span> _Compare&gt;</span><br><span class="line">     _RandomAccessIterator</span><br><span class="line">     __unguarded_partition(_RandomAccessIterator __first,</span><br><span class="line">               _RandomAccessIterator __last,</span><br><span class="line">               _Tp __pivot, _Compare __comp)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span> (<span class="literal">true</span>)</span><br><span class="line">    &#123;</span><br><span class="line">       <span class="keyword">while</span> (__comp(*__first, __pivot)) <span class="comment">// &lt;-------------------</span></span><br><span class="line">         ++__first;</span><br><span class="line">       --__last;</span><br><span class="line">       <span class="keyword">while</span> (__comp(__pivot, *__last))</span><br><span class="line">         --__last;</span><br><span class="line">       <span class="keyword">if</span> (!(__first &lt; __last))</span><br><span class="line">         <span class="keyword">return</span> __first;</span><br><span class="line">       std::<span class="built_in">iter_swap</span>(__first, __last);</span><br><span class="line">       ++__first;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>如果传入的 <code>vector</code> 中，后面的元素完全相等， <code>__comp()</code>函数一直返回 <code>true</code> ，在进行快速排序的时候，<code>++first</code> 就可能越界失效，导致 <code>coredump</code>。</p>
-]]></content>
-      <categories>
-        <category>Effective-STL</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
-        <tag>Effective-STL</tag>
-        <tag>stl</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Effective-STL 9：慎重选择删除元素的方法</title>
-    <url>/2023/02/16/effective-stl/effective-stl-9/</url>
-    <content><![CDATA[<blockquote>
-<p>Item9. Choose carefully among easing options.</p>
-</blockquote>
-<h1 id="一、删除特定值"><a href="#一、删除特定值" class="headerlink" title="一、删除特定值"></a>一、删除特定值</h1><ol>
-<li><p>对于 <code>vector</code>、 <code>string</code> 或 <code>deque</code></p>
-<p> 最好使用 <code>erase-remove</code>习惯用法: </p>
- <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">erase</span>(<span class="built_in">remove</span>(c.<span class="built_in">begin</span>(), c.<span class="built_in">end</span>(), <span class="number">1963</span>, c.<span class="built_in">end</span>()));</span><br></pre></td></tr></table></figure></li>
-<li><p>对于 <code>list</code> 容器</p>
-<p> 直接使用 <code>remove</code> 方法:</p>
- <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">remove</span>(<span class="number">1963</span>);</span><br></pre></td></tr></table></figure></li>
-<li><p>对于标准关联容器</p>
-<p> 直接使用 <code>erase</code> 方法:</p>
- <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">erase</span>(<span class="number">1963</span>)</span><br></pre></td></tr></table></figure></li>
-</ol>
-<span id="more"></span>
-<h1 id="二、删除满足特定判定条件的值"><a href="#二、删除满足特定判定条件的值" class="headerlink" title="二、删除满足特定判定条件的值"></a>二、删除满足特定判定条件的值</h1><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">bool</span> <span class="title">badValue</span><span class="params">(<span class="type">int</span>)</span> </span>&#123; <span class="keyword">return</span> <span class="literal">true</span>; &#125; <span class="comment">// 返回x是否为&quot;坏值&quot;</span></span><br></pre></td></tr></table></figure>
-
-<ol>
-<li><p>对于 <code>vector</code>、 <code>string</code> 或 <code>deque</code><br> 使用 <code>erase-remove-if</code>方法: </p>
- <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">erase</span>(<span class="built_in">remove_if</span>(c.<span class="built_in">begin</span>(), c.<span class="built_in">end</span>(), badValue, c.<span class="built_in">end</span>()));</span><br></pre></td></tr></table></figure></li>
-<li><p>对于 <code>list</code> 容器<br> 直接使用 <code>remove_if</code> 方法:</p>
- <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">remove_if</span>(badValue);</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>对于标准关联容器</p>
-<p> <strong>把当前的i传给erase，i后缀递增</strong></p>
- <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (AssocContainer&lt;<span class="type">int</span>&gt;::iterator i = c.<span class="built_in">begin</span>(); i != c.<span class="built_in">end</span>();) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">badValue</span>(*i)) c<span class="number">3.</span><span class="built_in">erase</span>(i++); </span><br><span class="line">    <span class="keyword">else</span> ++i;                     </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-</ol>
-<h1 id="三、循环内部删除对象之外还要做某些事"><a href="#三、循环内部删除对象之外还要做某些事" class="headerlink" title="三、循环内部删除对象之外还要做某些事"></a>三、循环内部删除对象之外还要做某些事</h1><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">doSomething</span><span class="params">(<span class="type">int</span>)</span> </span>&#123; ... &#125;</span><br></pre></td></tr></table></figure>
-<ol>
-<li><p>对于 <code>vector</code>、 <code>string</code> 或 <code>deque</code></p>
-<p> <strong>接收 <code>erase</code>返回的迭代器值。</strong></p>
- <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (SeqContainer&lt;<span class="type">int</span>&gt;::iterator i = c.<span class="built_in">begin</span>(); i != c.<span class="built_in">end</span>();) &#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">badValue</span>(*i)) &#123;</span><br><span class="line">        <span class="built_in">doSomething</span>(*i);</span><br><span class="line">        i = c.<span class="built_in">rease</span>(i);</span><br><span class="line">    &#125; <span class="keyword">else</span> ++i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-<li><p>对于 <code>list</code> 容器</p>
-<p> 虽然也可以采用标准关联容器方法，但建议采用跟 <code>vector</code>、 <code>string</code> 或 <code>deque</code> 一致。</p>
-</li>
-<li><p>对于标准关联容器</p>
- <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (SeqContainer&lt;<span class="type">int</span>&gt;::iterator i = c.<span class="built_in">begin</span>(); i != c.<span class="built_in">end</span>();) &#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">badValue</span>(*i)) &#123;</span><br><span class="line">        <span class="built_in">doSomething</span>(*i);</span><br><span class="line">        c.<span class="built_in">rease</span>(i++);</span><br><span class="line">    &#125; <span class="keyword">else</span> ++i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-</ol>
-]]></content>
-      <categories>
-        <category>Effective-STL</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
-        <tag>Effective-STL</tag>
-        <tag>stl</tag>
       </tags>
   </entry>
   <entry>
@@ -887,42 +792,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Effective C++ 14：在资源管理类中小心 copying 行为</title>
-    <url>/2021/11/05/effecitve-cpp/effective-cpp-14/</url>
-    <content><![CDATA[<blockquote>
-<p>Item 14: Think carefully about copying behavior in resource-managing classes.</p>
-</blockquote>
-<p>设计一个 <strong><code>RAII</code></strong> 对象：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Lock</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">Lock</span><span class="params">(Mutex *pm)</span>:mutexPtr(pm)&#123;</span></span><br><span class="line">        <span class="built_in">lock</span>(mutexPtr);</span><br><span class="line">    &#125;</span><br><span class="line">    ~<span class="built_in">Lock</span>()&#123; <span class="built_in">unlock</span>(mutexPtr); &#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    Mutex *mutexPtr;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>客户对<code>Lock</code>的使用：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">Mutex m;</span><br><span class="line">...</span><br><span class="line">&#123;</span><br><span class="line">    <span class="function">Lock <span class="title">ml</span><span class="params">(&amp;m)</span></span>;    </span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>当一个 <strong><code>RAII</code></strong> 对象被复制，会发生什么事？ 不确定？</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">Lock <span class="title">ml1</span><span class="params">(&amp;m)</span></span>;</span><br><span class="line"><span class="function">Lock <span class="title">ml2</span><span class="params">(&amp;ml1)</span></span></span><br></pre></td></tr></table></figure>
-
-<p>记住<strong>资源管理对象的拷贝行为取决于资源本身的拷贝行为，同时资源管理对象也可以根据业务需要来决定自己的拷贝行为</strong>。一般有如下四种方式：</p>
-<ul>
-<li><p><strong>禁止复制</strong>。参考<a href="/2021/10/25/effecitve-cpp/effective-cpp-6/" title="Effective C++ 6：若不想使用编译器自动生成的函数，就该明确拒绝">若不想使用编译器自动生成的函数，就该明确拒绝</a>。对Lock而言看起来是这样：</p>
-  <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Lock</span> : <span class="keyword">private</span> Uncopyable &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-<li><p><strong>引用计数</strong>，采用 <code>shared_ptr</code> 的逻辑。<code>shared_ptr</code> 构造函数提供了第二个参数 <code>deleter</code>，当引用计数到 <code>0</code> 时被调用。 所以 <code>Lock</code> 可以通过聚合一个 <code>shared_ptr</code> 成员来实现引用计数：</p>
-  <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Lock</span>&#123;</span><br><span class="line"><span class="keyword">public</span>: </span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">Lock</span><span class="params">(Mutex *pm)</span>: mutexPtr(pm, unlock)&#123;</span></span><br><span class="line">        <span class="built_in">lock</span>(mutexPtr.<span class="built_in">get</span>());</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">private</span>: </span><br><span class="line">    std::shared_ptr&lt;Mutex&gt; mutexPtr; <span class="comment">//shared_ptr替换 raw pointer</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>   <code>Lock</code> 的析构会引起 <code>mutexPtr</code> 的析构，而 <code>mutexPtr</code> 计数到0时<code>unlock(mutexPtr.get())</code> 会被调用。</p>
-</li>
-<li><p><strong>拷贝底部资源</strong>。复制资源管理对象时，进行的是<strong>深拷贝</strong>。比如 <code>string</code> 的行为：内存存有指向对空间的指针，当它被复制时会复制那片空间。</p>
-</li>
-<li><p><strong>转移底部资源的拥有权</strong>。<code>auto_ptr</code> 就是这样做的，把资源移交给另一个资源管理对象，自己的资源置空。</p>
-</li>
-</ul>
-]]></content>
-      <categories>
-        <category>Effective-C++</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
-        <tag>Effective-C++</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Effective C++ 15：在资源管理类中提供对原始资源的访问</title>
     <url>/2021/11/05/effecitve-cpp/effective-cpp-15/</url>
     <content><![CDATA[<blockquote>
@@ -952,6 +821,42 @@
 <p>然而问题也随之出现：</p>
 <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">FontHandle h2 = f1;</span><br></pre></td></tr></table></figure>
 <p>无意间 <code>h2</code> 并没有被资源管理起来，这将会引发意外的资源泄漏。所以隐式转换在提供便利的同时， 也引起了资源泄漏的风险。 </p>
+]]></content>
+      <categories>
+        <category>Effective-C++</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>Effective-C++</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Effective C++ 14：在资源管理类中小心 copying 行为</title>
+    <url>/2021/11/05/effecitve-cpp/effective-cpp-14/</url>
+    <content><![CDATA[<blockquote>
+<p>Item 14: Think carefully about copying behavior in resource-managing classes.</p>
+</blockquote>
+<p>设计一个 <strong><code>RAII</code></strong> 对象：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Lock</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">Lock</span><span class="params">(Mutex *pm)</span>:mutexPtr(pm)&#123;</span></span><br><span class="line">        <span class="built_in">lock</span>(mutexPtr);</span><br><span class="line">    &#125;</span><br><span class="line">    ~<span class="built_in">Lock</span>()&#123; <span class="built_in">unlock</span>(mutexPtr); &#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    Mutex *mutexPtr;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>客户对<code>Lock</code>的使用：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">Mutex m;</span><br><span class="line">...</span><br><span class="line">&#123;</span><br><span class="line">    <span class="function">Lock <span class="title">ml</span><span class="params">(&amp;m)</span></span>;    </span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当一个 <strong><code>RAII</code></strong> 对象被复制，会发生什么事？ 不确定？</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">Lock <span class="title">ml1</span><span class="params">(&amp;m)</span></span>;</span><br><span class="line"><span class="function">Lock <span class="title">ml2</span><span class="params">(&amp;ml1)</span></span></span><br></pre></td></tr></table></figure>
+
+<p>记住<strong>资源管理对象的拷贝行为取决于资源本身的拷贝行为，同时资源管理对象也可以根据业务需要来决定自己的拷贝行为</strong>。一般有如下四种方式：</p>
+<ul>
+<li><p><strong>禁止复制</strong>。参考<a href="/2021/10/25/effecitve-cpp/effective-cpp-6/" title="Effective C++ 6：若不想使用编译器自动生成的函数，就该明确拒绝">若不想使用编译器自动生成的函数，就该明确拒绝</a>。对Lock而言看起来是这样：</p>
+  <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Lock</span> : <span class="keyword">private</span> Uncopyable &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p><strong>引用计数</strong>，采用 <code>shared_ptr</code> 的逻辑。<code>shared_ptr</code> 构造函数提供了第二个参数 <code>deleter</code>，当引用计数到 <code>0</code> 时被调用。 所以 <code>Lock</code> 可以通过聚合一个 <code>shared_ptr</code> 成员来实现引用计数：</p>
+  <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Lock</span>&#123;</span><br><span class="line"><span class="keyword">public</span>: </span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">Lock</span><span class="params">(Mutex *pm)</span>: mutexPtr(pm, unlock)&#123;</span></span><br><span class="line">        <span class="built_in">lock</span>(mutexPtr.<span class="built_in">get</span>());</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">private</span>: </span><br><span class="line">    std::shared_ptr&lt;Mutex&gt; mutexPtr; <span class="comment">//shared_ptr替换 raw pointer</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>   <code>Lock</code> 的析构会引起 <code>mutexPtr</code> 的析构，而 <code>mutexPtr</code> 计数到0时<code>unlock(mutexPtr.get())</code> 会被调用。</p>
+</li>
+<li><p><strong>拷贝底部资源</strong>。复制资源管理对象时，进行的是<strong>深拷贝</strong>。比如 <code>string</code> 的行为：内存存有指向对空间的指针，当它被复制时会复制那片空间。</p>
+</li>
+<li><p><strong>转移底部资源的拥有权</strong>。<code>auto_ptr</code> 就是这样做的，把资源移交给另一个资源管理对象，自己的资源置空。</p>
+</li>
+</ul>
 ]]></content>
       <categories>
         <category>Effective-C++</category>
@@ -1385,41 +1290,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Effective C++ 4：确定对象被使用前已先被初始化</title>
-    <url>/2021/01/13/effecitve-cpp/effective-cpp-4/</url>
-    <content><![CDATA[<blockquote>
-<p>Item 4: Make sure that objects are initialized before they’re used.</p>
-</blockquote>
-<h1 id="手工初始化内置对象"><a href="#手工初始化内置对象" class="headerlink" title="手工初始化内置对象"></a>手工初始化内置对象</h1><p>为内置对象进行手工初始化，因为<code>C++</code>不保证初始化他们。</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> x = <span class="number">0</span>;                                  <span class="comment">//对 int 进行手工初始化</span></span><br><span class="line"><span class="type">const</span> <span class="type">char</span> *text = <span class="string">&quot;A C-style string&quot;</span>;      <span class="comment">//对指针进行手工初始化</span></span><br><span class="line"></span><br><span class="line"><span class="type">double</span> d;</span><br><span class="line">std::cin &gt;&gt; d;                              <span class="comment">//以读取 input stream 的方式完成初始化</span></span><br></pre></td></tr></table></figure>
-
-<h1 id="构造函数最好使用成员初值列"><a href="#构造函数最好使用成员初值列" class="headerlink" title="构造函数最好使用成员初值列"></a>构造函数最好使用成员初值列</h1><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">PhoneNumber</span> &#123; ... &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ABEntry</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">ABEntry</span>(<span class="type">const</span> std::string &amp;name, <span class="type">const</span> std::string &amp;address, <span class="type">const</span> std::list&lt;PhoneNumber&gt; &amp;phones);</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    std::string theName;</span><br><span class="line">    std::string theAddress;</span><br><span class="line">    std::list&lt;PhoneNumber&gt; thePhones;</span><br><span class="line">    <span class="type">int</span> numTimesConsulted;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">ABEntry::<span class="built_in">ABEntry</span>(<span class="type">const</span> std::string &amp;name, <span class="type">const</span> std::string &amp;address, <span class="type">const</span> std::list&lt;PhoneNumber&gt; &amp;phones) &#123;</span><br><span class="line">    theName = name;             <span class="comment">//这些都是赋值</span></span><br><span class="line">    theAddress = address;       <span class="comment">//而非初始化</span></span><br><span class="line">    thePhones = phones;</span><br><span class="line">    numTimesConsulted = <span class="number">0</span>; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>构造函数最好使用成员初值列，而不要在构造函数本体内使用赋值操作。初值列列出的成员变量，其排列次序应该和他们在<code>class</code>中的声明次序相同。</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">ABEntry::<span class="built_in">ABEntry</span>(<span class="type">const</span> std::string &amp;name, <span class="type">const</span> std::string &amp;address, <span class="type">const</span> std::list&lt;PhoneNumber&gt; &amp;phones) : <span class="built_in">theName</span>(name), <span class="built_in">theAddress</span>(address), <span class="built_in">thePhones</span>(phones), <span class="built_in">numTimesConsulted</span>(<span class="number">0</span>) &#123;&#125;</span><br></pre></td></tr></table></figure>
-
-<h1 id="local-static-对象替换-non-local-static-对象。"><a href="#local-static-对象替换-non-local-static-对象。" class="headerlink" title="local static 对象替换 non-local static 对象。"></a><code>local static</code> 对象替换 <code>non-local static</code> 对象。</h1><p>为免除”跨单元之初始化次序“问题，请以 <code>local static</code> 对象替换 <code>non-local static</code> 对象。</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">FileSystem</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    ...</span><br><span class="line">    <span class="function">std::<span class="type">size_t</span> <span class="title">numDisks</span><span class="params">()</span> <span class="type">const</span></span>;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">extern</span> FileSystem tfs;     </span><br></pre></td></tr></table></figure>
-
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Directory</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">Directory</span>( params );</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Directory::<span class="built_in">Directory</span>( params) </span><br><span class="line">&#123;</span><br><span class="line">    ...</span><br><span class="line">    std::<span class="type">size_t</span> disks = tfs.<span class="built_in">numDisks</span>();</span><br><span class="line">    ...    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>客户使用使用：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">Directory <span class="title">tempDir</span><span class="params">( params )</span></span>;</span><br></pre></td></tr></table></figure>
-<p>现在初始化次序的重要性体现出来了，除非 <code>tfs</code> 在 <code>tempDir</code> 之前先被初始化，否则<code>tempDir</code>的构造函数会用到尚未初始化的<code>tfs</code>。但<code>tfs</code>和<code>tempDir</code>是不同的人在不同的时间于不同的源文件建立起来的，它们是定义于不同编译单元内的 <code>non-local static</code> 对象。它们初始化相对次序并无明确定义。但我们可以将 <code>local static</code> 对象替换<code>non-local static</code> 对象来解决。这也是<strong>Singleton</strong>模式的常见实现手法。</p>
-<p>这个手法的基础在于：C++保证，函数内的 <code>local static</code> 对象会在调用该函数时首次遇上该对象的定义式时被初始化。</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">FileSystem</span> &#123; ... &#125;</span><br><span class="line"></span><br><span class="line"><span class="function">FileSystem&amp; <span class="title">tfs</span><span class="params">()</span> </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">static</span> FileSystem fs;</span><br><span class="line">    <span class="keyword">return</span> fs;</span><br><span class="line">&#125;    </span><br></pre></td></tr></table></figure>
-
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Directory</span> &#123; ... &#125;</span><br><span class="line"></span><br><span class="line">Directory::<span class="built_in">Directory</span>( params) </span><br><span class="line">&#123;</span><br><span class="line">    ...</span><br><span class="line">    std::<span class="type">size_t</span> disks = <span class="built_in">tfs</span>().<span class="built_in">numDisks</span>();</span><br><span class="line">    ...    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Directory&amp; <span class="title">tempDir</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">static</span> Directory td;</span><br><span class="line">    <span class="keyword">return</span> td;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <categories>
-        <category>Effective-C++</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
-        <tag>Effective-C++</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Effective C++ 3：尽可能使用 const</title>
     <url>/2021/01/05/effecitve-cpp/effective-cpp-3/</url>
     <content><![CDATA[<blockquote>
@@ -1456,6 +1326,41 @@
 <li>调用 <code>operator[](std::size_t) const</code>，得到的返回值类型为 <code>const char&amp;</code>。</li>
 <li>把返回值去掉 <code>const</code> 属性，得到类型为 <code>char&amp;</code> 的返回值。</li>
 </ol>
+]]></content>
+      <categories>
+        <category>Effective-C++</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>Effective-C++</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Effective C++ 4：确定对象被使用前已先被初始化</title>
+    <url>/2021/01/13/effecitve-cpp/effective-cpp-4/</url>
+    <content><![CDATA[<blockquote>
+<p>Item 4: Make sure that objects are initialized before they’re used.</p>
+</blockquote>
+<h1 id="手工初始化内置对象"><a href="#手工初始化内置对象" class="headerlink" title="手工初始化内置对象"></a>手工初始化内置对象</h1><p>为内置对象进行手工初始化，因为<code>C++</code>不保证初始化他们。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> x = <span class="number">0</span>;                                  <span class="comment">//对 int 进行手工初始化</span></span><br><span class="line"><span class="type">const</span> <span class="type">char</span> *text = <span class="string">&quot;A C-style string&quot;</span>;      <span class="comment">//对指针进行手工初始化</span></span><br><span class="line"></span><br><span class="line"><span class="type">double</span> d;</span><br><span class="line">std::cin &gt;&gt; d;                              <span class="comment">//以读取 input stream 的方式完成初始化</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="构造函数最好使用成员初值列"><a href="#构造函数最好使用成员初值列" class="headerlink" title="构造函数最好使用成员初值列"></a>构造函数最好使用成员初值列</h1><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">PhoneNumber</span> &#123; ... &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ABEntry</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">ABEntry</span>(<span class="type">const</span> std::string &amp;name, <span class="type">const</span> std::string &amp;address, <span class="type">const</span> std::list&lt;PhoneNumber&gt; &amp;phones);</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    std::string theName;</span><br><span class="line">    std::string theAddress;</span><br><span class="line">    std::list&lt;PhoneNumber&gt; thePhones;</span><br><span class="line">    <span class="type">int</span> numTimesConsulted;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">ABEntry::<span class="built_in">ABEntry</span>(<span class="type">const</span> std::string &amp;name, <span class="type">const</span> std::string &amp;address, <span class="type">const</span> std::list&lt;PhoneNumber&gt; &amp;phones) &#123;</span><br><span class="line">    theName = name;             <span class="comment">//这些都是赋值</span></span><br><span class="line">    theAddress = address;       <span class="comment">//而非初始化</span></span><br><span class="line">    thePhones = phones;</span><br><span class="line">    numTimesConsulted = <span class="number">0</span>; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>构造函数最好使用成员初值列，而不要在构造函数本体内使用赋值操作。初值列列出的成员变量，其排列次序应该和他们在<code>class</code>中的声明次序相同。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">ABEntry::<span class="built_in">ABEntry</span>(<span class="type">const</span> std::string &amp;name, <span class="type">const</span> std::string &amp;address, <span class="type">const</span> std::list&lt;PhoneNumber&gt; &amp;phones) : <span class="built_in">theName</span>(name), <span class="built_in">theAddress</span>(address), <span class="built_in">thePhones</span>(phones), <span class="built_in">numTimesConsulted</span>(<span class="number">0</span>) &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="local-static-对象替换-non-local-static-对象。"><a href="#local-static-对象替换-non-local-static-对象。" class="headerlink" title="local static 对象替换 non-local static 对象。"></a><code>local static</code> 对象替换 <code>non-local static</code> 对象。</h1><p>为免除”跨单元之初始化次序“问题，请以 <code>local static</code> 对象替换 <code>non-local static</code> 对象。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">FileSystem</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    ...</span><br><span class="line">    <span class="function">std::<span class="type">size_t</span> <span class="title">numDisks</span><span class="params">()</span> <span class="type">const</span></span>;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">extern</span> FileSystem tfs;     </span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Directory</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">Directory</span>( params );</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Directory::<span class="built_in">Directory</span>( params) </span><br><span class="line">&#123;</span><br><span class="line">    ...</span><br><span class="line">    std::<span class="type">size_t</span> disks = tfs.<span class="built_in">numDisks</span>();</span><br><span class="line">    ...    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>客户使用使用：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">Directory <span class="title">tempDir</span><span class="params">( params )</span></span>;</span><br></pre></td></tr></table></figure>
+<p>现在初始化次序的重要性体现出来了，除非 <code>tfs</code> 在 <code>tempDir</code> 之前先被初始化，否则<code>tempDir</code>的构造函数会用到尚未初始化的<code>tfs</code>。但<code>tfs</code>和<code>tempDir</code>是不同的人在不同的时间于不同的源文件建立起来的，它们是定义于不同编译单元内的 <code>non-local static</code> 对象。它们初始化相对次序并无明确定义。但我们可以将 <code>local static</code> 对象替换<code>non-local static</code> 对象来解决。这也是<strong>Singleton</strong>模式的常见实现手法。</p>
+<p>这个手法的基础在于：C++保证，函数内的 <code>local static</code> 对象会在调用该函数时首次遇上该对象的定义式时被初始化。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">FileSystem</span> &#123; ... &#125;</span><br><span class="line"></span><br><span class="line"><span class="function">FileSystem&amp; <span class="title">tfs</span><span class="params">()</span> </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">static</span> FileSystem fs;</span><br><span class="line">    <span class="keyword">return</span> fs;</span><br><span class="line">&#125;    </span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Directory</span> &#123; ... &#125;</span><br><span class="line"></span><br><span class="line">Directory::<span class="built_in">Directory</span>( params) </span><br><span class="line">&#123;</span><br><span class="line">    ...</span><br><span class="line">    std::<span class="type">size_t</span> disks = <span class="built_in">tfs</span>().<span class="built_in">numDisks</span>();</span><br><span class="line">    ...    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Directory&amp; <span class="title">tempDir</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">static</span> Directory td;</span><br><span class="line">    <span class="keyword">return</span> td;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 ]]></content>
       <categories>
         <category>Effective-C++</category>
@@ -1594,6 +1499,101 @@
       <tags>
         <tag>C++</tag>
         <tag>Effective-C++</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Effective-STL 21：总是让比较函数在等值情况下返回 false</title>
+    <url>/2023/03/10/effective-stl/effective-stl-21/</url>
+    <content><![CDATA[<blockquote>
+<p>Item 21: Always have comparison functions return false for equal values.</p>
+</blockquote>
+<h1 id="严格弱序-strict-weak-ordering"><a href="#严格弱序-strict-weak-ordering" class="headerlink" title="严格弱序( strict weak ordering )"></a>严格弱序( <code>strict weak ordering</code> )</h1><p>先补充下严格弱序的概念: 对两个变量 <code>x</code> 和 <code>y</code>：</p>
+<ul>
+<li><code>x &gt; y</code> 等同于 <code>y &lt; x</code></li>
+<li><code>x == y</code> 等同于 <code>!(x &lt; y) &amp;&amp; !(x &gt; y)</code></li>
+</ul>
+<p>要想严格弱序，就需要遵循如下规则：</p>
+<ul>
+<li>每个变量值必须等于其本身（<code>irreflexivity</code>）：<code>x &lt; x</code> 永远不能为 <code>true</code></li>
+<li>不对称性（<code>asymmetry</code>）：如果 <code>x &lt; y</code>，那么 <code>y &lt; x</code> 就不能为 <code>true</code></li>
+<li>有序性必须可传递性：如果 <code>x &lt; y</code> 并且 <code>y &lt; z</code>，那么 <code>x &lt; z</code></li>
+<li>值相同必须具有可传递性：如果 <code>x == y</code> 并且 <code>y == z</code>，那么 <code>x == z</code></li>
+</ul>
+<span id="more"></span>
+
+<h1 id="为什么？"><a href="#为什么？" class="headerlink" title="为什么？"></a>为什么？</h1><h2 id="1-关联容器中的比较算法"><a href="#1-关联容器中的比较算法" class="headerlink" title="1. 关联容器中的比较算法"></a>1. 关联容器中的比较算法</h2><p>比如我们创建一个 <code>set</code> ， 用 <code>less_euqal</code> 作为比较类型，然后插入两个 <code>10</code> ：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">set&lt;<span class="type">int</span>, less_equal&lt;<span class="type">int</span>&gt;&gt; s;</span><br><span class="line">s.<span class="built_in">insert</span>(<span class="number">10</span>);</span><br><span class="line">s.<span class="built_in">insert</span>(<span class="number">10</span>);</span><br></pre></td></tr></table></figure>
+
+<p>我们将第一个 <code>10</code> 记为 <code>10A</code>, 第二个 <code>10</code> 记为 <code>10B</code>, 我们在插入 <code>10B</code> 的时候会检查是否与 <code>10A</code> 相同, 我们用的是 <code>less_equal</code>，下面的表达式会为假，就会重复插入，显然不合理。:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">!(10A &lt;= 10B) &amp;&amp; !(10B &lt;= 10A) //  !(true) &amp;&amp; !(true)</span><br></pre></td></tr></table></figure>
+
+<p>另外在 <code>multiset</code> 中也不行: </p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">multiset&lt;<span class="type">int</span>, less_equal&lt;<span class="type">int</span>&gt;&gt; s;</span><br><span class="line">s.<span class="built_in">insert</span>(<span class="number">10</span>); <span class="comment">// 插入10A</span></span><br><span class="line">s.<span class="built_in">insert</span>(<span class="number">10</span>); <span class="comment">// 插入10B</span></span><br></pre></td></tr></table></figure>
+
+<p>当我们想要一个 <code>equal_range</code>, <code>10A</code> 和 <code>10B</code> 同样认为是不等，永远不会在同一个区间。</p>
+<h2 id="2-sort-算法"><a href="#2-sort-算法" class="headerlink" title="2. sort 算法"></a>2. <code>sort</code> 算法</h2><p>对于 <code>std::sort</code>，当容器里面元素个数大于 <code>_S_threshold</code> 的值时（<code>16</code>），就会使用快速排序，会将所有的元素与中间值比较是无边界保护的，实现如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> _RandomAccessIterator, <span class="keyword">typename</span> _Tp, <span class="keyword">typename</span> _Compare&gt;</span><br><span class="line">     _RandomAccessIterator</span><br><span class="line">     __unguarded_partition(_RandomAccessIterator __first,</span><br><span class="line">               _RandomAccessIterator __last,</span><br><span class="line">               _Tp __pivot, _Compare __comp)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span> (<span class="literal">true</span>)</span><br><span class="line">    &#123;</span><br><span class="line">       <span class="keyword">while</span> (__comp(*__first, __pivot)) <span class="comment">// &lt;-------------------</span></span><br><span class="line">         ++__first;</span><br><span class="line">       --__last;</span><br><span class="line">       <span class="keyword">while</span> (__comp(__pivot, *__last))</span><br><span class="line">         --__last;</span><br><span class="line">       <span class="keyword">if</span> (!(__first &lt; __last))</span><br><span class="line">         <span class="keyword">return</span> __first;</span><br><span class="line">       std::<span class="built_in">iter_swap</span>(__first, __last);</span><br><span class="line">       ++__first;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果传入的 <code>vector</code> 中，后面的元素完全相等， <code>__comp()</code>函数一直返回 <code>true</code> ，在进行快速排序的时候，<code>++first</code> 就可能越界失效，导致 <code>coredump</code>。</p>
+]]></content>
+      <categories>
+        <category>Effective-STL</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>Effective-STL</tag>
+        <tag>stl</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Effective-STL 9：慎重选择删除元素的方法</title>
+    <url>/2023/02/16/effective-stl/effective-stl-9/</url>
+    <content><![CDATA[<blockquote>
+<p>Item9. Choose carefully among easing options.</p>
+</blockquote>
+<h1 id="一、删除特定值"><a href="#一、删除特定值" class="headerlink" title="一、删除特定值"></a>一、删除特定值</h1><ol>
+<li><p>对于 <code>vector</code>、 <code>string</code> 或 <code>deque</code></p>
+<p> 最好使用 <code>erase-remove</code>习惯用法: </p>
+ <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">erase</span>(<span class="built_in">remove</span>(c.<span class="built_in">begin</span>(), c.<span class="built_in">end</span>(), <span class="number">1963</span>, c.<span class="built_in">end</span>()));</span><br></pre></td></tr></table></figure></li>
+<li><p>对于 <code>list</code> 容器</p>
+<p> 直接使用 <code>remove</code> 方法:</p>
+ <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">remove</span>(<span class="number">1963</span>);</span><br></pre></td></tr></table></figure></li>
+<li><p>对于标准关联容器</p>
+<p> 直接使用 <code>erase</code> 方法:</p>
+ <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">erase</span>(<span class="number">1963</span>)</span><br></pre></td></tr></table></figure></li>
+</ol>
+<span id="more"></span>
+<h1 id="二、删除满足特定判定条件的值"><a href="#二、删除满足特定判定条件的值" class="headerlink" title="二、删除满足特定判定条件的值"></a>二、删除满足特定判定条件的值</h1><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">bool</span> <span class="title">badValue</span><span class="params">(<span class="type">int</span>)</span> </span>&#123; <span class="keyword">return</span> <span class="literal">true</span>; &#125; <span class="comment">// 返回x是否为&quot;坏值&quot;</span></span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><p>对于 <code>vector</code>、 <code>string</code> 或 <code>deque</code><br> 使用 <code>erase-remove-if</code>方法: </p>
+ <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">erase</span>(<span class="built_in">remove_if</span>(c.<span class="built_in">begin</span>(), c.<span class="built_in">end</span>(), badValue, c.<span class="built_in">end</span>()));</span><br></pre></td></tr></table></figure></li>
+<li><p>对于 <code>list</code> 容器<br> 直接使用 <code>remove_if</code> 方法:</p>
+ <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c.<span class="built_in">remove_if</span>(badValue);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>对于标准关联容器</p>
+<p> <strong>把当前的i传给erase，i后缀递增</strong></p>
+ <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (AssocContainer&lt;<span class="type">int</span>&gt;::iterator i = c.<span class="built_in">begin</span>(); i != c.<span class="built_in">end</span>();) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">badValue</span>(*i)) c<span class="number">3.</span><span class="built_in">erase</span>(i++); </span><br><span class="line">    <span class="keyword">else</span> ++i;                     </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h1 id="三、循环内部删除对象之外还要做某些事"><a href="#三、循环内部删除对象之外还要做某些事" class="headerlink" title="三、循环内部删除对象之外还要做某些事"></a>三、循环内部删除对象之外还要做某些事</h1><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">doSomething</span><span class="params">(<span class="type">int</span>)</span> </span>&#123; ... &#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li><p>对于 <code>vector</code>、 <code>string</code> 或 <code>deque</code></p>
+<p> <strong>接收 <code>erase</code>返回的迭代器值。</strong></p>
+ <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (SeqContainer&lt;<span class="type">int</span>&gt;::iterator i = c.<span class="built_in">begin</span>(); i != c.<span class="built_in">end</span>();) &#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">badValue</span>(*i)) &#123;</span><br><span class="line">        <span class="built_in">doSomething</span>(*i);</span><br><span class="line">        i = c.<span class="built_in">rease</span>(i);</span><br><span class="line">    &#125; <span class="keyword">else</span> ++i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>对于 <code>list</code> 容器</p>
+<p> 虽然也可以采用标准关联容器方法，但建议采用跟 <code>vector</code>、 <code>string</code> 或 <code>deque</code> 一致。</p>
+</li>
+<li><p>对于标准关联容器</p>
+ <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (SeqContainer&lt;<span class="type">int</span>&gt;::iterator i = c.<span class="built_in">begin</span>(); i != c.<span class="built_in">end</span>();) &#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">badValue</span>(*i)) &#123;</span><br><span class="line">        <span class="built_in">doSomething</span>(*i);</span><br><span class="line">        c.<span class="built_in">rease</span>(i++);</span><br><span class="line">    &#125; <span class="keyword">else</span> ++i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+]]></content>
+      <categories>
+        <category>Effective-STL</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>Effective-STL</tag>
+        <tag>stl</tag>
       </tags>
   </entry>
   <entry>
@@ -1833,66 +1833,6 @@
       </tags>
   </entry>
   <entry>
-    <title>@executable path, @load path 和 @rpath</title>
-    <url>/2023/08/25/macos/executable-path-load-path-%E5%92%8C-rpath/</url>
-    <content><![CDATA[<p>在 <code>macOS</code> 上，动态链接器使用特定的路径变量来解析运行时的库位置。这些路径变量包括：绝对路径、 <code>@executable_path</code>、<code>@loader_path</code> 和 <code>@rpath</code>。</p>
-<h1 id="绝对路径"><a href="#绝对路径" class="headerlink" title="绝对路径"></a>绝对路径</h1><p>对于安装在系统中共享位置的框架很有用，一般是 <code>/Library/Frameworks/xxx</code>、 <code>/usr/lib/xxx</code>, 但是查找嵌入在应用内部的动态库就很难使用，应用安装的位置都不固定，所以引出新的方式。</p>
-<h1 id="executable-path"><a href="#executable-path" class="headerlink" title="@executable path"></a>@executable path</h1><p><code>@executable_path</code> 是用于指代<strong>当前正在执行的程序或应用的路径</strong>。当你的应用程序或其动态库需要引用位于与可执行文件相同路径（或其子目录）下的其他动态库时，这会非常有用。</p>
-<span id="more"></span>
-<p>举例说明: </p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">MyApp/</span><br><span class="line">|-- MyApp.app/</span><br><span class="line">    |-- Contents/</span><br><span class="line">        |-- MacOS/</span><br><span class="line">            |-- MyApp (可执行文件)</span><br><span class="line">            |-- libA.dylib (动态库A)</span><br><span class="line">        |-- Frameworks/</span><br><span class="line">            |-- libB.dylib (动态库B)</span><br></pre></td></tr></table></figure>
-
-<p>假设 <code>MyApp</code> 依赖于 <code>libA.dylib</code>，而 <code>libA.dylib</code> 依赖于 <code>libB.dylib</code>。<br>如果你希望 <code>libA.dylib</code> 在运行时找到 <code>libB.dylib</code>，可以设置 <code>libB.dylib</code> 的安装名称为 <code>@executable_path/../Frameworks/libB.dylib</code>。当 <code>MyApp</code> 启动并加载 <code>libA.dylib</code> 时，<code>@executable_path</code> 将解析为 <code>MyApp.app/Contents/MacOS/</code>，因此 <code>libA.dylib</code> 会正确地找到 <code>libB.dylib</code> 在 <code>MyApp.app/Contents/Frameworks/</code> 目录下。</p>
-<h1 id="load-path"><a href="#load-path" class="headerlink" title="@load path"></a>@load path</h1><p><strong>加载的动态库的路径</strong>。在很多情况下，这个路径是基于正在加载该库的模块，因此它可能会随着加载该库的不同模块而变化。</p>
-<p>举例说明:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">MyApp/</span><br><span class="line">|-- MyApp.app/</span><br><span class="line">    |-- Contents/</span><br><span class="line">        |-- MacOS/</span><br><span class="line">            |-- MyApp (主应用程序)</span><br><span class="line">            |-- libMain.dylib (主应用的动态库)</span><br><span class="line">        |-- Plugins/</span><br><span class="line">            |-- PluginA.bundle/</span><br><span class="line">                |-- PluginA (插件)</span><br><span class="line">                |-- libPluginA.dylib (插件的动态库)</span><br></pre></td></tr></table></figure>
-<p>在这个例子中，<code>MyApp</code> 依赖 <code>libMain.dylib</code>，而 <code>PluginA</code> 依赖 <code>libPluginA.dylib</code>。</p>
-<ul>
-<li><p>使用 <code>@executable_path</code>：</p>
-<p>如果 <code>libMain.dylib</code> 需要引用与其位于同一目录下的另一个库，如 <code>libHelper.dylib</code>，它可以使用 <code>@executable_path/libHelper.dylib</code> 作为路径。但是，这对 <code>PluginA</code> 中的库不起作用，因为 <code>@executable_path</code> 总是指向 <code>MyApp.app/Contents/MacOS/</code>，不考虑加载它的实际模块。</p>
-</li>
-<li><p>使用 <code>@loader_path</code>：</p>
-<p>如果 <code>libPluginA.dylib</code> 需要引用与其位于同一目录下的另一个库，如 <code>libHelper.dylib</code>，它可以使用 <code>@loader_path/libHelper.dylib</code> 作为路径。这样，不管 <code>libPluginA.dylib</code> 被哪个模块加载，它都会正确地引用到相对于加载它的模块的库。</p>
-</li>
-</ul>
-<p><strong>如果是一个应用程序，那么 <code>@load path</code> 与 <code>@executable_path</code> 相同。</strong></p>
-<h1 id="rpath"><a href="#rpath" class="headerlink" title="@rpath"></a>@rpath</h1><p><code>@rpath (Runtime Search Path)</code> 提供了一种动态方式来指定和查找动态库。它的主要优势是提供了更多的灵活性，尤其是在面对多种可能的库位置或多个版本的库时。</p>
-<p>举例说明:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">MyApp/</span><br><span class="line">|-- MyApp.app/</span><br><span class="line">    |-- Contents/</span><br><span class="line">        |-- MacOS/</span><br><span class="line">            |-- MyApp (可执行文件)</span><br><span class="line">        |-- Frameworks/</span><br><span class="line">            |-- libA.dylib (动态库A版本1)</span><br><span class="line">        |-- Plugins/</span><br><span class="line">            |-- PluginA/</span><br><span class="line">                |-- libA.dylib (动态库A版本2)</span><br></pre></td></tr></table></figure>
-
-<p>假设 <code>MyApp</code> 可能需要加载两个版本中的任何一个 <code>libA.dylib</code>，具体取决于特定的运行时情境。使用<code> @rpath</code> 可以轻松管理这种情况。</p>
-<ul>
-<li><p>设置 <code>@rpath</code>:</p>
-<p>  在构建 <code>MyApp</code> 时，你可以设置多个运行时搜索路径（<code>rpaths</code>）:</p>
-<ul>
-<li><code>@executable_path/../Frameworks</code></li>
-<li><code>@executable_path/../Plugins/PluginA</code></li>
-</ul>
-</li>
-<li><p>使用 <code>@rpath</code> 在动态库中:</p>
-<p>  设 <code>libA.dylib</code> 的安装名称为 <code>@rpath/libA.dylib</code>。</p>
-</li>
-<li><p>运行时解析:</p>
-<p>  当 <code>MyApp</code> 需要加载 <code>libA.dylib</code> 时，它会沿着 <code>rpath</code> 列表搜索。首先在 <code>Frameworks</code> 文件夹中查找，然后在 <code>PluginA</code> 文件夹中查找。</p>
-</li>
-</ul>
-<p>这种方法的好处是，你可以轻松地将相同的库放在多个位置，而不需要为每个位置硬编码路径。此外，应用程序的用户或开发人员可以通过修改 <code>rpath</code> 来改变库的搜索顺序或位置。</p>
-<h1 id="install-name-tool"><a href="#install-name-tool" class="headerlink" title="install_name_tool"></a><code>install_name_tool</code></h1><p>要查看或修改一个可执行文件或动态库的 <code>rpath</code>，你可以使用 <code>otool</code> 和 <code>install_name_tool</code> 这两个命令行工具。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ otool -l WeChat</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">Load command 104</span><br><span class="line">          cmd LC_LOAD_DYLIB</span><br><span class="line">      cmdsize 64</span><br><span class="line">         name /usr/lib/swift/libswiftsimd.dylib (offset 24)</span><br><span class="line">   time stamp 2 Thu Jan  1 08:00:02 1970</span><br><span class="line">      current version 9.0.0</span><br><span class="line">compatibility version 1.0.0</span><br><span class="line">Load command 105</span><br><span class="line">          cmd LC_LOAD_DYLIB</span><br><span class="line">      cmdsize 64</span><br><span class="line">         name /usr/lib/swift/libswiftFoundation.dylib (offset 24)</span><br><span class="line">   time stamp 2 Thu Jan  1 08:00:02 1970</span><br><span class="line">      current version 1.0.0</span><br><span class="line">compatibility version 1.0.0</span><br><span class="line">Load command 106</span><br><span class="line">          cmd LC_RPATH</span><br><span class="line">      cmdsize 32</span><br><span class="line">         path /usr/lib/swift (offset 12)</span><br><span class="line">Load command 107</span><br><span class="line">          cmd LC_RPATH</span><br><span class="line">      cmdsize 48</span><br><span class="line">         path @executable_path/../Frameworks (offset 12)</span><br><span class="line">...</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>添加 <code>rpath</code>:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">install_name_tool -add_rpath @executable_path/. a.out</span><br></pre></td></tr></table></figure>
-
-<p>修改 <code>rpath</code>:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">install_name_tool -change libFoo @rpath/libFoo a.out</span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>MacOS</category>
-      </categories>
-      <tags>
-        <tag>DYLD</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Disk Arbitration</title>
     <url>/2023/02/16/macos/Disk-Arbitration/</url>
     <content><![CDATA[<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p><code>Disk Arbitration framework</code> 是一个基于 <code>Core Foundation</code> 的低级框架。会在磁盘出现和消失时通知您的应用程序，并让您的应用程序影响该过程。借助 <code>Disk Arbitration</code>，我们可以：</p>
@@ -2029,6 +1969,77 @@
       </tags>
   </entry>
   <entry>
+    <title>@executable path, @load path 和 @rpath</title>
+    <url>/2023/08/25/macos/executable-path-load-path-%E5%92%8C-rpath/</url>
+    <content><![CDATA[<p>在 <code>macOS</code> 上，动态链接器使用特定的路径变量来解析运行时的库位置。这些路径变量包括：绝对路径、 <code>@executable_path</code>、<code>@loader_path</code> 和 <code>@rpath</code>。</p>
+<h1 id="绝对路径"><a href="#绝对路径" class="headerlink" title="绝对路径"></a>绝对路径</h1><p>对于安装在系统中共享位置的框架很有用，一般是 <code>/Library/Frameworks/xxx</code>、 <code>/usr/lib/xxx</code>, 但是查找嵌入在应用内部的动态库就很难使用，应用安装的位置都不固定，所以引出新的方式。</p>
+<h1 id="executable-path"><a href="#executable-path" class="headerlink" title="@executable path"></a>@executable path</h1><p><code>@executable_path</code> 是用于指代<strong>当前正在执行的程序或应用的路径</strong>。当你的应用程序或其动态库需要引用位于与可执行文件相同路径（或其子目录）下的其他动态库时，这会非常有用。</p>
+<span id="more"></span>
+<p>举例说明: </p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">MyApp/</span><br><span class="line">|-- MyApp.app/</span><br><span class="line">    |-- Contents/</span><br><span class="line">        |-- MacOS/</span><br><span class="line">            |-- MyApp (可执行文件)</span><br><span class="line">            |-- libA.dylib (动态库A)</span><br><span class="line">        |-- Frameworks/</span><br><span class="line">            |-- libB.dylib (动态库B)</span><br></pre></td></tr></table></figure>
+
+<p>假设 <code>MyApp</code> 依赖于 <code>libA.dylib</code>，而 <code>libA.dylib</code> 依赖于 <code>libB.dylib</code>。<br>如果你希望 <code>libA.dylib</code> 在运行时找到 <code>libB.dylib</code>，可以设置 <code>libB.dylib</code> 的安装名称为 <code>@executable_path/../Frameworks/libB.dylib</code>。当 <code>MyApp</code> 启动并加载 <code>libA.dylib</code> 时，<code>@executable_path</code> 将解析为 <code>MyApp.app/Contents/MacOS/</code>，因此 <code>libA.dylib</code> 会正确地找到 <code>libB.dylib</code> 在 <code>MyApp.app/Contents/Frameworks/</code> 目录下。</p>
+<h1 id="load-path"><a href="#load-path" class="headerlink" title="@load path"></a>@load path</h1><p><strong>加载的动态库的路径</strong>。在很多情况下，这个路径是基于正在加载该库的模块，因此它可能会随着加载该库的不同模块而变化。</p>
+<p>举例说明:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">MyApp/</span><br><span class="line">|-- MyApp.app/</span><br><span class="line">    |-- Contents/</span><br><span class="line">        |-- MacOS/</span><br><span class="line">            |-- MyApp (主应用程序)</span><br><span class="line">            |-- libMain.dylib (主应用的动态库)</span><br><span class="line">        |-- Plugins/</span><br><span class="line">            |-- PluginA.bundle/</span><br><span class="line">                |-- PluginA (插件)</span><br><span class="line">                |-- libPluginA.dylib (插件的动态库)</span><br></pre></td></tr></table></figure>
+<p>在这个例子中，<code>MyApp</code> 依赖 <code>libMain.dylib</code>，而 <code>PluginA</code> 依赖 <code>libPluginA.dylib</code>。</p>
+<ul>
+<li><p>使用 <code>@executable_path</code>：</p>
+<p>如果 <code>libMain.dylib</code> 需要引用与其位于同一目录下的另一个库，如 <code>libHelper.dylib</code>，它可以使用 <code>@executable_path/libHelper.dylib</code> 作为路径。但是，这对 <code>PluginA</code> 中的库不起作用，因为 <code>@executable_path</code> 总是指向 <code>MyApp.app/Contents/MacOS/</code>，不考虑加载它的实际模块。</p>
+</li>
+<li><p>使用 <code>@loader_path</code>：</p>
+<p>如果 <code>libPluginA.dylib</code> 需要引用与其位于同一目录下的另一个库，如 <code>libHelper.dylib</code>，它可以使用 <code>@loader_path/libHelper.dylib</code> 作为路径。这样，不管 <code>libPluginA.dylib</code> 被哪个模块加载，它都会正确地引用到相对于加载它的模块的库。</p>
+</li>
+</ul>
+<p><strong>如果是一个应用程序，那么 <code>@load path</code> 与 <code>@executable_path</code> 相同。</strong></p>
+<h1 id="rpath"><a href="#rpath" class="headerlink" title="@rpath"></a>@rpath</h1><p><code>@rpath (Runtime Search Path)</code> 提供了一种动态方式来指定和查找动态库。它的主要优势是提供了更多的灵活性，尤其是在面对多种可能的库位置或多个版本的库时。</p>
+<p>举例说明:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">MyApp/</span><br><span class="line">|-- MyApp.app/</span><br><span class="line">    |-- Contents/</span><br><span class="line">        |-- MacOS/</span><br><span class="line">            |-- MyApp (可执行文件)</span><br><span class="line">        |-- Frameworks/</span><br><span class="line">            |-- libA.dylib (动态库A版本1)</span><br><span class="line">        |-- Plugins/</span><br><span class="line">            |-- PluginA/</span><br><span class="line">                |-- libA.dylib (动态库A版本2)</span><br></pre></td></tr></table></figure>
+
+<p>假设 <code>MyApp</code> 可能需要加载两个版本中的任何一个 <code>libA.dylib</code>，具体取决于特定的运行时情境。使用<code> @rpath</code> 可以轻松管理这种情况。</p>
+<ul>
+<li><p>设置 <code>@rpath</code>:</p>
+<p>  在构建 <code>MyApp</code> 时，你可以设置多个运行时搜索路径（<code>rpaths</code>）:</p>
+<ul>
+<li><code>@executable_path/../Frameworks</code></li>
+<li><code>@executable_path/../Plugins/PluginA</code></li>
+</ul>
+</li>
+<li><p>使用 <code>@rpath</code> 在动态库中:</p>
+<p>  设 <code>libA.dylib</code> 的安装名称为 <code>@rpath/libA.dylib</code>。</p>
+</li>
+<li><p>运行时解析:</p>
+<p>  当 <code>MyApp</code> 需要加载 <code>libA.dylib</code> 时，它会沿着 <code>rpath</code> 列表搜索。首先在 <code>Frameworks</code> 文件夹中查找，然后在 <code>PluginA</code> 文件夹中查找。</p>
+</li>
+</ul>
+<p>这种方法的好处是，你可以轻松地将相同的库放在多个位置，而不需要为每个位置硬编码路径。此外，应用程序的用户或开发人员可以通过修改 <code>rpath</code> 来改变库的搜索顺序或位置。</p>
+<h1 id="install-name-tool"><a href="#install-name-tool" class="headerlink" title="install_name_tool"></a><code>install_name_tool</code></h1><p>要查看或修改一个可执行文件或动态库的 <code>rpath</code>，你可以使用 <code>otool</code> 和 <code>install_name_tool</code> 这两个命令行工具。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">➜ otool -l WeChat</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">Load command 104</span><br><span class="line">          cmd LC_LOAD_DYLIB</span><br><span class="line">      cmdsize 64</span><br><span class="line">         name /usr/lib/swift/libswiftsimd.dylib (offset 24)</span><br><span class="line">   time stamp 2 Thu Jan  1 08:00:02 1970</span><br><span class="line">      current version 9.0.0</span><br><span class="line">compatibility version 1.0.0</span><br><span class="line">Load command 105</span><br><span class="line">          cmd LC_LOAD_DYLIB</span><br><span class="line">      cmdsize 64</span><br><span class="line">         name /usr/lib/swift/libswiftFoundation.dylib (offset 24)</span><br><span class="line">   time stamp 2 Thu Jan  1 08:00:02 1970</span><br><span class="line">      current version 1.0.0</span><br><span class="line">compatibility version 1.0.0</span><br><span class="line">Load command 106</span><br><span class="line">          cmd LC_RPATH</span><br><span class="line">      cmdsize 32</span><br><span class="line">         path /usr/lib/swift (offset 12)</span><br><span class="line">Load command 107</span><br><span class="line">          cmd LC_RPATH</span><br><span class="line">      cmdsize 48</span><br><span class="line">         path @executable_path/../Frameworks (offset 12)</span><br><span class="line">...</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>添加 <code>rpath</code>:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">install_name_tool -add_rpath @executable_path/. a.out</span><br></pre></td></tr></table></figure>
+
+<p>修改 <code>rpath</code>:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">install_name_tool -change libFoo @rpath/libFoo a.out</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>MacOS</category>
+      </categories>
+      <tags>
+        <tag>DYLD</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>macOS 完全磁盘访问权限</title>
+    <url>/2024/01/05/macos/macOS-%E5%AE%8C%E5%85%A8%E7%A3%81%E7%9B%98%E8%AE%BF%E9%97%AE%E6%9D%83%E9%99%90/</url>
+    <content><![CDATA[]]></content>
+      <categories>
+        <category>macOS</category>
+      </categories>
+      <tags>
+        <tag>macOS</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>macOS Ventura App 管理</title>
     <url>/2024/01/04/macos/macOS-Ventura-App-%E7%AE%A1%E7%90%86/</url>
     <content><![CDATA[<p>从 <code>macOS Monterey</code> 开始，如果应用程序被未由相同开发团队签名且未由 <code>NSUpdateSecurityPolicy</code> 允许的东西修改，<code>macOS</code> 将阻止修改并通知用户应用程序希望管理其他应用程序。点击通知会将用户发送到系统设置，他们可以在那里允许应用程序更新和修改其他应用程序。</p>
@@ -2054,17 +2065,6 @@
 <li><a href="https://lapcatsoftware.com/articles/AppManagement.html">How macOS Ventura App Management works and doesn’t work</a></li>
 </ul>
 ]]></content>
-      <categories>
-        <category>macOS</category>
-      </categories>
-      <tags>
-        <tag>macOS</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>macOS 完全磁盘访问权限</title>
-    <url>/2024/01/05/macos/macOS-%E5%AE%8C%E5%85%A8%E7%A3%81%E7%9B%98%E8%AE%BF%E9%97%AE%E6%9D%83%E9%99%90/</url>
-    <content><![CDATA[]]></content>
       <categories>
         <category>macOS</category>
       </categories>
@@ -2920,6 +2920,25 @@
       </tags>
   </entry>
   <entry>
+    <title>MTU与MSS的奥秘</title>
+    <url>/2024/03/18/network/MTU%E4%B8%8EMSS%E7%9A%84%E5%A5%A5%E7%A7%98/</url>
+    <content><![CDATA[<h1 id="最大传输单元（Maximum-Transmission-Unit-MTU）"><a href="#最大传输单元（Maximum-Transmission-Unit-MTU）" class="headerlink" title="最大传输单元（Maximum Transmission Unit, MTU）"></a>最大传输单元（Maximum Transmission Unit, MTU）</h1><p>数据链路层传输的帧大小是有限制的，不能把一个太大的包直接塞给链路层，这个限制被称为「最大传输单元（<code>Maximum Transmission Unit, MTU</code>）」</p>
+<span id="more"></span>
+<p>不同的数据链路层的 <code>MTU</code> 是不同的。通过 <code>netstat -i</code> 可以查看网卡的 <code>MTU</code>，比如在 我的 <code>ubuntu</code> 机器上可以看到</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">-&gt; </span><span class="language-bash">netstat -i</span></span><br><span class="line">Kernel Interface table</span><br><span class="line">Iface      MTU    RX-OK RX-ERR RX-DRP RX-OVR    TX-OK TX-ERR TX-DRP TX-OVR Flg</span><br><span class="line">ens33     1500     4513      0      0 0          2872      0      0      0 BMRU</span><br><span class="line">lo       65536     5307      0      0 0          5307      0      0      0 LRU</span><br></pre></td></tr></table></figure>
+
+<h1 id="IP-分段"><a href="#IP-分段" class="headerlink" title="IP 分段"></a><code>IP</code> 分段</h1><h1 id="网络中的木桶效应：路径-MTU"><a href="#网络中的木桶效应：路径-MTU" class="headerlink" title="网络中的木桶效应：路径 MTU"></a>网络中的木桶效应：路径 <code>MTU</code></h1><h1 id="TCP-最大段大小（Max-Segment-Size，MSS）"><a href="#TCP-最大段大小（Max-Segment-Size，MSS）" class="headerlink" title="TCP 最大段大小（Max Segment Size，MSS）"></a><code>TCP</code> 最大段大小（<code>Max Segment Size</code>，<code>MSS</code>）</h1><h1 id="为什么有时候抓包看到的单个数据包大于-MTU"><a href="#为什么有时候抓包看到的单个数据包大于-MTU" class="headerlink" title="为什么有时候抓包看到的单个数据包大于 MTU"></a>为什么有时候抓包看到的单个数据包大于 <code>MTU</code></h1><h1 id="TCP-套接字选项-TCP-MAXSEG"><a href="#TCP-套接字选项-TCP-MAXSEG" class="headerlink" title="TCP 套接字选项 TCP_MAXSEG"></a><code>TCP</code> 套接字选项 <code>TCP_MAXSEG</code></h1><h1 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h1><p><code>IP</code> 数据包长度在超过链路的 MTU 时在发送之前需要分片，而 <code>TCP</code> 层为了 <code>IP</code> 层不用分片主动将包切割成 <code>MSS</code> 大小。</p>
+]]></content>
+      <categories>
+        <category>Network</category>
+      </categories>
+      <tags>
+        <tag>tcp</tag>
+        <tag>MTU</tag>
+        <tag>MSS</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Netfilter 框架浅析</title>
     <url>/2024/07/11/network/Netfilter-%E6%A1%86%E6%9E%B6%E6%B5%85%E6%9E%90/</url>
     <content><![CDATA[<p><code>Netfilter</code>，在 <code>Linux</code> 内核中的一个软件框架，用于管理网络数据包。不仅具有网络地址转换（<code>NAT</code>）的功能，也具备数据包内容修改、以及数据包过滤等防火墙功能。利用运作于用户空间的应用软件，如 <code>iptables</code> 、<code>nftables</code> 、<code>ebtables</code> 和 <code>arptables</code> 等，来控制 <code>Netfilter</code>，系统管理者可以管理通过Linux操作系统的各种网络数据包。<code>1990</code> 年代，<code>Netfilter</code> 在 <code>Linux 2.3.15</code> 版时进入Linux内核，正式应用于 <code>Linux 2.4</code> 版。</p>
@@ -2973,25 +2992,6 @@
       </tags>
   </entry>
   <entry>
-    <title>MTU与MSS的奥秘</title>
-    <url>/2024/03/18/network/MTU%E4%B8%8EMSS%E7%9A%84%E5%A5%A5%E7%A7%98/</url>
-    <content><![CDATA[<h1 id="最大传输单元（Maximum-Transmission-Unit-MTU）"><a href="#最大传输单元（Maximum-Transmission-Unit-MTU）" class="headerlink" title="最大传输单元（Maximum Transmission Unit, MTU）"></a>最大传输单元（Maximum Transmission Unit, MTU）</h1><p>数据链路层传输的帧大小是有限制的，不能把一个太大的包直接塞给链路层，这个限制被称为「最大传输单元（<code>Maximum Transmission Unit, MTU</code>）」</p>
-<span id="more"></span>
-<p>不同的数据链路层的 <code>MTU</code> 是不同的。通过 <code>netstat -i</code> 可以查看网卡的 <code>MTU</code>，比如在 我的 <code>ubuntu</code> 机器上可以看到</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">-&gt; </span><span class="language-bash">netstat -i</span></span><br><span class="line">Kernel Interface table</span><br><span class="line">Iface      MTU    RX-OK RX-ERR RX-DRP RX-OVR    TX-OK TX-ERR TX-DRP TX-OVR Flg</span><br><span class="line">ens33     1500     4513      0      0 0          2872      0      0      0 BMRU</span><br><span class="line">lo       65536     5307      0      0 0          5307      0      0      0 LRU</span><br></pre></td></tr></table></figure>
-
-<h1 id="IP-分段"><a href="#IP-分段" class="headerlink" title="IP 分段"></a><code>IP</code> 分段</h1><h1 id="网络中的木桶效应：路径-MTU"><a href="#网络中的木桶效应：路径-MTU" class="headerlink" title="网络中的木桶效应：路径 MTU"></a>网络中的木桶效应：路径 <code>MTU</code></h1><h1 id="TCP-最大段大小（Max-Segment-Size，MSS）"><a href="#TCP-最大段大小（Max-Segment-Size，MSS）" class="headerlink" title="TCP 最大段大小（Max Segment Size，MSS）"></a><code>TCP</code> 最大段大小（<code>Max Segment Size</code>，<code>MSS</code>）</h1><h1 id="为什么有时候抓包看到的单个数据包大于-MTU"><a href="#为什么有时候抓包看到的单个数据包大于-MTU" class="headerlink" title="为什么有时候抓包看到的单个数据包大于 MTU"></a>为什么有时候抓包看到的单个数据包大于 <code>MTU</code></h1><h1 id="TCP-套接字选项-TCP-MAXSEG"><a href="#TCP-套接字选项-TCP-MAXSEG" class="headerlink" title="TCP 套接字选项 TCP_MAXSEG"></a><code>TCP</code> 套接字选项 <code>TCP_MAXSEG</code></h1><h1 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h1><p><code>IP</code> 数据包长度在超过链路的 MTU 时在发送之前需要分片，而 <code>TCP</code> 层为了 <code>IP</code> 层不用分片主动将包切割成 <code>MSS</code> 大小。</p>
-]]></content>
-      <categories>
-        <category>Network</category>
-      </categories>
-      <tags>
-        <tag>tcp</tag>
-        <tag>MTU</tag>
-        <tag>MSS</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>QUIC 协议初探</title>
     <url>/2024/03/08/network/QUIC-%E5%8D%8F%E8%AE%AE%E5%88%9D%E6%8E%A2/</url>
     <content><![CDATA[<p>Package Type</p>
@@ -3016,6 +3016,153 @@
       </categories>
       <tags>
         <tag>QUIC</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>译 SO_REUSEADDR 和 SO_REUSEPORT 有何不同？</title>
+    <url>/2024/07/18/network/SO-REUSEADDR-%E5%92%8C-SO-REUSEPORT-%E6%9C%89%E4%BD%95%E4%B8%8D%E5%90%8C%EF%BC%9F/</url>
+    <content><![CDATA[<h1 id="Socket-编程中的端口复用：SO-REUSEADDR-和-SO-REUSEPORT"><a href="#Socket-编程中的端口复用：SO-REUSEADDR-和-SO-REUSEPORT" class="headerlink" title="Socket 编程中的端口复用：SO_REUSEADDR 和 SO_REUSEPORT"></a>Socket 编程中的端口复用：SO_REUSEADDR 和 SO_REUSEPORT</h1><p>欢迎来到一个充满移植性挑战的世界！在深入分析这两个选项之前，我们首先需要了解 <code>BSD</code> 套接字实现是所有套接字实现的鼻祖。几乎所有其他系统都在某个时间点复制了 <code>BSD</code> 套接字实现，或至少是其接口，然后在此基础上发展演变。当然，<code>BSD</code> 套接字实现本身也在不断演变，因此那些更晚期复制它的系统获得了更早期系统所缺乏的功能。理解 <code>BSD</code> 套接字实现是理解其他所有套接字实现的关键，即使你不打算为 <code>BSD</code> 系统编写代码，也应该了解它。</p>
+<p>在深入探讨 <code>SO_REUSEADDR</code> 和 <code>SO_REUSEPORT</code> 之前，你需要了解一些基本知识。一个 <code>TCP/UDP</code> 连接由五个值组成的元组标识：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;&lt;协议&gt;, &lt;源地址&gt;, &lt;源端口&gt;, &lt;目标地址&gt;, &lt;目标端口&gt;&#125;</span><br></pre></td></tr></table></figure>
+<p>任何唯一的这些值组合标识一个连接。因此，没有两个连接可以具有相同的五个值，否则系统将无法区分这些连接。</p>
+<h2 id="套接字的基本操作"><a href="#套接字的基本操作" class="headerlink" title="套接字的基本操作"></a>套接字的基本操作</h2><ol>
+<li>创建套接字：使用 <code>socket()</code> 函数设置套接字的协议。</li>
+<li>绑定地址和端口：使用 <code>bind()</code> 函数设置源地址和端口。</li>
+<li>连接目标地址和端口：使用 <code>connect()</code> 函数设置目标地址和端口。<br>对于 <code>UDP</code>，由于它是无连接协议，可以在不连接的情况下使用。然而，在某些情况下连接它是有益的。在无连接模式下，如果未显式绑定，<code>UDP</code> 套接字通常会在第一次发送数据时由系统自动绑定，因为未绑定的 <code>UDP</code> 套接字无法接收任何（回复）数据。对于未绑定的 TCP 套接字也是如此，它在连接之前会自动绑定。</li>
+</ol>
+<span id="more"></span>
+
+<p>可以将套接字显式绑定到端口 <code>0</code>，这意味着<strong>任意端口</strong>。系统将从预定义的源端口范围中选择一个特定端口。同样，源地址也可以是<strong>任意地址</strong>（<code>IPv4</code> 中是 <code>0.0.0.0</code>，<code>IPv6</code> 中是 <code>::</code>）。一个套接字可以绑定到“任意地址”，意味着它绑定到所有本地接口的所有源 <code>IP</code> 地址。如果套接字随后连接，系统必须选择一个特定的源 <code>IP</code> 地址，并用选择的源 <code>IP</code> 地址替换<strong>任意</strong>绑定。</p>
+<p>默认情况下，没有两个套接字可以绑定到相同的源地址和源端口组合。只要源端口不同，源地址实际上是无关紧要的。将 <code>socketA</code> 绑定到 <code>ipA</code><br>和将 <code>socketB</code> 绑定到 <code>ipB</code><br>总是可以的，如果 <code>ipA != ipB</code> 即使 <code>portA == portB</code> 也没有问题。例如，<code>socketA</code> 属于一个 <code>FTP</code> 服务器程序，绑定到 <code>192.168.0.1:21</code>，而 <code>socketB</code> 属于另一个 <code>FTP</code> 服务器程序，绑定到 <code>10.0.0.1:21</code>，这两个绑定都会成功。然而，如果一个套接字绑定到 <code>0.0.0.0:21</code>，它绑定到所有现有的本地地址，因此没有其他套接字可以绑定到端口 <code>21</code>，无论尝试绑定到哪个具体的 <code>IP</code> 地址，因为 <code>0.0.0.0</code> 与所有现有的本地 <code>IP</code> 地址冲突。</p>
+<p>这些基本操作在所有主要操作系统中基本相同。接下来，当涉及到地址重用时，操作系统之间的处理方式会有所不同。我们从 <code>BSD</code> 开始，因为它是所有套接字实现的源头。</p>
+<h1 id="BSD-中的端口复用"><a href="#BSD-中的端口复用" class="headerlink" title="BSD 中的端口复用"></a>BSD 中的端口复用</h1><h2 id="SO-REUSEADDR"><a href="#SO-REUSEADDR" class="headerlink" title="SO_REUSEADDR"></a>SO_REUSEADDR</h2><p>如果在绑定之前在套接字上启用了 <code>SO_REUSEADDR</code>，除非与另一个套接字完全相同的源地址和端口组合发生冲突，否则该套接字可以成功绑定。关键在于“完全相同”。<code>SO_REUSEADDR</code> 主要改变了在搜索冲突时如何处理通配符地址（“任意 <code>IP</code> 地址”）。</p>
+<p>没有 <code>SO_REUSEADDR</code> 的情况下，绑定 <code>socketA</code> 到 0.0.0.0:21 后，再绑定 socketB 到 <code>192.168.0.1:21</code> 会失败（错误 <code>EADDRINUSE</code>），因为 <code>0.0.0.0</code> 意味着“任意本地 <code>IP</code> 地址”，因此所有本地 <code>IP</code> 地址都被这个套接字视为正在使用，包括 <code>192.168.0.1</code>。但有了 <code>SO_REUSEADDR</code>，这种绑定会成功，因为 <code>0.0.0.0</code> 和 <code>192.168.0.1</code> 并不完全相同，一个是所有本地地址的通配符，另一个是非常具体的本地地址。这个行为无论 <code>socketA</code> 和 <code>socketB</code> 绑定的顺序如何，结果都是一样的：没有 <code>SO_REUSEADDR</code> 时会失败，有 <code>SO_REUSEADDR</code> 时会成功。</p>
+<p>以下是一个更好的概述，列出了所有可能的组合：</p>
+<table>
+<thead>
+<tr>
+<th>SO_REUSEADDR</th>
+<th>socketA</th>
+<th>socketB</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ON&#x2F;OFF</td>
+<td>192.168.0.1:21</td>
+<td>192.168.0.1:21</td>
+<td>错误 (EADDRINUSE)</td>
+</tr>
+<tr>
+<td>ON&#x2F;OFF</td>
+<td>192.168.0.1:21</td>
+<td>10.0.0.1:21</td>
+<td>成功</td>
+</tr>
+<tr>
+<td>ON&#x2F;OFF</td>
+<td>10.0.0.1:21</td>
+<td>192.168.0.1:21</td>
+<td>成功</td>
+</tr>
+<tr>
+<td>OFF</td>
+<td>0.0.0.0:21</td>
+<td>192.168.1.0:21</td>
+<td>错误 (EADDRINUSE)</td>
+</tr>
+<tr>
+<td>OFF</td>
+<td>192.168.1.0:21</td>
+<td>0.0.0.0:21</td>
+<td>错误 (EADDRINUSE)</td>
+</tr>
+<tr>
+<td>ON</td>
+<td>0.0.0.0:21</td>
+<td>192.168.1.0:21</td>
+<td>成功</td>
+</tr>
+<tr>
+<td>ON</td>
+<td>192.168.1.0:21</td>
+<td>0.0.0.0:21</td>
+<td>成功</td>
+</tr>
+<tr>
+<td>ON&#x2F;OFF</td>
+<td>0.0.0.0:21</td>
+<td>0.0.0.0:21</td>
+<td>错误 (EADDRINUSE)</td>
+</tr>
+</tbody></table>
+<p>上表假设 <code>socketA</code> 已成功绑定到给定的地址，然后创建 <code>socketB</code>，并设置或不设置 <code>SO_REUSEADDR</code>，最后绑定 <code>socketB</code> 到给定的地址。结果是 <code>socketB</code> 绑定操作的结果。如果第一列显示 <code>ON/OFF</code>，则 <code>SO_REUSEADDR</code> 的值与结果无关。</p>
+<p><code>SO_REUSEADDR</code> 的另一个重要作用是在 <code>TCP</code> 协议中的应用。通常，当一个 <code>TCP</code> 套接字关闭时，会进行一个 <code>3</code> 步握手（<code>FIN-ACK</code>）。问题在于，最后一个 <code>ACK</code> 可能到达另一端，也可能没有到达。如果没有到达，另一端仍然认为套接字是打开的。为了防止重用可能仍然被远程对等方视为打开的地址和端口组合，系统在发送最后一个 <code>ACK</code> 后不会立即将套接字视为关闭，而是将其置于称为 <code>TIME_WAIT</code> 的状态。这个状态可能持续几分钟（取决于系统设置）。虽然大多数系统可以通过启用延迟并设置延迟时间为零来绕过这个状态，但这并不总是可行，并且即使系统支持这种请求，也会导致套接字通过复位（<code>RST</code>）关闭，这并不总是一个好主意。</p>
+<p>系统如何处理处于 <code>TIME_WAIT</code> 状态的套接字？如果未设置 <code>SO_REUSEADDR</code>，处于 <code>TIME_WAIT</code> 状态的套接字仍被视为绑定到源地址和端口，任何尝试绑定到相同地址和端口的新套接字都会失败，直到套接字真正关闭。因此，不要期望在关闭套接字后立即重新绑定源地址，大多数情况下会失败。然而，如果为尝试绑定的套接字设置了 <code>SO_REUSEADDR</code>，则处于 <code>TIME_WAIT</code> 状态的另一个套接字会被忽略，因此你的套接字可以毫无问题地绑定到相同的地址和端口。在这种情况下，即使另一个套接字具有完全相同的地址和端口也是无关紧要的。请注意，绑定一个套接字到与 <code>TIME_WAIT</code> 状态的套接字相同的地址和端口可能会产生意外且通常是不希望的副作用，但这些副作用在实践中相对罕见。</p>
+<p>还有一个关于 <code>SO_REUSEADDR</code> 的最后一点要注意的事情。上述所有内容都适用于绑定时具有地址重用的套接字。无需另一个已绑定或处于 <code>TIME_WAIT</code> 状态的套接字也设置此标志。决定绑定操作是否成功或失败的代码只会检查传入的 <code>bind()</code> 调用的套接字的 <code>SO_REUSEADDR</code> 标志，不会查看其他套接字的此标志。</p>
+<h2 id="SO-REUSEPORT"><a href="#SO-REUSEPORT" class="headerlink" title="SO_REUSEPORT"></a>SO_REUSEPORT</h2><p><code>SO_REUSEPORT</code> 实现了大多数人对 <code>SO_REUSEADDR</code> 的期望。基本上，启用该选项的套接字不仅可以在有重叠绑定的情况下绑定，还可以与已绑定的套接字共享同一个地址和端口组合。只要所有套接字都设置了 <code>SO_REUSEPORT</code> 标志，它们都可以绑定到相同的地址和端口。</p>
+<p><code>SO_REUSEPORT</code> 的一个重要应用是负载平衡。多个进程或线程可以同时绑定到相同的地址和端口，系统将确保传入的连接或数据包均匀地分布在所有套接字上。对于服务器应用程序来说，这可以显著提高并发处理能力和性能。</p>
+<p>在 <code>BSD</code> 系统上，启用 <code>SO_REUSEPORT</code> 后，套接字绑定的行为如下：</p>
+<table>
+<thead>
+<tr>
+<th>SO_REUSEPORT</th>
+<th>socketA</th>
+<th>socketB</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ON</td>
+<td>192.168.0.1:21</td>
+<td>192.168.0.1:21</td>
+<td>成功</td>
+</tr>
+<tr>
+<td>ON</td>
+<td>0.0.0.0:21</td>
+<td>0.0.0.0:21</td>
+<td>成功</td>
+</tr>
+<tr>
+<td>OFF</td>
+<td>0.0.0.0:21</td>
+<td>192.168.0.1:21</td>
+<td>成功（如上所述）</td>
+</tr>
+<tr>
+<td>OFF</td>
+<td>192.168.0.1:21</td>
+<td>0.0.0.0:21</td>
+<td>成功（如上所述）</td>
+</tr>
+<tr>
+<td>OFF</td>
+<td>0.0.0.0:21</td>
+<td>0.0.0.0:21</td>
+<td>错误 (EADDRINUSE)</td>
+</tr>
+<tr>
+<td>OFF</td>
+<td>192.168.0.1:21</td>
+<td>192.168.0.1:21</td>
+<td>错误 (EADDRINUSE)</td>
+</tr>
+</tbody></table>
+<p>如上所述，<code>SO_REUSEPORT</code> 的行为与 <code>SO_REUSEADDR</code> 不同。必须为所有套接字设置此标志才能共享同一个地址和端口。这个特性在实现高性能、高并发服务器应用程序时尤为重要。</p>
+<h1 id="在其他系统上的行为"><a href="#在其他系统上的行为" class="headerlink" title="在其他系统上的行为"></a>在其他系统上的行为</h1><h2 id="Linux"><a href="#Linux" class="headerlink" title="Linux"></a>Linux</h2><p>在 <code>Linux</code> 系统上，<code>SO_REUSEADDR</code> 和 <code>SO_REUSEPORT</code> 的行为与 <code>BSD</code> 系统基本一致。然而，<code>Linux</code> 在一些细节上有所不同。例如，在 <code>TCP</code> 套接字关闭时的 <code>TIME_WAIT</code> 状态处理上，<code>Linux</code> 可能比 <code>BSD</code> 更灵活。此外，<code>Linux</code> 还支持一些额外的套接字选项和特性，如 <code>TCP_FASTOPEN</code> 和 <code>TCP_DEFER_ACCEPT</code>，这些选项可以进一步优化性能和可靠性。</p>
+<h2 id="Windows"><a href="#Windows" class="headerlink" title="Windows"></a>Windows</h2><p>在 <code>Windows</code> 系统上，<code>SO_REUSEADDR</code> 和 <code>SO_REUSEPORT</code> 的行为也与 <code>BSD</code> 和 <code>Linux</code> 基本一致。然而，<code>Windows</code> 套接字 <code>API</code> 在一些实现细节和错误处理上有所不同。例如，<code>Windows</code> 在处理地址重用和 <code>TIME_WAIT</code> 状态时，可能会有一些特定的行为和限制。此外，<code>Windows</code> 套接字 <code>API</code> 还支持一些特有的选项和特性，如 <code>WSAIoctl</code> 和 <code>overlapped I/O</code>，这些特性在实现高性能网络应用时非常有用。</p>
+<h2 id="macOS"><a href="#macOS" class="headerlink" title="macOS"></a>macOS</h2><p>在 <code>macOS</code> 系统上，<code>SO_REUSEADDR</code> 和 <code>SO_REUSEPORT</code> 的行为基本与 BSD 系统相同。由于 <code>macOS</code> 基于 <code>BSD</code> 内核，其套接字实现与 <code>BSD</code> 非常相似。然而，<code>macOS</code> 在一些细节和特性上可能会有所不同。例如，<code>macOS</code> 在处理套接字关闭和资源释放时，可能会有一些特定的优化和改进。此外，<code>macOS</code> 还支持一些特有的套接字选项和特性，如 <code>kqueue</code> 和 <code>GCD</code>，这些特性在实现高性能、高并发网络应用时非常有用。</p>
+<h1 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h1><p>理解和正确使用 <code>SO_REUSEADDR</code> 和 <code>SO_REUSEPORT</code> 是实现高性能网络应用的关键。虽然这些选项在不同系统上的实现可能有所不同，但它们的基本原理和应用场景是相同的。在编写跨平台的网络应用时，了解这些选项在不同系统上的行为和限制，可以帮助你更好地优化和调试你的程序。希望本文能够帮助你更好地理解和使用这些重要的套接字选项，并在实际应用中取得成功。</p>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ul>
+<li><a href="https://stackoverflow.com/questions/14388706/how-do-so-reuseaddr-and-so-reuseport-differ">how-do-so-reuseaddr-and-so-reuseport-differ?</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>Network</category>
+      </categories>
+      <tags>
+        <tag>tcp</tag>
       </tags>
   </entry>
   <entry>
@@ -3075,65 +3222,6 @@
       <tags>
         <tag>tcp</tag>
         <tag>tfo</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>http协议</title>
-    <url>/2023/07/17/network/http%E5%8D%8F%E8%AE%AE/</url>
-    <content><![CDATA[<h1 id="HTTP-是什么？"><a href="#HTTP-是什么？" class="headerlink" title="HTTP 是什么？"></a>HTTP 是什么？</h1><p><code>HTTP</code> 是超文本传输协议，也就是 <code>HyperText Transfer Protocol</code>。</p>
-<h1 id="URI-的完整图解"><a href="#URI-的完整图解" class="headerlink" title="URI 的完整图解"></a>URI 的完整图解</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">  foo://example.com:8042/over/there?name=ferret#nose</span><br><span class="line">  \_/   \______________/\_________/ \_________/ \__/</span><br><span class="line">   |           |            |            |        |</span><br><span class="line">scheme     authority       path        query   fragment</span><br><span class="line">   |   _____________________|__</span><br><span class="line">  / \ /                        \</span><br><span class="line">  urn:example:animal:ferret:nose</span><br></pre></td></tr></table></figure>
-
-<h1 id="消息格式"><a href="#消息格式" class="headerlink" title="消息格式"></a>消息格式</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">start-line</span><br><span class="line">*( header-field CRLF )</span><br><span class="line">CRLF</span><br><span class="line">[ message-body ]</span><br></pre></td></tr></table></figure>
-<span id="more"></span>
-<h2 id="start-line"><a href="#start-line" class="headerlink" title="start-line"></a>start-line</h2><ul>
-<li>request line<ul>
-<li>method SP request-target SP HTTP-version CRLF</li>
-</ul>
-</li>
-<li>status line<ul>
-<li>HTTP-version SP status-code SP reason-phrase CRLF</li>
-</ul>
-</li>
-</ul>
-<h2 id="Header-Fields"><a href="#Header-Fields" class="headerlink" title="Header Fields"></a>Header Fields</h2><ul>
-<li>field-name “:” OWS field-value OWS</li>
-</ul>
-<h2 id="Message-Body"><a href="#Message-Body" class="headerlink" title="Message Body"></a>Message Body</h2><p>在一个请求中是否会出现消息体，以消息头中是否带有 <code>Content-Length</code> 或者 <code>Transfer-Encoding</code> 头字段作为信号</p>
-<h1 id="Proxy-代理"><a href="#Proxy-代理" class="headerlink" title="Proxy 代理"></a>Proxy 代理</h1><h2 id="普通代理"><a href="#普通代理" class="headerlink" title="普通代理"></a>普通代理</h2><p><a href="https://datatracker.ietf.org/doc/html/rfc7230#section-2.3">RFC 7230 - HTTP&#x2F;1.1: Message Syntax and Routing</a> 这种代理扮演的是「中间人」角色，对于连接到它的客户端来说，它是服务端；对于要连接的服务端来说，它是客户端。它就负责在两端之间来回传送 <code>HTTP</code> 报文。</p>
-<h2 id="隧道代理"><a href="#隧道代理" class="headerlink" title="隧道代理"></a>隧道代理</h2><p><a href="https://datatracker.ietf.org/doc/html/rfc7231#section-4.3.6">RFC 7231 - HTTP&#x2F;1.1: Semantics and Content</a> <code>HTTP</code> 客户端通过 <code>CONNECT</code> 方法请求隧道代理创建一条到达任意目的服务器和端口的 <code>TCP</code> 连接，并对客户端和服务器之间的后继数据进行盲转发。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">CONNECT server.example.com:80 HTTP/1.1</span><br></pre></td></tr></table></figure>
-
-
-<h1 id="HTTP-1-1、HTTP-2、HTTP-3-演变"><a href="#HTTP-1-1、HTTP-2、HTTP-3-演变" class="headerlink" title="HTTP/1.1、HTTP/2、HTTP/3 演变"></a><code>HTTP/1.1、HTTP/2、HTTP/3</code> 演变</h1><h2 id="HTTP-1-1-的优化"><a href="#HTTP-1-1-的优化" class="headerlink" title="HTTP/1.1 的优化"></a><code>HTTP/1.1</code> 的优化</h2><ul>
-<li>长连接</li>
-<li>支持管道 （<code>pipeline</code>）网络传输</li>
-</ul>
-<p>但 <code>HTTP/1.1</code> 还是有性能瓶颈：</p>
-<ul>
-<li>请求 &#x2F; 响应头部（<code>Header</code>）未经压缩就发送，首部信息越多延迟越大。只能压缩 <code>Body</code> 的部分；</li>
-<li>发送冗长的首部。每次互相发送相同的首部造成的浪费较多；</li>
-<li>服务器是按请求的顺序响应的，如果服务器响应慢，会招致客户端一直请求不到数据，也就是队头阻塞；</li>
-<li>没有请求优先级控制；</li>
-<li>请求只能从客户端开始，服务器只能被动响应。</li>
-</ul>
-<h2 id="HTTP-2-的优化"><a href="#HTTP-2-的优化" class="headerlink" title="HTTP/2 的优化"></a><code>HTTP/2</code> 的优化</h2><ul>
-<li>头部压缩</li>
-<li>二进制格式</li>
-<li>并发传输</li>
-<li>服务器主动推送资源</li>
-</ul>
-<h2 id="HTTP-3-的优化"><a href="#HTTP-3-的优化" class="headerlink" title="HTTP/3 的优化"></a><code>HTTP/3</code> 的优化</h2><p><code>HTTP/3</code> 基于 <code>UDP</code> 的 <code>QUIC</code> 协议 可以实现类似 <code>TCP</code> 的可靠性传输, 有以下 <code>3</code> 个特点。</p>
-<ul>
-<li>无队头阻塞</li>
-<li>更快的连接建立</li>
-<li>连接迁移</li>
-</ul>
-]]></content>
-      <categories>
-        <category>Network</category>
-      </categories>
-      <tags>
-        <tag>http</tag>
       </tags>
   </entry>
   <entry>
@@ -3277,6 +3365,65 @@
       </categories>
       <tags>
         <tag>tcp</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>http协议</title>
+    <url>/2023/07/17/network/http%E5%8D%8F%E8%AE%AE/</url>
+    <content><![CDATA[<h1 id="HTTP-是什么？"><a href="#HTTP-是什么？" class="headerlink" title="HTTP 是什么？"></a>HTTP 是什么？</h1><p><code>HTTP</code> 是超文本传输协议，也就是 <code>HyperText Transfer Protocol</code>。</p>
+<h1 id="URI-的完整图解"><a href="#URI-的完整图解" class="headerlink" title="URI 的完整图解"></a>URI 的完整图解</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">  foo://example.com:8042/over/there?name=ferret#nose</span><br><span class="line">  \_/   \______________/\_________/ \_________/ \__/</span><br><span class="line">   |           |            |            |        |</span><br><span class="line">scheme     authority       path        query   fragment</span><br><span class="line">   |   _____________________|__</span><br><span class="line">  / \ /                        \</span><br><span class="line">  urn:example:animal:ferret:nose</span><br></pre></td></tr></table></figure>
+
+<h1 id="消息格式"><a href="#消息格式" class="headerlink" title="消息格式"></a>消息格式</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">start-line</span><br><span class="line">*( header-field CRLF )</span><br><span class="line">CRLF</span><br><span class="line">[ message-body ]</span><br></pre></td></tr></table></figure>
+<span id="more"></span>
+<h2 id="start-line"><a href="#start-line" class="headerlink" title="start-line"></a>start-line</h2><ul>
+<li>request line<ul>
+<li>method SP request-target SP HTTP-version CRLF</li>
+</ul>
+</li>
+<li>status line<ul>
+<li>HTTP-version SP status-code SP reason-phrase CRLF</li>
+</ul>
+</li>
+</ul>
+<h2 id="Header-Fields"><a href="#Header-Fields" class="headerlink" title="Header Fields"></a>Header Fields</h2><ul>
+<li>field-name “:” OWS field-value OWS</li>
+</ul>
+<h2 id="Message-Body"><a href="#Message-Body" class="headerlink" title="Message Body"></a>Message Body</h2><p>在一个请求中是否会出现消息体，以消息头中是否带有 <code>Content-Length</code> 或者 <code>Transfer-Encoding</code> 头字段作为信号</p>
+<h1 id="Proxy-代理"><a href="#Proxy-代理" class="headerlink" title="Proxy 代理"></a>Proxy 代理</h1><h2 id="普通代理"><a href="#普通代理" class="headerlink" title="普通代理"></a>普通代理</h2><p><a href="https://datatracker.ietf.org/doc/html/rfc7230#section-2.3">RFC 7230 - HTTP&#x2F;1.1: Message Syntax and Routing</a> 这种代理扮演的是「中间人」角色，对于连接到它的客户端来说，它是服务端；对于要连接的服务端来说，它是客户端。它就负责在两端之间来回传送 <code>HTTP</code> 报文。</p>
+<h2 id="隧道代理"><a href="#隧道代理" class="headerlink" title="隧道代理"></a>隧道代理</h2><p><a href="https://datatracker.ietf.org/doc/html/rfc7231#section-4.3.6">RFC 7231 - HTTP&#x2F;1.1: Semantics and Content</a> <code>HTTP</code> 客户端通过 <code>CONNECT</code> 方法请求隧道代理创建一条到达任意目的服务器和端口的 <code>TCP</code> 连接，并对客户端和服务器之间的后继数据进行盲转发。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">CONNECT server.example.com:80 HTTP/1.1</span><br></pre></td></tr></table></figure>
+
+
+<h1 id="HTTP-1-1、HTTP-2、HTTP-3-演变"><a href="#HTTP-1-1、HTTP-2、HTTP-3-演变" class="headerlink" title="HTTP/1.1、HTTP/2、HTTP/3 演变"></a><code>HTTP/1.1、HTTP/2、HTTP/3</code> 演变</h1><h2 id="HTTP-1-1-的优化"><a href="#HTTP-1-1-的优化" class="headerlink" title="HTTP/1.1 的优化"></a><code>HTTP/1.1</code> 的优化</h2><ul>
+<li>长连接</li>
+<li>支持管道 （<code>pipeline</code>）网络传输</li>
+</ul>
+<p>但 <code>HTTP/1.1</code> 还是有性能瓶颈：</p>
+<ul>
+<li>请求 &#x2F; 响应头部（<code>Header</code>）未经压缩就发送，首部信息越多延迟越大。只能压缩 <code>Body</code> 的部分；</li>
+<li>发送冗长的首部。每次互相发送相同的首部造成的浪费较多；</li>
+<li>服务器是按请求的顺序响应的，如果服务器响应慢，会招致客户端一直请求不到数据，也就是队头阻塞；</li>
+<li>没有请求优先级控制；</li>
+<li>请求只能从客户端开始，服务器只能被动响应。</li>
+</ul>
+<h2 id="HTTP-2-的优化"><a href="#HTTP-2-的优化" class="headerlink" title="HTTP/2 的优化"></a><code>HTTP/2</code> 的优化</h2><ul>
+<li>头部压缩</li>
+<li>二进制格式</li>
+<li>并发传输</li>
+<li>服务器主动推送资源</li>
+</ul>
+<h2 id="HTTP-3-的优化"><a href="#HTTP-3-的优化" class="headerlink" title="HTTP/3 的优化"></a><code>HTTP/3</code> 的优化</h2><p><code>HTTP/3</code> 基于 <code>UDP</code> 的 <code>QUIC</code> 协议 可以实现类似 <code>TCP</code> 的可靠性传输, 有以下 <code>3</code> 个特点。</p>
+<ul>
+<li>无队头阻塞</li>
+<li>更快的连接建立</li>
+<li>连接迁移</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Network</category>
+      </categories>
+      <tags>
+        <tag>http</tag>
       </tags>
   </entry>
   <entry>
@@ -3639,43 +3786,6 @@
       </tags>
   </entry>
   <entry>
-    <title>如何正确使用TCP</title>
-    <url>/2023/07/24/network/%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E4%BD%BF%E7%94%A8TCP/</url>
-    <content><![CDATA[<h1 id="SO-REUSEADDR"><a href="#SO-REUSEADDR" class="headerlink" title="SO_REUSEADDR"></a><code>SO_REUSEADDR</code></h1><ul>
-<li><code>TCP</code> 服务器能够在杀掉或崩溃后快速重启</li>
-<li>也适用 <code>fork-per-connection</code> 服务器模型。</li>
-</ul>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> optval = <span class="number">1</span>;</span><br><span class="line"><span class="built_in">setsockopt</span>(sockfd, SOL_SOCKET, SO_REUSEADDR, &amp;optval, <span class="built_in">sizeof</span>(optval));</span><br></pre></td></tr></table></figure>
-<h1 id="忽略-SIGPIPE"><a href="#忽略-SIGPIPE" class="headerlink" title="忽略 SIGPIPE"></a>忽略 <code>SIGPIPE</code></h1><p>程序向对方已经关闭的管道，写数据，会收到 <code>SIGPIPE</code> 信号。<code>write</code> 系统调用返回 <code>-1</code>收到 <code>errono EPIPE</code>。 <code>SIGPIPE</code> 信号默认行为终止进程。我们应该忽略 <code>SIGPIPE</code> 信号。</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="built_in">signal</span>(SIGPIPE, SIG_IGN) == SIG_ERR) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<span id="more"></span>
-<h1 id="TCP-NODELAY"><a href="#TCP-NODELAY" class="headerlink" title="TCP_NODELAY"></a>TCP_NODELAY</h1><p><code>Nagle</code> 算法避免发送大量的小包，防止小包泛滥于网络，理想情况下，对于一个 <code>TCP</code> 连接而言，只允许一个未被 <code>ACK</code>的包存在于网络。</p>
-<p><code>Nagle</code> 算法规则:</p>
-<ul>
-<li>如果包长度达到 <code>MSS</code>，则允许发送</li>
-<li>如果包含 <code>FIN</code>，则允许发送</li>
-<li>如果设置了 <code>TCP_NODELAY</code>，则允许发送</li>
-<li>未设置 <code>TCP_CORK</code> 选项时，若所有发出去的小数据包（包长度小于<code>MSS</code>）均被确认，则允许发送</li>
-<li>上述条件都未满足，但发生了超时（一般为<code>200ms</code>），则立即发送。</li>
-</ul>
-<p>通过设置 <code>TCP_NODELAY</code> 禁用 <code>nagle</code> 算法。</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> flag = <span class="number">1</span>;</span><br><span class="line"><span class="built_in">setsockopt</span>(sockfd, IPPROTO_TCP, TCP_NODELAY, (<span class="type">char</span>*)&amp;flag, <span class="built_in">sizeof</span>(<span class="type">int</span>));</span><br></pre></td></tr></table></figure>
-
-<h1 id="正确关闭-TCP-连接"><a href="#正确关闭-TCP-连接" class="headerlink" title="正确关闭 TCP 连接"></a>正确关闭 <code>TCP</code> 连接</h1><p>如果协议栈接受缓存区中有数据，程序还没有读，直接调用 <code>close</code> 函数，<code>TCP</code> 协议栈会发送 <code>RST</code> 包，强行断开连接，如果协议栈发送缓存区还有有数据，则对方没能收到，造成数据丢失。 对于无格式的协议正确的做法是：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">发送方: send() + shutdown(WR) + read()-&gt;0 + close()</span><br><span class="line">接收方: read()-&gt;0 + 没有数据发送 + close()</span><br></pre></td></tr></table></figure>
-
-<p>如果遇到恶意或者是有 <code>bug</code> 的 <code>client</code>，一直不 <code>close</code>，发送方一直阻塞在 <code>read</code> , 建议加一个超时机制退出程序，这是为了程序安全 <code>security</code>，不是为了数据安全 <code>safety</code> 完整性 <code>Integrity</code>。</p>
-<p>依赖 <code>shutdown write</code> 会发送 <code>FIN</code>，<code>end of file</code>，更好的办法是设计协议，把数据长度包含进来，接收方可以主动判断数据是否收全。</p>
-<h1 id="Socket-选项之-SO-LINGER"><a href="#Socket-选项之-SO-LINGER" class="headerlink" title="Socket 选项之 SO_LINGER"></a><code>Socket</code> 选项之 <code>SO_LINGER</code></h1>]]></content>
-      <categories>
-        <category>Network</category>
-      </categories>
-      <tags>
-        <tag>tcp</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>网络工具 telnet、 nc、 netstat、ss</title>
     <url>/2024/03/20/network/%E7%BD%91%E7%BB%9C%E5%B7%A5%E5%85%B7%20telnet%E3%80%81-nc%E3%80%81-netstat/</url>
     <content><![CDATA[<h1 id="telnet"><a href="#telnet" class="headerlink" title="telnet"></a><code>telnet</code></h1><h2 id="检查端口是否打开"><a href="#检查端口是否打开" class="headerlink" title="检查端口是否打开"></a>检查端口是否打开</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">telnet [domainname or ip] [port]</span><br><span class="line"></span><br><span class="line">telnet 220.181.57.216 80</span><br></pre></td></tr></table></figure>
@@ -3717,6 +3827,43 @@
       <tags>
         <tag>tools</tag>
         <tag>network</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>如何正确使用TCP</title>
+    <url>/2023/07/24/network/%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E4%BD%BF%E7%94%A8TCP/</url>
+    <content><![CDATA[<h1 id="SO-REUSEADDR"><a href="#SO-REUSEADDR" class="headerlink" title="SO_REUSEADDR"></a><code>SO_REUSEADDR</code></h1><ul>
+<li><code>TCP</code> 服务器能够在杀掉或崩溃后快速重启</li>
+<li>也适用 <code>fork-per-connection</code> 服务器模型。</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> optval = <span class="number">1</span>;</span><br><span class="line"><span class="built_in">setsockopt</span>(sockfd, SOL_SOCKET, SO_REUSEADDR, &amp;optval, <span class="built_in">sizeof</span>(optval));</span><br></pre></td></tr></table></figure>
+<h1 id="忽略-SIGPIPE"><a href="#忽略-SIGPIPE" class="headerlink" title="忽略 SIGPIPE"></a>忽略 <code>SIGPIPE</code></h1><p>程序向对方已经关闭的管道，写数据，会收到 <code>SIGPIPE</code> 信号。<code>write</code> 系统调用返回 <code>-1</code>收到 <code>errono EPIPE</code>。 <code>SIGPIPE</code> 信号默认行为终止进程。我们应该忽略 <code>SIGPIPE</code> 信号。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="built_in">signal</span>(SIGPIPE, SIG_IGN) == SIG_ERR) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+<h1 id="TCP-NODELAY"><a href="#TCP-NODELAY" class="headerlink" title="TCP_NODELAY"></a>TCP_NODELAY</h1><p><code>Nagle</code> 算法避免发送大量的小包，防止小包泛滥于网络，理想情况下，对于一个 <code>TCP</code> 连接而言，只允许一个未被 <code>ACK</code>的包存在于网络。</p>
+<p><code>Nagle</code> 算法规则:</p>
+<ul>
+<li>如果包长度达到 <code>MSS</code>，则允许发送</li>
+<li>如果包含 <code>FIN</code>，则允许发送</li>
+<li>如果设置了 <code>TCP_NODELAY</code>，则允许发送</li>
+<li>未设置 <code>TCP_CORK</code> 选项时，若所有发出去的小数据包（包长度小于<code>MSS</code>）均被确认，则允许发送</li>
+<li>上述条件都未满足，但发生了超时（一般为<code>200ms</code>），则立即发送。</li>
+</ul>
+<p>通过设置 <code>TCP_NODELAY</code> 禁用 <code>nagle</code> 算法。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> flag = <span class="number">1</span>;</span><br><span class="line"><span class="built_in">setsockopt</span>(sockfd, IPPROTO_TCP, TCP_NODELAY, (<span class="type">char</span>*)&amp;flag, <span class="built_in">sizeof</span>(<span class="type">int</span>));</span><br></pre></td></tr></table></figure>
+
+<h1 id="正确关闭-TCP-连接"><a href="#正确关闭-TCP-连接" class="headerlink" title="正确关闭 TCP 连接"></a>正确关闭 <code>TCP</code> 连接</h1><p>如果协议栈接受缓存区中有数据，程序还没有读，直接调用 <code>close</code> 函数，<code>TCP</code> 协议栈会发送 <code>RST</code> 包，强行断开连接，如果协议栈发送缓存区还有有数据，则对方没能收到，造成数据丢失。 对于无格式的协议正确的做法是：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">发送方: send() + shutdown(WR) + read()-&gt;0 + close()</span><br><span class="line">接收方: read()-&gt;0 + 没有数据发送 + close()</span><br></pre></td></tr></table></figure>
+
+<p>如果遇到恶意或者是有 <code>bug</code> 的 <code>client</code>，一直不 <code>close</code>，发送方一直阻塞在 <code>read</code> , 建议加一个超时机制退出程序，这是为了程序安全 <code>security</code>，不是为了数据安全 <code>safety</code> 完整性 <code>Integrity</code>。</p>
+<p>依赖 <code>shutdown write</code> 会发送 <code>FIN</code>，<code>end of file</code>，更好的办法是设计协议，把数据长度包含进来，接收方可以主动判断数据是否收全。</p>
+<h1 id="Socket-选项之-SO-LINGER"><a href="#Socket-选项之-SO-LINGER" class="headerlink" title="Socket 选项之 SO_LINGER"></a><code>Socket</code> 选项之 <code>SO_LINGER</code></h1>]]></content>
+      <categories>
+        <category>Network</category>
+      </categories>
+      <tags>
+        <tag>tcp</tag>
       </tags>
   </entry>
   <entry>
@@ -3817,47 +3964,6 @@
       <tags>
         <tag>QML</tag>
         <tag>Qt</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Application-Layer Protocol Negotiation</title>
-    <url>/2023/12/11/network/TLS/ALPN/</url>
-    <content><![CDATA[<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p><code>ALPN</code>(<code>Application-Layer Protocol Negotiation</code>)应用层协议协商, 当单个服务器端口号（例如端口 <code>443</code>）上支持多个应用程序协议时，客户端和服务器需要协商用于每个连接的应用程序协议。希望在不增加客户端和服务器之间的网络往返次数的情况下完成此协商，因为每次往返都会降低最终用户的体验。</p>
-<p><code>ALPN</code> 作为 <code>TSL</code>的扩展，客户端会将支持的应用程序协议列表作为 <code>TLS ClientHello</code> 消息的一部分发送给服务器，服务器选择一个协议，并将所选协议作为 <code>TLS ServerHello</code> 消息的一部分发送给客户端。因此，可以在 <code>TLS</code> 握手中完成应用协议协商，而无需添加网络往返，并且允许服务器根据需要，将不同的证书与每个应用协议相关联。</p>
-<span id="more"></span>
-<p>通过 <code>OpenSSL</code> 命令行工具，快速查看 <code>HTTP/2</code> 服务是否支持 <code>ALPN</code> 扩展：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">openssl s_client -alpn h2 -servername ipinfo.io -connect ipinfo.io:443 &lt; /dev/null | grep ALPN </span><br></pre></td></tr></table></figure>
-<ul>
-<li>提示 <code>unknown option -alpn</code>:  <code>OpenSSL</code> 版本太低, <code>OpenSSL 1.0.2</code> 才开始支持 <code>ALPN</code> 需要升级高版本</li>
-<li>结果包含 <code>ALPN protocol: h2</code>，说明服务端支持 <code>ALPN</code></li>
-<li>结果包含 <code>No ALPN negotiated</code>，说明服务端不支持 <code>ALPN</code></li>
-</ul>
-<h1 id="Application-Layer-Protocol-Negotiation"><a href="#Application-Layer-Protocol-Negotiation" class="headerlink" title="Application-Layer Protocol Negotiation"></a><code>Application-Layer Protocol Negotiation</code></h1><h2 id="The-Application-Layer-Protocol-Negotiation-Extension"><a href="#The-Application-Layer-Protocol-Negotiation-Extension" class="headerlink" title="The Application-Layer Protocol Negotiation Extension"></a><code>The Application-Layer Protocol Negotiation Extension</code></h2><p>定义新的扩展类型（<code>application_layer_protocol_negotiation（16</code>），并且可以由客户端包括在其 <code>ClientHello</code> 消息中。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> &#123;</span></span><br><span class="line">    application_layer_protocol_negotiation(<span class="number">16</span>), (<span class="number">65535</span>)</span><br><span class="line">&#125; ExtensionType;</span><br></pre></td></tr></table></figure>
-
-<p>（<code>application_layer_protocol_negotiation（16</code>）扩展的 <code>extension_data</code> 字段应包含<code>ProtocolNameList</code> 值。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">opaque ProtocolName&lt;<span class="number">1.</span><span class="number">.2</span>^<span class="number">8</span><span class="number">-1</span>&gt;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    ProtocolName protocol_name_list&lt;<span class="number">2.</span><span class="number">.2</span>^<span class="number">16</span><span class="number">-1</span>&gt;</span><br><span class="line">&#125; ProtocolNameList;</span><br></pre></td></tr></table></figure>
-
-<p><code>ProtocolNameList</code> 按优先级从高到低包含客户端发布的协议列表。 协议是由 <code>IANA</code> 注册的不透明非空字节串命名的。不能包含空字符串，并且不能截断字节字符串。</p>
-<p>接收到包含 <code>application_layer_protocol_negotiation</code> 扩展名的 <code>ClientHello</code> 的服务器可以向客户端返回合适的协议选择作为响应。服务器将忽略它无法识别的任何协议名称。一个新的 <code>ServerHello</code> 扩展类型(<code>application_layer_protocol_negotiation(16)</code>) 可以在 <code>ServerHello</code> 消息扩展中返回给客户端。(<code>application_layer_protocol_negotiation(16)</code>) 扩展名的 <code>extension_data</code> 字段的结构与上述针对客户端 <code>extension_data</code> 的描述相同，只是 <code>ProtocolNameList</code> 必须包含一个 <code>ProtocolName</code>。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Client                                              Server</span><br><span class="line">ClientHello                     --------&gt;       ServerHello</span><br><span class="line">  (ALPN extension &amp;                               (ALPN extension &amp;</span><br><span class="line">   list of protocols)                              selected protocol)</span><br><span class="line">                                                Certificate*</span><br><span class="line">                                                ServerKeyExchange*</span><br><span class="line">                                                CertificateRequest*</span><br><span class="line">                                &lt;--------       ServerHelloDone</span><br><span class="line">Certificate*</span><br><span class="line">ClientKeyExchange</span><br><span class="line">CertificateVerify*</span><br><span class="line">[ChangeCipherSpec]</span><br><span class="line">Finished                        --------&gt;</span><br><span class="line">                                                [ChangeCipherSpec]</span><br><span class="line">                                &lt;--------       Finished</span><br><span class="line">Application Data                &lt;-------&gt;       Application Data</span><br></pre></td></tr></table></figure>
-
-<h2 id="Protocol-Selection"><a href="#Protocol-Selection" class="headerlink" title="Protocol Selection"></a>Protocol Selection</h2><p>期望服务器将具有优先级支持的协议列表，并且仅在客户端支持的情况下才选择协议。在这种情况下，服务器应该选择它所支持的，并且也是由客户端发布的最优先的协议。如果服务器不支持客户端传过来的协议，则服务器应以 <code>&quot;no_application_protocol&quot;</code> <code>alert</code> 错误回应。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> &#123;</span></span><br><span class="line">    no_application_protocol(<span class="number">120</span>),</span><br><span class="line">    (<span class="number">255</span>)</span><br><span class="line">&#125; AlertDescription;</span><br></pre></td></tr></table></figure>
-
-<h2 id="Wireshark-抓包"><a href="#Wireshark-抓包" class="headerlink" title="Wireshark 抓包"></a><code>Wireshark</code> 抓包</h2><p>在 <code>TLS1.3</code> 中:</p>
-<ul>
-<li><p><code>ClientHello</code>消息:<br><img src="/images/alpn_client_hello_tls1_3.png" alt="ClientHello"></p>
-</li>
-<li><p><code>ServerHello</code>消息:<br><img src="/images/alpn_server_hello_tls1_3.png" alt="ServerHello"></p>
-</li>
-</ul>
-<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ul>
-<li><a href="https://datatracker.ietf.org/doc/html/rfc7301">Application-Layer Protocol Negotiation Extension</a></li>
-</ul>
-]]></content>
-      <tags>
-        <tag>SSL/TLS</tag>
       </tags>
   </entry>
   <entry>
@@ -3978,6 +4084,47 @@
       <tags>
         <tag>Qt</tag>
         <tag>焦点</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Application-Layer Protocol Negotiation</title>
+    <url>/2023/12/11/network/TLS/ALPN/</url>
+    <content><![CDATA[<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p><code>ALPN</code>(<code>Application-Layer Protocol Negotiation</code>)应用层协议协商, 当单个服务器端口号（例如端口 <code>443</code>）上支持多个应用程序协议时，客户端和服务器需要协商用于每个连接的应用程序协议。希望在不增加客户端和服务器之间的网络往返次数的情况下完成此协商，因为每次往返都会降低最终用户的体验。</p>
+<p><code>ALPN</code> 作为 <code>TSL</code>的扩展，客户端会将支持的应用程序协议列表作为 <code>TLS ClientHello</code> 消息的一部分发送给服务器，服务器选择一个协议，并将所选协议作为 <code>TLS ServerHello</code> 消息的一部分发送给客户端。因此，可以在 <code>TLS</code> 握手中完成应用协议协商，而无需添加网络往返，并且允许服务器根据需要，将不同的证书与每个应用协议相关联。</p>
+<span id="more"></span>
+<p>通过 <code>OpenSSL</code> 命令行工具，快速查看 <code>HTTP/2</code> 服务是否支持 <code>ALPN</code> 扩展：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">openssl s_client -alpn h2 -servername ipinfo.io -connect ipinfo.io:443 &lt; /dev/null | grep ALPN </span><br></pre></td></tr></table></figure>
+<ul>
+<li>提示 <code>unknown option -alpn</code>:  <code>OpenSSL</code> 版本太低, <code>OpenSSL 1.0.2</code> 才开始支持 <code>ALPN</code> 需要升级高版本</li>
+<li>结果包含 <code>ALPN protocol: h2</code>，说明服务端支持 <code>ALPN</code></li>
+<li>结果包含 <code>No ALPN negotiated</code>，说明服务端不支持 <code>ALPN</code></li>
+</ul>
+<h1 id="Application-Layer-Protocol-Negotiation"><a href="#Application-Layer-Protocol-Negotiation" class="headerlink" title="Application-Layer Protocol Negotiation"></a><code>Application-Layer Protocol Negotiation</code></h1><h2 id="The-Application-Layer-Protocol-Negotiation-Extension"><a href="#The-Application-Layer-Protocol-Negotiation-Extension" class="headerlink" title="The Application-Layer Protocol Negotiation Extension"></a><code>The Application-Layer Protocol Negotiation Extension</code></h2><p>定义新的扩展类型（<code>application_layer_protocol_negotiation（16</code>），并且可以由客户端包括在其 <code>ClientHello</code> 消息中。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> &#123;</span></span><br><span class="line">    application_layer_protocol_negotiation(<span class="number">16</span>), (<span class="number">65535</span>)</span><br><span class="line">&#125; ExtensionType;</span><br></pre></td></tr></table></figure>
+
+<p>（<code>application_layer_protocol_negotiation（16</code>）扩展的 <code>extension_data</code> 字段应包含<code>ProtocolNameList</code> 值。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">opaque ProtocolName&lt;<span class="number">1.</span><span class="number">.2</span>^<span class="number">8</span><span class="number">-1</span>&gt;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    ProtocolName protocol_name_list&lt;<span class="number">2.</span><span class="number">.2</span>^<span class="number">16</span><span class="number">-1</span>&gt;</span><br><span class="line">&#125; ProtocolNameList;</span><br></pre></td></tr></table></figure>
+
+<p><code>ProtocolNameList</code> 按优先级从高到低包含客户端发布的协议列表。 协议是由 <code>IANA</code> 注册的不透明非空字节串命名的。不能包含空字符串，并且不能截断字节字符串。</p>
+<p>接收到包含 <code>application_layer_protocol_negotiation</code> 扩展名的 <code>ClientHello</code> 的服务器可以向客户端返回合适的协议选择作为响应。服务器将忽略它无法识别的任何协议名称。一个新的 <code>ServerHello</code> 扩展类型(<code>application_layer_protocol_negotiation(16)</code>) 可以在 <code>ServerHello</code> 消息扩展中返回给客户端。(<code>application_layer_protocol_negotiation(16)</code>) 扩展名的 <code>extension_data</code> 字段的结构与上述针对客户端 <code>extension_data</code> 的描述相同，只是 <code>ProtocolNameList</code> 必须包含一个 <code>ProtocolName</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Client                                              Server</span><br><span class="line">ClientHello                     --------&gt;       ServerHello</span><br><span class="line">  (ALPN extension &amp;                               (ALPN extension &amp;</span><br><span class="line">   list of protocols)                              selected protocol)</span><br><span class="line">                                                Certificate*</span><br><span class="line">                                                ServerKeyExchange*</span><br><span class="line">                                                CertificateRequest*</span><br><span class="line">                                &lt;--------       ServerHelloDone</span><br><span class="line">Certificate*</span><br><span class="line">ClientKeyExchange</span><br><span class="line">CertificateVerify*</span><br><span class="line">[ChangeCipherSpec]</span><br><span class="line">Finished                        --------&gt;</span><br><span class="line">                                                [ChangeCipherSpec]</span><br><span class="line">                                &lt;--------       Finished</span><br><span class="line">Application Data                &lt;-------&gt;       Application Data</span><br></pre></td></tr></table></figure>
+
+<h2 id="Protocol-Selection"><a href="#Protocol-Selection" class="headerlink" title="Protocol Selection"></a>Protocol Selection</h2><p>期望服务器将具有优先级支持的协议列表，并且仅在客户端支持的情况下才选择协议。在这种情况下，服务器应该选择它所支持的，并且也是由客户端发布的最优先的协议。如果服务器不支持客户端传过来的协议，则服务器应以 <code>&quot;no_application_protocol&quot;</code> <code>alert</code> 错误回应。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> &#123;</span></span><br><span class="line">    no_application_protocol(<span class="number">120</span>),</span><br><span class="line">    (<span class="number">255</span>)</span><br><span class="line">&#125; AlertDescription;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Wireshark-抓包"><a href="#Wireshark-抓包" class="headerlink" title="Wireshark 抓包"></a><code>Wireshark</code> 抓包</h2><p>在 <code>TLS1.3</code> 中:</p>
+<ul>
+<li><p><code>ClientHello</code>消息:<br><img src="/images/alpn_client_hello_tls1_3.png" alt="ClientHello"></p>
+</li>
+<li><p><code>ServerHello</code>消息:<br><img src="/images/alpn_server_hello_tls1_3.png" alt="ServerHello"></p>
+</li>
+</ul>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ul>
+<li><a href="https://datatracker.ietf.org/doc/html/rfc7301">Application-Layer Protocol Negotiation Extension</a></li>
+</ul>
+]]></content>
+      <tags>
+        <tag>SSL/TLS</tag>
       </tags>
   </entry>
   <entry>
