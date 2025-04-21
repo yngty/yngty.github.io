@@ -5,7 +5,7 @@ tags:
 - 密码
 - 加密
 categories:
-- 密码
+- Cryptographic Algorithms
 ---
 
 # 常见对称加密算法
