@@ -119,7 +119,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">81</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">84</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
@@ -129,7 +129,7 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">43</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">45</span></a>
 
   </li>
   </ul>
@@ -155,6 +155,350 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2021/01/13/effecitve-cpp/effective-cpp-4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Symbol Crash">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/01/13/effecitve-cpp/effective-cpp-4/" class="post-title-link" itemprop="url">Effective C++ 4：确定对象被使用前已先被初始化</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-01-13 22:41:25" itemprop="dateCreated datePublished" datetime="2021-01-13T22:41:25+00:00">2021-01-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-04-21 02:11:28" itemprop="dateModified" datetime="2025-04-21T02:11:28+00:00">2025-04-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Effective-C/" itemprop="url" rel="index"><span itemprop="name">Effective-C++</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>539</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <blockquote>
+<p>Item 4: Make sure that objects are initialized before they’re used.</p>
+</blockquote>
+<h1 id="手工初始化内置对象"><a href="#手工初始化内置对象" class="headerlink" title="手工初始化内置对象"></a>手工初始化内置对象</h1><p>为内置对象进行手工初始化，因为<code>C++</code>不保证初始化他们。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> x = <span class="number">0</span>;                                  <span class="comment">//对 int 进行手工初始化</span></span><br><span class="line"><span class="type">const</span> <span class="type">char</span> *text = <span class="string">&quot;A C-style string&quot;</span>;      <span class="comment">//对指针进行手工初始化</span></span><br><span class="line"></span><br><span class="line"><span class="type">double</span> d;</span><br><span class="line">std::cin &gt;&gt; d;                              <span class="comment">//以读取 input stream 的方式完成初始化</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="构造函数最好使用成员初值列"><a href="#构造函数最好使用成员初值列" class="headerlink" title="构造函数最好使用成员初值列"></a>构造函数最好使用成员初值列</h1><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">PhoneNumber</span> &#123; ... &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ABEntry</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">ABEntry</span>(<span class="type">const</span> std::string &amp;name, <span class="type">const</span> std::string &amp;address, <span class="type">const</span> std::list&lt;PhoneNumber&gt; &amp;phones);</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    std::string theName;</span><br><span class="line">    std::string theAddress;</span><br><span class="line">    std::list&lt;PhoneNumber&gt; thePhones;</span><br><span class="line">    <span class="type">int</span> numTimesConsulted;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">ABEntry::<span class="built_in">ABEntry</span>(<span class="type">const</span> std::string &amp;name, <span class="type">const</span> std::string &amp;address, <span class="type">const</span> std::list&lt;PhoneNumber&gt; &amp;phones) &#123;</span><br><span class="line">    theName = name;             <span class="comment">//这些都是赋值</span></span><br><span class="line">    theAddress = address;       <span class="comment">//而非初始化</span></span><br><span class="line">    thePhones = phones;</span><br><span class="line">    numTimesConsulted = <span class="number">0</span>; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>构造函数最好使用成员初值列，而不要在构造函数本体内使用赋值操作。初值列列出的成员变量，其排列次序应该和他们在<code>class</code>中的声明次序相同。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ABEntry::<span class="built_in">ABEntry</span>(<span class="type">const</span> std::string &amp;name, <span class="type">const</span> std::string &amp;address, <span class="type">const</span> std::list&lt;PhoneNumber&gt; &amp;phones) : <span class="built_in">theName</span>(name), <span class="built_in">theAddress</span>(address), <span class="built_in">thePhones</span>(phones), <span class="built_in">numTimesConsulted</span>(<span class="number">0</span>) &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="local-static-对象替换-non-local-static-对象。"><a href="#local-static-对象替换-non-local-static-对象。" class="headerlink" title="local static 对象替换 non-local static 对象。"></a><code>local static</code> 对象替换 <code>non-local static</code> 对象。</h1><p>为免除”跨单元之初始化次序“问题，请以 <code>local static</code> 对象替换 <code>non-local static</code> 对象。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">FileSystem</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    ...</span><br><span class="line">    <span class="function">std::<span class="type">size_t</span> <span class="title">numDisks</span><span class="params">()</span> <span class="type">const</span></span>;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">extern</span> FileSystem tfs;     </span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Directory</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">Directory</span>( params );</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Directory::<span class="built_in">Directory</span>( params) </span><br><span class="line">&#123;</span><br><span class="line">    ...</span><br><span class="line">    std::<span class="type">size_t</span> disks = tfs.<span class="built_in">numDisks</span>();</span><br><span class="line">    ...    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>客户使用使用：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Directory <span class="title">tempDir</span><span class="params">( params )</span></span>;</span><br></pre></td></tr></table></figure>
+<p>现在初始化次序的重要性体现出来了，除非 <code>tfs</code> 在 <code>tempDir</code> 之前先被初始化，否则<code>tempDir</code>的构造函数会用到尚未初始化的<code>tfs</code>。但<code>tfs</code>和<code>tempDir</code>是不同的人在不同的时间于不同的源文件建立起来的，它们是定义于不同编译单元内的 <code>non-local static</code> 对象。它们初始化相对次序并无明确定义。但我们可以将 <code>local static</code> 对象替换<code>non-local static</code> 对象来解决。这也是<strong>Singleton</strong>模式的常见实现手法。</p>
+<p>这个手法的基础在于：C++保证，函数内的 <code>local static</code> 对象会在调用该函数时首次遇上该对象的定义式时被初始化。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">FileSystem</span> &#123; ... &#125;</span><br><span class="line"></span><br><span class="line"><span class="function">FileSystem&amp; <span class="title">tfs</span><span class="params">()</span> </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">static</span> FileSystem fs;</span><br><span class="line">    <span class="keyword">return</span> fs;</span><br><span class="line">&#125;    </span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Directory</span> &#123; ... &#125;</span><br><span class="line"></span><br><span class="line">Directory::<span class="built_in">Directory</span>( params) </span><br><span class="line">&#123;</span><br><span class="line">    ...</span><br><span class="line">    std::<span class="type">size_t</span> disks = <span class="built_in">tfs</span>().<span class="built_in">numDisks</span>();</span><br><span class="line">    ...    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Directory&amp; <span class="title">tempDir</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">static</span> Directory td;</span><br><span class="line">    <span class="keyword">return</span> td;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2021/01/05/effecitve-cpp/effective-cpp-3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Symbol Crash">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/01/05/effecitve-cpp/effective-cpp-3/" class="post-title-link" itemprop="url">Effective C++ 3：尽可能使用 const</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-01-05 22:04:32" itemprop="dateCreated datePublished" datetime="2021-01-05T22:04:32+00:00">2021-01-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-04-21 02:11:28" itemprop="dateModified" datetime="2025-04-21T02:11:28+00:00">2025-04-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Effective-C/" itemprop="url" rel="index"><span itemprop="name">Effective-C++</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>702</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <blockquote>
+<p>Item3: Use const whenever possible.</p>
+</blockquote>
+<h1 id="常量的声明"><a href="#常量的声明" class="headerlink" title="常量的声明"></a>常量的声明</h1><p>指针的常量声明：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">char</span> greeting[] = <span class="string">&quot;Hello&quot;</span>;</span><br><span class="line"><span class="type">char</span>* p = greeting;                 <span class="comment">//non-const pointer, non-const data</span></span><br><span class="line"><span class="type">const</span> <span class="type">char</span>* p = greeting;           <span class="comment">//non-const pointer, const data</span></span><br><span class="line"><span class="type">char</span>* <span class="type">const</span> p = greeting;           <span class="comment">//const pointer, non-const data</span></span><br><span class="line"><span class="type">const</span> <span class="type">char</span>* <span class="type">const</span> p = greeting;     <span class="comment">//const pointer, const data</span></span><br></pre></td></tr></table></figure>
+<p>如果 <code>const</code> 出现在<code>*</code>左边，表示被指物为常量;　如果出现在<code>*</code>右边，表示指针自身为常量；如果出现在<code>*</code>两边，表示被指物和指针两者都是常量。</p>
+<p>如果被指物是常量，<code>const</code> 放在类型之前和放在类型之后<code>*</code>之前表示的意义一样：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">f1</span><span class="params">(<span class="type">const</span> Widget* p)</span></span>;　<span class="comment">//f1　获得一个指针，指向一个常量Ｗidget对象</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">f2</span><span class="params">(widget <span class="type">const</span> *p)</span></span>;　<span class="comment">//f2 也是</span></span><br></pre></td></tr></table></figure>
+
+
+<p>STL的<code>iterator</code> 系以指针塑模出来，所以<code>iterator</code>的作用像个<code>T*</code>指针。如果希望指针是常量，可以声明为 <code>const iterator</code>，如果希望被指物为常量，需使用 <code>const_iterator</code></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">std::vector&lt;<span class="type">int</span>&gt; vec;</span><br><span class="line">...</span><br><span class="line"><span class="type">const</span> std::vector&lt;<span class="type">int</span>&gt;::iterator iter = vec.<span class="built_in">begin</span>();    <span class="comment">//iter的作用像个Ｔ* const</span></span><br><span class="line">*iter = <span class="number">10</span>;                                             <span class="comment">//没问题，改变iter所指物  </span></span><br><span class="line">++iter;　　　　　　　　　　　　　　　　　　　　　　 　　　　     <span class="comment">//错误，iter是const</span></span><br><span class="line">std::vector&lt;<span class="type">int</span>&gt;::const_iterator cIter = vec.<span class="built_in">begin</span>();   <span class="comment">//cIter的作用像个const Ｔ*</span></span><br><span class="line">*cIter = <span class="number">10</span>;                                            <span class="comment">//错误，*cIter是const</span></span><br><span class="line">++cIter;                                                <span class="comment">//没问题，　改变cIter</span></span><br></pre></td></tr></table></figure>
+<p>返回值声明为常量，可以降低代码被错误使用:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Rational</span>　&#123;...&#125;;</span><br><span class="line"><span class="type">const</span> Rational <span class="keyword">operator</span>*&#123;<span class="type">const</span> Rational&amp; lhs, <span class="type">const</span> Rational&amp; rhs&#125;;</span><br></pre></td></tr></table></figure>
+<p>当我们本来想做个比较，错误地输入<code>=</code></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (a * b = c) ...</span><br></pre></td></tr></table></figure>
+<p>编译器就会报错误：不可给常量赋值。</p>
+<h1 id="const-成员函数"><a href="#const-成员函数" class="headerlink" title="const 成员函数"></a>const 成员函数</h1><p>声明const 成员函数，是为了确认该成员函数可以作用与const对象，也使class接口比较容易理解，可以得知哪些函数可以改动对象内容，哪些不可以。</p>
+<p>成员函数只是常量性不同是可以被重载。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">TextBlock</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  ...</span><br><span class="line">  <span class="type">const</span> <span class="type">char</span>&amp; <span class="keyword">operator</span>[](std::<span class="type">size_t</span> position) <span class="type">const</span>   <span class="comment">// operator[] for</span></span><br><span class="line">  &#123; <span class="keyword">return</span> text[position]; &#125;                           <span class="comment">// const objects</span></span><br><span class="line"></span><br><span class="line">  <span class="type">char</span>&amp; <span class="keyword">operator</span>[](std::<span class="type">size_t</span> position)               <span class="comment">// operator[] for</span></span><br><span class="line">  &#123; <span class="keyword">return</span> text[position]; &#125;                           <span class="comment">// non-const objects</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">   std::string text;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function">TextBlock <span class="title">tb</span><span class="params">(<span class="string">&quot;Hello&quot;</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="type">const</span> TextBlock <span class="title">ctb</span><span class="params">(<span class="string">&quot;World&quot;</span>)</span></span>;</span><br><span class="line">tb[<span class="number">0</span>] = <span class="string">&#x27;x&#x27;</span>;             <span class="comment">// fine — writing a non-const TextBlock</span></span><br><span class="line">ctb[<span class="number">0</span>] = <span class="string">&#x27;x&#x27;</span>;            <span class="comment">// error! — writing a const TextBlock</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="bitsise-constness-和-logical-constness"><a href="#bitsise-constness-和-logical-constness" class="headerlink" title="bitsise constness 和　logical constness"></a>bitsise constness 和　logical constness</h1><p><code>bitsise constness</code>: 成员函数只有在不改变对象的任何非静态成员变量时才可以被称为常量函数。也是C++对常量性的定义。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">TextBlock</span>&#123;</span><br><span class="line">   </span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="type">char</span>&amp; <span class="keyword">operator</span>[](std::<span class="type">size_t</span> position) <span class="type">const</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> pText[position];</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="type">char</span>* pText;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="type">const</span> TextBlock tb;</span><br><span class="line"><span class="type">char</span> *p = &amp;tb[<span class="number">1</span>];</span><br><span class="line">*p = <span class="string">&#x27;a&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="在const和non-const成员函数中避免重复"><a href="#在const和non-const成员函数中避免重复" class="headerlink" title="在const和non-const成员函数中避免重复"></a>在const和non-const成员函数中避免重复</h1><p>当<code>const</code>和<code>non-const</code>成员函数有着实质等价的实现时，令<code>non-const</code>函数调用<code>const</code>函数可以避免代码重复。不可以反着来。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">const</span> <span class="type">char</span>&amp; <span class="keyword">operator</span>[](std::<span class="type">size_t</span> position) <span class="type">const</span> &#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">return</span> text[position]</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">char</span>&amp; <span class="keyword">operator</span>[](std::<span class="type">size_t</span> position) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">const_cast</span>&lt;<span class="type">char</span>&amp;&gt;(</span><br><span class="line">        <span class="built_in">static_cast</span>&lt;<span class="type">const</span> TextBlock&amp;&gt;(*<span class="keyword">this</span>)</span><br><span class="line">            [position]</span><br><span class="line">        )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><code>*this</code> 的类型是 <code>TextBlock</code>，先把它强制隐式转换为 <code>const TextBlock</code>，这样我们才能调用那个常量方法。</li>
+<li>调用 <code>operator[](std::size_t) const</code>，得到的返回值类型为 <code>const char&amp;</code>。</li>
+<li>把返回值去掉 <code>const</code> 属性，得到类型为 <code>char&amp;</code> 的返回值。</li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2020/12/14/effecitve-cpp/effective-cpp-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Symbol Crash">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/12/14/effecitve-cpp/effective-cpp-2/" class="post-title-link" itemprop="url">Effective C++ 2：尽量以const, enum, inline 替换 &#35;define</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-12-14 12:36:49" itemprop="dateCreated datePublished" datetime="2020-12-14T12:36:49+00:00">2020-12-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-04-21 02:11:28" itemprop="dateModified" datetime="2025-04-21T02:11:28+00:00">2025-04-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Effective-C/" itemprop="url" rel="index"><span itemprop="name">Effective-C++</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>530</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <blockquote>
+<p>Item 2: Prefer consts, enums, and inlines to #defines</p>
+</blockquote>
+<p>我们先看看<code>#deifne</code> 有哪些的问题:</p>
+<h1 id="不利于调试"><a href="#不利于调试" class="headerlink" title="不利于调试"></a>不利于调试</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define ASPECT_RATION 1.653</span><br></pre></td></tr></table></figure>
+<p>在预处理时候 <code>ASPECT_RATION</code> 可能就被移走了,<code>ASPECT_RATION</code> 没有进入 符号表, 运行此常量获得编译错误信息时, 可能会疑惑。因为这个错误信息总是提到 <code>1.653</code>，而不是<code>ASPECT_RATION</code> ， 如果 <code>ASPECT_RATION</code> 定义不是自己写的头文件中，可能对 <code>1.653</code> 的来源毫无概念，将因追踪它浪费时间，解决之道是以一个常量替换上述宏 。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">const</span> <span class="type">double</span> AspectRatio = <span class="number">1.653</span> <span class="comment">//大写名称通常用于宏</span></span><br><span class="line">                                 <span class="comment">//因此这里改变名称写法</span></span><br></pre></td></tr></table></figure>
+<p>作为一个语言常量，<code>ASPECT_RATION</code> 肯定会被编译器看到，当然会进入记号表内。此外对于浮点常量(<code>floating point constant</code>)而言，使用常量可能比使用<code>#define</code> 导致较少量的码。</p>
+<h1 id="不重视scope"><a href="#不重视scope" class="headerlink" title="不重视scope"></a>不重视scope</h1><p>无法利用 <code>#define</code> 创建<code>class</code>专属常量。一旦宏定义，它就在其后的编译过程中有效（除非在某处 <code>#undef</code> ）。而 <code>const</code> 可以。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">GamePlayer</span> &#123;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="type">static</span> <span class="type">const</span> <span class="type">int</span> NumTurns; <span class="comment">//常量声明式</span></span><br><span class="line">    <span class="type">int</span> scores[NumTurns];      <span class="comment">//使用该常量</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="enum-比-const-更好用"><a href="#enum-比-const-更好用" class="headerlink" title="enum 比 const 更好用"></a>enum 比 const 更好用</h2><p>旧式编译器也许不支持上述语法，　它们不允许static在声明式上获得初值，此外所谓的“<code>in-classs　初值设定</code>”也只运行对<strong>整数常量</strong>进行，　如果编译器不支持上述语法，可以将初值放在定义式</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">CostEstimate</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="type">static</span> <span class="type">const</span> <span class="type">double</span> FudgeFactor;  <span class="comment">//staitc class　常量声明位于头文件内</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="type">const</span> <span class="type">double</span> CostEstimate::FudgeFactor = <span class="number">1.35</span>; <span class="comment">//staitc class　常量定义位于实现文件内</span></span><br></pre></td></tr></table></figure>
+<p>如果使用<code>emnu</code>就很简单：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">GamePlayer</span> &#123;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">enum</span> &#123; NumTurns = <span class="number">5</span> &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> scores[NumTurns];　<span class="comment">//the enum hack</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>　</p>
+<h1 id="不易理解"><a href="#不易理解" class="headerlink" title="不易理解"></a>不易理解</h1><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> CALL_WITH_MAX(a, b)  f((a) &gt; (b) ? (a) : (b))</span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> a = <span class="number">5</span>, b =<span class="number">0</span>;</span><br><span class="line"><span class="built_in">CALL_WITH_MAX</span>(++a, b);     　<span class="comment">//ａ被累加二次</span></span><br><span class="line"><span class="built_in">CALL_WITH_MAX</span>(++a, b + <span class="number">10</span>);　<span class="comment">//ａ被累加一次</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>必须记住为宏的所有实参加上小括号</li>
+<li>在这里调用ｆ之前，ａ的递增次取决与“它被拿来与谁比较”</li>
+</ul>
+<p>更好的做法是使用　<code>template inline</code>　函数。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="type">void</span> <span class="title">callWithMax</span><span class="params">(<span class="type">const</span> T &amp;a, <span class="type">const</span> T &amp;b)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (a &gt; b ? a : b);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -190,7 +534,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-04-08 02:16:06" itemprop="dateModified" datetime="2025-04-08T02:16:06+00:00">2025-04-08</time>
+                <time title="修改时间：2025-04-21 02:11:28" itemprop="dateModified" datetime="2025-04-21T02:11:28+00:00">2025-04-21</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -326,7 +670,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">81</span>
+          <span class="site-state-item-count">84</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -339,7 +683,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">43</span>
+        <span class="site-state-item-count">45</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -386,12 +730,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">50k</span>
+    <span title="站点总字数">53k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">3:01</span>
+    <span title="站点阅读时长">3:11</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>

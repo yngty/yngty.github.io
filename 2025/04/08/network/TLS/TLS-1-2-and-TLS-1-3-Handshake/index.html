@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yngty.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="TLS 1.2 与 TLS 1.3 握手流程深度解析：安全与性能的演进引言TLS（传输层安全协议）是互联网加密通信的基石。从 TLS 1.2 到 TLS 1.3，协议在安全性和性能上实现了质的飞跃。本文将深入对比两者的握手流程，解析其设计差异，并探讨为何 TLS 1.3 成为现代网络通信的首选。  TLS 1.2 握手流程（传统 2-RTT 模型）1. ClientHello 客户端发送支持的协议">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TLS 1.2 与 TLS 1.3 握手流程深度解析：安全与性能的演进">
+<meta property="og:url" content="https://yngty.github.io/2025/04/08/network/TLS/TLS-1-2-and-TLS-1-3-Handshake/index.html">
+<meta property="og:site_name" content="Symbol Crash">
+<meta property="og:description" content="TLS 1.2 与 TLS 1.3 握手流程深度解析：安全与性能的演进引言TLS（传输层安全协议）是互联网加密通信的基石。从 TLS 1.2 到 TLS 1.3，协议在安全性和性能上实现了质的飞跃。本文将深入对比两者的握手流程，解析其设计差异，并探讨为何 TLS 1.3 成为现代网络通信的首选。  TLS 1.2 握手流程（传统 2-RTT 模型）1. ClientHello 客户端发送支持的协议">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-04-08T10:17:59.000Z">
+<meta property="article:modified_time" content="2025-04-21T02:11:28.901Z">
+<meta property="article:author" content="yngty">
+<meta property="article:tag" content="SSL&#x2F;TLS">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://yngty.github.io/2025/04/08/network/TLS/TLS-1-2-and-TLS-1-3-Handshake/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>TLS 1.2 与 TLS 1.3 握手流程深度解析：安全与性能的演进 | Symbol Crash</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Symbol Crash" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Symbol Crash</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">不学无术</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">84</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">13</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">45</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2025/04/08/network/TLS/TLS-1-2-and-TLS-1-3-Handshake/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Symbol Crash">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          TLS 1.2 与 TLS 1.3 握手流程深度解析：安全与性能的演进
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-04-08 10:17:59" itemprop="dateCreated datePublished" datetime="2025-04-08T10:17:59+00:00">2025-04-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-04-21 02:11:28" itemprop="dateModified" datetime="2025-04-21T02:11:28+00:00">2025-04-21</time>
+              </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>6 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="TLS-1-2-与-TLS-1-3-握手流程深度解析：安全与性能的演进"><a href="#TLS-1-2-与-TLS-1-3-握手流程深度解析：安全与性能的演进" class="headerlink" title="TLS 1.2 与 TLS 1.3 握手流程深度解析：安全与性能的演进"></a>TLS 1.2 与 TLS 1.3 握手流程深度解析：安全与性能的演进</h1><h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p><code>TLS</code>（传输层安全协议）是互联网加密通信的基石。从 <code>TLS 1.2</code> 到 <code>TLS 1.3</code>，协议在安全性和性能上实现了质的飞跃。本文将深入对比两者的握手流程，解析其设计差异，并探讨为何 <code>TLS 1.3</code> 成为现代网络通信的首选。</p>
+<hr>
+<h2 id="TLS-1-2-握手流程（传统-2-RTT-模型）"><a href="#TLS-1-2-握手流程（传统-2-RTT-模型）" class="headerlink" title="TLS 1.2 握手流程（传统 2-RTT 模型）"></a><code>TLS 1.</code>2 握手流程（传统 <code>2-RTT</code> 模型）</h2><h3 id="1-ClientHello"><a href="#1-ClientHello" class="headerlink" title="1. ClientHello"></a>1. <strong>ClientHello</strong></h3><ul>
+<li>客户端发送支持的协议版本（如 <code>TLS 1.2</code>）</li>
+<li>随机数（<code>ClientRandom</code>）</li>
+<li>密码套件列表（如 <code>TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256</code>）</li>
+<li><strong>其他扩展</strong>：<code>SNI</code>（服务器名称指示）等。</li>
+</ul>
+<h3 id="2-ServerHello"><a href="#2-ServerHello" class="headerlink" title="2. ServerHello"></a>2. <strong>ServerHello</strong></h3><ul>
+<li>服务器选择协议版本</li>
+<li>随机数（<code>ServerRandom</code>）：<code>32</code> 字节的随机值。</li>
+<li>选定的密码套件</li>
+</ul>
+<h3 id="3-Certificate"><a href="#3-Certificate" class="headerlink" title="3. Certificate"></a>3. <strong>Certificate</strong></h3><ul>
+<li>服务器发送证书链，用于身份验证。</li>
+</ul>
+<h3 id="4-ServerKeyExchange"><a href="#4-ServerKeyExchange" class="headerlink" title="4. ServerKeyExchange"></a>4. <strong>ServerKeyExchange</strong></h3><ul>
+<li>传递临时密钥参数（如 <code>ECDHE</code> 公钥）。<em>（仅限非 RSA 密钥交换）</em></li>
+</ul>
+<h3 id="5-ServerHelloDone"><a href="#5-ServerHelloDone" class="headerlink" title="5. ServerHelloDone"></a>5. <strong>ServerHelloDone</strong></h3><ul>
+<li>表示服务器消息结束。</li>
+</ul>
+<h3 id="6-ClientKeyExchange"><a href="#6-ClientKeyExchange" class="headerlink" title="6. ClientKeyExchange"></a>6. <strong>ClientKeyExchange</strong></h3><ul>
+<li>客户端生成预主密钥（<code>Pre-Master Secret</code>），用服务器公钥加密后发送。<em>（若使用 RSA 密钥交换）</em></li>
+</ul>
+<h3 id="7-ChangeCipherSpec（客户端）"><a href="#7-ChangeCipherSpec（客户端）" class="headerlink" title="7. ChangeCipherSpec（客户端）"></a>7. <strong>ChangeCipherSpec（客户端）</strong></h3><ul>
+<li>通知服务器后续消息将加密。</li>
+</ul>
+<h3 id="8-Finished（客户端）"><a href="#8-Finished（客户端）" class="headerlink" title="8. Finished（客户端）"></a>8. <strong>Finished（客户端）</strong></h3><ul>
+<li>发送加密的 <code>HMAC</code> 验证握手完整性。</li>
+</ul>
+<h3 id="9-ChangeCipherSpec（服务器）"><a href="#9-ChangeCipherSpec（服务器）" class="headerlink" title="9. ChangeCipherSpec（服务器）"></a>9. <strong>ChangeCipherSpec（服务器）</strong></h3><ul>
+<li>服务器切换至加密模式。</li>
+</ul>
+<h3 id="10-Finished（服务器）"><a href="#10-Finished（服务器）" class="headerlink" title="10. Finished（服务器）"></a>10. <strong>Finished（服务器）</strong></h3><ul>
+<li>服务器发送加密的 HMAC 验证。</li>
+</ul>
+<p><strong>总耗时</strong>：至少 <strong>2 次往返（2-RTT）</strong>。</p>
+<hr>
+<h2 id="TLS-1-3-握手流程（1-RTT）"><a href="#TLS-1-3-握手流程（1-RTT）" class="headerlink" title="TLS 1.3 握手流程（1-RTT）"></a>TLS 1.3 握手流程（1-RTT）</h2><h3 id="1-ClientHello-1"><a href="#1-ClientHello-1" class="headerlink" title="1. ClientHello"></a>1. <strong>ClientHello</strong></h3><ul>
+<li><p><strong>客户端</strong>发起握手，发送以下内容：</p>
+<ul>
+<li><strong>协议版本</strong>：声明支持 <code>TLS 1.3</code>。</li>
+<li><strong>随机数（<code>ClientRandom</code>）</strong>：<code>32</code> 字节的随机值。</li>
+<li><strong>密码套件列表</strong>：支持的加密算法组合（如 <code>TLS_AES_128_GCM_SHA256</code>）。</li>
+<li><strong>密钥共享扩展（<code>key_share</code>）</strong>：包含客户端生成的临时公钥（如 <code>ECDHE</code> 的椭圆曲线公钥）。</li>
+<li><strong>其他扩展</strong>：如支持的签名算法、<code>SNI</code>（服务器名称指示）等。</li>
+</ul>
+</li>
+<li><p><strong>密钥生成</strong>：</p>
+<ul>
+<li>此时尚未生成密钥，消息以<strong>明文</strong>发送。</li>
+</ul>
+</li>
+<li><p><strong>加密数据</strong>：</p>
+<ul>
+<li>无加密，但包含后续密钥交换所需参数。</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-ServerHello-1"><a href="#2-ServerHello-1" class="headerlink" title="2. ServerHello"></a>2. <strong>ServerHello</strong></h3><ul>
+<li><p><strong>服务器</strong>响应，内容包括：</p>
+<ul>
+<li><strong>协议版本</strong>：确认使用 <code>TLS 1.3</code>。</li>
+<li><strong>随机数（<code>ServerRandom</code>）</strong>：<code>32</code> 字节的随机值。</li>
+<li><strong>选定的密码套件</strong>：从客户端列表中选择的套件（如 <code>TLS_AES_128_GCM_SHA256</code>）。</li>
+<li><strong>密钥共享扩展（<code>key_share</code>）</strong>：服务器的临时公钥（如 <code>ECDHE</code> 的椭圆曲线公钥）。</li>
+</ul>
+</li>
+<li><p><strong>密钥生成</strong>：</p>
+<ul>
+<li>客户端和服务器通过 <code>ECDHE</code>（或其他密钥交换算法）计算共享密钥：<ul>
+<li><strong>共享密钥（Shared Secret）</strong> &#x3D; <code>ECDH(client_priv, server_pub) = ECDH(server_priv, client_pub)</code>。</li>
+<li>结合 <code>Client Random</code> 和 <code>Server Random</code>，通过 <strong>HKDF</strong> 生成：<ul>
+<li><strong>预主密钥（Pre-Master Secret）</strong> → <strong>主密钥（Master Secret）</strong>。</li>
+<li>主密钥再派生出 <strong>握手流量密钥（Handshake Traffic Keys）</strong>。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>加密数据</strong>：</p>
+<ul>
+<li>无加密，<code>ServerHello</code> 仍为<strong>明文</strong>。</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-服务器端后续消息（同一轮次发送）"><a href="#3-服务器端后续消息（同一轮次发送）" class="headerlink" title="3. 服务器端后续消息（同一轮次发送）"></a>3. <strong>服务器端后续消息（同一轮次发送）</strong></h3><p>服务器发送以下消息，合并为单个 <code>TLS</code> 记录：</p>
+<ul>
+<li><strong>EncryptedExtensions</strong>：可选扩展（如 <code>ALPN</code> 应用层协议协商, <code>SNI</code> 确认等）。</li>
+<li><strong>Certificate</strong>：服务器证书链，用于身份验证。</li>
+<li><strong>CertificateVerify</strong>：用服务器私钥对握手消息签名，证明拥有证书。</li>
+<li><strong>Finished</strong>：加密的验证数据（<code>HMAC</code>），确保握手完整性。</li>
+</ul>
+<h3 id="4-客户端验证与响应"><a href="#4-客户端验证与响应" class="headerlink" title="4. 客户端验证与响应"></a>4. <strong>客户端验证与响应</strong></h3><p>客户端：</p>
+<ul>
+<li>验证服务器证书的有效性。<ul>
+<li>检查证书颁发机构\有效期、域名匹配</li>
+<li>递归验证证书链至可信根<code>CA</code>（浏览器&#x2F;<code>OS</code>内置）</li>
+<li>检查吊销状态（<code>OCSP</code>或<code>CRL</code>）</li>
+</ul>
+</li>
+<li>检查 <code>CertificateVerify</code> 签名是否正确。</li>
+<li>发送 <code>Finished</code> 消息：加密的 <code>HMAC</code>，供服务器验证握手完整性。</li>
+</ul>
+<p><strong>总耗时</strong>：<strong>1 次往返（1-RTT）</strong>。</p>
+<hr>
+<h2 id="0-RTT-快速握手（提前发送数据）"><a href="#0-RTT-快速握手（提前发送数据）" class="headerlink" title="0-RTT 快速握手（提前发送数据）"></a>0-RTT 快速握手（提前发送数据）</h2><p><strong>前提</strong>：客户端与服务器已通过前一次握手生成预共享密钥（<code>PSK</code>）。</p>
+<p><strong>流程</strong></p>
+<ol>
+<li><code>ClientHello</code>：包含 <code>pre_shared_key</code> 扩展（<code>PSK</code> 标识）和 <code>early_data</code> 扩展。</li>
+<li><code>ServerHello</code>：服务器接受 PSK，返回 <code>pre_shared_key</code> 确认。</li>
+<li>客户端立即发送 <code>0-RTT</code> 应用数据：使用 <code>PSK</code> 加密，无需等待握手完成。</li>
+<li>后续步骤与完整握手相同（服务器发送 <code>Finished</code>，客户端响应）。</li>
+</ol>
+<p><strong>注意</strong>：<code>0-RTT</code> 数据可能受<strong>重放攻击</strong>，需确保应用层操作是<strong>幂等</strong>的（如 <code>GET</code> 请求）。</p>
+<hr>
+<h2 id="关键差异对比"><a href="#关键差异对比" class="headerlink" title="关键差异对比"></a>关键差异对比</h2><table>
+<thead>
+<tr>
+<th><strong>特性</strong></th>
+<th><strong>TLS 1.2</strong></th>
+<th><strong>TLS 1.3</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>握手耗时</strong></td>
+<td>2-RTT</td>
+<td>1-RTT（或 0-RTT）</td>
+</tr>
+<tr>
+<td><strong>密钥交换算法</strong></td>
+<td>支持 RSA（非前向安全）</td>
+<td>仅 ECDHE&#x2F;DHE（强制前向安全）</td>
+</tr>
+<tr>
+<td><strong>握手消息合并</strong></td>
+<td>多步骤（如 ServerKeyExchange）</td>
+<td>合并至 ServerHello 后</td>
+</tr>
+<tr>
+<td><strong>0-RTT 支持</strong></td>
+<td>不支持</td>
+<td>支持（基于 PSK）</td>
+</tr>
+<tr>
+<td><strong>不安全算法</strong></td>
+<td>允许 SHA-1、RC4 等</td>
+<td>完全移除</td>
+</tr>
+<tr>
+<td><strong>会话恢复机制</strong></td>
+<td>Session ID 或 Session Ticket</td>
+<td>优先使用 PSK 和 Session Ticket</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="TLS-1-3-的核心改进"><a href="#TLS-1-3-的核心改进" class="headerlink" title="TLS 1.3 的核心改进"></a>TLS 1.3 的核心改进</h2><h3 id="1-前向安全（Forward-Secrecy）"><a href="#1-前向安全（Forward-Secrecy）" class="headerlink" title="1. 前向安全（Forward Secrecy）"></a>1. <strong>前向安全（Forward Secrecy）</strong></h3><ul>
+<li>强制使用临时密钥（<code>Ephemeral Key</code>），即使长期私钥泄露，历史会话也无法解密。</li>
+</ul>
+<h3 id="2-0-RTT-快速握手"><a href="#2-0-RTT-快速握手" class="headerlink" title="2. 0-RTT 快速握手"></a>2. <strong>0-RTT 快速握手</strong></h3><ul>
+<li>基于预共享密钥（<code>PSK</code>），客户端首次请求即可携带加密数据（如 <code>HTTP</code> <code>GET</code>）。</li>
+<li><strong>注意</strong>：<code>0-RTT</code> 数据需防重放攻击，仅限幂等操作。</li>
+</ul>
+<h3 id="3-算法精简"><a href="#3-算法精简" class="headerlink" title="3. 算法精简"></a>3. <strong>算法精简</strong></h3><ul>
+<li>移除 <code>RSA</code> 密钥传输、<code>DES</code>、<code>RC4</code>、<code>SHA-1</code> 等弱算法，默认使用 <code>AEAD</code> 加密（如 <code>AES-GCM</code>）。</li>
+</ul>
+<h3 id="4-握手消息加密"><a href="#4-握手消息加密" class="headerlink" title="4. 握手消息加密"></a>4. <strong>握手消息加密</strong></h3><ul>
+<li>除 <code>ClientHello/ServerHello</code> 外，其余消息（如证书）均加密传输，增强隐私性。</li>
+</ul>
+<h2 id="TLS-1-2-与-TLS-1-3-握手流程图"><a href="#TLS-1-2-与-TLS-1-3-握手流程图" class="headerlink" title="TLS 1.2 与 TLS 1.3 握手流程图"></a>TLS 1.2 与 TLS 1.3 握手流程图</h2><h3 id="TLS-1-2-流程图（简化）"><a href="#TLS-1-2-流程图（简化）" class="headerlink" title="TLS 1.2 流程图（简化）"></a>TLS 1.2 流程图（简化）</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sequenceDiagram</span><br><span class="line">    Client-&gt;&gt;Server: ClientHello</span><br><span class="line">    Server-&gt;&gt;Client: ServerHello + Certificate + ServerKeyExchange + ServerHelloDone</span><br><span class="line">    Client-&gt;&gt;Server: ClientKeyExchange + ChangeCipherSpec + Finished</span><br><span class="line">    Server-&gt;&gt;Client: ChangeCipherSpec + Finished</span><br></pre></td></tr></table></figure>
+
+<h3 id="TLS-1-3-流程图（1-RTT）"><a href="#TLS-1-3-流程图（1-RTT）" class="headerlink" title="TLS 1.3 流程图（1-RTT）"></a>TLS 1.3 流程图（1-RTT）</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sequenceDiagram</span><br><span class="line">    Client-&gt;&gt;Server: ClientHello (key_share)</span><br><span class="line">    Server-&gt;&gt;Client: ServerHello (key_share) + EncryptedExtensions + Certificate + CertificateVerify + Finished</span><br><span class="line">    Client-&gt;&gt;Server: Finished</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="性能与安全对比"><a href="#性能与安全对比" class="headerlink" title="性能与安全对比"></a>性能与安全对比</h2><table>
+<thead>
+<tr>
+<th><strong>场景</strong></th>
+<th><strong>TLS 1.2</strong></th>
+<th><strong>TLS 1.3</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>首次连接延迟</strong></td>
+<td>高（2-RTT）</td>
+<td>低（1-RTT）</td>
+</tr>
+<tr>
+<td><strong>重连延迟（会话恢复）</strong></td>
+<td>中（1-RTT）</td>
+<td>极低（0-RTT）</td>
+</tr>
+<tr>
+<td><strong>抗量子计算攻击</strong></td>
+<td>弱</td>
+<td>更强（支持 X25519 等算法）</td>
+</tr>
+<tr>
+<td><strong>隐私保护</strong></td>
+<td>部分握手消息明文传输</td>
+<td>握手消息全加密</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="表格说明"><a href="#表格说明" class="headerlink" title="表格说明"></a>表格说明</h3><ol>
+<li><p><strong>首次连接延迟</strong>：</p>
+<ul>
+<li><code>TLS 1.3</code> 通过合并握手步骤减少往返次数，显著降低延迟。</li>
+<li><code>TLS 1.2</code> 需多次交互协商密钥，耗时更长。</li>
+</ul>
+</li>
+<li><p><strong>重连延迟</strong>：</p>
+<ul>
+<li><code>TLS 1.3</code> 支持 0-RTT 快速恢复，客户端可立即发送加密数据。</li>
+<li><code>TLS 1.2</code> 需重新协商密钥，仍需 1-RTT。</li>
+</ul>
+</li>
+<li><p><strong>抗量子计算攻击</strong>：</p>
+<ul>
+<li><code>TLS 1.3</code> 默认使用 <code>X25519</code> 等强临时密钥算法，安全性更高。</li>
+<li><code>TLS 1.2</code> 依赖传统算法（如 <code>RSA</code>），易受量子计算威胁。</li>
+</ul>
+</li>
+<li><p><strong>隐私保护</strong>：</p>
+<ul>
+<li><code>TLS 1.3</code> 加密所有握手消息（除 <code>ClientHello/ServerHello</code>），防止中间人窃听敏感信息（如证书）。</li>
+<li><code>TLS 1.2</code> 的证书、<code>ServerKeyExchange</code> 等消息明文传输。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<blockquote>
+<p><strong>注</strong>：TLS 1.3 的 0-RTT 模式需注意重放攻击风险，建议仅用于幂等操作（如 HTTP GET）。</p>
+</blockquote>
+<hr>
+<h2 id="何时选择-TLS-1-3？"><a href="#何时选择-TLS-1-3？" class="headerlink" title="何时选择 TLS 1.3？"></a>何时选择 TLS 1.3？</h2><ul>
+<li><p><strong>推荐场景</strong>：</p>
+<ul>
+<li>高延迟网络（如移动端）。</li>
+<li>需要前向安全的敏感数据传输。</li>
+<li>高频短连接（如 <code>API</code> 请求）。</li>
+</ul>
+</li>
+<li><p><strong>注意事项</strong>：</p>
+<ul>
+<li>部分旧设备可能不支持 <code>TLS 1.3</code>。</li>
+<li><code>0-RTT</code> 需应用层防御重放攻击。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p><code>TLS 1.3</code> 通过精简握手流程、强制前向安全和算法升级，显著提升了安全性与性能。尽管 <code>TLS 1.2</code>仍在某些旧系统中使用，但 <code>TLS 1.3</code> 已成为现代 <code>Web</code> 服务、移动应用和 <code>IoT</code> 通信的首选协议。升级至 <code>TLS 1.3</code> 不仅是技术趋势，更是安全实践的必然要求。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/SSL-TLS/" rel="tag"># SSL/TLS</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2025/04/08/cryptographic/cryptographic_algorithms/" rel="prev" title="基础密码知识">
+      <i class="fa fa-chevron-left"></i> 基础密码知识
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2025/04/18/cryptographic/HMAC%EF%BC%9A%E7%90%86%E8%A7%A3%E5%85%B6%E5%8E%9F%E7%90%86%E5%92%8C%E8%AE%A1%E7%AE%97%E8%BF%87%E7%A8%8B/" rel="next" title="HMAC：理解其原理和计算过程">
+      HMAC：理解其原理和计算过程 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#TLS-1-2-%E4%B8%8E-TLS-1-3-%E6%8F%A1%E6%89%8B%E6%B5%81%E7%A8%8B%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90%EF%BC%9A%E5%AE%89%E5%85%A8%E4%B8%8E%E6%80%A7%E8%83%BD%E7%9A%84%E6%BC%94%E8%BF%9B"><span class="nav-number">1.</span> <span class="nav-text">TLS 1.2 与 TLS 1.3 握手流程深度解析：安全与性能的演进</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%95%E8%A8%80"><span class="nav-number">1.1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TLS-1-2-%E6%8F%A1%E6%89%8B%E6%B5%81%E7%A8%8B%EF%BC%88%E4%BC%A0%E7%BB%9F-2-RTT-%E6%A8%A1%E5%9E%8B%EF%BC%89"><span class="nav-number">1.2.</span> <span class="nav-text">TLS 1.2 握手流程（传统 2-RTT 模型）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-ClientHello"><span class="nav-number">1.2.1.</span> <span class="nav-text">1. ClientHello</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-ServerHello"><span class="nav-number">1.2.2.</span> <span class="nav-text">2. ServerHello</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Certificate"><span class="nav-number">1.2.3.</span> <span class="nav-text">3. Certificate</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-ServerKeyExchange"><span class="nav-number">1.2.4.</span> <span class="nav-text">4. ServerKeyExchange</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-ServerHelloDone"><span class="nav-number">1.2.5.</span> <span class="nav-text">5. ServerHelloDone</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-ClientKeyExchange"><span class="nav-number">1.2.6.</span> <span class="nav-text">6. ClientKeyExchange</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-ChangeCipherSpec%EF%BC%88%E5%AE%A2%E6%88%B7%E7%AB%AF%EF%BC%89"><span class="nav-number">1.2.7.</span> <span class="nav-text">7. ChangeCipherSpec（客户端）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-Finished%EF%BC%88%E5%AE%A2%E6%88%B7%E7%AB%AF%EF%BC%89"><span class="nav-number">1.2.8.</span> <span class="nav-text">8. Finished（客户端）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-ChangeCipherSpec%EF%BC%88%E6%9C%8D%E5%8A%A1%E5%99%A8%EF%BC%89"><span class="nav-number">1.2.9.</span> <span class="nav-text">9. ChangeCipherSpec（服务器）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-Finished%EF%BC%88%E6%9C%8D%E5%8A%A1%E5%99%A8%EF%BC%89"><span class="nav-number">1.2.10.</span> <span class="nav-text">10. Finished（服务器）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TLS-1-3-%E6%8F%A1%E6%89%8B%E6%B5%81%E7%A8%8B%EF%BC%881-RTT%EF%BC%89"><span class="nav-number">1.3.</span> <span class="nav-text">TLS 1.3 握手流程（1-RTT）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-ClientHello-1"><span class="nav-number">1.3.1.</span> <span class="nav-text">1. ClientHello</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-ServerHello-1"><span class="nav-number">1.3.2.</span> <span class="nav-text">2. ServerHello</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E5%90%8E%E7%BB%AD%E6%B6%88%E6%81%AF%EF%BC%88%E5%90%8C%E4%B8%80%E8%BD%AE%E6%AC%A1%E5%8F%91%E9%80%81%EF%BC%89"><span class="nav-number">1.3.3.</span> <span class="nav-text">3. 服务器端后续消息（同一轮次发送）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%AE%A2%E6%88%B7%E7%AB%AF%E9%AA%8C%E8%AF%81%E4%B8%8E%E5%93%8D%E5%BA%94"><span class="nav-number">1.3.4.</span> <span class="nav-text">4. 客户端验证与响应</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0-RTT-%E5%BF%AB%E9%80%9F%E6%8F%A1%E6%89%8B%EF%BC%88%E6%8F%90%E5%89%8D%E5%8F%91%E9%80%81%E6%95%B0%E6%8D%AE%EF%BC%89"><span class="nav-number">1.4.</span> <span class="nav-text">0-RTT 快速握手（提前发送数据）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B3%E9%94%AE%E5%B7%AE%E5%BC%82%E5%AF%B9%E6%AF%94"><span class="nav-number">1.5.</span> <span class="nav-text">关键差异对比</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TLS-1-3-%E7%9A%84%E6%A0%B8%E5%BF%83%E6%94%B9%E8%BF%9B"><span class="nav-number">1.6.</span> <span class="nav-text">TLS 1.3 的核心改进</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%89%8D%E5%90%91%E5%AE%89%E5%85%A8%EF%BC%88Forward-Secrecy%EF%BC%89"><span class="nav-number">1.6.1.</span> <span class="nav-text">1. 前向安全（Forward Secrecy）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-0-RTT-%E5%BF%AB%E9%80%9F%E6%8F%A1%E6%89%8B"><span class="nav-number">1.6.2.</span> <span class="nav-text">2. 0-RTT 快速握手</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E7%AE%97%E6%B3%95%E7%B2%BE%E7%AE%80"><span class="nav-number">1.6.3.</span> <span class="nav-text">3. 算法精简</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E6%8F%A1%E6%89%8B%E6%B6%88%E6%81%AF%E5%8A%A0%E5%AF%86"><span class="nav-number">1.6.4.</span> <span class="nav-text">4. 握手消息加密</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TLS-1-2-%E4%B8%8E-TLS-1-3-%E6%8F%A1%E6%89%8B%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="nav-number">1.7.</span> <span class="nav-text">TLS 1.2 与 TLS 1.3 握手流程图</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#TLS-1-2-%E6%B5%81%E7%A8%8B%E5%9B%BE%EF%BC%88%E7%AE%80%E5%8C%96%EF%BC%89"><span class="nav-number">1.7.1.</span> <span class="nav-text">TLS 1.2 流程图（简化）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TLS-1-3-%E6%B5%81%E7%A8%8B%E5%9B%BE%EF%BC%881-RTT%EF%BC%89"><span class="nav-number">1.7.2.</span> <span class="nav-text">TLS 1.3 流程图（1-RTT）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E4%B8%8E%E5%AE%89%E5%85%A8%E5%AF%B9%E6%AF%94"><span class="nav-number">1.8.</span> <span class="nav-text">性能与安全对比</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%A8%E6%A0%BC%E8%AF%B4%E6%98%8E"><span class="nav-number">1.8.1.</span> <span class="nav-text">表格说明</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%95%E6%97%B6%E9%80%89%E6%8B%A9-TLS-1-3%EF%BC%9F"><span class="nav-number">1.9.</span> <span class="nav-text">何时选择 TLS 1.3？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">1.10.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="yngty"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">yngty</p>
+  <div class="site-description" itemprop="description">预测未来的最好方式就是实现它</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">84</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">45</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yngty" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yngty" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yngty@foxmail.com" title="E-Mail → mailto:yngty@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yngty</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">53k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">3:11</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

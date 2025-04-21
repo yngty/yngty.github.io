@@ -119,7 +119,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">81</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">84</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
@@ -129,7 +129,7 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">43</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">45</span></a>
 
   </li>
   </ul>
@@ -159,6 +159,573 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2025/04/18/cryptographic/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3-HKDF%EF%BC%9AHMAC-%E5%AF%86%E9%92%A5%E6%B4%BE%E7%94%9F%E5%87%BD%E6%95%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Symbol Crash">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2025/04/18/cryptographic/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3-HKDF%EF%BC%9AHMAC-%E5%AF%86%E9%92%A5%E6%B4%BE%E7%94%9F%E5%87%BD%E6%95%B0/" class="post-title-link" itemprop="url">深入理解 HKDF：HMAC 密钥派生函数</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-04-18 10:33:24" itemprop="dateCreated datePublished" datetime="2025-04-18T10:33:24+00:00">2025-04-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-04-21 02:11:28" itemprop="dateModified" datetime="2025-04-21T02:11:28+00:00">2025-04-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Cryptographic-Algorithms/" itemprop="url" rel="index"><span itemprop="name">Cryptographic Algorithms</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>0</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2025/04/18/cryptographic/HMAC%EF%BC%9A%E7%90%86%E8%A7%A3%E5%85%B6%E5%8E%9F%E7%90%86%E5%92%8C%E8%AE%A1%E7%AE%97%E8%BF%87%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Symbol Crash">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2025/04/18/cryptographic/HMAC%EF%BC%9A%E7%90%86%E8%A7%A3%E5%85%B6%E5%8E%9F%E7%90%86%E5%92%8C%E8%AE%A1%E7%AE%97%E8%BF%87%E7%A8%8B/" class="post-title-link" itemprop="url">HMAC：理解其原理和计算过程</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-04-18 10:26:26" itemprop="dateCreated datePublished" datetime="2025-04-18T10:26:26+00:00">2025-04-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-04-21 02:11:28" itemprop="dateModified" datetime="2025-04-21T02:11:28+00:00">2025-04-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Cryptographic-Algorithms/" itemprop="url" rel="index"><span itemprop="name">Cryptographic Algorithms</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.1k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p><strong>HMAC（Hash-based Message Authentication Code</strong>是一种基于哈希函数的消息认证码（<code>MAC</code>）算法，用于验证数据的完整性和真实性。它通过结合哈希算法与密钥来生成一个认证码，可以防止数据在传输过程中被篡改。<code>HMAC</code> 广泛应用于网络协议（如 <code>TLS</code>、<code>IPSec</code> 等）、数字签名以及 <code>API</code> 认证等场景中。</p>
+<p>在这篇文章中，我们将深入了解 <code>HMAC</code> 的原理，并通过具体的计算过程来说明其如何工作。</p>
+<h1 id="HMAC的工作原理"><a href="#HMAC的工作原理" class="headerlink" title="HMAC的工作原理"></a>HMAC的工作原理</h1><p><code>HMAC</code> 的工作原理可以通过以下几个步骤来描述：</p>
+<ol>
+<li><p>选择哈希算法：HMAC可以使用任何哈希函数，如 <code>MD5</code>、<code>SHA-1</code>、<code>SHA-256</code>等。算法的选择通常取决于安全要求及性能需求。</p>
+</li>
+<li><p>密钥处理：<code>HMAC</code> 算法需要一个密钥。如果密钥的长度小于哈希函数的块大小，则需要对密钥进行填充。如果密钥的长度大于块大小，则首先对密钥进行哈希处理，使得密钥的长度与块大小一致。</p>
+</li>
+<li><p>内外填充：在 <code>HMAC</code> 中，密钥会被分别与两个常量值（<code>ipad</code> 和 <code>opad</code>）进行组合：</p>
+<ul>
+<li><code>ipad</code>（内填充）：一个由 <code>0x36</code> 组成的块（长度等于哈希函数的块大小）。</li>
+<li><code>opad</code>（外填充）：一个由 <code>0x5C</code> 组成的块（长度等于哈希函数的块大小）。</li>
+</ul>
+</li>
+<li><p>计算过程：HMAC的计算分为两个主要步骤：</p>
+<ol>
+<li>内层哈希：首先将密钥与 <code>ipad</code> 进行异或运算，得到一个新的密钥。然后，将该新密钥与消息数据进行连接，并计算哈希值。</li>
+<li>外层哈希：接着，将密钥与 <code>opad</code> 进行异或运算，得到一个新的密钥。然后，将该新密钥与第一步得到的哈希值进行连接，并计算哈希值。最终得到的哈希值就是 <code>HMAC</code> 值。</li>
+</ol>
+</li>
+</ol>
+<h1 id="HMAC的计算过程"><a href="#HMAC的计算过程" class="headerlink" title="HMAC的计算过程"></a>HMAC的计算过程</h1><p>下面通过具体的计算例子来详细说明 <code>HMAC</code> 的生成过程。假设我们使用 <code>SHA-256</code> 哈希算法，并且给定一个密钥和消息。</p>
+<h2 id="步骤1：准备工作"><a href="#步骤1：准备工作" class="headerlink" title="步骤1：准备工作"></a>步骤1：准备工作</h2><p>假设：</p>
+<ul>
+<li>密钥：<code>K = &quot;key&quot;</code></li>
+<li>消息：<code>M = &quot;The quick brown fox jumps over the lazy dog&quot;</code></li>
+</ul>
+<p>首先，<code>SHA-256</code> 的块大小为 <code>64</code> 字节（<code>512</code> 位），因此我们需要将密钥扩展或截断为 <code>64</code> 字节的长度。如果密钥小于 <code>64</code> 字节，则通过补零使其长度达到 <code>64</code> 字节。</p>
+<p>密钥扩展后：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">K = &quot;key&quot; =&gt; 0x6B65790000000000000000000000000000000000000000000000000000000000</span><br></pre></td></tr></table></figure>
+
+<h2 id="步骤2：内层计算"><a href="#步骤2：内层计算" class="headerlink" title="步骤2：内层计算"></a>步骤2：内层计算</h2><p>将密钥与 <code>ipad</code>（<code>0x36</code> 的重复块）进行异或，得到内层密钥：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">K ⊕ ipad = 0x6B65790000000000000000000000000000000000000000000000000000000000</span><br><span class="line">           ⊕ 0x3636363636363636363636363636363636363636363636363636363636363636</span><br><span class="line">           ------------------------------------</span><br><span class="line">           0x5D3187376C7D2D6C74702C7270657D6E7E7D696F7B7D7C0B68726D786D7E7F7E</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>接着，将内层密钥与消息M进行拼接，并对拼接后的数据进行 <code>SHA-256</code> 哈希计算：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">H1 = SHA-256(K ⊕ ipad || M)</span><br></pre></td></tr></table></figure>
+
+<h1 id="步骤3：外层计算"><a href="#步骤3：外层计算" class="headerlink" title="步骤3：外层计算"></a>步骤3：外层计算</h1><p>将密钥与 <code>opad</code>（<code>0x5C</code> 的重复块）进行异或，得到外层密钥：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">K ⊕ opad = 0x6B65790000000000000000000000000000000000000000000000000000000000</span><br><span class="line">           ⊕ 0x5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C</span><br><span class="line">           ------------------------------------</span><br><span class="line">           0x1775744441E8B54D5F7D2A0C7640E45F2B70D1639B4D2B4C4D4D3A2B4F4F49F2</span><br></pre></td></tr></table></figure>
+<p>然后，将外层密钥与第一步计算得到的哈希值 <code>H1</code> 进行拼接，并对拼接后的数据进行 <code>SHA-256</code> 哈希计算：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HMAC = SHA-256(K ⊕ opad || H1)</span><br></pre></td></tr></table></figure>
+
+<p>最终，得到的 <code>HMAC</code> 就是我们需要的消息认证码。</p>
+<h1 id="HMAC的安全性"><a href="#HMAC的安全性" class="headerlink" title="HMAC的安全性"></a>HMAC的安全性</h1><p><code>HMAC</code> 的安全性依赖于两个因素：</p>
+<ol>
+<li><p>哈希函数的安全性：如果选择的哈希函数本身存在安全漏洞（如碰撞攻击），则 <code>HMAC</code> 的安全性也会受到影响。</p>
+</li>
+<li><p>密钥的管理：<code>HMAC</code> 依赖于密钥的机密性。如果密钥泄露，<code>HMAC</code> 的安全性将大大降低。</p>
+</li>
+</ol>
+<p>因此，建议使用强大的哈希算法（如 <code>SHA-256</code> 或更高版本的算法），并采取合适的措施管理密钥。</p>
+<h1 id="HMAC的应用场景"><a href="#HMAC的应用场景" class="headerlink" title="HMAC的应用场景"></a>HMAC的应用场景</h1><p><code>HMAC</code> 有许多应用场景，以下是一些常见的例子：</p>
+<ul>
+<li><p><code>API</code>认证：通过 <code>HMAC</code> 可以确保请求的数据未被篡改，并且能够验证请求者的身份。</p>
+</li>
+<li><p>数字签名：<code>HMAC</code> 可用于签名消息，确保消息的完整性。</p>
+</li>
+<li><p>加密协议：如 <code>SSL/TLS</code>，<code>HMAC</code> 用于保证数据在传输过程中不被篡改。</p>
+</li>
+</ul>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p><code>HMAC</code> 是一种简单而强大的消息认证码算法，它结合了哈希函数和密钥的特性，能够有效地验证消息的完整性和真实性。通过理解 <code>HMAC</code> 的工作原理和计算过程，我们可以更好地应用它来增强我们的数据保护能力。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2025/04/08/network/TLS/TLS-1-2-and-TLS-1-3-Handshake/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Symbol Crash">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2025/04/08/network/TLS/TLS-1-2-and-TLS-1-3-Handshake/" class="post-title-link" itemprop="url">TLS 1.2 与 TLS 1.3 握手流程深度解析：安全与性能的演进</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-04-08 10:17:59" itemprop="dateCreated datePublished" datetime="2025-04-08T10:17:59+00:00">2025-04-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-04-21 02:11:28" itemprop="dateModified" datetime="2025-04-21T02:11:28+00:00">2025-04-21</time>
+              </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>6 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="TLS-1-2-与-TLS-1-3-握手流程深度解析：安全与性能的演进"><a href="#TLS-1-2-与-TLS-1-3-握手流程深度解析：安全与性能的演进" class="headerlink" title="TLS 1.2 与 TLS 1.3 握手流程深度解析：安全与性能的演进"></a>TLS 1.2 与 TLS 1.3 握手流程深度解析：安全与性能的演进</h1><h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p><code>TLS</code>（传输层安全协议）是互联网加密通信的基石。从 <code>TLS 1.2</code> 到 <code>TLS 1.3</code>，协议在安全性和性能上实现了质的飞跃。本文将深入对比两者的握手流程，解析其设计差异，并探讨为何 <code>TLS 1.3</code> 成为现代网络通信的首选。</p>
+<hr>
+<h2 id="TLS-1-2-握手流程（传统-2-RTT-模型）"><a href="#TLS-1-2-握手流程（传统-2-RTT-模型）" class="headerlink" title="TLS 1.2 握手流程（传统 2-RTT 模型）"></a><code>TLS 1.</code>2 握手流程（传统 <code>2-RTT</code> 模型）</h2><h3 id="1-ClientHello"><a href="#1-ClientHello" class="headerlink" title="1. ClientHello"></a>1. <strong>ClientHello</strong></h3><ul>
+<li>客户端发送支持的协议版本（如 <code>TLS 1.2</code>）</li>
+<li>随机数（<code>ClientRandom</code>）</li>
+<li>密码套件列表（如 <code>TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256</code>）</li>
+<li><strong>其他扩展</strong>：<code>SNI</code>（服务器名称指示）等。</li>
+</ul>
+<h3 id="2-ServerHello"><a href="#2-ServerHello" class="headerlink" title="2. ServerHello"></a>2. <strong>ServerHello</strong></h3><ul>
+<li>服务器选择协议版本</li>
+<li>随机数（<code>ServerRandom</code>）：<code>32</code> 字节的随机值。</li>
+<li>选定的密码套件</li>
+</ul>
+<h3 id="3-Certificate"><a href="#3-Certificate" class="headerlink" title="3. Certificate"></a>3. <strong>Certificate</strong></h3><ul>
+<li>服务器发送证书链，用于身份验证。</li>
+</ul>
+<h3 id="4-ServerKeyExchange"><a href="#4-ServerKeyExchange" class="headerlink" title="4. ServerKeyExchange"></a>4. <strong>ServerKeyExchange</strong></h3><ul>
+<li>传递临时密钥参数（如 <code>ECDHE</code> 公钥）。<em>（仅限非 RSA 密钥交换）</em></li>
+</ul>
+<h3 id="5-ServerHelloDone"><a href="#5-ServerHelloDone" class="headerlink" title="5. ServerHelloDone"></a>5. <strong>ServerHelloDone</strong></h3><ul>
+<li>表示服务器消息结束。</li>
+</ul>
+<h3 id="6-ClientKeyExchange"><a href="#6-ClientKeyExchange" class="headerlink" title="6. ClientKeyExchange"></a>6. <strong>ClientKeyExchange</strong></h3><ul>
+<li>客户端生成预主密钥（<code>Pre-Master Secret</code>），用服务器公钥加密后发送。<em>（若使用 RSA 密钥交换）</em></li>
+</ul>
+<h3 id="7-ChangeCipherSpec（客户端）"><a href="#7-ChangeCipherSpec（客户端）" class="headerlink" title="7. ChangeCipherSpec（客户端）"></a>7. <strong>ChangeCipherSpec（客户端）</strong></h3><ul>
+<li>通知服务器后续消息将加密。</li>
+</ul>
+<h3 id="8-Finished（客户端）"><a href="#8-Finished（客户端）" class="headerlink" title="8. Finished（客户端）"></a>8. <strong>Finished（客户端）</strong></h3><ul>
+<li>发送加密的 <code>HMAC</code> 验证握手完整性。</li>
+</ul>
+<h3 id="9-ChangeCipherSpec（服务器）"><a href="#9-ChangeCipherSpec（服务器）" class="headerlink" title="9. ChangeCipherSpec（服务器）"></a>9. <strong>ChangeCipherSpec（服务器）</strong></h3><ul>
+<li>服务器切换至加密模式。</li>
+</ul>
+<h3 id="10-Finished（服务器）"><a href="#10-Finished（服务器）" class="headerlink" title="10. Finished（服务器）"></a>10. <strong>Finished（服务器）</strong></h3><ul>
+<li>服务器发送加密的 HMAC 验证。</li>
+</ul>
+<p><strong>总耗时</strong>：至少 <strong>2 次往返（2-RTT）</strong>。</p>
+<hr>
+<h2 id="TLS-1-3-握手流程（1-RTT）"><a href="#TLS-1-3-握手流程（1-RTT）" class="headerlink" title="TLS 1.3 握手流程（1-RTT）"></a>TLS 1.3 握手流程（1-RTT）</h2><h3 id="1-ClientHello-1"><a href="#1-ClientHello-1" class="headerlink" title="1. ClientHello"></a>1. <strong>ClientHello</strong></h3><ul>
+<li><p><strong>客户端</strong>发起握手，发送以下内容：</p>
+<ul>
+<li><strong>协议版本</strong>：声明支持 <code>TLS 1.3</code>。</li>
+<li><strong>随机数（<code>ClientRandom</code>）</strong>：<code>32</code> 字节的随机值。</li>
+<li><strong>密码套件列表</strong>：支持的加密算法组合（如 <code>TLS_AES_128_GCM_SHA256</code>）。</li>
+<li><strong>密钥共享扩展（<code>key_share</code>）</strong>：包含客户端生成的临时公钥（如 <code>ECDHE</code> 的椭圆曲线公钥）。</li>
+<li><strong>其他扩展</strong>：如支持的签名算法、<code>SNI</code>（服务器名称指示）等。</li>
+</ul>
+</li>
+<li><p><strong>密钥生成</strong>：</p>
+<ul>
+<li>此时尚未生成密钥，消息以<strong>明文</strong>发送。</li>
+</ul>
+</li>
+<li><p><strong>加密数据</strong>：</p>
+<ul>
+<li>无加密，但包含后续密钥交换所需参数。</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-ServerHello-1"><a href="#2-ServerHello-1" class="headerlink" title="2. ServerHello"></a>2. <strong>ServerHello</strong></h3><ul>
+<li><p><strong>服务器</strong>响应，内容包括：</p>
+<ul>
+<li><strong>协议版本</strong>：确认使用 <code>TLS 1.3</code>。</li>
+<li><strong>随机数（<code>ServerRandom</code>）</strong>：<code>32</code> 字节的随机值。</li>
+<li><strong>选定的密码套件</strong>：从客户端列表中选择的套件（如 <code>TLS_AES_128_GCM_SHA256</code>）。</li>
+<li><strong>密钥共享扩展（<code>key_share</code>）</strong>：服务器的临时公钥（如 <code>ECDHE</code> 的椭圆曲线公钥）。</li>
+</ul>
+</li>
+<li><p><strong>密钥生成</strong>：</p>
+<ul>
+<li>客户端和服务器通过 <code>ECDHE</code>（或其他密钥交换算法）计算共享密钥：<ul>
+<li><strong>共享密钥（Shared Secret）</strong> &#x3D; <code>ECDH(client_priv, server_pub) = ECDH(server_priv, client_pub)</code>。</li>
+<li>结合 <code>Client Random</code> 和 <code>Server Random</code>，通过 <strong>HKDF</strong> 生成：<ul>
+<li><strong>预主密钥（Pre-Master Secret）</strong> → <strong>主密钥（Master Secret）</strong>。</li>
+<li>主密钥再派生出 <strong>握手流量密钥（Handshake Traffic Keys）</strong>。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>加密数据</strong>：</p>
+<ul>
+<li>无加密，<code>ServerHello</code> 仍为<strong>明文</strong>。</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-服务器端后续消息（同一轮次发送）"><a href="#3-服务器端后续消息（同一轮次发送）" class="headerlink" title="3. 服务器端后续消息（同一轮次发送）"></a>3. <strong>服务器端后续消息（同一轮次发送）</strong></h3><p>服务器发送以下消息，合并为单个 <code>TLS</code> 记录：</p>
+<ul>
+<li><strong>EncryptedExtensions</strong>：可选扩展（如 <code>ALPN</code> 应用层协议协商, <code>SNI</code> 确认等）。</li>
+<li><strong>Certificate</strong>：服务器证书链，用于身份验证。</li>
+<li><strong>CertificateVerify</strong>：用服务器私钥对握手消息签名，证明拥有证书。</li>
+<li><strong>Finished</strong>：加密的验证数据（<code>HMAC</code>），确保握手完整性。</li>
+</ul>
+<h3 id="4-客户端验证与响应"><a href="#4-客户端验证与响应" class="headerlink" title="4. 客户端验证与响应"></a>4. <strong>客户端验证与响应</strong></h3><p>客户端：</p>
+<ul>
+<li>验证服务器证书的有效性。<ul>
+<li>检查证书颁发机构\有效期、域名匹配</li>
+<li>递归验证证书链至可信根<code>CA</code>（浏览器&#x2F;<code>OS</code>内置）</li>
+<li>检查吊销状态（<code>OCSP</code>或<code>CRL</code>）</li>
+</ul>
+</li>
+<li>检查 <code>CertificateVerify</code> 签名是否正确。</li>
+<li>发送 <code>Finished</code> 消息：加密的 <code>HMAC</code>，供服务器验证握手完整性。</li>
+</ul>
+<p><strong>总耗时</strong>：<strong>1 次往返（1-RTT）</strong>。</p>
+<hr>
+<h2 id="0-RTT-快速握手（提前发送数据）"><a href="#0-RTT-快速握手（提前发送数据）" class="headerlink" title="0-RTT 快速握手（提前发送数据）"></a>0-RTT 快速握手（提前发送数据）</h2><p><strong>前提</strong>：客户端与服务器已通过前一次握手生成预共享密钥（<code>PSK</code>）。</p>
+<p><strong>流程</strong></p>
+<ol>
+<li><code>ClientHello</code>：包含 <code>pre_shared_key</code> 扩展（<code>PSK</code> 标识）和 <code>early_data</code> 扩展。</li>
+<li><code>ServerHello</code>：服务器接受 PSK，返回 <code>pre_shared_key</code> 确认。</li>
+<li>客户端立即发送 <code>0-RTT</code> 应用数据：使用 <code>PSK</code> 加密，无需等待握手完成。</li>
+<li>后续步骤与完整握手相同（服务器发送 <code>Finished</code>，客户端响应）。</li>
+</ol>
+<p><strong>注意</strong>：<code>0-RTT</code> 数据可能受<strong>重放攻击</strong>，需确保应用层操作是<strong>幂等</strong>的（如 <code>GET</code> 请求）。</p>
+<hr>
+<h2 id="关键差异对比"><a href="#关键差异对比" class="headerlink" title="关键差异对比"></a>关键差异对比</h2><table>
+<thead>
+<tr>
+<th><strong>特性</strong></th>
+<th><strong>TLS 1.2</strong></th>
+<th><strong>TLS 1.3</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>握手耗时</strong></td>
+<td>2-RTT</td>
+<td>1-RTT（或 0-RTT）</td>
+</tr>
+<tr>
+<td><strong>密钥交换算法</strong></td>
+<td>支持 RSA（非前向安全）</td>
+<td>仅 ECDHE&#x2F;DHE（强制前向安全）</td>
+</tr>
+<tr>
+<td><strong>握手消息合并</strong></td>
+<td>多步骤（如 ServerKeyExchange）</td>
+<td>合并至 ServerHello 后</td>
+</tr>
+<tr>
+<td><strong>0-RTT 支持</strong></td>
+<td>不支持</td>
+<td>支持（基于 PSK）</td>
+</tr>
+<tr>
+<td><strong>不安全算法</strong></td>
+<td>允许 SHA-1、RC4 等</td>
+<td>完全移除</td>
+</tr>
+<tr>
+<td><strong>会话恢复机制</strong></td>
+<td>Session ID 或 Session Ticket</td>
+<td>优先使用 PSK 和 Session Ticket</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="TLS-1-3-的核心改进"><a href="#TLS-1-3-的核心改进" class="headerlink" title="TLS 1.3 的核心改进"></a>TLS 1.3 的核心改进</h2><h3 id="1-前向安全（Forward-Secrecy）"><a href="#1-前向安全（Forward-Secrecy）" class="headerlink" title="1. 前向安全（Forward Secrecy）"></a>1. <strong>前向安全（Forward Secrecy）</strong></h3><ul>
+<li>强制使用临时密钥（<code>Ephemeral Key</code>），即使长期私钥泄露，历史会话也无法解密。</li>
+</ul>
+<h3 id="2-0-RTT-快速握手"><a href="#2-0-RTT-快速握手" class="headerlink" title="2. 0-RTT 快速握手"></a>2. <strong>0-RTT 快速握手</strong></h3><ul>
+<li>基于预共享密钥（<code>PSK</code>），客户端首次请求即可携带加密数据（如 <code>HTTP</code> <code>GET</code>）。</li>
+<li><strong>注意</strong>：<code>0-RTT</code> 数据需防重放攻击，仅限幂等操作。</li>
+</ul>
+<h3 id="3-算法精简"><a href="#3-算法精简" class="headerlink" title="3. 算法精简"></a>3. <strong>算法精简</strong></h3><ul>
+<li>移除 <code>RSA</code> 密钥传输、<code>DES</code>、<code>RC4</code>、<code>SHA-1</code> 等弱算法，默认使用 <code>AEAD</code> 加密（如 <code>AES-GCM</code>）。</li>
+</ul>
+<h3 id="4-握手消息加密"><a href="#4-握手消息加密" class="headerlink" title="4. 握手消息加密"></a>4. <strong>握手消息加密</strong></h3><ul>
+<li>除 <code>ClientHello/ServerHello</code> 外，其余消息（如证书）均加密传输，增强隐私性。</li>
+</ul>
+<h2 id="TLS-1-2-与-TLS-1-3-握手流程图"><a href="#TLS-1-2-与-TLS-1-3-握手流程图" class="headerlink" title="TLS 1.2 与 TLS 1.3 握手流程图"></a>TLS 1.2 与 TLS 1.3 握手流程图</h2><h3 id="TLS-1-2-流程图（简化）"><a href="#TLS-1-2-流程图（简化）" class="headerlink" title="TLS 1.2 流程图（简化）"></a>TLS 1.2 流程图（简化）</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sequenceDiagram</span><br><span class="line">    Client-&gt;&gt;Server: ClientHello</span><br><span class="line">    Server-&gt;&gt;Client: ServerHello + Certificate + ServerKeyExchange + ServerHelloDone</span><br><span class="line">    Client-&gt;&gt;Server: ClientKeyExchange + ChangeCipherSpec + Finished</span><br><span class="line">    Server-&gt;&gt;Client: ChangeCipherSpec + Finished</span><br></pre></td></tr></table></figure>
+
+<h3 id="TLS-1-3-流程图（1-RTT）"><a href="#TLS-1-3-流程图（1-RTT）" class="headerlink" title="TLS 1.3 流程图（1-RTT）"></a>TLS 1.3 流程图（1-RTT）</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sequenceDiagram</span><br><span class="line">    Client-&gt;&gt;Server: ClientHello (key_share)</span><br><span class="line">    Server-&gt;&gt;Client: ServerHello (key_share) + EncryptedExtensions + Certificate + CertificateVerify + Finished</span><br><span class="line">    Client-&gt;&gt;Server: Finished</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="性能与安全对比"><a href="#性能与安全对比" class="headerlink" title="性能与安全对比"></a>性能与安全对比</h2><table>
+<thead>
+<tr>
+<th><strong>场景</strong></th>
+<th><strong>TLS 1.2</strong></th>
+<th><strong>TLS 1.3</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>首次连接延迟</strong></td>
+<td>高（2-RTT）</td>
+<td>低（1-RTT）</td>
+</tr>
+<tr>
+<td><strong>重连延迟（会话恢复）</strong></td>
+<td>中（1-RTT）</td>
+<td>极低（0-RTT）</td>
+</tr>
+<tr>
+<td><strong>抗量子计算攻击</strong></td>
+<td>弱</td>
+<td>更强（支持 X25519 等算法）</td>
+</tr>
+<tr>
+<td><strong>隐私保护</strong></td>
+<td>部分握手消息明文传输</td>
+<td>握手消息全加密</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="表格说明"><a href="#表格说明" class="headerlink" title="表格说明"></a>表格说明</h3><ol>
+<li><p><strong>首次连接延迟</strong>：</p>
+<ul>
+<li><code>TLS 1.3</code> 通过合并握手步骤减少往返次数，显著降低延迟。</li>
+<li><code>TLS 1.2</code> 需多次交互协商密钥，耗时更长。</li>
+</ul>
+</li>
+<li><p><strong>重连延迟</strong>：</p>
+<ul>
+<li><code>TLS 1.3</code> 支持 0-RTT 快速恢复，客户端可立即发送加密数据。</li>
+<li><code>TLS 1.2</code> 需重新协商密钥，仍需 1-RTT。</li>
+</ul>
+</li>
+<li><p><strong>抗量子计算攻击</strong>：</p>
+<ul>
+<li><code>TLS 1.3</code> 默认使用 <code>X25519</code> 等强临时密钥算法，安全性更高。</li>
+<li><code>TLS 1.2</code> 依赖传统算法（如 <code>RSA</code>），易受量子计算威胁。</li>
+</ul>
+</li>
+<li><p><strong>隐私保护</strong>：</p>
+<ul>
+<li><code>TLS 1.3</code> 加密所有握手消息（除 <code>ClientHello/ServerHello</code>），防止中间人窃听敏感信息（如证书）。</li>
+<li><code>TLS 1.2</code> 的证书、<code>ServerKeyExchange</code> 等消息明文传输。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<blockquote>
+<p><strong>注</strong>：TLS 1.3 的 0-RTT 模式需注意重放攻击风险，建议仅用于幂等操作（如 HTTP GET）。</p>
+</blockquote>
+<hr>
+<h2 id="何时选择-TLS-1-3？"><a href="#何时选择-TLS-1-3？" class="headerlink" title="何时选择 TLS 1.3？"></a>何时选择 TLS 1.3？</h2><ul>
+<li><p><strong>推荐场景</strong>：</p>
+<ul>
+<li>高延迟网络（如移动端）。</li>
+<li>需要前向安全的敏感数据传输。</li>
+<li>高频短连接（如 <code>API</code> 请求）。</li>
+</ul>
+</li>
+<li><p><strong>注意事项</strong>：</p>
+<ul>
+<li>部分旧设备可能不支持 <code>TLS 1.3</code>。</li>
+<li><code>0-RTT</code> 需应用层防御重放攻击。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p><code>TLS 1.3</code> 通过精简握手流程、强制前向安全和算法升级，显著提升了安全性与性能。尽管 <code>TLS 1.2</code>仍在某些旧系统中使用，但 <code>TLS 1.3</code> 已成为现代 <code>Web</code> 服务、移动应用和 <code>IoT</code> 通信的首选协议。升级至 <code>TLS 1.3</code> 不仅是技术趋势，更是安全实践的必然要求。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2025/04/08/cryptographic/cryptographic_algorithms/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -182,17 +749,23 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2025-04-08 10:11:14 / 修改时间：02:16:06" itemprop="dateCreated datePublished" datetime="2025-04-08T10:11:14+00:00">2025-04-08</time>
+              <time title="创建时间：2025-04-08 10:11:14" itemprop="dateCreated datePublished" datetime="2025-04-08T10:11:14+00:00">2025-04-08</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-04-21 02:11:28" itemprop="dateModified" datetime="2025-04-21T02:11:28+00:00">2025-04-21</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%AF%86%E7%A0%81/" itemprop="url" rel="index"><span itemprop="name">密码</span></a>
+                  <a href="/categories/Cryptographic-Algorithms/" itemprop="url" rel="index"><span itemprop="name">Cryptographic Algorithms</span></a>
                 </span>
             </span>
 
@@ -391,7 +964,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-04-08 02:16:06" itemprop="dateModified" datetime="2025-04-08T02:16:06+00:00">2025-04-08</time>
+                <time title="修改时间：2025-04-21 02:11:28" itemprop="dateModified" datetime="2025-04-21T02:11:28+00:00">2025-04-21</time>
               </span>
 
           <br>
@@ -488,7 +1061,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-04-08 02:16:06" itemprop="dateModified" datetime="2025-04-08T02:16:06+00:00">2025-04-08</time>
+                <time title="修改时间：2025-04-21 02:11:28" itemprop="dateModified" datetime="2025-04-21T02:11:28+00:00">2025-04-21</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -580,7 +1153,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-04-08 02:16:06" itemprop="dateModified" datetime="2025-04-08T02:16:06+00:00">2025-04-08</time>
+                <time title="修改时间：2025-04-21 02:11:28" itemprop="dateModified" datetime="2025-04-21T02:11:28+00:00">2025-04-21</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -668,7 +1241,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-04-08 02:16:06" itemprop="dateModified" datetime="2025-04-08T02:16:06+00:00">2025-04-08</time>
+                <time title="修改时间：2025-04-21 02:11:28" itemprop="dateModified" datetime="2025-04-21T02:11:28+00:00">2025-04-21</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -778,7 +1351,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-04-08 02:16:06" itemprop="dateModified" datetime="2025-04-08T02:16:06+00:00">2025-04-08</time>
+                <time title="修改时间：2025-04-21 02:11:28" itemprop="dateModified" datetime="2025-04-21T02:11:28+00:00">2025-04-21</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -881,7 +1454,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-04-08 02:16:06" itemprop="dateModified" datetime="2025-04-08T02:16:06+00:00">2025-04-08</time>
+                <time title="修改时间：2025-04-21 02:11:28" itemprop="dateModified" datetime="2025-04-21T02:11:28+00:00">2025-04-21</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -922,303 +1495,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2024/07/11/network/Netfilter-%E6%A1%86%E6%9E%B6%E6%B5%85%E6%9E%90/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2024/03/21/network/TCP-TFO%E5%BF%AB%E9%80%9F%E6%89%93%E5%BC%80/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="yngty">
-      <meta itemprop="description" content="预测未来的最好方式就是实现它">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Symbol Crash">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/03/21/network/TCP-TFO%E5%BF%AB%E9%80%9F%E6%89%93%E5%BC%80/" class="post-title-link" itemprop="url">TCP-TFO快速打开</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-03-21 11:25:45" itemprop="dateCreated datePublished" datetime="2024-03-21T11:25:45+00:00">2024-03-21</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-04-08 02:16:06" itemprop="dateModified" datetime="2025-04-08T02:16:06+00:00">2025-04-08</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Network/" itemprop="url" rel="index"><span itemprop="name">Network</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>725</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>3 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p><code>TCP</code> 快速打开（<code>TCP Fast Open</code>，简称<code>TFO</code>）是对计算机网络中传输控制协议（<code>TCP</code>）连接的一种简化握手手续的拓展，用于提高两端点间连接的打开速度。</p>
-<p>它通过握手开始时的 <code>SYN</code> 包中的 <code>TFO cookie</code>（一个 <code>TCP</code> 选项）来验证一个之前连接过的客户端。如果验证成功，它可以在三次握手最终的 <code>ACK</code> 包收到之前就开始发送数据，这样便跳过了一个绕路的行为，更在传输开始时就降低了延迟。这个加密的 <code>Cookie</code> 被存储在客户端，在一开始的连接时被设定好。然后每当客户端连接时，这个 <code>Cookie</code> 被重复返回。</p>
-<blockquote>
-<p><strong>最显著的优点是可以利用握手去除一个往返 RTT</strong></p>
-</blockquote>
-<h1 id="开启-TFO"><a href="#开启-TFO" class="headerlink" title="开启 TFO"></a>开启 TFO</h1><p><code>net.ipv4.tcp_fastopen</code> 是 <code>Linux</code> 内核中的一个配置参数，它用于控制 <code>TCP Fast Open</code> 功能。<br>具体地，<code>net.ipv4.tcp_fastopen</code> 的值可以是以下几种：</p>
-<ul>
-<li><code>0</code>：禁用 <code>TCP Fast Open</code> 功能。</li>
-<li><code>1</code>：在客户端启用 <code>TCP Fast Open</code> 功能。</li>
-<li><code>2</code>：在服务器端启用 <code>TCP Fast Open</code> 功能。</li>
-<li><code>3</code>：在客户端和服务器端都启用 <code>TCP Fast Open</code> 功能。</li>
-</ul>
-<p>通过设置这个参数，可以根据实际需求选择是否启用和在哪一端启用 <code>TCP Fast Open</code>，从而优化网络性能。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2024/03/21/network/TCP-TFO%E5%BF%AB%E9%80%9F%E6%89%93%E5%BC%80/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2024/03/20/network/%E7%BD%91%E7%BB%9C%E5%B7%A5%E5%85%B7%20telnet%E3%80%81-nc%E3%80%81-netstat/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="yngty">
-      <meta itemprop="description" content="预测未来的最好方式就是实现它">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Symbol Crash">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/03/20/network/%E7%BD%91%E7%BB%9C%E5%B7%A5%E5%85%B7%20telnet%E3%80%81-nc%E3%80%81-netstat/" class="post-title-link" itemprop="url">网络工具 telnet、 nc、 netstat、ss</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-03-20 09:42:47" itemprop="dateCreated datePublished" datetime="2024-03-20T09:42:47+00:00">2024-03-20</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-04-08 02:16:06" itemprop="dateModified" datetime="2025-04-08T02:16:06+00:00">2025-04-08</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Network/" itemprop="url" rel="index"><span itemprop="name">Network</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>387</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="telnet"><a href="#telnet" class="headerlink" title="telnet"></a><code>telnet</code></h1><h2 id="检查端口是否打开"><a href="#检查端口是否打开" class="headerlink" title="检查端口是否打开"></a>检查端口是否打开</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">telnet [domainname or ip] [port]</span><br><span class="line"></span><br><span class="line">telnet 220.181.57.216 80</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2024/03/20/network/%E7%BD%91%E7%BB%9C%E5%B7%A5%E5%85%B7%20telnet%E3%80%81-nc%E3%80%81-netstat/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2024/03/18/network/MTU%E4%B8%8EMSS%E7%9A%84%E5%A5%A5%E7%A7%98/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="yngty">
-      <meta itemprop="description" content="预测未来的最好方式就是实现它">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Symbol Crash">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/03/18/network/MTU%E4%B8%8EMSS%E7%9A%84%E5%A5%A5%E7%A7%98/" class="post-title-link" itemprop="url">MTU与MSS的奥秘</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-03-18 14:44:24" itemprop="dateCreated datePublished" datetime="2024-03-18T14:44:24+00:00">2024-03-18</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-04-08 02:16:06" itemprop="dateModified" datetime="2025-04-08T02:16:06+00:00">2025-04-08</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Network/" itemprop="url" rel="index"><span itemprop="name">Network</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>242</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="最大传输单元（Maximum-Transmission-Unit-MTU）"><a href="#最大传输单元（Maximum-Transmission-Unit-MTU）" class="headerlink" title="最大传输单元（Maximum Transmission Unit, MTU）"></a>最大传输单元（Maximum Transmission Unit, MTU）</h1><p>数据链路层传输的帧大小是有限制的，不能把一个太大的包直接塞给链路层，这个限制被称为「最大传输单元（<code>Maximum Transmission Unit, MTU</code>）」</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2024/03/18/network/MTU%E4%B8%8EMSS%E7%9A%84%E5%A5%A5%E7%A7%98/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1309,7 +1585,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">81</span>
+          <span class="site-state-item-count">84</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1322,7 +1598,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">43</span>
+        <span class="site-state-item-count">45</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -1369,12 +1645,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">50k</span>
+    <span title="站点总字数">53k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">3:01</span>
+    <span title="站点阅读时长">3:11</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>

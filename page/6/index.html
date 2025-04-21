@@ -119,7 +119,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">81</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">84</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
@@ -129,7 +129,7 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">43</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">45</span></a>
 
   </li>
   </ul>
@@ -155,6 +155,309 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2023/02/15/qt/Qt-%E4%B9%8B-%E7%84%A6%E7%82%B9%E5%A4%84%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Symbol Crash">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/02/15/qt/Qt-%E4%B9%8B-%E7%84%A6%E7%82%B9%E5%A4%84%E7%90%86/" class="post-title-link" itemprop="url">Qt 之 焦点处理</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-02-15 17:08:09" itemprop="dateCreated datePublished" datetime="2023-02-15T17:08:09+00:00">2023-02-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-04-21 02:11:28" itemprop="dateModified" datetime="2025-04-21T02:11:28+00:00">2025-04-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Qt/" itemprop="url" rel="index"><span itemprop="name">Qt</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>770</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="焦点事件"><a href="#焦点事件" class="headerlink" title="焦点事件"></a>焦点事件</h1><p>当焦点从一个 <code>widget</code> 移动到另一个 <code>widget</code> 时，会触发 <code>QFocusEvent</code> 事件，这个事件会被发送给原焦点窗口和当前焦点窗口，原焦点窗口执行 <code>focusOutEvent()</code> ，新焦点窗口执行 <code>focusInEvent()</code>。 相关函数如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">focusInEvent</span><span class="params">(QFocusEvent *event)</span> <span class="keyword">override</span></span>;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">focusOutEvent</span><span class="params">(QFocusEvent *event)</span> <span class="keyword">override</span></span>;</span><br></pre></td></tr></table></figure>
+<h1 id="焦点策略"><a href="#焦点策略" class="headerlink" title="焦点策略"></a>焦点策略</h1><p>只有<strong>可获取焦点</strong>的窗口，才有机会成为焦点窗口。比如<code>QWidget</code> 默认策略是 <code>Qt::NoFocus</code> 所以 QWidget 默认不获取焦点。Qt提供了如下接口：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">QWidget::setFocusPolicy</span><span class="params">(Qt::FocusPolicy policy)</span></span>;</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/02/15/qt/Qt-%E4%B9%8B-%E7%84%A6%E7%82%B9%E5%A4%84%E7%90%86/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2023/02/07/c++/std-make-shared-vs-new/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Symbol Crash">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/02/07/c++/std-make-shared-vs-new/" class="post-title-link" itemprop="url">std::make_shared vs. new</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-02-07 10:30:24" itemprop="dateCreated datePublished" datetime="2023-02-07T10:30:24+00:00">2023-02-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-04-21 02:11:28" itemprop="dateModified" datetime="2025-04-21T02:11:28+00:00">2025-04-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C-C/" itemprop="url" rel="index"><span itemprop="name">C/C++</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>713</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="内存分配"><a href="#内存分配" class="headerlink" title="内存分配"></a>内存分配</h1><p><code>std::make_shared</code> 执行<strong>一次</strong>堆分配，而调用<code>std::shared_ptr</code> 构造函数执行<strong>两次</strong>。</p>
+<p>在一个典型的实现中 <code>std::shared_ptr</code> 管理两个实体：</p>
+<ul>
+<li>控制块（存储元数据，如引用计数、类型擦除删除器等）</li>
+<li>被管理的对象</li>
+</ul>
+<p>控制块是一个动态分配的对象，它包含：</p>
+<ul>
+<li>指向托管对象的指针或托管对象本身；</li>
+<li>删除器 (类型擦除)</li>
+<li>分配器 (类型擦除)</li>
+<li>拥有被管理对象的 <code>shared_ptr</code>的数量</li>
+<li>引用托管对象的 <code>weak_ptr</code> 的数量</li>
+</ul>
+<p><code>std::make_shared</code>执行一次堆分配，计算控制块和数据所需的总空间。在另一种情况 <code>std::shared_ptr&lt;Obj&gt;(new Obj(&quot;foo&quot;))</code>下执行两次, <code>new Obj(&quot;foo&quot;)</code>为托管数据调用堆分配，<code>std::shared_ptr</code>构造函数为控制块执行另一个堆分配。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/02/07/c++/std-make-shared-vs-new/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2022/07/26/macos/%E5%9C%A8MacOS%E5%B9%B3%E5%8F%B0%E4%B8%8A%E7%AC%A6%E5%8F%B7%E5%8C%96%E5%B4%A9%E6%BA%83%E6%8A%A5%E5%91%8A/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Symbol Crash">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/07/26/macos/%E5%9C%A8MacOS%E5%B9%B3%E5%8F%B0%E4%B8%8A%E7%AC%A6%E5%8F%B7%E5%8C%96%E5%B4%A9%E6%BA%83%E6%8A%A5%E5%91%8A/" class="post-title-link" itemprop="url">在MacOS平台上符号化崩溃报告</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-07-26 15:41:02" itemprop="dateCreated datePublished" datetime="2022-07-26T15:41:02+00:00">2022-07-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-04-21 02:11:28" itemprop="dateModified" datetime="2025-04-21T02:11:28+00:00">2025-04-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/MacOS/" itemprop="url" rel="index"><span itemprop="name">MacOS</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>627</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="dSYM"><a href="#dSYM" class="headerlink" title=".dSYM"></a><code>.dSYM</code></h1><p><code>.dSYM</code> (<code>debugging SYMbols</code>) 又称为调试符号表，是苹果为了方便调试和定位问题而使用的一种调试方案，本质上使用的是起源于贝尔实验室的 <code>DWARF</code>（<code>Debugging With Attributed Record Formats</code>），其在.xcarchive目录中的层次结构为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">.xcarchive</span><br><span class="line">--dSYMs</span><br><span class="line">  |--Your.app.dSYM</span><br><span class="line">    |--Contents</span><br><span class="line">      |--Resources</span><br><span class="line">        |--DWARF</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/07/26/macos/%E5%9C%A8MacOS%E5%B9%B3%E5%8F%B0%E4%B8%8A%E7%AC%A6%E5%8F%B7%E5%8C%96%E5%B4%A9%E6%BA%83%E6%8A%A5%E5%91%8A/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -190,7 +493,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-04-08 02:16:06" itemprop="dateModified" datetime="2025-04-08T02:16:06+00:00">2025-04-08</time>
+                <time title="修改时间：2025-04-21 02:11:28" itemprop="dateModified" datetime="2025-04-21T02:11:28+00:00">2025-04-21</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -280,7 +583,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-04-08 02:16:06" itemprop="dateModified" datetime="2025-04-08T02:16:06+00:00">2025-04-08</time>
+                <time title="修改时间：2025-04-21 02:11:28" itemprop="dateModified" datetime="2025-04-21T02:11:28+00:00">2025-04-21</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -378,7 +681,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-04-08 02:16:06" itemprop="dateModified" datetime="2025-04-08T02:16:06+00:00">2025-04-08</time>
+                <time title="修改时间：2025-04-21 02:11:28" itemprop="dateModified" datetime="2025-04-21T02:11:28+00:00">2025-04-21</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -482,7 +785,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-04-08 02:16:06" itemprop="dateModified" datetime="2025-04-08T02:16:06+00:00">2025-04-08</time>
+                <time title="修改时间：2025-04-21 02:11:28" itemprop="dateModified" datetime="2025-04-21T02:11:28+00:00">2025-04-21</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -586,7 +889,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-04-08 02:16:06" itemprop="dateModified" datetime="2025-04-08T02:16:06+00:00">2025-04-08</time>
+                <time title="修改时间：2025-04-21 02:11:28" itemprop="dateModified" datetime="2025-04-21T02:11:28+00:00">2025-04-21</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -684,7 +987,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-04-08 02:16:06" itemprop="dateModified" datetime="2025-04-08T02:16:06+00:00">2025-04-08</time>
+                <time title="修改时间：2025-04-21 02:11:28" itemprop="dateModified" datetime="2025-04-21T02:11:28+00:00">2025-04-21</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -774,7 +1077,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-04-08 02:16:06" itemprop="dateModified" datetime="2025-04-08T02:16:06+00:00">2025-04-08</time>
+                <time title="修改时间：2025-04-21 02:11:28" itemprop="dateModified" datetime="2025-04-21T02:11:28+00:00">2025-04-21</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -815,302 +1118,6 @@
 <p>Item 22: Declare data members private.</p>
 </blockquote>
 
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2022/03/23/effecitve-cpp/effective-cpp-21/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="yngty">
-      <meta itemprop="description" content="预测未来的最好方式就是实现它">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Symbol Crash">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/03/23/effecitve-cpp/effective-cpp-21/" class="post-title-link" itemprop="url">Effective C++ 21：需要返回对象时，不要返回引用</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-03-23 10:43:36" itemprop="dateCreated datePublished" datetime="2022-03-23T10:43:36+00:00">2022-03-23</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-04-08 02:16:06" itemprop="dateModified" datetime="2025-04-08T02:16:06+00:00">2025-04-08</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Effective-C/" itemprop="url" rel="index"><span itemprop="name">Effective-C++</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>737</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>3 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <blockquote>
-<p>Item 21: Don’t to return a reference when you must return an object.</p>
-</blockquote>
-<p>Item 20 中提到，多数情况下传引用比传值更好。但不要无脑追求这一点，一定不要返回空引用或指针。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/03/23/effecitve-cpp/effective-cpp-21/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2022/03/23/effecitve-cpp/effective-cpp-20/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="yngty">
-      <meta itemprop="description" content="预测未来的最好方式就是实现它">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Symbol Crash">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/03/23/effecitve-cpp/effective-cpp-20/" class="post-title-link" itemprop="url">Effective C++ 20：传常量引用比传值更好</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-03-23 10:29:27" itemprop="dateCreated datePublished" datetime="2022-03-23T10:29:27+00:00">2022-03-23</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-04-08 02:16:06" itemprop="dateModified" datetime="2025-04-08T02:16:06+00:00">2025-04-08</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Effective-C/" itemprop="url" rel="index"><span itemprop="name">Effective-C++</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>661</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>2 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <blockquote>
-<p>Item 20: Prefer pass-by-reference-to-const to pass-by-value.</p>
-</blockquote>
-<p>缺省情况下<code>C++</code> 用传值得方式(一个继承自<code>C</code>的方式)传递对象至(或来自)函数。除非你另外指定，否则函数参数都是以实际实参的复件(副本)为初值，而调用端所获得的亦是函数返回值的一个复件。这些复件(副本)系由对象的<code>copy</code>构造函数产出。</p>
-<p><strong>尽量以传常量引用替换传值前者通常比较高效，并可避免切割问题 (<code>slicing problem</code>)，但是内置类型和 <code>STL</code> 迭代器，还是传值更加合适。</strong>。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/03/23/effecitve-cpp/effective-cpp-20/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2021/11/23/linux/%E6%96%87%E4%BB%B6MIME%E7%B1%BB%E5%9E%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="yngty">
-      <meta itemprop="description" content="预测未来的最好方式就是实现它">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Symbol Crash">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/11/23/linux/%E6%96%87%E4%BB%B6MIME%E7%B1%BB%E5%9E%8B/" class="post-title-link" itemprop="url">文件MIME类型</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-11-23 20:14:31" itemprop="dateCreated datePublished" datetime="2021-11-23T20:14:31+00:00">2021-11-23</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-04-08 02:16:06" itemprop="dateModified" datetime="2025-04-08T02:16:06+00:00">2025-04-08</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>767</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>3 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="什么是-MIME-类型？"><a href="#什么是-MIME-类型？" class="headerlink" title="什么是 MIME 类型？"></a>什么是 MIME 类型？</h1><p><code>MIME</code>（多用途 <code>Internet</code> 邮件扩展）的类型来识别文件格式。 <code>MIME</code> 类型构成了 <code>Internet</code> 上对文件类型进行分类的标准方法。</p>
-<ul>
-<li><code>MIME Type</code>是用于描述文件的类型的一种表述方法，其将文件划分为多种类型，方便对其进行统一的管理。</li>
-<li><code>MIME Type</code>指定了文件的类型名称、描述、图标信息，同时通过与.desktop应用程序描述文件整合，指定了文件的打开方式。</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/11/23/linux/%E6%96%87%E4%BB%B6MIME%E7%B1%BB%E5%9E%8B/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
       
     </div>
 
@@ -1196,7 +1203,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">81</span>
+          <span class="site-state-item-count">84</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1209,7 +1216,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">43</span>
+        <span class="site-state-item-count">45</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -1256,12 +1263,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">50k</span>
+    <span title="站点总字数">53k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">3:01</span>
+    <span title="站点阅读时长">3:11</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>
