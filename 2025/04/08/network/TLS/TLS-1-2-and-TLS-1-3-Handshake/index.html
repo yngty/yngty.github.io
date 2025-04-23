@@ -20,15 +20,15 @@
     var CONFIG = {"hostname":"yngty.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
-  <meta name="description" content="TLS 1.2 与 TLS 1.3 握手流程深度解析：安全与性能的演进引言TLS（传输层安全协议）是互联网加密通信的基石。从 TLS 1.2 到 TLS 1.3，协议在安全性和性能上实现了质的飞跃。本文将深入对比两者的握手流程，解析其设计差异，并探讨为何 TLS 1.3 成为现代网络通信的首选。  TLS 1.2 握手流程（传统 2-RTT 模型）1. ClientHello 客户端发送支持的协议">
+  <meta name="description" content="TLS 1.2 与 TLS 1.3 握手流程深度解析：安全与性能的演进引言TLS（传输层安全协议）是互联网加密通信的基石。从 TLS 1.2 到 TLS 1.3，协议在安全性和性能上实现了质的飞跃。本文将深入对比两者的握手流程，解析其设计差异，并探讨为何 TLS 1.3 成为现代网络通信的首选。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="TLS 1.2 与 TLS 1.3 握手流程深度解析：安全与性能的演进">
 <meta property="og:url" content="https://yngty.github.io/2025/04/08/network/TLS/TLS-1-2-and-TLS-1-3-Handshake/index.html">
 <meta property="og:site_name" content="Symbol Crash">
-<meta property="og:description" content="TLS 1.2 与 TLS 1.3 握手流程深度解析：安全与性能的演进引言TLS（传输层安全协议）是互联网加密通信的基石。从 TLS 1.2 到 TLS 1.3，协议在安全性和性能上实现了质的飞跃。本文将深入对比两者的握手流程，解析其设计差异，并探讨为何 TLS 1.3 成为现代网络通信的首选。  TLS 1.2 握手流程（传统 2-RTT 模型）1. ClientHello 客户端发送支持的协议">
+<meta property="og:description" content="TLS 1.2 与 TLS 1.3 握手流程深度解析：安全与性能的演进引言TLS（传输层安全协议）是互联网加密通信的基石。从 TLS 1.2 到 TLS 1.3，协议在安全性和性能上实现了质的飞跃。本文将深入对比两者的握手流程，解析其设计差异，并探讨为何 TLS 1.3 成为现代网络通信的首选。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-04-08T10:17:59.000Z">
-<meta property="article:modified_time" content="2025-04-21T02:11:28.901Z">
+<meta property="article:modified_time" content="2025-04-23T07:01:28.088Z">
 <meta property="article:author" content="yngty">
 <meta property="article:tag" content="SSL&#x2F;TLS">
 <meta name="twitter:card" content="summary">
@@ -193,7 +193,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-04-21 02:11:28" itemprop="dateModified" datetime="2025-04-21T02:11:28+00:00">2025-04-21</time>
+                <time title="修改时间：2025-04-23 07:01:28" itemprop="dateModified" datetime="2025-04-23T07:01:28+00:00">2025-04-23</time>
               </span>
 
           <br>
@@ -223,6 +223,7 @@
       
         <h1 id="TLS-1-2-与-TLS-1-3-握手流程深度解析：安全与性能的演进"><a href="#TLS-1-2-与-TLS-1-3-握手流程深度解析：安全与性能的演进" class="headerlink" title="TLS 1.2 与 TLS 1.3 握手流程深度解析：安全与性能的演进"></a>TLS 1.2 与 TLS 1.3 握手流程深度解析：安全与性能的演进</h1><h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p><code>TLS</code>（传输层安全协议）是互联网加密通信的基石。从 <code>TLS 1.2</code> 到 <code>TLS 1.3</code>，协议在安全性和性能上实现了质的飞跃。本文将深入对比两者的握手流程，解析其设计差异，并探讨为何 <code>TLS 1.3</code> 成为现代网络通信的首选。</p>
 <hr>
+<span id="more"></span>
 <h2 id="TLS-1-2-握手流程（传统-2-RTT-模型）"><a href="#TLS-1-2-握手流程（传统-2-RTT-模型）" class="headerlink" title="TLS 1.2 握手流程（传统 2-RTT 模型）"></a><code>TLS 1.</code>2 握手流程（传统 <code>2-RTT</code> 模型）</h2><h3 id="1-ClientHello"><a href="#1-ClientHello" class="headerlink" title="1. ClientHello"></a>1. <strong>ClientHello</strong></h3><ul>
 <li>客户端发送支持的协议版本（如 <code>TLS 1.2</code>）</li>
 <li>随机数（<code>ClientRandom</code>）</li>
@@ -634,12 +635,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">53k</span>
+    <span title="站点总字数">54k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">3:11</span>
+    <span title="站点阅读时长">3:17</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>

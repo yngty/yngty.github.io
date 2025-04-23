@@ -190,7 +190,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-04-21 02:11:28" itemprop="dateModified" datetime="2025-04-21T02:11:28+00:00">2025-04-21</time>
+                <time title="修改时间：2025-04-23 07:01:28" itemprop="dateModified" datetime="2025-04-23T07:01:28+00:00">2025-04-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -208,14 +208,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>0</span>
+              <span>1.6k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
+              <span>6 分钟</span>
             </span>
 
         </div>
@@ -227,7 +227,16 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          
+          <h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p>在加密领域，密钥派生函数（KDF）是通过从一个初始密钥（通常称为“种子密钥”或“主密钥”）生成多个密钥的算法。<code>HKDF（HMAC-based Key Derivation Function）</code>是一种基于 <code>HMAC</code> 的密钥派生函数，它被设计用于从一个或多个输入密钥材料中生成多个安全的输出密钥。HKDF 是一个简洁且具有高度安全性的 <code>KDF</code>，广泛用于生成加密协议中的密钥（如 <code>TLS</code>、<code>IPSec</code> 等）。</p>
+<p>在这篇文章中，我们将深入探讨 HKDF 的原理、计算过程以及应用场景，帮助你更好地理解这个关键的密码学工具。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2025/04/18/cryptographic/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3-HKDF%EF%BC%9AHMAC-%E5%AF%86%E9%92%A5%E6%B4%BE%E7%94%9F%E5%87%BD%E6%95%B0/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -277,7 +286,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-04-21 02:11:28" itemprop="dateModified" datetime="2025-04-21T02:11:28+00:00">2025-04-21</time>
+                <time title="修改时间：2025-04-23 07:01:28" itemprop="dateModified" datetime="2025-04-23T07:01:28+00:00">2025-04-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -425,7 +434,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-04-21 02:11:28" itemprop="dateModified" datetime="2025-04-21T02:11:28+00:00">2025-04-21</time>
+                <time title="修改时间：2025-04-23 07:01:28" itemprop="dateModified" datetime="2025-04-23T07:01:28+00:00">2025-04-23</time>
               </span>
 
           <br>
@@ -455,259 +464,14 @@
       
           <h1 id="TLS-1-2-与-TLS-1-3-握手流程深度解析：安全与性能的演进"><a href="#TLS-1-2-与-TLS-1-3-握手流程深度解析：安全与性能的演进" class="headerlink" title="TLS 1.2 与 TLS 1.3 握手流程深度解析：安全与性能的演进"></a>TLS 1.2 与 TLS 1.3 握手流程深度解析：安全与性能的演进</h1><h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p><code>TLS</code>（传输层安全协议）是互联网加密通信的基石。从 <code>TLS 1.2</code> 到 <code>TLS 1.3</code>，协议在安全性和性能上实现了质的飞跃。本文将深入对比两者的握手流程，解析其设计差异，并探讨为何 <code>TLS 1.3</code> 成为现代网络通信的首选。</p>
 <hr>
-<h2 id="TLS-1-2-握手流程（传统-2-RTT-模型）"><a href="#TLS-1-2-握手流程（传统-2-RTT-模型）" class="headerlink" title="TLS 1.2 握手流程（传统 2-RTT 模型）"></a><code>TLS 1.</code>2 握手流程（传统 <code>2-RTT</code> 模型）</h2><h3 id="1-ClientHello"><a href="#1-ClientHello" class="headerlink" title="1. ClientHello"></a>1. <strong>ClientHello</strong></h3><ul>
-<li>客户端发送支持的协议版本（如 <code>TLS 1.2</code>）</li>
-<li>随机数（<code>ClientRandom</code>）</li>
-<li>密码套件列表（如 <code>TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256</code>）</li>
-<li><strong>其他扩展</strong>：<code>SNI</code>（服务器名称指示）等。</li>
-</ul>
-<h3 id="2-ServerHello"><a href="#2-ServerHello" class="headerlink" title="2. ServerHello"></a>2. <strong>ServerHello</strong></h3><ul>
-<li>服务器选择协议版本</li>
-<li>随机数（<code>ServerRandom</code>）：<code>32</code> 字节的随机值。</li>
-<li>选定的密码套件</li>
-</ul>
-<h3 id="3-Certificate"><a href="#3-Certificate" class="headerlink" title="3. Certificate"></a>3. <strong>Certificate</strong></h3><ul>
-<li>服务器发送证书链，用于身份验证。</li>
-</ul>
-<h3 id="4-ServerKeyExchange"><a href="#4-ServerKeyExchange" class="headerlink" title="4. ServerKeyExchange"></a>4. <strong>ServerKeyExchange</strong></h3><ul>
-<li>传递临时密钥参数（如 <code>ECDHE</code> 公钥）。<em>（仅限非 RSA 密钥交换）</em></li>
-</ul>
-<h3 id="5-ServerHelloDone"><a href="#5-ServerHelloDone" class="headerlink" title="5. ServerHelloDone"></a>5. <strong>ServerHelloDone</strong></h3><ul>
-<li>表示服务器消息结束。</li>
-</ul>
-<h3 id="6-ClientKeyExchange"><a href="#6-ClientKeyExchange" class="headerlink" title="6. ClientKeyExchange"></a>6. <strong>ClientKeyExchange</strong></h3><ul>
-<li>客户端生成预主密钥（<code>Pre-Master Secret</code>），用服务器公钥加密后发送。<em>（若使用 RSA 密钥交换）</em></li>
-</ul>
-<h3 id="7-ChangeCipherSpec（客户端）"><a href="#7-ChangeCipherSpec（客户端）" class="headerlink" title="7. ChangeCipherSpec（客户端）"></a>7. <strong>ChangeCipherSpec（客户端）</strong></h3><ul>
-<li>通知服务器后续消息将加密。</li>
-</ul>
-<h3 id="8-Finished（客户端）"><a href="#8-Finished（客户端）" class="headerlink" title="8. Finished（客户端）"></a>8. <strong>Finished（客户端）</strong></h3><ul>
-<li>发送加密的 <code>HMAC</code> 验证握手完整性。</li>
-</ul>
-<h3 id="9-ChangeCipherSpec（服务器）"><a href="#9-ChangeCipherSpec（服务器）" class="headerlink" title="9. ChangeCipherSpec（服务器）"></a>9. <strong>ChangeCipherSpec（服务器）</strong></h3><ul>
-<li>服务器切换至加密模式。</li>
-</ul>
-<h3 id="10-Finished（服务器）"><a href="#10-Finished（服务器）" class="headerlink" title="10. Finished（服务器）"></a>10. <strong>Finished（服务器）</strong></h3><ul>
-<li>服务器发送加密的 HMAC 验证。</li>
-</ul>
-<p><strong>总耗时</strong>：至少 <strong>2 次往返（2-RTT）</strong>。</p>
-<hr>
-<h2 id="TLS-1-3-握手流程（1-RTT）"><a href="#TLS-1-3-握手流程（1-RTT）" class="headerlink" title="TLS 1.3 握手流程（1-RTT）"></a>TLS 1.3 握手流程（1-RTT）</h2><h3 id="1-ClientHello-1"><a href="#1-ClientHello-1" class="headerlink" title="1. ClientHello"></a>1. <strong>ClientHello</strong></h3><ul>
-<li><p><strong>客户端</strong>发起握手，发送以下内容：</p>
-<ul>
-<li><strong>协议版本</strong>：声明支持 <code>TLS 1.3</code>。</li>
-<li><strong>随机数（<code>ClientRandom</code>）</strong>：<code>32</code> 字节的随机值。</li>
-<li><strong>密码套件列表</strong>：支持的加密算法组合（如 <code>TLS_AES_128_GCM_SHA256</code>）。</li>
-<li><strong>密钥共享扩展（<code>key_share</code>）</strong>：包含客户端生成的临时公钥（如 <code>ECDHE</code> 的椭圆曲线公钥）。</li>
-<li><strong>其他扩展</strong>：如支持的签名算法、<code>SNI</code>（服务器名称指示）等。</li>
-</ul>
-</li>
-<li><p><strong>密钥生成</strong>：</p>
-<ul>
-<li>此时尚未生成密钥，消息以<strong>明文</strong>发送。</li>
-</ul>
-</li>
-<li><p><strong>加密数据</strong>：</p>
-<ul>
-<li>无加密，但包含后续密钥交换所需参数。</li>
-</ul>
-</li>
-</ul>
-<h3 id="2-ServerHello-1"><a href="#2-ServerHello-1" class="headerlink" title="2. ServerHello"></a>2. <strong>ServerHello</strong></h3><ul>
-<li><p><strong>服务器</strong>响应，内容包括：</p>
-<ul>
-<li><strong>协议版本</strong>：确认使用 <code>TLS 1.3</code>。</li>
-<li><strong>随机数（<code>ServerRandom</code>）</strong>：<code>32</code> 字节的随机值。</li>
-<li><strong>选定的密码套件</strong>：从客户端列表中选择的套件（如 <code>TLS_AES_128_GCM_SHA256</code>）。</li>
-<li><strong>密钥共享扩展（<code>key_share</code>）</strong>：服务器的临时公钥（如 <code>ECDHE</code> 的椭圆曲线公钥）。</li>
-</ul>
-</li>
-<li><p><strong>密钥生成</strong>：</p>
-<ul>
-<li>客户端和服务器通过 <code>ECDHE</code>（或其他密钥交换算法）计算共享密钥：<ul>
-<li><strong>共享密钥（Shared Secret）</strong> &#x3D; <code>ECDH(client_priv, server_pub) = ECDH(server_priv, client_pub)</code>。</li>
-<li>结合 <code>Client Random</code> 和 <code>Server Random</code>，通过 <strong>HKDF</strong> 生成：<ul>
-<li><strong>预主密钥（Pre-Master Secret）</strong> → <strong>主密钥（Master Secret）</strong>。</li>
-<li>主密钥再派生出 <strong>握手流量密钥（Handshake Traffic Keys）</strong>。</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p><strong>加密数据</strong>：</p>
-<ul>
-<li>无加密，<code>ServerHello</code> 仍为<strong>明文</strong>。</li>
-</ul>
-</li>
-</ul>
-<h3 id="3-服务器端后续消息（同一轮次发送）"><a href="#3-服务器端后续消息（同一轮次发送）" class="headerlink" title="3. 服务器端后续消息（同一轮次发送）"></a>3. <strong>服务器端后续消息（同一轮次发送）</strong></h3><p>服务器发送以下消息，合并为单个 <code>TLS</code> 记录：</p>
-<ul>
-<li><strong>EncryptedExtensions</strong>：可选扩展（如 <code>ALPN</code> 应用层协议协商, <code>SNI</code> 确认等）。</li>
-<li><strong>Certificate</strong>：服务器证书链，用于身份验证。</li>
-<li><strong>CertificateVerify</strong>：用服务器私钥对握手消息签名，证明拥有证书。</li>
-<li><strong>Finished</strong>：加密的验证数据（<code>HMAC</code>），确保握手完整性。</li>
-</ul>
-<h3 id="4-客户端验证与响应"><a href="#4-客户端验证与响应" class="headerlink" title="4. 客户端验证与响应"></a>4. <strong>客户端验证与响应</strong></h3><p>客户端：</p>
-<ul>
-<li>验证服务器证书的有效性。<ul>
-<li>检查证书颁发机构\有效期、域名匹配</li>
-<li>递归验证证书链至可信根<code>CA</code>（浏览器&#x2F;<code>OS</code>内置）</li>
-<li>检查吊销状态（<code>OCSP</code>或<code>CRL</code>）</li>
-</ul>
-</li>
-<li>检查 <code>CertificateVerify</code> 签名是否正确。</li>
-<li>发送 <code>Finished</code> 消息：加密的 <code>HMAC</code>，供服务器验证握手完整性。</li>
-</ul>
-<p><strong>总耗时</strong>：<strong>1 次往返（1-RTT）</strong>。</p>
-<hr>
-<h2 id="0-RTT-快速握手（提前发送数据）"><a href="#0-RTT-快速握手（提前发送数据）" class="headerlink" title="0-RTT 快速握手（提前发送数据）"></a>0-RTT 快速握手（提前发送数据）</h2><p><strong>前提</strong>：客户端与服务器已通过前一次握手生成预共享密钥（<code>PSK</code>）。</p>
-<p><strong>流程</strong></p>
-<ol>
-<li><code>ClientHello</code>：包含 <code>pre_shared_key</code> 扩展（<code>PSK</code> 标识）和 <code>early_data</code> 扩展。</li>
-<li><code>ServerHello</code>：服务器接受 PSK，返回 <code>pre_shared_key</code> 确认。</li>
-<li>客户端立即发送 <code>0-RTT</code> 应用数据：使用 <code>PSK</code> 加密，无需等待握手完成。</li>
-<li>后续步骤与完整握手相同（服务器发送 <code>Finished</code>，客户端响应）。</li>
-</ol>
-<p><strong>注意</strong>：<code>0-RTT</code> 数据可能受<strong>重放攻击</strong>，需确保应用层操作是<strong>幂等</strong>的（如 <code>GET</code> 请求）。</p>
-<hr>
-<h2 id="关键差异对比"><a href="#关键差异对比" class="headerlink" title="关键差异对比"></a>关键差异对比</h2><table>
-<thead>
-<tr>
-<th><strong>特性</strong></th>
-<th><strong>TLS 1.2</strong></th>
-<th><strong>TLS 1.3</strong></th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>握手耗时</strong></td>
-<td>2-RTT</td>
-<td>1-RTT（或 0-RTT）</td>
-</tr>
-<tr>
-<td><strong>密钥交换算法</strong></td>
-<td>支持 RSA（非前向安全）</td>
-<td>仅 ECDHE&#x2F;DHE（强制前向安全）</td>
-</tr>
-<tr>
-<td><strong>握手消息合并</strong></td>
-<td>多步骤（如 ServerKeyExchange）</td>
-<td>合并至 ServerHello 后</td>
-</tr>
-<tr>
-<td><strong>0-RTT 支持</strong></td>
-<td>不支持</td>
-<td>支持（基于 PSK）</td>
-</tr>
-<tr>
-<td><strong>不安全算法</strong></td>
-<td>允许 SHA-1、RC4 等</td>
-<td>完全移除</td>
-</tr>
-<tr>
-<td><strong>会话恢复机制</strong></td>
-<td>Session ID 或 Session Ticket</td>
-<td>优先使用 PSK 和 Session Ticket</td>
-</tr>
-</tbody></table>
-<hr>
-<h2 id="TLS-1-3-的核心改进"><a href="#TLS-1-3-的核心改进" class="headerlink" title="TLS 1.3 的核心改进"></a>TLS 1.3 的核心改进</h2><h3 id="1-前向安全（Forward-Secrecy）"><a href="#1-前向安全（Forward-Secrecy）" class="headerlink" title="1. 前向安全（Forward Secrecy）"></a>1. <strong>前向安全（Forward Secrecy）</strong></h3><ul>
-<li>强制使用临时密钥（<code>Ephemeral Key</code>），即使长期私钥泄露，历史会话也无法解密。</li>
-</ul>
-<h3 id="2-0-RTT-快速握手"><a href="#2-0-RTT-快速握手" class="headerlink" title="2. 0-RTT 快速握手"></a>2. <strong>0-RTT 快速握手</strong></h3><ul>
-<li>基于预共享密钥（<code>PSK</code>），客户端首次请求即可携带加密数据（如 <code>HTTP</code> <code>GET</code>）。</li>
-<li><strong>注意</strong>：<code>0-RTT</code> 数据需防重放攻击，仅限幂等操作。</li>
-</ul>
-<h3 id="3-算法精简"><a href="#3-算法精简" class="headerlink" title="3. 算法精简"></a>3. <strong>算法精简</strong></h3><ul>
-<li>移除 <code>RSA</code> 密钥传输、<code>DES</code>、<code>RC4</code>、<code>SHA-1</code> 等弱算法，默认使用 <code>AEAD</code> 加密（如 <code>AES-GCM</code>）。</li>
-</ul>
-<h3 id="4-握手消息加密"><a href="#4-握手消息加密" class="headerlink" title="4. 握手消息加密"></a>4. <strong>握手消息加密</strong></h3><ul>
-<li>除 <code>ClientHello/ServerHello</code> 外，其余消息（如证书）均加密传输，增强隐私性。</li>
-</ul>
-<h2 id="TLS-1-2-与-TLS-1-3-握手流程图"><a href="#TLS-1-2-与-TLS-1-3-握手流程图" class="headerlink" title="TLS 1.2 与 TLS 1.3 握手流程图"></a>TLS 1.2 与 TLS 1.3 握手流程图</h2><h3 id="TLS-1-2-流程图（简化）"><a href="#TLS-1-2-流程图（简化）" class="headerlink" title="TLS 1.2 流程图（简化）"></a>TLS 1.2 流程图（简化）</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sequenceDiagram</span><br><span class="line">    Client-&gt;&gt;Server: ClientHello</span><br><span class="line">    Server-&gt;&gt;Client: ServerHello + Certificate + ServerKeyExchange + ServerHelloDone</span><br><span class="line">    Client-&gt;&gt;Server: ClientKeyExchange + ChangeCipherSpec + Finished</span><br><span class="line">    Server-&gt;&gt;Client: ChangeCipherSpec + Finished</span><br></pre></td></tr></table></figure>
-
-<h3 id="TLS-1-3-流程图（1-RTT）"><a href="#TLS-1-3-流程图（1-RTT）" class="headerlink" title="TLS 1.3 流程图（1-RTT）"></a>TLS 1.3 流程图（1-RTT）</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sequenceDiagram</span><br><span class="line">    Client-&gt;&gt;Server: ClientHello (key_share)</span><br><span class="line">    Server-&gt;&gt;Client: ServerHello (key_share) + EncryptedExtensions + Certificate + CertificateVerify + Finished</span><br><span class="line">    Client-&gt;&gt;Server: Finished</span><br></pre></td></tr></table></figure>
-
-
-<h2 id="性能与安全对比"><a href="#性能与安全对比" class="headerlink" title="性能与安全对比"></a>性能与安全对比</h2><table>
-<thead>
-<tr>
-<th><strong>场景</strong></th>
-<th><strong>TLS 1.2</strong></th>
-<th><strong>TLS 1.3</strong></th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>首次连接延迟</strong></td>
-<td>高（2-RTT）</td>
-<td>低（1-RTT）</td>
-</tr>
-<tr>
-<td><strong>重连延迟（会话恢复）</strong></td>
-<td>中（1-RTT）</td>
-<td>极低（0-RTT）</td>
-</tr>
-<tr>
-<td><strong>抗量子计算攻击</strong></td>
-<td>弱</td>
-<td>更强（支持 X25519 等算法）</td>
-</tr>
-<tr>
-<td><strong>隐私保护</strong></td>
-<td>部分握手消息明文传输</td>
-<td>握手消息全加密</td>
-</tr>
-</tbody></table>
-<hr>
-<h3 id="表格说明"><a href="#表格说明" class="headerlink" title="表格说明"></a>表格说明</h3><ol>
-<li><p><strong>首次连接延迟</strong>：</p>
-<ul>
-<li><code>TLS 1.3</code> 通过合并握手步骤减少往返次数，显著降低延迟。</li>
-<li><code>TLS 1.2</code> 需多次交互协商密钥，耗时更长。</li>
-</ul>
-</li>
-<li><p><strong>重连延迟</strong>：</p>
-<ul>
-<li><code>TLS 1.3</code> 支持 0-RTT 快速恢复，客户端可立即发送加密数据。</li>
-<li><code>TLS 1.2</code> 需重新协商密钥，仍需 1-RTT。</li>
-</ul>
-</li>
-<li><p><strong>抗量子计算攻击</strong>：</p>
-<ul>
-<li><code>TLS 1.3</code> 默认使用 <code>X25519</code> 等强临时密钥算法，安全性更高。</li>
-<li><code>TLS 1.2</code> 依赖传统算法（如 <code>RSA</code>），易受量子计算威胁。</li>
-</ul>
-</li>
-<li><p><strong>隐私保护</strong>：</p>
-<ul>
-<li><code>TLS 1.3</code> 加密所有握手消息（除 <code>ClientHello/ServerHello</code>），防止中间人窃听敏感信息（如证书）。</li>
-<li><code>TLS 1.2</code> 的证书、<code>ServerKeyExchange</code> 等消息明文传输。</li>
-</ul>
-</li>
-</ol>
-<hr>
-<blockquote>
-<p><strong>注</strong>：TLS 1.3 的 0-RTT 模式需注意重放攻击风险，建议仅用于幂等操作（如 HTTP GET）。</p>
-</blockquote>
-<hr>
-<h2 id="何时选择-TLS-1-3？"><a href="#何时选择-TLS-1-3？" class="headerlink" title="何时选择 TLS 1.3？"></a>何时选择 TLS 1.3？</h2><ul>
-<li><p><strong>推荐场景</strong>：</p>
-<ul>
-<li>高延迟网络（如移动端）。</li>
-<li>需要前向安全的敏感数据传输。</li>
-<li>高频短连接（如 <code>API</code> 请求）。</li>
-</ul>
-</li>
-<li><p><strong>注意事项</strong>：</p>
-<ul>
-<li>部分旧设备可能不支持 <code>TLS 1.3</code>。</li>
-<li><code>0-RTT</code> 需应用层防御重放攻击。</li>
-</ul>
-</li>
-</ul>
-<hr>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p><code>TLS 1.3</code> 通过精简握手流程、强制前向安全和算法升级，显著提升了安全性与性能。尽管 <code>TLS 1.2</code>仍在某些旧系统中使用，但 <code>TLS 1.3</code> 已成为现代 <code>Web</code> 服务、移动应用和 <code>IoT</code> 通信的首选协议。升级至 <code>TLS 1.3</code> 不仅是技术趋势，更是安全实践的必然要求。</p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2025/04/08/network/TLS/TLS-1-2-and-TLS-1-3-Handshake/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -757,7 +521,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-04-21 02:11:28" itemprop="dateModified" datetime="2025-04-21T02:11:28+00:00">2025-04-21</time>
+                <time title="修改时间：2025-04-23 07:01:28" itemprop="dateModified" datetime="2025-04-23T07:01:28+00:00">2025-04-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -775,7 +539,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>857</span>
+              <span>858</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -854,67 +618,14 @@
 <td>相较于AES，使用较少，支持硬件加速较少</td>
 </tr>
 </tbody></table>
-<h1 id="常见密钥协商算法"><a href="#常见密钥协商算法" class="headerlink" title="常见密钥协商算法"></a>常见密钥协商算法</h1><table>
-<thead>
-<tr>
-<th><strong>算法</strong></th>
-<th><strong>原理</strong></th>
-<th><strong>应用</strong></th>
-<th><strong>优点</strong></th>
-<th><strong>缺点</strong></th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>Diffie-Hellman (DH)</strong></td>
-<td>基于离散对数问题，允许双方在公开通道上协商出共享密钥。</td>
-<td>广泛用于TLS&#x2F;SSL协议。</td>
-<td>安全性较高，理论上不易被破解。</td>
-<td>容易受到中间人攻击（MITM），缺乏身份认证。</td>
-</tr>
-<tr>
-<td><strong>Elliptic Curve DH (ECDH)</strong></td>
-<td>使用椭圆曲线数学结构，提供与DH相同的安全性，但密钥尺寸更小。</td>
-<td>现代加密协议，如TLS、VPN等。</td>
-<td>高效、适合资源有限的设备。</td>
-<td>需要更高的数学理解和实现复杂度。</td>
-</tr>
-<tr>
-<td><strong>RSA</strong></td>
-<td>基于大整数分解问题，使用接收方的公钥加密会话密钥，接收方使用私钥解密。</td>
-<td>传统的TLS&#x2F;SSL协议，数字签名等。</td>
-<td>安全性较高，已广泛应用。</td>
-<td>加密效率较低，缺乏前向保密性，密钥较大。</td>
-</tr>
-<tr>
-<td><strong>Quantum Key Distribution (QKD)</strong></td>
-<td>利用量子力学原理（量子纠缠、量子叠加）确保密钥交换的安全性。</td>
-<td>未来的量子计算环境中的密钥交换。</td>
-<td>极高的安全性，即使量子计算机出现也能保证安全。</td>
-<td>目前技术不成熟，基础设施复杂且成本高。</td>
-</tr>
-<tr>
-<td><strong>Post-Quantum Cryptography (PQC)</strong></td>
-<td>针对量子计算攻击的加密算法，确保在量子计算机时代仍然安全。</td>
-<td>量子计算发展后的加密解决方案。</td>
-<td>为未来量子计算带来的威胁提供抗性。</td>
-<td>当前实现不成熟，标准尚在制定中。</td>
-</tr>
-<tr>
-<td><strong>Kerberos</strong></td>
-<td>基于对称密钥的认证协议，使用中心认证服务器（KDC）进行身份验证和密钥分发。</td>
-<td>企业环境中网络身份验证。</td>
-<td>提供安全的身份验证，支持单点登录（SSO）。</td>
-<td>需要配置复杂的KDC基础设施。</td>
-</tr>
-<tr>
-<td><strong>Secure Remote Password (SRP)</strong></td>
-<td>基于密码的认证协议，避免密码直接传输，双方使用共享密钥进行加密通信。</td>
-<td>基于密码的应用，如安全远程登录。</td>
-<td>提供无密码传输的安全验证，适合基于密码的应用。</td>
-<td>实现复杂，性能上相对较差。</td>
-</tr>
-</tbody></table>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2025/04/08/cryptographic/cryptographic_algorithms/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -964,7 +675,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-04-21 02:11:28" itemprop="dateModified" datetime="2025-04-21T02:11:28+00:00">2025-04-21</time>
+                <time title="修改时间：2025-04-23 07:01:28" itemprop="dateModified" datetime="2025-04-23T07:01:28+00:00">2025-04-23</time>
               </span>
 
           <br>
@@ -1061,7 +772,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-04-21 02:11:28" itemprop="dateModified" datetime="2025-04-21T02:11:28+00:00">2025-04-21</time>
+                <time title="修改时间：2025-04-23 07:01:28" itemprop="dateModified" datetime="2025-04-23T07:01:28+00:00">2025-04-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1153,7 +864,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-04-21 02:11:28" itemprop="dateModified" datetime="2025-04-21T02:11:28+00:00">2025-04-21</time>
+                <time title="修改时间：2025-04-23 07:01:28" itemprop="dateModified" datetime="2025-04-23T07:01:28+00:00">2025-04-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1241,7 +952,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-04-21 02:11:28" itemprop="dateModified" datetime="2025-04-21T02:11:28+00:00">2025-04-21</time>
+                <time title="修改时间：2025-04-23 07:01:28" itemprop="dateModified" datetime="2025-04-23T07:01:28+00:00">2025-04-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1351,7 +1062,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-04-21 02:11:28" itemprop="dateModified" datetime="2025-04-21T02:11:28+00:00">2025-04-21</time>
+                <time title="修改时间：2025-04-23 07:01:28" itemprop="dateModified" datetime="2025-04-23T07:01:28+00:00">2025-04-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1454,7 +1165,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-04-21 02:11:28" itemprop="dateModified" datetime="2025-04-21T02:11:28+00:00">2025-04-21</time>
+                <time title="修改时间：2025-04-23 07:01:28" itemprop="dateModified" datetime="2025-04-23T07:01:28+00:00">2025-04-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1645,12 +1356,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">53k</span>
+    <span title="站点总字数">54k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">3:11</span>
+    <span title="站点阅读时长">3:17</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>
