@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yngty.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="深入了解FTP协议：原理、命令与数据连接什么是FTP协议？FTP（File Transfer Protocol） 是最常用的网络文件传输协议之一，允许计算机之间通过网络传输文件。它是一个基于客户端-服务器模型的协议，通过 TCP 连接进行通信，通常运行在端口 21。FTP主要支持两种模式：主动模式和被动模式。 在本文中，我们将深入探讨 FTP 协议的工作原理、常用命令、数据连接的处理方式以及两种模">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深入了解FTP协议：原理、命令与数据连接">
+<meta property="og:url" content="https://yngty.github.io/2025/05/07/network/%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3FTP%E5%8D%8F%E8%AE%AE%EF%BC%9A%E5%8E%9F%E7%90%86%E3%80%81%E5%91%BD%E4%BB%A4%E4%B8%8E%E6%95%B0%E6%8D%AE%E8%BF%9E%E6%8E%A5/index.html">
+<meta property="og:site_name" content="Symbol Crash">
+<meta property="og:description" content="深入了解FTP协议：原理、命令与数据连接什么是FTP协议？FTP（File Transfer Protocol） 是最常用的网络文件传输协议之一，允许计算机之间通过网络传输文件。它是一个基于客户端-服务器模型的协议，通过 TCP 连接进行通信，通常运行在端口 21。FTP主要支持两种模式：主动模式和被动模式。 在本文中，我们将深入探讨 FTP 协议的工作原理、常用命令、数据连接的处理方式以及两种模">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-05-07T14:41:21.000Z">
+<meta property="article:modified_time" content="2025-05-07T06:49:12.489Z">
+<meta property="article:author" content="yngty">
+<meta property="article:tag" content="FTP">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://yngty.github.io/2025/05/07/network/%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3FTP%E5%8D%8F%E8%AE%AE%EF%BC%9A%E5%8E%9F%E7%90%86%E3%80%81%E5%91%BD%E4%BB%A4%E4%B8%8E%E6%95%B0%E6%8D%AE%E8%BF%9E%E6%8E%A5/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>深入了解FTP协议：原理、命令与数据连接 | Symbol Crash</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Symbol Crash" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Symbol Crash</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">不学无术</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">85</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">13</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">46</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2025/05/07/network/%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3FTP%E5%8D%8F%E8%AE%AE%EF%BC%9A%E5%8E%9F%E7%90%86%E3%80%81%E5%91%BD%E4%BB%A4%E4%B8%8E%E6%95%B0%E6%8D%AE%E8%BF%9E%E6%8E%A5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Symbol Crash">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          深入了解FTP协议：原理、命令与数据连接
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2025-05-07 14:41:21 / 修改时间：06:49:12" itemprop="dateCreated datePublished" datetime="2025-05-07T14:41:21+00:00">2025-05-07</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Network/" itemprop="url" rel="index"><span itemprop="name">Network</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>6 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="深入了解FTP协议：原理、命令与数据连接"><a href="#深入了解FTP协议：原理、命令与数据连接" class="headerlink" title="深入了解FTP协议：原理、命令与数据连接"></a>深入了解FTP协议：原理、命令与数据连接</h1><h2 id="什么是FTP协议？"><a href="#什么是FTP协议？" class="headerlink" title="什么是FTP协议？"></a>什么是FTP协议？</h2><p><code>FTP（File Transfer Protocol）</code> 是最常用的网络文件传输协议之一，允许计算机之间通过网络传输文件。它是一个基于客户端-服务器模型的协议，通过 <code>TCP</code> 连接进行通信，通常运行在端口 <code>21</code>。FTP主要支持两种模式：<strong>主动模式</strong>和<strong>被动模式</strong>。</p>
+<h2 id="在本文中，我们将深入探讨-FTP-协议的工作原理、常用命令、数据连接的处理方式以及两种模式的区别。"><a href="#在本文中，我们将深入探讨-FTP-协议的工作原理、常用命令、数据连接的处理方式以及两种模式的区别。" class="headerlink" title="在本文中，我们将深入探讨 FTP 协议的工作原理、常用命令、数据连接的处理方式以及两种模式的区别。"></a>在本文中，我们将深入探讨 <code>FTP</code> 协议的工作原理、常用命令、数据连接的处理方式以及两种模式的区别。<br><span id="more"></span></h2><h2 id="1-FTP协议基本工作原理"><a href="#1-FTP协议基本工作原理" class="headerlink" title="1. FTP协议基本工作原理"></a>1. FTP协议基本工作原理</h2><p><code>FTP</code> 协议的工作基于两条连接：</p>
+<ul>
+<li><strong>控制连接</strong>：用于发送命令和接收响应，通常使用 <code>TCP</code> 端口 <code>21</code>。</li>
+<li><strong>数据连接</strong>：用于传输实际的文件数据，连接可以使用不同的端口，具体取决于客户端和服务器的设置。</li>
+</ul>
+<h3 id="控制连接"><a href="#控制连接" class="headerlink" title="控制连接"></a>控制连接</h3><p>控制连接是客户端与服务器之间的长期连接，用于发送和接收命令、状态消息以及FTP协议的控制信息（如认证、文件操作等）。它通常由 <code>FTP</code> 客户端和服务器使用端口 <code>21</code> 建立。</p>
+<h3 id="数据连接"><a href="#数据连接" class="headerlink" title="数据连接"></a>数据连接</h3><p>数据连接用于传输实际的文件数据或目录列表。在 <code>FTP</code> 协议中，数据连接的建立方式取决于使用的模式：<strong>主动模式</strong>和<strong>被动模式</strong>。</p>
+<hr>
+<h2 id="2-FTP协议常用命令"><a href="#2-FTP协议常用命令" class="headerlink" title="2. FTP协议常用命令"></a>2. FTP协议常用命令</h2><p><code>FTP</code> 协议通过一系列标准化的命令来与服务器进行通信，以下是一些常用的命令：</p>
+<h3 id="2-1-身份验证命令"><a href="#2-1-身份验证命令" class="headerlink" title="2.1 身份验证命令"></a>2.1 身份验证命令</h3><ul>
+<li><p><strong>USER <code>&lt;用户名&gt;</code></strong></p>
+<ul>
+<li>发送用户名给 <code>FTP</code> 服务器，开始身份验证过程。</li>
+<li>示例：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">USER anonymous\r\n</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p><strong>PASS <code>&lt;密码&gt;</code></strong></p>
+<ul>
+<li>发送密码给 <code>FTP</code> 服务器，完成用户身份验证。</li>
+<li>示例：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PASS guest\r\n</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p><strong>ACCT <code>&lt;账户&gt;</code></strong></p>
+<ul>
+<li>在某些 <code>FTP</code> 服务器上，需要提供账户名。通常不常用。</li>
+<li>示例：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ACCT guest\r\n</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p><strong>QUIT</strong></p>
+<ul>
+<li>结束 <code>FTP</code> 会话，关闭控制连接。</li>
+<li>示例：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">QUIT\r\n</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<h3 id="2-2-文件操作命令"><a href="#2-2-文件操作命令" class="headerlink" title="2.2 文件操作命令"></a>2.2 文件操作命令</h3><ul>
+<li><p><strong>STOR <code>&lt;文件路径&gt;</code></strong></p>
+<ul>
+<li>将文件从客户端上传到服务器。</li>
+<li>示例：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">STOR myfile.txt\r\n</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p><strong>RETR <code>&lt;文件路径&gt;</code></strong></p>
+<ul>
+<li>从服务器下载文件到客户端。</li>
+<li>示例：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">RETR myfile.txt\r\n</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p><strong>DELE <code>&lt;文件路径&gt;</code></strong></p>
+<ul>
+<li>删除服务器上的文件。</li>
+<li>示例：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DELE myfile.txt\r\n</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p><strong>RNFR <code>&lt;旧文件路径&gt;</code></strong></p>
+<ul>
+<li>指定要重命名的文件。</li>
+<li>示例：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">RNFR oldfile.txt\r\n</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p><strong>RNTO <code>&lt;新文件路径&gt;</code></strong></p>
+<ul>
+<li>指定文件的新名称（用于重命名操作）。</li>
+<li>示例：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">RNTO newfile.txt\r\n</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p><strong>APPE <code>&lt;文件路径&gt;</code></strong></p>
+<ul>
+<li>将数据追加到服务器上的文件末尾，而不是覆盖文件。</li>
+<li>示例：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">APPE myfile.txt\r\n</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<h3 id="2-3-目录操作命令"><a href="#2-3-目录操作命令" class="headerlink" title="2.3 目录操作命令"></a>2.3 目录操作命令</h3><ul>
+<li><p><strong>PWD</strong></p>
+<ul>
+<li>显示当前工作目录的路径。</li>
+<li>示例：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PWD\r\n</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p><strong>CWD <code>&lt;目录路径&gt;</code></strong></p>
+<ul>
+<li>改变服务器上的当前工作目录。</li>
+<li>示例：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CWD /home/user\r\n</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p><strong>LIST [&lt;路径&gt;]</strong></p>
+<ul>
+<li>列出目录内容。如果提供路径参数，则列出指定路径的内容。</li>
+<li>示例：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">LIST\r\n</span><br><span class="line">LIST /home/user\r\n</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p><strong>NLST [&lt;路径&gt;]</strong></p>
+<ul>
+<li>列出目录中的文件名，通常以简单的文件名格式返回（比<code>LIST</code>返回的更简洁）。</li>
+<li>示例：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">NLST\r\n</span><br><span class="line">NLST /home/user\r\n</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p><strong>MKD <code>&lt;目录路径&gt;</code></strong></p>
+<ul>
+<li>在服务器上创建一个新目录。</li>
+<li>示例：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MKD newdir\r\n</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p><strong>RMD <code>&lt;目录路径&gt;</code></strong></p>
+<ul>
+<li>删除服务器上的空目录。</li>
+<li>示例：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">RMD olddir\r\n</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<h3 id="2-4-传输模式和文件类型命令"><a href="#2-4-传输模式和文件类型命令" class="headerlink" title="2.4 传输模式和文件类型命令"></a>2.4 传输模式和文件类型命令</h3><ul>
+<li><p><strong>TYPE <code>&lt;类型&gt;</code></strong></p>
+<ul>
+<li>指定文件传输类型（如 <code>ASCII</code> 或二进制）。</li>
+<li>常用值：<ul>
+<li><code>A</code>：ASCII模式（文本文件传输）。</li>
+<li><code>I</code>：二进制模式（图片、压缩文件等传输）。</li>
+</ul>
+</li>
+<li>示例：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">TYPE I\r\n</span><br><span class="line">TYPE A\r\n</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p><strong>MODE <code>&lt;模式&gt;</code></strong></p>
+<ul>
+<li>设置传输模式。<code>S</code>为流模式，<code>B</code>为块模式，<code>C</code>为压缩模式。</li>
+<li>示例：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MODE S\r\n</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p><strong>STRU <code>&lt;结构&gt;</code></strong></p>
+<ul>
+<li>指定文件传输的结构。通常使用的值是：<ul>
+<li><code>F</code>：文件结构。</li>
+<li><code>R</code>：记录结构。</li>
+<li><code>P</code>：页面结构。</li>
+</ul>
+</li>
+<li>示例：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">STRU F\r\n</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<h3 id="2-5-连接控制命令"><a href="#2-5-连接控制命令" class="headerlink" title="2.5 连接控制命令"></a>2.5 连接控制命令</h3><ul>
+<li><p><strong>PORT <code>&lt;IP1&gt;,&lt;IP2&gt;,&lt;IP3&gt;,&lt;IP4&gt;,&lt;P1&gt;,&lt;P2&gt;</code></strong></p>
+<ul>
+<li>指定客户端的 <code>IP</code> 地址和端口，用于主动模式下的数据连接。</li>
+<li>示例：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PORT 192,168,1,100,12,34\r\n</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p><strong>PASV</strong></p>
+<ul>
+<li>请求服务器进入被动模式，并返回服务器监听的端口和 <code>IP</code> 地址。</li>
+<li>示例：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PASV\r\n</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p><strong>REIN</strong></p>
+<ul>
+<li>重新初始化连接，终止当前会话。</li>
+<li>示例：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">REIN\r\n</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<h3 id="2-6-其他控制命令"><a href="#2-6-其他控制命令" class="headerlink" title="2.6 其他控制命令"></a>2.6 其他控制命令</h3><ul>
+<li><p><strong>SYST</strong></p>
+<ul>
+<li>请求服务器返回其操作系统的类型。</li>
+<li>示例：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SYST\r\n</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p><strong>STAT [&lt;路径&gt;]</strong></p>
+<ul>
+<li>请求服务器返回当前状态信息。</li>
+<li>示例：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">STAT\r\n</span><br><span class="line">STAT /home/user\r\n</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p><strong>HELP [&lt;命令&gt;]</strong></p>
+<ul>
+<li>获取命令的帮助信息。如果没有指定命令，则返回所有支持的命令列表。</li>
+<li>示例：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">HELP\r\n</span><br><span class="line">HELP STOR\r\n</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p><strong>NOOP</strong></p>
+<ul>
+<li>发送空命令，用于保持连接活跃，服务器通常会回应 <code>200</code>。</li>
+<li>示例：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NOOP\r\n</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="3-主动模式与被动模式"><a href="#3-主动模式与被动模式" class="headerlink" title="3. 主动模式与被动模式"></a>3. 主动模式与被动模式</h2><p><code>FTP</code> 协议有两种模式来建立数据连接：主动模式（<code>Active Mode</code>）和被动模式（<code>Passive Mode</code>）。这两种模式主要的区别在于谁发起数据连接。</p>
+<h3 id="3-1-主动模式（Active-Mode）"><a href="#3-1-主动模式（Active-Mode）" class="headerlink" title="3.1 主动模式（Active Mode）"></a>3.1 主动模式（Active Mode）</h3><p>在主动模式下，客户端向服务器发送 <code>PORT</code> 命令，指定客户端的 <code>IP</code> 地址和端口号，服务器通过该端口与客户端建立数据连接。具体过程如下：</p>
+<ol>
+<li>客户端向服务器发送 <code>PORT</code> 命令，提供客户端的 <code>IP</code> 地址和端口号。</li>
+<li>服务器收到命令后，使用指定的 <code>IP</code> 和端口与客户端建立数据连接。</li>
+<li>客户端开始发送或接收数据。</li>
+</ol>
+<p><strong>端口计算</strong>：<code>P = P1 * 256 + P2</code>，例如 <code>PORT 192,168,1,100,12,34</code> 表示客户端IP为 <code>192.168.1.100</code>，端口为 <code>12*256 + 34 = 3146</code>。</p>
+<h3 id="3-2-被动模式（Passive-Mode）"><a href="#3-2-被动模式（Passive-Mode）" class="headerlink" title="3.2 被动模式（Passive Mode）"></a>3.2 被动模式（Passive Mode）</h3><p>在被动模式下，客户端向服务器发送<code>PASV</code>命令，请求服务器提供一个可供数据连接的端口。服务器响应并提供自己的<code>IP</code> 地址和端口，客户端通过这个端口与服务器建立数据连接。具体过程如下：</p>
+<ol>
+<li>客户端向服务器发送<code>PASV</code>命令。</li>
+<li>服务器返回一个响应，包含服务器的IP地址和端口号。</li>
+<li>客户端通过返回的 <code>IP</code> 地址和端口与服务器建立数据连接。</li>
+</ol>
+<p><strong>端口计算</strong>：<code>P = P1 * 256 + P2</code>，例如 <code>PASV</code> 返回 <code>227 Entering Passive Mode (192,168,1,100,12,34)</code>，表示服务器IP为 <code>192.168.1.100</code>，端口为 <code>12*256 + 34 = 3146</code>。</p>
+<hr>
+<h2 id="4-总结"><a href="#4-总结" class="headerlink" title="4. 总结"></a>4. 总结</h2><p><code>FTP</code> 协议是一种功能强大的文件传输协议，支持多种命令和文件操作方式。无论是主动模式还是被动模式，数据连接的计算方法和控制连接的管理都是成功传输文件的关键。了解 <code>FTP</code> 协议的常用命令、模式以及如何计算端口和IP，对于开发和调试 <code>FTP</code> 客户端和服务器都有着重要的作用。</p>
+<hr>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc959">RFC 959 - File Transfer Protocol (FTP)</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.rfc-editor.org/rfc/rfc959">FTP协议详细解析</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/FTP/" rel="tag"># FTP</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2025/04/18/cryptographic/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3-HKDF%EF%BC%9AHMAC-%E5%AF%86%E9%92%A5%E6%B4%BE%E7%94%9F%E5%87%BD%E6%95%B0/" rel="prev" title="深入理解 HKDF：HMAC 密钥派生函数">
+      <i class="fa fa-chevron-left"></i> 深入理解 HKDF：HMAC 密钥派生函数
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3FTP%E5%8D%8F%E8%AE%AE%EF%BC%9A%E5%8E%9F%E7%90%86%E3%80%81%E5%91%BD%E4%BB%A4%E4%B8%8E%E6%95%B0%E6%8D%AE%E8%BF%9E%E6%8E%A5"><span class="nav-number">1.</span> <span class="nav-text">深入了解FTP协议：原理、命令与数据连接</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFFTP%E5%8D%8F%E8%AE%AE%EF%BC%9F"><span class="nav-number">1.1.</span> <span class="nav-text">什么是FTP协议？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8%E6%9C%AC%E6%96%87%E4%B8%AD%EF%BC%8C%E6%88%91%E4%BB%AC%E5%B0%86%E6%B7%B1%E5%85%A5%E6%8E%A2%E8%AE%A8-FTP-%E5%8D%8F%E8%AE%AE%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E3%80%81%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E3%80%81%E6%95%B0%E6%8D%AE%E8%BF%9E%E6%8E%A5%E7%9A%84%E5%A4%84%E7%90%86%E6%96%B9%E5%BC%8F%E4%BB%A5%E5%8F%8A%E4%B8%A4%E7%A7%8D%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%8C%BA%E5%88%AB%E3%80%82"><span class="nav-number">1.2.</span> <span class="nav-text">在本文中，我们将深入探讨 FTP 协议的工作原理、常用命令、数据连接的处理方式以及两种模式的区别。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-FTP%E5%8D%8F%E8%AE%AE%E5%9F%BA%E6%9C%AC%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="nav-number">1.3.</span> <span class="nav-text">1. FTP协议基本工作原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A7%E5%88%B6%E8%BF%9E%E6%8E%A5"><span class="nav-number">1.3.1.</span> <span class="nav-text">控制连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E8%BF%9E%E6%8E%A5"><span class="nav-number">1.3.2.</span> <span class="nav-text">数据连接</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-FTP%E5%8D%8F%E8%AE%AE%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="nav-number">1.4.</span> <span class="nav-text">2. FTP协议常用命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E8%BA%AB%E4%BB%BD%E9%AA%8C%E8%AF%81%E5%91%BD%E4%BB%A4"><span class="nav-number">1.4.1.</span> <span class="nav-text">2.1 身份验证命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C%E5%91%BD%E4%BB%A4"><span class="nav-number">1.4.2.</span> <span class="nav-text">2.2 文件操作命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-%E7%9B%AE%E5%BD%95%E6%93%8D%E4%BD%9C%E5%91%BD%E4%BB%A4"><span class="nav-number">1.4.3.</span> <span class="nav-text">2.3 目录操作命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-%E4%BC%A0%E8%BE%93%E6%A8%A1%E5%BC%8F%E5%92%8C%E6%96%87%E4%BB%B6%E7%B1%BB%E5%9E%8B%E5%91%BD%E4%BB%A4"><span class="nav-number">1.4.4.</span> <span class="nav-text">2.4 传输模式和文件类型命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5-%E8%BF%9E%E6%8E%A5%E6%8E%A7%E5%88%B6%E5%91%BD%E4%BB%A4"><span class="nav-number">1.4.5.</span> <span class="nav-text">2.5 连接控制命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-6-%E5%85%B6%E4%BB%96%E6%8E%A7%E5%88%B6%E5%91%BD%E4%BB%A4"><span class="nav-number">1.4.6.</span> <span class="nav-text">2.6 其他控制命令</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F%E4%B8%8E%E8%A2%AB%E5%8A%A8%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.5.</span> <span class="nav-text">3. 主动模式与被动模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F%EF%BC%88Active-Mode%EF%BC%89"><span class="nav-number">1.5.1.</span> <span class="nav-text">3.1 主动模式（Active Mode）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E8%A2%AB%E5%8A%A8%E6%A8%A1%E5%BC%8F%EF%BC%88Passive-Mode%EF%BC%89"><span class="nav-number">1.5.2.</span> <span class="nav-text">3.2 被动模式（Passive Mode）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E6%80%BB%E7%BB%93"><span class="nav-number">1.6.</span> <span class="nav-text">4. 总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">1.7.</span> <span class="nav-text">参考文献</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="yngty"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">yngty</p>
+  <div class="site-description" itemprop="description">预测未来的最好方式就是实现它</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">85</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yngty" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yngty" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yngty@foxmail.com" title="E-Mail → mailto:yngty@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yngty</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">56k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">3:23</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
