@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yngty.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="SOCKS5 代理协议详解SOCKS5 是一种网络代理协议，是 SOCKS 协议的第五个版本, 它不仅支持传统的 TCP 连接，还增加了对 UDP 和多种认证方法的支持。SOCKS5 工作在 OSI 模型的会话层，广泛用于突破网络限制、隐藏客户端真实 IP 等场景。本文深入解析其协议字段、工作模式及认证机制。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SOCKS5 代理协议详解">
+<meta property="og:url" content="https://yngty.github.io/2025/05/07/network/SOCKS5-%E4%BB%A3%E7%90%86%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3/index.html">
+<meta property="og:site_name" content="Symbol Crash">
+<meta property="og:description" content="SOCKS5 代理协议详解SOCKS5 是一种网络代理协议，是 SOCKS 协议的第五个版本, 它不仅支持传统的 TCP 连接，还增加了对 UDP 和多种认证方法的支持。SOCKS5 工作在 OSI 模型的会话层，广泛用于突破网络限制、隐藏客户端真实 IP 等场景。本文深入解析其协议字段、工作模式及认证机制。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-05-07T14:49:41.000Z">
+<meta property="article:modified_time" content="2025-05-07T07:39:43.205Z">
+<meta property="article:author" content="yngty">
+<meta property="article:tag" content="SOCKS5">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://yngty.github.io/2025/05/07/network/SOCKS5-%E4%BB%A3%E7%90%86%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>SOCKS5 代理协议详解 | Symbol Crash</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Symbol Crash" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Symbol Crash</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">不学无术</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">86</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">13</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">47</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2025/05/07/network/SOCKS5-%E4%BB%A3%E7%90%86%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Symbol Crash">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          SOCKS5 代理协议详解
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2025-05-07 14:49:41 / 修改时间：07:39:43" itemprop="dateCreated datePublished" datetime="2025-05-07T14:49:41+00:00">2025-05-07</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Network/" itemprop="url" rel="index"><span itemprop="name">Network</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>5 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="SOCKS5-代理协议详解"><a href="#SOCKS5-代理协议详解" class="headerlink" title="SOCKS5 代理协议详解"></a>SOCKS5 代理协议详解</h1><h2 id="SOCKS5-是一种网络代理协议，是-SOCKS-协议的第五个版本-它不仅支持传统的-TCP-连接，还增加了对-UDP-和多种认证方法的支持。SOCKS5-工作在-OSI-模型的会话层，广泛用于突破网络限制、隐藏客户端真实-IP-等场景。本文深入解析其协议字段、工作模式及认证机制。"><a href="#SOCKS5-是一种网络代理协议，是-SOCKS-协议的第五个版本-它不仅支持传统的-TCP-连接，还增加了对-UDP-和多种认证方法的支持。SOCKS5-工作在-OSI-模型的会话层，广泛用于突破网络限制、隐藏客户端真实-IP-等场景。本文深入解析其协议字段、工作模式及认证机制。" class="headerlink" title="SOCKS5 是一种网络代理协议，是 SOCKS 协议的第五个版本, 它不仅支持传统的 TCP 连接，还增加了对 UDP 和多种认证方法的支持。SOCKS5 工作在 OSI 模型的会话层，广泛用于突破网络限制、隐藏客户端真实 IP 等场景。本文深入解析其协议字段、工作模式及认证机制。"></a><strong>SOCKS5</strong> 是一种网络代理协议，是 <code>SOCKS</code> 协议的第五个版本, 它不仅支持传统的 <code>TCP</code> 连接，还增加了对 <code>UDP</code> 和多种认证方法的支持。<code>SOCKS5</code> 工作在 <code>OSI</code> 模型的<strong>会话层</strong>，广泛用于突破网络限制、隐藏客户端真实 <code>IP</code> 等场景。本文深入解析其协议字段、工作模式及认证机制。<br><span id="more"></span></h2><h2 id="协议基础"><a href="#协议基础" class="headerlink" title="协议基础"></a>协议基础</h2><ul>
+<li><p><strong>协议版本</strong>：SOCKS5（版本号 <code>0x05</code>）</p>
+</li>
+<li><p><strong>核心功能</strong>：</p>
+<ul>
+<li>转发 <code>TCP/UDP</code> 流量</li>
+<li>支持 <code>IPv4/IPv6/域名</code></li>
+<li>多种认证方式<table>
+<thead>
+<tr>
+<th>方法值（HEX）</th>
+<th>认证方法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0x00</td>
+<td>无认证</td>
+<td>默认方法，无需额外步骤</td>
+</tr>
+<tr>
+<td>0x01</td>
+<td>GSSAPI</td>
+<td>基于 Kerberos 等安全协议</td>
+</tr>
+<tr>
+<td>0x02</td>
+<td>Username&#x2F;Password</td>
+<td>用户名密码认证</td>
+</tr>
+<tr>
+<td>0x03-0x7F</td>
+<td>IANA 分配</td>
+<td>预留标准方法</td>
+</tr>
+<tr>
+<td>0x80-0xFE</td>
+<td>私有方法</td>
+<td>厂商自定义认证</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+</li>
+<li><p><strong>端口</strong>：默认 <code>1080</code></p>
+</li>
+</ul>
+<hr>
+<h2 id="SOCKS5-协议工作流程"><a href="#SOCKS5-协议工作流程" class="headerlink" title="SOCKS5 协议工作流程"></a>SOCKS5 协议工作流程</h2><p><code>SOCKS5</code> 协议的基本工作流程可以分为以下几个步骤：</p>
+<ol>
+<li><p><strong>客户端连接 SOCKS5 代理服务器</strong><br>客户端与代理服务器建立 <code>TCP</code> 连接。</p>
+</li>
+<li><p><strong>客户端进行认证（如果需要的话）</strong><br>客户端发送支持的认证方式，代理服务器选择合适的认证方法。</p>
+</li>
+<li><p><strong>客户端发起请求</strong><br>客户端向代理服务器发起 <code>CONNECT</code>、<code>BIND</code> 或 <code>UDP</code> 转发请求。</p>
+</li>
+<li><p><strong>代理服务器处理请求并返回响应</strong><br>代理服务器处理请求并返回结果。如果请求成功，数据转发开始。</p>
+</li>
+</ol>
+<hr>
+<h2 id="协议字段详解"><a href="#协议字段详解" class="headerlink" title="协议字段详解"></a>协议字段详解</h2><h3 id="1-认证方法协商"><a href="#1-认证方法协商" class="headerlink" title="1. 认证方法协商"></a>1. 认证方法协商</h3><h4 id="客户端-→-代理服务器"><a href="#客户端-→-代理服务器" class="headerlink" title="客户端 → 代理服务器"></a>客户端 → 代理服务器</h4><table>
+<thead>
+<tr>
+<th>字段</th>
+<th>长度（字节）</th>
+<th>值（示例）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>VER</code></td>
+<td>1</td>
+<td><code>0x05</code></td>
+<td>SOCKS5 版本</td>
+</tr>
+<tr>
+<td><code>NMETHODS</code></td>
+<td>1</td>
+<td><code>0x02</code></td>
+<td>支持的认证方法数量</td>
+</tr>
+<tr>
+<td><code>METHODS</code></td>
+<td>可变</td>
+<td><code>0x00, 0x02</code></td>
+<td>方法列表</td>
+</tr>
+</tbody></table>
+<h4 id="代理服务器-→-客户端"><a href="#代理服务器-→-客户端" class="headerlink" title="代理服务器 → 客户端"></a>代理服务器 → 客户端</h4><table>
+<thead>
+<tr>
+<th>字段</th>
+<th>长度（字节）</th>
+<th>值（示例）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>VER</code></td>
+<td>1</td>
+<td><code>0x05</code></td>
+<td>SOCKS5 版本</td>
+</tr>
+<tr>
+<td><code>METHOD</code></td>
+<td>1</td>
+<td><code>0x02</code></td>
+<td>选择的认证方法</td>
+</tr>
+</tbody></table>
+<h4 id="认证流程时序-用户名-密码认证举例"><a href="#认证流程时序-用户名-密码认证举例" class="headerlink" title="认证流程时序(用户名&#x2F;密码认证举例)"></a>认证流程时序(用户名&#x2F;密码认证举例)</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">客户端               代理服务器</span><br><span class="line">  |--- METHOD Negotiation --&gt;|</span><br><span class="line">  |&lt;-- Chosen Method --------|</span><br><span class="line">  |--- Username/Password ---&gt;| （仅当 METHOD=0x02 时）</span><br><span class="line">  |&lt;-- Auth Result ----------|</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="2-请求-响应格式"><a href="#2-请求-响应格式" class="headerlink" title="2. 请求&#x2F;响应格式"></a>2. 请求&#x2F;响应格式</h3><h4 id="客户端请求（以-CONNECT-为例）"><a href="#客户端请求（以-CONNECT-为例）" class="headerlink" title="客户端请求（以 CONNECT 为例）"></a>客户端请求（以 <code>CONNECT</code> 为例）</h4><table>
+<thead>
+<tr>
+<th>字段</th>
+<th>长度（字节）</th>
+<th>值（示例）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>VER</code></td>
+<td>1</td>
+<td><code>0x05</code></td>
+<td>SOCKS5 版本</td>
+</tr>
+<tr>
+<td><code>CMD</code></td>
+<td>1</td>
+<td><code>0x01</code></td>
+<td>命令（<code>CONNECT</code>）</td>
+</tr>
+<tr>
+<td><code>RSV</code></td>
+<td>1</td>
+<td><code>0x00</code></td>
+<td>保留字段</td>
+</tr>
+<tr>
+<td><code>ATYP</code></td>
+<td>1</td>
+<td><code>0x01</code></td>
+<td>地址类型（IPv4）</td>
+</tr>
+<tr>
+<td><code>DST.ADDR</code></td>
+<td>4</td>
+<td><code>0xC0A80101</code></td>
+<td>目标地址（192.168.1.1）</td>
+</tr>
+<tr>
+<td><code>DST.PORT</code></td>
+<td>2</td>
+<td><code>0x0050</code></td>
+<td>目标端口（80）</td>
+</tr>
+</tbody></table>
+<ol>
+<li><strong>地址类型（ATYP）</strong>：<ul>
+<li><code>0x01</code>：IPv4（4 字节地址）。</li>
+<li><code>0x03</code>：域名（1 字节长度 + 变长域名，如 <code>0x07 &quot;example.com&quot;</code>）。</li>
+<li><code>0x04</code>：IPv6（16 字节地址）。</li>
+</ul>
+</li>
+<li><strong>端口字节序</strong>：<ul>
+<li>所有端口号均为 <strong>大端字节序</strong>（如 <code>53</code> → 0x0035）。</li>
+</ul>
+</li>
+</ol>
+<h4 id="代理服务器响应"><a href="#代理服务器响应" class="headerlink" title="代理服务器响应"></a>代理服务器响应</h4><table>
+<thead>
+<tr>
+<th>字段</th>
+<th>长度（字节）</th>
+<th>值（示例）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>VER</code></td>
+<td>1</td>
+<td><code>0x05</code></td>
+<td>SOCKS5 版本</td>
+</tr>
+<tr>
+<td><code>REP</code></td>
+<td>1</td>
+<td><code>0x00</code></td>
+<td>响应状态（成功）</td>
+</tr>
+<tr>
+<td><code>RSV</code></td>
+<td>1</td>
+<td><code>0x00</code></td>
+<td>保留字段</td>
+</tr>
+<tr>
+<td><code>ATYP</code></td>
+<td>1</td>
+<td><code>0x01</code></td>
+<td>地址类型（IPv4）</td>
+</tr>
+<tr>
+<td><code>BND.ADDR</code></td>
+<td>4</td>
+<td><code>0x00000000</code></td>
+<td>绑定地址</td>
+</tr>
+<tr>
+<td><code>BND.PORT</code></td>
+<td>2</td>
+<td><code>0x0000</code></td>
+<td>绑定端口</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="工作模式"><a href="#工作模式" class="headerlink" title="工作模式"></a>工作模式</h2><h3 id="CONNECT-模式"><a href="#CONNECT-模式" class="headerlink" title="CONNECT 模式"></a>CONNECT 模式</h3><ul>
+<li><strong>用途</strong>：客户端正向连接目标服务器（如 <code>HTTP/HTTPS</code>）。</li>
+<li><strong>流程</strong>：<ol>
+<li>客户端发送 <code>CONNECT</code> 请求。</li>
+<li>代理建立与目标服务器的 <code>TCP</code> 连接。</li>
+<li>代理返回响应，开始转发数据。</li>
+</ol>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">客户端               代理服务器              目标服务器</span><br><span class="line">  |--- CONNECT 请求 ---&gt;|                        |</span><br><span class="line">  |                     |--- 连接目标服务器 ---&gt;|</span><br><span class="line">  |&lt;------- 响应 -------|                        |</span><br><span class="line">  |==================== 数据转发 ===============&gt;|</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="BIND-模式"><a href="#BIND-模式" class="headerlink" title="BIND 模式"></a>BIND 模式</h3><ul>
+<li><p><strong>用途</strong>：允许目标服务器反向连接客户端（如 <code>FTP</code> 主动模式）。</p>
+</li>
+<li><p><strong>流程</strong>：</p>
+<ol>
+<li>客户端发送 <code>BIND</code> 请求。</li>
+<li>代理监听端口并返回地址。</li>
+<li>客户端通知目标服务器连接代理端口。</li>
+<li>代理接受连接并转发数据。</li>
+</ol>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">客户端               代理服务器              目标服务器</span><br><span class="line">  |--- BIND 请求 -------&gt;|                        |</span><br><span class="line">  |&lt;---- 监听端口 -------|                        |</span><br><span class="line">  |--- 通知目标服务器 --&gt;|                        |</span><br><span class="line">  |                     |&lt;--- 反向连接 ----------|</span><br><span class="line">  |&lt;---- 连接确认 -------|                        |</span><br><span class="line">  |==================== 数据转发 ===============&gt;|</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="UDP-ASSOCIATE-模式"><a href="#UDP-ASSOCIATE-模式" class="headerlink" title="UDP ASSOCIATE 模式"></a>UDP ASSOCIATE 模式</h3><ul>
+<li><p><strong>用途</strong>：转发 UDP 数据包（如 DNS 查询）。</p>
+</li>
+<li><p><strong>流程</strong>：</p>
+<ol>
+<li>客户端通过 TCP 协商 UDP 端口。</li>
+<li>客户端发送封装 UDP 数据到代理。</li>
+<li>代理解包并转发到目标服务器。</li>
+</ol>
+</li>
+</ul>
+<h4 id="UDP-数据包格式"><a href="#UDP-数据包格式" class="headerlink" title="UDP 数据包格式"></a>UDP 数据包格式</h4><p><code>UDP</code> 关联的生命周期与 <code>TCP</code> 控制连接绑定。若 <code>TCP</code> 连接断开，代理将关闭 <code>UDP</code> 端口。</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>长度（字节）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>RSV</code></td>
+<td>2</td>
+<td>保留字段</td>
+</tr>
+<tr>
+<td><code>FRAG</code></td>
+<td>1</td>
+<td>分片编号, <code>0x00</code>（不分片）</td>
+</tr>
+<tr>
+<td><code>ATYP</code></td>
+<td>1</td>
+<td>地址类型</td>
+</tr>
+<tr>
+<td><code>DST.ADDR</code></td>
+<td>可变</td>
+<td>目标地址</td>
+</tr>
+<tr>
+<td><code>DST.PORT</code></td>
+<td>2</td>
+<td>目标端口</td>
+</tr>
+<tr>
+<td><code>DATA</code></td>
+<td>可变</td>
+<td>UDP 数据</td>
+</tr>
+</tbody></table>
+<h2 id="认证机制"><a href="#认证机制" class="headerlink" title="认证机制"></a>认证机制</h2><h3 id="无认证"><a href="#无认证" class="headerlink" title="无认证"></a>无认证</h3><ul>
+<li><strong>方法值</strong>: <code>0x00</code></li>
+<li><strong>流程</strong>：无需额外步骤，直接转发请求。</li>
+</ul>
+<h3 id="用户名-密码认证"><a href="#用户名-密码认证" class="headerlink" title="用户名&#x2F;密码认证"></a>用户名&#x2F;密码认证</h3><ul>
+<li><strong>方法值</strong>: <code>0x02</code></li>
+<li><strong>客户端请求</strong>：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">VER（0x01） | ULEN | UNAME | PLEN | PASSWD</span><br></pre></td></tr></table></figure></li>
+<li><strong>代理响应</strong>：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">VER（0x01） | STATUS（0x00=成功）</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="GSSAPI-认证"><a href="#GSSAPI-认证" class="headerlink" title="GSSAPI 认证"></a>GSSAPI 认证</h3><ul>
+<li><p><strong>方法值</strong>: <code>0x01</code></p>
+</li>
+<li><p><strong>流程</strong>：</p>
+<ol>
+<li>通过令牌交换建立安全上下文。</li>
+<li>加密&#x2F;签名后续通信数据。</li>
+</ol>
+</li>
+</ul>
+<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><ol>
+<li><strong>网络穿透</strong>：绕过防火墙或 <code>NAT</code> 限制。</li>
+<li><strong>隐私保护</strong>：隐藏客户端真实 <code>IP</code>。</li>
+<li><strong>协议支持</strong>：代理非 <code>HTTP</code> 流量（如 <code>FTP</code> 、<code>SMTP</code>）。</li>
+<li><strong>负载均衡</strong>：通过代理分发请求。</li>
+</ol>
+<h2 id="安全注意事项"><a href="#安全注意事项" class="headerlink" title="安全注意事项"></a>安全注意事项</h2><ol>
+<li><strong>明文风险</strong>：用户名&#x2F;密码认证需配合 <code>TLS</code> 加密。</li>
+<li><strong>端口暴露</strong>：<code>BIND/UDP</code> 模式可能被滥用。</li>
+<li><strong>访问控制</strong>：限制代理服务的访问权限。</li>
+<li><strong>超时设置</strong>：及时关闭空闲连接。</li>
+</ol>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p><code>SOCKS5</code> 凭借其灵活性，成为代理技术的核心协议：</p>
+<ul>
+<li><strong>优势</strong>：支持多协议、认证机制、反向连接。</li>
+<li><strong>局限</strong>：<code>UDP</code> 实现复杂，原生无加密。</li>
+<li><strong>适用场景</strong>：企业内网穿透、隐私保护、混合协议代理。</li>
+</ul>
+<p>理解协议细节有助于优化代理实现，并规避潜在安全风险。</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc1928">SOCKS Protocol Version 5</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.rfc-editor.org/rfc/rfc1928">SOCKS5协议详细解析</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/SOCKS5/" rel="tag"># SOCKS5</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2025/05/07/network/%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3FTP%E5%8D%8F%E8%AE%AE%EF%BC%9A%E5%8E%9F%E7%90%86%E3%80%81%E5%91%BD%E4%BB%A4%E4%B8%8E%E6%95%B0%E6%8D%AE%E8%BF%9E%E6%8E%A5/" rel="prev" title="深入了解FTP协议：原理、命令与数据连接">
+      <i class="fa fa-chevron-left"></i> 深入了解FTP协议：原理、命令与数据连接
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#SOCKS5-%E4%BB%A3%E7%90%86%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3"><span class="nav-number">1.</span> <span class="nav-text">SOCKS5 代理协议详解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#SOCKS5-%E6%98%AF%E4%B8%80%E7%A7%8D%E7%BD%91%E7%BB%9C%E4%BB%A3%E7%90%86%E5%8D%8F%E8%AE%AE%EF%BC%8C%E6%98%AF-SOCKS-%E5%8D%8F%E8%AE%AE%E7%9A%84%E7%AC%AC%E4%BA%94%E4%B8%AA%E7%89%88%E6%9C%AC-%E5%AE%83%E4%B8%8D%E4%BB%85%E6%94%AF%E6%8C%81%E4%BC%A0%E7%BB%9F%E7%9A%84-TCP-%E8%BF%9E%E6%8E%A5%EF%BC%8C%E8%BF%98%E5%A2%9E%E5%8A%A0%E4%BA%86%E5%AF%B9-UDP-%E5%92%8C%E5%A4%9A%E7%A7%8D%E8%AE%A4%E8%AF%81%E6%96%B9%E6%B3%95%E7%9A%84%E6%94%AF%E6%8C%81%E3%80%82SOCKS5-%E5%B7%A5%E4%BD%9C%E5%9C%A8-OSI-%E6%A8%A1%E5%9E%8B%E7%9A%84%E4%BC%9A%E8%AF%9D%E5%B1%82%EF%BC%8C%E5%B9%BF%E6%B3%9B%E7%94%A8%E4%BA%8E%E7%AA%81%E7%A0%B4%E7%BD%91%E7%BB%9C%E9%99%90%E5%88%B6%E3%80%81%E9%9A%90%E8%97%8F%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9C%9F%E5%AE%9E-IP-%E7%AD%89%E5%9C%BA%E6%99%AF%E3%80%82%E6%9C%AC%E6%96%87%E6%B7%B1%E5%85%A5%E8%A7%A3%E6%9E%90%E5%85%B6%E5%8D%8F%E8%AE%AE%E5%AD%97%E6%AE%B5%E3%80%81%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F%E5%8F%8A%E8%AE%A4%E8%AF%81%E6%9C%BA%E5%88%B6%E3%80%82"><span class="nav-number">1.1.</span> <span class="nav-text">SOCKS5 是一种网络代理协议，是 SOCKS 协议的第五个版本, 它不仅支持传统的 TCP 连接，还增加了对 UDP 和多种认证方法的支持。SOCKS5 工作在 OSI 模型的会话层，广泛用于突破网络限制、隐藏客户端真实 IP 等场景。本文深入解析其协议字段、工作模式及认证机制。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%8F%E8%AE%AE%E5%9F%BA%E7%A1%80"><span class="nav-number">1.2.</span> <span class="nav-text">协议基础</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SOCKS5-%E5%8D%8F%E8%AE%AE%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="nav-number">1.3.</span> <span class="nav-text">SOCKS5 协议工作流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%8F%E8%AE%AE%E5%AD%97%E6%AE%B5%E8%AF%A6%E8%A7%A3"><span class="nav-number">1.4.</span> <span class="nav-text">协议字段详解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E8%AE%A4%E8%AF%81%E6%96%B9%E6%B3%95%E5%8D%8F%E5%95%86"><span class="nav-number">1.4.1.</span> <span class="nav-text">1. 认证方法协商</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF-%E2%86%92-%E4%BB%A3%E7%90%86%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">1.4.1.1.</span> <span class="nav-text">客户端 → 代理服务器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%90%86%E6%9C%8D%E5%8A%A1%E5%99%A8-%E2%86%92-%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="nav-number">1.4.1.2.</span> <span class="nav-text">代理服务器 → 客户端</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%A4%E8%AF%81%E6%B5%81%E7%A8%8B%E6%97%B6%E5%BA%8F-%E7%94%A8%E6%88%B7%E5%90%8D-%E5%AF%86%E7%A0%81%E8%AE%A4%E8%AF%81%E4%B8%BE%E4%BE%8B"><span class="nav-number">1.4.1.3.</span> <span class="nav-text">认证流程时序(用户名&#x2F;密码认证举例)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%AF%B7%E6%B1%82-%E5%93%8D%E5%BA%94%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.4.2.</span> <span class="nav-text">2. 请求&#x2F;响应格式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AF%B7%E6%B1%82%EF%BC%88%E4%BB%A5-CONNECT-%E4%B8%BA%E4%BE%8B%EF%BC%89"><span class="nav-number">1.4.2.1.</span> <span class="nav-text">客户端请求（以 CONNECT 为例）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%90%86%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%93%8D%E5%BA%94"><span class="nav-number">1.4.2.2.</span> <span class="nav-text">代理服务器响应</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.5.</span> <span class="nav-text">工作模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CONNECT-%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.5.1.</span> <span class="nav-text">CONNECT 模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BIND-%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.5.2.</span> <span class="nav-text">BIND 模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#UDP-ASSOCIATE-%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.5.3.</span> <span class="nav-text">UDP ASSOCIATE 模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#UDP-%E6%95%B0%E6%8D%AE%E5%8C%85%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.5.3.1.</span> <span class="nav-text">UDP 数据包格式</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A4%E8%AF%81%E6%9C%BA%E5%88%B6"><span class="nav-number">1.6.</span> <span class="nav-text">认证机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A0%E8%AE%A4%E8%AF%81"><span class="nav-number">1.6.1.</span> <span class="nav-text">无认证</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E5%90%8D-%E5%AF%86%E7%A0%81%E8%AE%A4%E8%AF%81"><span class="nav-number">1.6.2.</span> <span class="nav-text">用户名&#x2F;密码认证</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GSSAPI-%E8%AE%A4%E8%AF%81"><span class="nav-number">1.6.3.</span> <span class="nav-text">GSSAPI 认证</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">1.7.</span> <span class="nav-text">应用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E5%85%A8%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="nav-number">1.8.</span> <span class="nav-text">安全注意事项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">1.9.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">1.10.</span> <span class="nav-text">参考文献</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="yngty"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">yngty</p>
+  <div class="site-description" itemprop="description">预测未来的最好方式就是实现它</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">86</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">47</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yngty" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yngty" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yngty@foxmail.com" title="E-Mail → mailto:yngty@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yngty</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">57k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">3:28</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
