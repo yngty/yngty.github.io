@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yngty.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="在构建虚拟网络或实现VPN时，TUN和TAP是两个常被提及的虚拟网络设备。它们看似相似，却在网络协议栈的不同层级发挥作用。本文将深入解析它们的工作原理、应用场景及配置方法。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深入理解TUN与TAP：虚拟网络设备的原理与应用">
+<meta property="og:url" content="https://yngty.github.io/2025/05/09/network/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3TUN%E4%B8%8ETAP%EF%BC%9A%E8%99%9A%E6%8B%9F%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E7%9A%84%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/index.html">
+<meta property="og:site_name" content="Symbol Crash">
+<meta property="og:description" content="在构建虚拟网络或实现VPN时，TUN和TAP是两个常被提及的虚拟网络设备。它们看似相似，却在网络协议栈的不同层级发挥作用。本文将深入解析它们的工作原理、应用场景及配置方法。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-05-09T17:20:28.000Z">
+<meta property="article:modified_time" content="2025-05-09T09:33:33.704Z">
+<meta property="article:author" content="yngty">
+<meta property="article:tag" content="TUN">
+<meta property="article:tag" content="TAP">
+<meta property="article:tag" content="VPN">
+<meta property="article:tag" content="虚拟机">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://yngty.github.io/2025/05/09/network/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3TUN%E4%B8%8ETAP%EF%BC%9A%E8%99%9A%E6%8B%9F%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E7%9A%84%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>深入理解TUN与TAP：虚拟网络设备的原理与应用 | Symbol Crash</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Symbol Crash" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Symbol Crash</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">不学无术</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">87</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">51</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2025/05/09/network/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3TUN%E4%B8%8ETAP%EF%BC%9A%E8%99%9A%E6%8B%9F%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E7%9A%84%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Symbol Crash">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          深入理解TUN与TAP：虚拟网络设备的原理与应用
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2025-05-09 17:20:28 / 修改时间：09:33:33" itemprop="dateCreated datePublished" datetime="2025-05-09T17:20:28+00:00">2025-05-09</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96/" itemprop="url" rel="index"><span itemprop="name">网络虚拟化</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>在构建虚拟网络或实现VPN时，<strong>TUN</strong>和<strong>TAP</strong>是两个常被提及的虚拟网络设备。它们看似相似，却在网络协议栈的不同层级发挥作用。本文将深入解析它们的工作原理、应用场景及配置方法。</p>
+<span id="more"></span>
+
+<hr>
+<h2 id="1-什么是TUN和TAP？"><a href="#1-什么是TUN和TAP？" class="headerlink" title="1. 什么是TUN和TAP？"></a>1. 什么是TUN和TAP？</h2><h3 id="TUN（Network-TUNnel）"><a href="#TUN（Network-TUNnel）" class="headerlink" title="TUN（Network TUNnel）"></a>TUN（Network TUNnel）</h3><ul>
+<li><strong>层级</strong>：工作于<strong>网络层（OSI第三层）</strong></li>
+<li><strong>数据单元</strong>：处理<strong>IP数据包</strong></li>
+<li><strong>特性</strong>：模拟点对点设备，无 <code>MAC</code> 地址</li>
+<li><strong>典型用途</strong>：<code>VPN</code>（如<code>OpenVPN</code>）、<code>IP</code>隧道</li>
+</ul>
+<h3 id="TAP（Network-TAP）"><a href="#TAP（Network-TAP）" class="headerlink" title="TAP（Network TAP）"></a>TAP（Network TAP）</h3><ul>
+<li><strong>层级</strong>：工作于<strong>数据链路层（OSI第二层）</strong></li>
+<li><strong>数据单元</strong>：处理<strong>以太网帧</strong></li>
+<li><strong>特性</strong>：模拟以太网接口，拥有 <code>MAC</code> 地址</li>
+<li><strong>典型用途</strong>：虚拟机网络（如<code>QEMU/KVM</code>）、二层 <code>VPN</code></li>
+</ul>
+<hr>
+<h2 id="2-核心区别对比"><a href="#2-核心区别对比" class="headerlink" title="2. 核心区别对比"></a>2. 核心区别对比</h2><table>
+<thead>
+<tr>
+<th><strong>特性</strong></th>
+<th>TUN</th>
+<th>TAP</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>工作层级</td>
+<td>第三层（<code>IP</code>层）</td>
+<td>第二层（数据链路层）</td>
+</tr>
+<tr>
+<td>处理内容</td>
+<td>仅IP数据包（如 <code>TCP/UDP</code>）</td>
+<td>完整以太网帧（含 <code>MAC</code>地址、<code>ARP</code> 等）</td>
+</tr>
+<tr>
+<td>设备类型</td>
+<td>点对点设备（如<code>tun0</code>）</td>
+<td>以太网设备（如<code>tap0</code>）</td>
+</tr>
+<tr>
+<td>广播支持</td>
+<td>不支持</td>
+<td>支持（可处理 <code>ARP</code>、<code>DHCP</code> 广播）</td>
+</tr>
+<tr>
+<td>典型场景</td>
+<td><code>VPN</code> 隧道、路由控制</td>
+<td>虚拟机网卡、网桥、二层网络嗅探</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="3-工作流程解析"><a href="#3-工作流程解析" class="headerlink" title="3. 工作流程解析"></a>3. 工作流程解析</h2><h3 id="TUN设备的工作流程"><a href="#TUN设备的工作流程" class="headerlink" title="TUN设备的工作流程"></a>TUN设备的工作流程</h3><ol>
+<li><strong>发送数据</strong><br>应用程序生成 <code>IP</code> 包 → 内核路由到 <code>TUN</code> 设备 → 用户程序从 <code>TUN</code> 读取 → 加密后通过物理网卡发送</li>
+<li><strong>接收数据</strong><br>物理网卡接收加密数据 → 用户程序解密 → 写回 <code>TUN</code> 设备 → 内核处理 <code>IP</code> 包</li>
+</ol>
+<h3 id="TAP设备的工作流程"><a href="#TAP设备的工作流程" class="headerlink" title="TAP设备的工作流程"></a>TAP设备的工作流程</h3><ol>
+<li><strong>发送数据</strong><br>虚拟机生成以太网帧 → 内核转发到 <code>TAP</code> 设备 → 用户程序读取帧 → 通过物理网卡发送</li>
+<li><strong>接收数据</strong><br>物理网卡接收帧 → 用户程序写回 <code>TAP</code> 设备 → 内核视为本地流量 → 传递给虚拟机</li>
+</ol>
+<hr>
+<h2 id="4-实际应用场景"><a href="#4-实际应用场景" class="headerlink" title="4. 实际应用场景"></a>4. 实际应用场景</h2><h3 id="TUN的典型应用"><a href="#TUN的典型应用" class="headerlink" title="TUN的典型应用"></a>TUN的典型应用</h3><ul>
+<li><strong>VPN隧道搭建</strong><br><code>OpenVPN</code> 默认使用 <code>TUN</code> 模式，将用户流量封装为 <code>IP</code> 包，通过 <code>SSL/TLS</code> 加密传输。</li>
+<li><strong>跨网络路由控制</strong><br>自定义路由规则，实现流量分流（如国内直连&#x2F;境外走代理）。</li>
+<li><strong>网络诊断工具</strong><br>抓取特定 <code>IP</code> 流量进行分析，无需处理底层以太网帧。</li>
+</ul>
+<h3 id="TAP的典型应用"><a href="#TAP的典型应用" class="headerlink" title="TAP的典型应用"></a>TAP的典型应用</h3><ul>
+<li><strong>虚拟机网络连接</strong><br><code>QEMU/KVM</code> 通过TAP设备将虚拟机接入宿主机网桥，实现 <code>NAT</code> 或桥接模式。</li>
+<li><strong>二层VPN（L2TP）</strong><br>构建虚拟局域网，使远程设备像处于同一物理网络。</li>
+<li><strong>网络协议开发</strong><br>测试 <code>ARP</code>、<code>STP</code> 等二层协议，或实现自定义以太网帧转发逻辑。</li>
+</ul>
+<hr>
+<h2 id="5-Linux下的配置示例"><a href="#5-Linux下的配置示例" class="headerlink" title="5. Linux下的配置示例"></a>5. Linux下的配置示例</h2><h3 id="创建TUN设备"><a href="#创建TUN设备" class="headerlink" title="创建TUN设备"></a>创建TUN设备</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建TUN设备并配置IP</span></span><br><span class="line"><span class="built_in">sudo</span> ip tuntap add mode tun dev tun0</span><br><span class="line"><span class="built_in">sudo</span> ip addr add 10.8.0.1/24 dev tun0</span><br><span class="line"><span class="built_in">sudo</span> ip <span class="built_in">link</span> <span class="built_in">set</span> tun0 up</span><br><span class="line"></span><br><span class="line"><span class="comment"># 验证</span></span><br><span class="line">ip addr show tun0</span><br></pre></td></tr></table></figure>
+<h3 id="创建TAP设备"><a href="#创建TAP设备" class="headerlink" title="创建TAP设备"></a>创建TAP设备</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建TAP设备并加入网桥</span></span><br><span class="line"><span class="built_in">sudo</span> ip tuntap add mode tap dev tap0</span><br><span class="line"><span class="built_in">sudo</span> ip <span class="built_in">link</span> <span class="built_in">set</span> tap0 master br0</span><br><span class="line"><span class="built_in">sudo</span> ip <span class="built_in">link</span> <span class="built_in">set</span> tap0 up</span><br><span class="line"></span><br><span class="line"><span class="comment"># 验证</span></span><br><span class="line">brctl show br0</span><br></pre></td></tr></table></figure>
+
+<h2 id="6-实战：用socat测试TUN设备通信"><a href="#6-实战：用socat测试TUN设备通信" class="headerlink" title="6. 实战：用socat测试TUN设备通信"></a>6. 实战：用socat测试TUN设备通信</h2><h3 id="实验目标"><a href="#实验目标" class="headerlink" title="实验目标"></a>实验目标</h3><p>通过socat工具在两个终端之间通过TUN设备发送ICMP（ping）数据包。</p>
+<h4 id="步骤1：创建并配置TUN设备"><a href="#步骤1：创建并配置TUN设备" class="headerlink" title="步骤1：创建并配置TUN设备"></a>步骤1：创建并配置TUN设备</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 终端A：创建tun0</span></span><br><span class="line"><span class="built_in">sudo</span> ip tuntap add mode tun dev tun0</span><br><span class="line"><span class="built_in">sudo</span> ip addr add 10.8.0.1/24 dev tun0</span><br><span class="line"><span class="built_in">sudo</span> ip <span class="built_in">link</span> <span class="built_in">set</span> tun0 up</span><br><span class="line"></span><br><span class="line"><span class="comment"># 终端B：创建tun1</span></span><br><span class="line"><span class="built_in">sudo</span> ip tuntap add mode tun dev tun1</span><br><span class="line"><span class="built_in">sudo</span> ip addr add 10.8.0.2/24 dev tun1</span><br><span class="line"><span class="built_in">sudo</span> ip <span class="built_in">link</span> <span class="built_in">set</span> tun1 up</span><br></pre></td></tr></table></figure>
+<h4 id="步骤2：使用socat建立隧道"><a href="#步骤2：使用socat建立隧道" class="headerlink" title="步骤2：使用socat建立隧道"></a>步骤2：使用socat建立隧道</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 终端A：将tun0的数据转发到UDP端口5000</span></span><br><span class="line"><span class="built_in">sudo</span> socat TUN:10.8.0.1/24,tun-name=tun0,iff-up UDP4:192.168.1.100:5000</span><br><span class="line"></span><br><span class="line"><span class="comment"># 终端B：将tun1的数据转发到UDP端口5000</span></span><br><span class="line"><span class="built_in">sudo</span> socat TUN:10.8.0.2/24,tun-name=tun1,iff-up UDP4:192.168.1.200:5000</span><br></pre></td></tr></table></figure>
+<h3 id="步骤3：测试通信"><a href="#步骤3：测试通信" class="headerlink" title="步骤3：测试通信"></a>步骤3：测试通信</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 终端A ping终端B</span><br><span class="line">ping 10.8.0.2</span><br><span class="line"></span><br><span class="line"># 终端B抓包验证</span><br><span class="line">sudo tcpdump -i tun1 icmp</span><br></pre></td></tr></table></figure>
+<h3 id="实验原理"><a href="#实验原理" class="headerlink" title="实验原理"></a>实验原理</h3><ol>
+<li>socat将TUN设备与UDP套接字绑定，实现IP包的双向转发</li>
+<li>内核将ping请求路由到tun0</li>
+<li>socat读取tun0的IP包，通过UDP发送到对端</li>
+<li>对端socat将UDP数据写回tun1，完成通信闭环</li>
+</ol>
+<h2 id="7-编程交互示例"><a href="#7-编程交互示例" class="headerlink" title="7. 编程交互示例"></a>7. 编程交互示例</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/if_tun.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建TUN/TAP设备</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">tun_alloc</span><span class="params">(<span class="type">char</span> *dev, <span class="type">int</span> flags)</span> &#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">ifreq</span> <span class="title">ifr</span>;</span></span><br><span class="line">    <span class="type">int</span> fd = open(<span class="string">&quot;/dev/net/tun&quot;</span>, O_RDWR);</span><br><span class="line">    <span class="built_in">memset</span>(&amp;ifr, <span class="number">0</span>, <span class="keyword">sizeof</span>(ifr));</span><br><span class="line">    ifr.ifr_flags = flags;  <span class="comment">// IFF_TUN或IFF_TAP</span></span><br><span class="line">    <span class="built_in">strncpy</span>(ifr.ifr_name, dev, IFNAMSIZ);</span><br><span class="line">    ioctl(fd, TUNSETIFF, &amp;ifr);</span><br><span class="line">    <span class="keyword">return</span> fd;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用示例：创建TAP设备</span></span><br><span class="line"><span class="type">int</span> fd = tun_alloc(<span class="string">&quot;tap0&quot;</span>, IFF_TAP | IFF_NO_PI);</span><br></pre></td></tr></table></figure>
+
+<h2 id="8-如何选择TUN-TAP？"><a href="#8-如何选择TUN-TAP？" class="headerlink" title="8. 如何选择TUN&#x2F;TAP？"></a>8. 如何选择TUN&#x2F;TAP？</h2><ul>
+<li><p><strong>选择TUN当</strong>：</p>
+<p>  ✅ 仅需处理IP流量</p>
+<p>  ✅ 避免二层协议开销（如ARP广播）</p>
+<p>  ✅ 构建VPN或IP隧道</p>
+</li>
+<li><p><strong>选择TAP当</strong>：</p>
+<p>  ✅ 需要MAC地址和以太网功能</p>
+<p>  ✅ 连接虚拟机或容器网络</p>
+<p>  ✅ 处理非IP协议（如IPX）</p>
+</li>
+</ul>
+<h2 id="9-注意事项"><a href="#9-注意事项" class="headerlink" title="9. 注意事项"></a>9. 注意事项</h2><ul>
+<li>权限问题：操作 <code>/dev/net/tun</code> 需 <code>root</code> 权限或 <code>CAP_NET_ADMIN</code> 能力</li>
+<li>性能优化：使用零拷贝技术（如<code>sendfile</code>）提升吞吐量</li>
+<li>安全风险：暴露 <code>TAP</code> 设备可能让攻击者接入二层网络</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/TUN/" rel="tag"># TUN</a>
+              <a href="/tags/TAP/" rel="tag"># TAP</a>
+              <a href="/tags/VPN/" rel="tag"># VPN</a>
+              <a href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" rel="tag"># 虚拟机</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2025/05/07/network/SOCKS5-%E4%BB%A3%E7%90%86%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3/" rel="prev" title="SOCKS5 代理协议详解">
+      <i class="fa fa-chevron-left"></i> SOCKS5 代理协议详解
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E4%BB%80%E4%B9%88%E6%98%AFTUN%E5%92%8CTAP%EF%BC%9F"><span class="nav-number">1.</span> <span class="nav-text">1. 什么是TUN和TAP？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#TUN%EF%BC%88Network-TUNnel%EF%BC%89"><span class="nav-number">1.1.</span> <span class="nav-text">TUN（Network TUNnel）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TAP%EF%BC%88Network-TAP%EF%BC%89"><span class="nav-number">1.2.</span> <span class="nav-text">TAP（Network TAP）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E6%A0%B8%E5%BF%83%E5%8C%BA%E5%88%AB%E5%AF%B9%E6%AF%94"><span class="nav-number">2.</span> <span class="nav-text">2. 核心区别对比</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B%E8%A7%A3%E6%9E%90"><span class="nav-number">3.</span> <span class="nav-text">3. 工作流程解析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#TUN%E8%AE%BE%E5%A4%87%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="nav-number">3.1.</span> <span class="nav-text">TUN设备的工作流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TAP%E8%AE%BE%E5%A4%87%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="nav-number">3.2.</span> <span class="nav-text">TAP设备的工作流程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E5%AE%9E%E9%99%85%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">4.</span> <span class="nav-text">4. 实际应用场景</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#TUN%E7%9A%84%E5%85%B8%E5%9E%8B%E5%BA%94%E7%94%A8"><span class="nav-number">4.1.</span> <span class="nav-text">TUN的典型应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TAP%E7%9A%84%E5%85%B8%E5%9E%8B%E5%BA%94%E7%94%A8"><span class="nav-number">4.2.</span> <span class="nav-text">TAP的典型应用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-Linux%E4%B8%8B%E7%9A%84%E9%85%8D%E7%BD%AE%E7%A4%BA%E4%BE%8B"><span class="nav-number">5.</span> <span class="nav-text">5. Linux下的配置示例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BATUN%E8%AE%BE%E5%A4%87"><span class="nav-number">5.1.</span> <span class="nav-text">创建TUN设备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BATAP%E8%AE%BE%E5%A4%87"><span class="nav-number">5.2.</span> <span class="nav-text">创建TAP设备</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E5%AE%9E%E6%88%98%EF%BC%9A%E7%94%A8socat%E6%B5%8B%E8%AF%95TUN%E8%AE%BE%E5%A4%87%E9%80%9A%E4%BF%A1"><span class="nav-number">6.</span> <span class="nav-text">6. 实战：用socat测试TUN设备通信</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E7%9B%AE%E6%A0%87"><span class="nav-number">6.1.</span> <span class="nav-text">实验目标</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AD%A5%E9%AA%A41%EF%BC%9A%E5%88%9B%E5%BB%BA%E5%B9%B6%E9%85%8D%E7%BD%AETUN%E8%AE%BE%E5%A4%87"><span class="nav-number">6.1.1.</span> <span class="nav-text">步骤1：创建并配置TUN设备</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AD%A5%E9%AA%A42%EF%BC%9A%E4%BD%BF%E7%94%A8socat%E5%BB%BA%E7%AB%8B%E9%9A%A7%E9%81%93"><span class="nav-number">6.1.2.</span> <span class="nav-text">步骤2：使用socat建立隧道</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A5%E9%AA%A43%EF%BC%9A%E6%B5%8B%E8%AF%95%E9%80%9A%E4%BF%A1"><span class="nav-number">6.2.</span> <span class="nav-text">步骤3：测试通信</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E5%8E%9F%E7%90%86"><span class="nav-number">6.3.</span> <span class="nav-text">实验原理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-%E7%BC%96%E7%A8%8B%E4%BA%A4%E4%BA%92%E7%A4%BA%E4%BE%8B"><span class="nav-number">7.</span> <span class="nav-text">7. 编程交互示例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-%E5%A6%82%E4%BD%95%E9%80%89%E6%8B%A9TUN-TAP%EF%BC%9F"><span class="nav-number">8.</span> <span class="nav-text">8. 如何选择TUN&#x2F;TAP？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="nav-number">9.</span> <span class="nav-text">9. 注意事项</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="yngty"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">yngty</p>
+  <div class="site-description" itemprop="description">预测未来的最好方式就是实现它</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">87</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yngty" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yngty" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yngty@foxmail.com" title="E-Mail → mailto:yngty@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yngty</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">58k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">3:33</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
