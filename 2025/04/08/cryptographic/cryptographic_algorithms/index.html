@@ -20,19 +20,22 @@
     var CONFIG = {"hostname":"yngty.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
-  <meta name="description" content="常见对称加密算法   算法 加密模式 密钥长度 应用 优点 缺点    AES (Advanced Encryption Standard) ECB, CBC, CTR, GCM, OFB, CFB 128, 192, 256位 数据加密、文件加密、通信加密等 安全性高，支持多种加密模式，广泛使用 对于某些模式（如ECB）存在模式相关的安全问题   DES (Data Encryption Sta">
+  <meta name="description" content="常见加密模式为什么要分模式？对称加密算法（如AES）只能加密固定长度的数据块（比如 AES 的块是 128 位）。如果要加密一个很长的文件，就需要将文件切分成多个块，再逐个加密。 问题来了：如何让这些块之间产生关联，避免被破解？这就是加密模式的作用！">
 <meta property="og:type" content="article">
 <meta property="og:title" content="基础密码知识">
 <meta property="og:url" content="https://yngty.github.io/2025/04/08/cryptographic/cryptographic_algorithms/index.html">
 <meta property="og:site_name" content="Symbol Crash">
-<meta property="og:description" content="常见对称加密算法   算法 加密模式 密钥长度 应用 优点 缺点    AES (Advanced Encryption Standard) ECB, CBC, CTR, GCM, OFB, CFB 128, 192, 256位 数据加密、文件加密、通信加密等 安全性高，支持多种加密模式，广泛使用 对于某些模式（如ECB）存在模式相关的安全问题   DES (Data Encryption Sta">
+<meta property="og:description" content="常见加密模式为什么要分模式？对称加密算法（如AES）只能加密固定长度的数据块（比如 AES 的块是 128 位）。如果要加密一个很长的文件，就需要将文件切分成多个块，再逐个加密。 问题来了：如何让这些块之间产生关联，避免被破解？这就是加密模式的作用！">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yngty.github.io/images/Tux_ecb.png">
+<meta property="og:image" content="https://yngty.github.io/images/aes-gcm-diagram.png">
 <meta property="article:published_time" content="2025-04-08T10:11:14.000Z">
-<meta property="article:modified_time" content="2025-05-09T09:33:33.700Z">
+<meta property="article:modified_time" content="2025-05-12T04:38:54.933Z">
 <meta property="article:author" content="yngty">
 <meta property="article:tag" content="密码">
 <meta property="article:tag" content="加密">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yngty.github.io/images/Tux_ecb.png">
 
 <link rel="canonical" href="https://yngty.github.io/2025/04/08/cryptographic/cryptographic_algorithms/">
 
@@ -194,7 +197,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-05-09 09:33:33" itemprop="dateModified" datetime="2025-05-09T09:33:33+00:00">2025-05-09</time>
+                <time title="修改时间：2025-05-12 04:38:54" itemprop="dateModified" datetime="2025-05-12T04:38:54+00:00">2025-05-12</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -212,14 +215,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>858</span>
+              <span>2.5k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>3 分钟</span>
+              <span>9 分钟</span>
             </span>
 
         </div>
@@ -231,7 +234,174 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="常见对称加密算法"><a href="#常见对称加密算法" class="headerlink" title="常见对称加密算法"></a>常见对称加密算法</h1><table>
+        <h1 id="常见加密模式"><a href="#常见加密模式" class="headerlink" title="常见加密模式"></a>常见加密模式</h1><h2 id="为什么要分模式？"><a href="#为什么要分模式？" class="headerlink" title="为什么要分模式？"></a>为什么要分模式？</h2><p>对称加密算法（如<code>AES</code>）只能加密<strong>固定长度</strong>的数据块（比如 <code>AES</code> 的块是 <code>128</code> 位）。如果要加密一个很长的文件，就需要将文件切分成多个块，再逐个加密。</p>
+<p><strong>问题来了</strong>：如何让这些块之间产生关联，避免被破解？这就是<strong>加密模式</strong>的作用！</p>
+<span id="more"></span>
+
+<h2 id="1-ECB模式（电子密码本）"><a href="#1-ECB模式（电子密码本）" class="headerlink" title="1. ECB模式（电子密码本）"></a>1. ECB模式（电子密码本）</h2><ul>
+<li><p><strong>原理</strong>：</p>
+<ul>
+<li>把数据切成块，每块独立加密，像查字典一样（比如“A”对应“X”，“B”对应“Y”）。</li>
+<li>致命缺陷：相同的明文块会生成相同的密文块。</li>
+</ul>
+</li>
+<li><p><strong>例子</strong>：</p>
+<ul>
+<li><p>加密一张纯色图片（比如全黑），ECB加密后仍能看到轮廓（如下图）。</p>
+</li>
+<li><p>加密“HelloHello”，两个“Hello”块加密后完全一样。</p>
+<p>  <img src="/../../images/Tux_ecb.png" alt="ECB模式问题"></p>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>结论：永远不要用ECB，除非加密单个块（比如一个密码）</strong>。</p>
+<h2 id="2-CBC模式（密码块链）"><a href="#2-CBC模式（密码块链）" class="headerlink" title="2. CBC模式（密码块链）"></a>2. CBC模式（密码块链）</h2><ul>
+<li><p><strong>原理</strong>：</p>
+<ol>
+<li>初始化向量（IV）：在加密第一个块前，生成一个随机数（IV），与第一个明文块做异或（XOR）。</li>
+<li>链式反应：每个明文块加密前，先与前一个密文块做XOR，再加密。</li>
+</ol>
+</li>
+<li><p><strong>例子</strong>：</p>
+<ul>
+<li><p>加密“Hello”：</p>
+<ul>
+<li>生成IV（比如“随机数123”），与“Hello”做XOR，再加密。</li>
+<li>第二个块“World”先与第一个块的密文做XOR，再加密。</li>
+</ul>
+</li>
+<li><p>即使两个明文块相同，加密后的结果也不同。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>优点</strong>：：安全性高，适合文件加密。</p>
+</li>
+<li><p><strong>缺点</strong>：</p>
+<ul>
+<li>需要存储或传输IV（通常明文传输，无需保密）。</li>
+<li>无法并行加密（必须按顺序处理块）。</li>
+</ul>
+</li>
+</ul>
+<h2 id="3-CTR模式（计数器模式）"><a href="#3-CTR模式（计数器模式）" class="headerlink" title="3. CTR模式（计数器模式）"></a>3. CTR模式（计数器模式）</h2><ul>
+<li><p><strong>原理</strong>：</p>
+<ol>
+<li>生成一个计数器（比如从0开始递增：0,1,2,3…）。</li>
+<li>加密计数器，得到一个密钥流（伪随机数）。</li>
+<li>将密钥流与明文块做XOR，得到密文。</li>
+</ol>
+</li>
+<li><p><strong>例子</strong>：</p>
+<ul>
+<li>加密“Hello”：<ul>
+<li>加密计数器0得到密钥流“X3k%”，与“Hello”XOR得到密文。</li>
+<li>加密计数器1得到密钥流“aB9$”，与下一个块XOR。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>优点</strong>：</p>
+<ul>
+<li><p>支持并行加密和解密（因为不依赖前一个块）。</p>
+</li>
+<li><p>可以实时加密（比如视频流）。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>缺点</strong>：</p>
+<ul>
+<li>计数器不能重复（否则安全性崩溃）。</li>
+</ul>
+</li>
+</ul>
+<h2 id="4-GCM模式（伽罗瓦计数器模式）"><a href="#4-GCM模式（伽罗瓦计数器模式）" class="headerlink" title="4. GCM模式（伽罗瓦计数器模式）"></a>4. GCM模式（伽罗瓦计数器模式）</h2><ul>
+<li><p><strong>原理</strong>：<br>结合CTR模式的高效性，并附加认证标签（MAC），验证数据是否被篡改。</p>
+</li>
+<li><p><strong>例子</strong>：</p>
+<ul>
+<li><p>加密一段消息后，生成一个“指纹”（比如“d8e9f”）。</p>
+</li>
+<li><p>接收方解密时验证指纹，如果指纹不匹配，说明数据被篡改。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>优点</strong>：</p>
+<ul>
+<li>加密+认证一步完成（适合网络传输，如HTTPS）。</li>
+<li>高效且安全。</li>
+</ul>
+</li>
+<li><p><strong>缺点</strong>：</p>
+<ul>
+<li>实现复杂，需要处理计数器溢出问题。</li>
+</ul>
+</li>
+</ul>
+<h2 id="5-CFB-OFB模式（反馈模式）"><a href="#5-CFB-OFB模式（反馈模式）" class="headerlink" title="5. CFB&#x2F;OFB模式（反馈模式）"></a>5. CFB&#x2F;OFB模式（反馈模式）</h2><ul>
+<li><p>原理：</p>
+<ul>
+<li>类似于CTR，但生成密钥流的方式不同。</li>
+<li>CFB（密码反馈）：将前一个密文块加密后生成密钥流。</li>
+<li>OFB（输出反馈）：将前一个密钥流加密后生成新的密钥流。</li>
+</ul>
+</li>
+<li><p>用途：</p>
+<ul>
+<li>适合流数据（如实时语音），但现代应用更倾向用CTR或GCM。</li>
+</ul>
+</li>
+</ul>
+<h2 id="加密模式对比表"><a href="#加密模式对比表" class="headerlink" title="加密模式对比表"></a>加密模式对比表</h2><table>
+<thead>
+<tr>
+<th>模式</th>
+<th>安全性</th>
+<th>速度</th>
+<th>并行性</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ECB</td>
+<td>❌ 低</td>
+<td>⚡快</td>
+<td>✔️ 支持</td>
+<td>已淘汰（仅用于单块加密）</td>
+</tr>
+<tr>
+<td>CBC</td>
+<td>✔️ 高</td>
+<td>🐢 慢</td>
+<td>❌ 不支持</td>
+<td>文件加密（需顺序处理）</td>
+</tr>
+<tr>
+<td>CTR</td>
+<td>✔️ 高</td>
+<td>⚡快</td>
+<td>✔️ 支持</td>
+<td>实时数据流（视频、网络传输）</td>
+</tr>
+<tr>
+<td>GCM</td>
+<td>✔️ 超高</td>
+<td>⚡快</td>
+<td>✔️ 支持</td>
+<td>需要认证的传输（HTTPS、VPN）</td>
+</tr>
+<tr>
+<td>CFB</td>
+<td>✔️ 中</td>
+<td>🐢 慢</td>
+<td>❌ 不支持</td>
+<td>遗留系统（逐渐被取代）</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>ECB 是“独狼”，CBC是“链条”，CTR是“流水线”，GCM是“保镖+流水线”</strong></p>
+</blockquote>
+<h1 id="常见对称加密算法"><a href="#常见对称加密算法" class="headerlink" title="常见对称加密算法"></a>常见对称加密算法</h1><table>
 <thead>
 <tr>
 <th><strong>算法</strong></th>
@@ -291,7 +461,6 @@
 <td>相较于AES，使用较少，支持硬件加速较少</td>
 </tr>
 </tbody></table>
-<span id="more"></span>
 <h1 id="常见密钥协商算法"><a href="#常见密钥协商算法" class="headerlink" title="常见密钥协商算法"></a>常见密钥协商算法</h1><table>
 <thead>
 <tr>
@@ -352,6 +521,81 @@
 <td>实现复杂，性能上相对较差。</td>
 </tr>
 </tbody></table>
+<h2 id="AES-GCM"><a href="#AES-GCM" class="headerlink" title="AES-GCM"></a>AES-GCM</h2><p><code>AES-GCM（Advanced Encryption Standard - Galois/Counter Mode）</code>是一种结合加密和认证的对称加密模式，广泛应用于需要高效保密性和数据完整性的场景（如<code>TLS</code>、<code>IPSec</code>）。以下是其核心步骤的详细分解：</p>
+<h3 id="1-参数初始化"><a href="#1-参数初始化" class="headerlink" title="1. 参数初始化"></a>1. 参数初始化</h3><ul>
+<li><strong>密钥（Key）</strong>：<code>128/192/256</code>位的 <code>AES</code> 密钥，用于加密和生成认证标签。</li>
+<li><strong>初始向量（IV）</strong>：通常为 <code>12</code> 字节（<strong>推荐长度</strong>），需全局唯一，避免重复。</li>
+<li><strong>附加认证数据（AAD）</strong>：可选明文数据，参与认证但不加密。</li>
+<li><strong>明文（Plaintext）</strong>：待加密的数据。</li>
+</ul>
+<h2 id="2-生成初始计数器块（J₀）"><a href="#2-生成初始计数器块（J₀）" class="headerlink" title="2. 生成初始计数器块（J₀）"></a>2. 生成初始计数器块（J₀）</h2><ul>
+<li><code>IV</code> 处理：<ul>
+<li>若 <code>IV</code> 为 <code>12</code> 字节：直接作为前 <code>12</code> 字节，后接4字节计数器（<code>0x00000001</code>），组成 <code>16</code> 字节的 <code>J₀</code> 。</li>
+<li>若 <code>IV</code> 非 <code>12</code> 字节：通过 <code>GHASH</code> 计算生成J₀（见步骤<code>6</code>）。</li>
+</ul>
+</li>
+</ul>
+<h2 id="3-加密过程（CTR模式）"><a href="#3-加密过程（CTR模式）" class="headerlink" title="3. 加密过程（CTR模式）"></a>3. 加密过程（CTR模式）</h2><ul>
+<li><p>生成密钥流：</p>
+<ul>
+<li>初始计数器块：<code>J₀</code> 的<code>31</code>位最低有效位（<code>LSB</code>）递增，生成计数器序列 <code>J₀+1, J₀+2, ...</code>。</li>
+<li>对每个计数器块进行 <code>AES</code> 加密，生成密钥流块。</li>
+</ul>
+</li>
+<li><p>生成密文：</p>
+<ul>
+<li>明文分块（每块<code>16</code>字节）与对应密钥流异或，得到密文。</li>
+</ul>
+</li>
+</ul>
+<h2 id="4-认证过程（GHASH）"><a href="#4-认证过程（GHASH）" class="headerlink" title="4. 认证过程（GHASH）"></a>4. 认证过程（GHASH）</h2><p><code>GHASH</code> 核心操作：在 <code>Galois</code> 域（<code>GF(2¹²⁸)</code>）上的乘法，使用哈希子密钥 <code>H</code>,（<strong>由加密全0块得到</strong>, <code>H = AES-Encrypt(Key, 0¹²⁸)</code>）。</p>
+<p><strong>步骤</strong>：</p>
+<ol>
+<li><p><strong>处理AAD</strong>：</p>
+<ul>
+<li>将 <code>AAD</code> 填充为 <code>16</code> 字节的倍数，不够补零，分块为<code>A₁, A₂, ..., Aₘ</code>。</li>
+<li>计算 <code>GHASH</code>：初始为<code>X = 0</code>（<code>128位全0</code>），依次与 <code>AAD</code> 块异或后乘 <code>H</code>。</li>
+</ul>
+<p> <code>X = (X ⊕ A_i) ⊗ H（⊗ 表示伽罗瓦域乘法）</code></p>
+</li>
+<li><p><strong>处理密文</strong>：</p>
+<ul>
+<li>将密文填充为 <code>16</code> 字节的倍数，不够补零，分块为<code>C₁, C₂, ..., Cₙ</code>。</li>
+<li>继续 <code>GHASH</code> 计算，与密文块异或后乘 <code>H</code>。</li>
+</ul>
+<p> <code>X = (X ⊕ C_i) ⊗ H</code></p>
+</li>
+<li><p><strong>处理长度块</strong>：</p>
+<ul>
+<li><p>拼接 <code>AAD</code> 长度和密文长度（各<code>64</code>位），组成 <code>16</code> 字节块。</p>
+<ul>
+<li>（1）单位必须为比特（bit）</li>
+<li>（2）<code>64</code> 位无符号整数表示</li>
+<li>（3）前 <code>8</code> 字节为 <code>AAD</code> 长度，后 <code>8</code> 字节为密文长度 的顺序拼接</li>
+</ul>
+</li>
+<li><p>最后与长度块异或后乘 <code>H</code>，得到 <code>GHASH</code> 输出 <code>S</code> 。</p>
+</li>
+</ul>
+<p> <code>Len = len(AAD) || len(Ciphertext)</code></p>
+<p> <code>S = (X ⊕ Len) ⊗ H</code></p>
+</li>
+</ol>
+<h2 id="5-生成认证标签（Tag）"><a href="#5-生成认证标签（Tag）" class="headerlink" title="5. 生成认证标签（Tag）"></a>5. 生成认证标签（Tag）</h2><ul>
+<li>加密<code>J₀</code>：<code>T = AES-Encrypt(J₀) ⊕ S</code>。</li>
+<li>截断 <code>T</code> 为指定长度（通常<code>16</code>字节）作为最终认证标签。</li>
+</ul>
+<h2 id="6-输出结果"><a href="#6-输出结果" class="headerlink" title="6. 输出结果"></a>6. 输出结果</h2><ul>
+<li>密文（<code>Ciphertext</code>）：加密后的数据。</li>
+<li>认证标签（<code>Tag</code>）：用于验证数据完整性和真实性的签名。</li>
+</ul>
+<h2 id="安全注意事项"><a href="#安全注意事项" class="headerlink" title="安全注意事项"></a>安全注意事项</h2><ul>
+<li><code>IV</code> 唯一性：重复IV会导致密钥流复用，破坏安全性。</li>
+<li>密钥管理：定期更换密钥，避免泄露。</li>
+<li>认证失败处理：标签验证失败时需丢弃数据，防止篡改攻击。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">+---------------------+</span><br><span class="line">| 初始化参数           |</span><br><span class="line">| - Key               |</span><br><span class="line">| - IV                |</span><br><span class="line">| - AAD               |</span><br><span class="line">| - Plaintext         |</span><br><span class="line">+---------------------+</span><br><span class="line">          |</span><br><span class="line">          v</span><br><span class="line">+---------------------+</span><br><span class="line">| 生成初始计数器块 J₀  | → 若IV=12字节: J₀ = IV || 0x00000001</span><br><span class="line">|                     | → 否则: J₀ = GHASH(IV)</span><br><span class="line">+---------------------+</span><br><span class="line">          |</span><br><span class="line">          v</span><br><span class="line">+---------------------+       +---------------------+</span><br><span class="line">| CTR模式加密          |       | GHASH认证过程       |</span><br><span class="line">| 1. J₀+1, J₀+2,...    |       | 1. 计算H = AES(0)   |</span><br><span class="line">| 2. 生成密钥流        |       | 2. 处理AAD → X      |</span><br><span class="line">| 3. 明文异或密钥流 → 密文 |   | 3. 处理密文 → X     |</span><br><span class="line">|                     |       | 4. 处理长度块 → S    |</span><br><span class="line">+---------------------+       +---------------------+</span><br><span class="line">          |                             |</span><br><span class="line">          |                             v</span><br><span class="line">          +------------+  +-------------+</span><br><span class="line">                       |  |</span><br><span class="line">                       v  v</span><br><span class="line">+---------------------+</span><br><span class="line">| 生成认证标签         |</span><br><span class="line">| T = AES(J₀) ⊕ S      |</span><br><span class="line">| 截断T为Tag           |</span><br><span class="line">+---------------------+</span><br><span class="line">          |</span><br><span class="line">          v</span><br><span class="line">+---------------------+</span><br><span class="line">| 输出结果             |</span><br><span class="line">| - 密文               |</span><br><span class="line">| - Tag               |</span><br><span class="line">+---------------------+</span><br></pre></td></tr></table></figure>
+<p><img src="/../../images/aes-gcm-diagram.png" alt="aes-gcm-diagram"></p>
 
     </div>
 
@@ -436,7 +680,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">常见对称加密算法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E5%AF%86%E9%92%A5%E5%8D%8F%E5%95%86%E7%AE%97%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">常见密钥协商算法</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E5%8A%A0%E5%AF%86%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">常见加密模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%88%86%E6%A8%A1%E5%BC%8F%EF%BC%9F"><span class="nav-number">1.1.</span> <span class="nav-text">为什么要分模式？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-ECB%E6%A8%A1%E5%BC%8F%EF%BC%88%E7%94%B5%E5%AD%90%E5%AF%86%E7%A0%81%E6%9C%AC%EF%BC%89"><span class="nav-number">1.2.</span> <span class="nav-text">1. ECB模式（电子密码本）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-CBC%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%AF%86%E7%A0%81%E5%9D%97%E9%93%BE%EF%BC%89"><span class="nav-number">1.3.</span> <span class="nav-text">2. CBC模式（密码块链）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-CTR%E6%A8%A1%E5%BC%8F%EF%BC%88%E8%AE%A1%E6%95%B0%E5%99%A8%E6%A8%A1%E5%BC%8F%EF%BC%89"><span class="nav-number">1.4.</span> <span class="nav-text">3. CTR模式（计数器模式）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-GCM%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BC%BD%E7%BD%97%E7%93%A6%E8%AE%A1%E6%95%B0%E5%99%A8%E6%A8%A1%E5%BC%8F%EF%BC%89"><span class="nav-number">1.5.</span> <span class="nav-text">4. GCM模式（伽罗瓦计数器模式）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-CFB-OFB%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%8F%8D%E9%A6%88%E6%A8%A1%E5%BC%8F%EF%BC%89"><span class="nav-number">1.6.</span> <span class="nav-text">5. CFB&#x2F;OFB模式（反馈模式）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E5%AF%86%E6%A8%A1%E5%BC%8F%E5%AF%B9%E6%AF%94%E8%A1%A8"><span class="nav-number">1.7.</span> <span class="nav-text">加密模式对比表</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">常见对称加密算法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E5%AF%86%E9%92%A5%E5%8D%8F%E5%95%86%E7%AE%97%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">常见密钥协商算法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#AES-GCM"><span class="nav-number">3.1.</span> <span class="nav-text">AES-GCM</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%8F%82%E6%95%B0%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">3.1.1.</span> <span class="nav-text">1. 参数初始化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E7%94%9F%E6%88%90%E5%88%9D%E5%A7%8B%E8%AE%A1%E6%95%B0%E5%99%A8%E5%9D%97%EF%BC%88J%E2%82%80%EF%BC%89"><span class="nav-number">3.2.</span> <span class="nav-text">2. 生成初始计数器块（J₀）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%8A%A0%E5%AF%86%E8%BF%87%E7%A8%8B%EF%BC%88CTR%E6%A8%A1%E5%BC%8F%EF%BC%89"><span class="nav-number">3.3.</span> <span class="nav-text">3. 加密过程（CTR模式）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E8%AE%A4%E8%AF%81%E8%BF%87%E7%A8%8B%EF%BC%88GHASH%EF%BC%89"><span class="nav-number">3.4.</span> <span class="nav-text">4. 认证过程（GHASH）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E7%94%9F%E6%88%90%E8%AE%A4%E8%AF%81%E6%A0%87%E7%AD%BE%EF%BC%88Tag%EF%BC%89"><span class="nav-number">3.5.</span> <span class="nav-text">5. 生成认证标签（Tag）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E8%BE%93%E5%87%BA%E7%BB%93%E6%9E%9C"><span class="nav-number">3.6.</span> <span class="nav-text">6. 输出结果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E5%85%A8%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="nav-number">3.7.</span> <span class="nav-text">安全注意事项</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -512,12 +756,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">58k</span>
+    <span title="站点总字数">60k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">3:33</span>
+    <span title="站点阅读时长">3:40</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>
