@@ -6,6 +6,7 @@ tags:
 - HMAC
 categories:
 - Cryptographic Algorithms
+mathjax: true
 ---
 
 # 介绍
@@ -16,7 +17,7 @@ categories:
 
 # HKDF 的工作原理
 
-`HKDF` 是一种 伪随机函数（`PRF`），其核心思想是从一个初始的种子密钥（或称主密钥）中生成多个密钥，并且能够提供高度的安全性。`HKDF` 通过两步过程实现密钥派生：**提取（Extract）** 和 **扩展（Expand）**。
+`HKDF` 是一种伪随机函数（`PRF`），其核心思想是从一个初始的种子密钥（或称主密钥）中生成多个密钥，并且能够提供高度的安全性。`HKDF` 通过两步过程实现密钥派生：**提取（Extract）** 和 **扩展（Expand）**。
 
 ## 1. 提取（Extract）
 
@@ -24,18 +25,20 @@ categories:
 
 - **输入**：
     - `IKM（Input Key Material）`：初始密钥材料，通常是一个主密钥或其他随机数据。
-    - `salt`（盐）：一个可选的随机值，通常是由一个非秘密值（例如，固定值或随机生成的值）组成。盐可以为空，但为空时应使用特定的默认值（如全零）。
+    - `salt`（盐）：一个可选的随机值，通常是由一个非秘密值（例如，固定值或随机生成的值）组成。盐可以为空，**但为空时应使用特定的默认值（如全零，长度则为所采用哈希函数的散列值长度）**。
 
 - **输出**：
     - `PRK（Pseudorandom Key）`：一个固定长度的伪随机密钥（`PRK`），通常使用 `HMAC` 作为提取过程的核心操作。
 
 `HMAC` 算法将在提取过程中发挥作用，用盐和输入密钥材料（`IKM`）生成伪随机密钥（`PRK`）。
 
-提取过程的步骤：
+$$
+\begin{aligned}
 
-```
-PRK = HMAC(salt || IKM)
-```
+&\mathrm{PRK} = \mathrm{HMAC}(\text{salt},\ \text{IKM}) \\
+\end{aligned}
+$$
+
 
 ## 2. 扩展（Expand）
 
@@ -45,71 +48,103 @@ PRK = HMAC(salt || IKM)
 
     - `PRK`（伪随机密钥）：提取过程的输出。
     - `info`（上下文信息）：可选的额外数据（如协议标识符、会话信息等），用于区分不同的密钥生成需求。
-    - `L`（所需密钥长度）：派生出的密钥的总长度。
+    - `L`（所需密钥长度）：所需的输出密钥长度，单位是字节 $L \leq 255 \times \text{HashLen}$
+
 
 - **输出**：
 
-    - 一个或多个密钥，长度为 `L`，可以用于加密、认证等多种目的。
+    - `OKM` 输出密钥材料，长度为 `L` 字节
 
-扩展过程通常通过不断迭代地将输出作为下次 `HMAC` 的输入来实现：
+扩展阶段通过反复调用 `HMAC` 来生成一个或多个块，每个块的大小为 `HMAC` 输出长度（`HashLen`），直到输出满足总长度 `L`。公式如下：
 
-```
-T1 = HMAC(PRK, 0x01 || info)
-T2 = HMAC(PRK, T1)
-T3 = HMAC(PRK, T2)
-```
-直到生成足够长度的密钥为止。每次 `HMAC` 的输出都会参与下一轮的计算，保证了输出的密钥具备足够的随机性和安全性。
+
+$$
+\begin{aligned}
+& T_0 = \text{空字符串（zero-length）} \\\\
+& T_1 = \mathrm{HMAC}(PRK,\ T_0\ \texttt{||}\ \text{info}\ \texttt{||}\ \texttt{0x01}) \\\\
+& T_2 = \mathrm{HMAC}(PRK,\ T_1\ \texttt{||}\ \text{info}\ \texttt{||}\ \texttt{0x02}) \\\\
+& T_3 = \mathrm{HMAC}(PRK,\ T_2\ \texttt{||}\ \text{info}\ \texttt{||}\ \texttt{0x03}) \\\\
+& \vdots \\\\
+& OKM = T_1\ \texttt{||}\ T_2\ \texttt{||}\ T_3\ \cdots \quad (\text{直到达到所需长度 L})
+\end{aligned}
+$$
+
 
 # HKDF 的详细计算过程
 
-假设：
+我们以 使用 **SHA-256（HashLen = 32 字节）且需要输出 64 字节密钥** 为例。
 
-- `IKM（Input Key Material）= "SuperSecretKey"`（种子密钥）
-- `salt = "RandomSaltValue"`（盐）
-- `info = "ApplicationContext"`（上下文信息）
-- 需要生成的密钥长度 `L = 64` 字节
 
 ## 步骤 1：提取（Extract）
 首先，我们使用 `HMAC` 对 `IKM` 和 `salt` 进行计算，得到伪随机密钥（`PRK`）。
 
-```
-PRK = HMAC(salt || IKM)
-```
-`HMAC` 会根据 `SHA-256` 等哈希函数对 `salt || IKM` 进行计算，得到固定长度的输出，即伪随机密钥（`PRK`）。
+$$
+\mathrm{PRK} = \mathrm{HMAC}(\text{salt},\ \text{IKM})
+$$
 
-### 步骤 2：扩展（Expand）
+`HMAC` 会根据 `SHA-256` 哈希函数对 `salt || IKM` 进行计算，得到固定长度的输出，即伪随机密钥（`PRK`）。
+
+## 步骤 2：扩展（Expand）
 接下来，使用 `PRK` 和 `info` 来生成最终的密钥。在这个过程中，我们会多次使用 `HMAC` 来生成所需的密钥。
 
-1. 初始化：
-    - `T1 = HMAC(PRK, 0x01 || info)`
+###  1. 初始化：
+- $T_0$ = ""（空字符串）
+- `PRK` = 来自提取阶段的 `HMAC` 输出（`32` 字节）
+- `info` = 可选上下文信息（比如 b"context info"）
 
-2. 生成下一个块：
-    - `T2 = HMAC(PRK, T1)`
 
-3. 如果需要继续生成更多的密钥，继续进行下去。
 
-例如：
+### 2. 计算第一个区块 $T_1$
 
-```
-T1 = HMAC(PRK, 0x01 || info)    // 生成第一个密钥块
-T2 = HMAC(PRK, T1)              // 生成第二个密钥块
-T3 = HMAC(PRK, T2)              // 生成第三个密钥块
-```
-最终，通过连接这些块 `T1`, `T2`, `T3`, ... 得到最终的密钥输出。如果所需的密钥长度 `L` 还没有满足，就继续生成更多的块，直到达到预期长度。
+$$
+T_1 = \mathrm{HMAC}(\mathrm{PRK},\ T_0\ \texttt{||}\ \text{info}\ \texttt{||}\ \texttt{0x01})
+$$
 
-### 输出
-假设我们需要生成 `64` 字节的密钥，可能的输出（经过扩展）可能是：
+- $T_0$ `= ""`
 
-```
-Key1 = T1[0:32]
-Key2 = T1[32:64]
-```
-这些生成的密钥可以用作加密、身份验证等用途。
+- 拼接内容为：`info + 0x01`
+
+- 调用 `HMAC: HMAC(PRK, info + 0x01)`
+
+- 输出 $T_1$（`32` 字节）
+
+
+### 3. 计算第二个区块 $T_2$
+
+$$
+T_2 = \mathrm{HMAC}(\mathrm{PRK},\ T_1\ \texttt{||}\ \text{info}\ \texttt{||}\ \texttt{0x02})
+$$
+
+
+- 拼接内容为：$T_1$ + info + 0x02
+
+- 调用 `HMAC`: HMAC(PRK, $T_1$ + info + 0x02)
+
+- 输出 $T_2$（`32` 字节）
+
+
+
+### 4. 拼接输出
+
+$$
+\mathrm{OKM} = T_1\ \texttt{||}\ T_2 = 64\ \text{字节}
+$$
+
+如果需要更多字节（如 `80` 字节），则继续生成 $T_3$：
+
+$$
+T_3 = \mathrm{HMAC}(\mathrm{PRK},\ T_2\ \texttt{||}\ \text{info}\ \texttt{||}\ \texttt{0x03})
+$$
+
+依此类推，直到拼接够 `L` 字节为止。
+
 
 # HKDF 的安全性
+
 `HKDF` 的安全性依赖于 `HMAC` 的安全性和良好的输入选择。由于 `HMAC` 基于强大的哈希函数（如 `SHA-256`），并且能够有效地防止碰撞攻击、重放攻击等，它本身是非常安全的。使用高质量的盐和上下文信息（`info`）可以进一步增加安全性，防止生成相同的密钥。
 
 ## 盐的作用
+
 盐（`salt`）的作用是防止相同的输入材料（`IKM`）生成相同的伪随机密钥（`PRK`）。如果不同的密钥材料没有使用盐，可能会导致同样的密钥材料每次生成相同的派生密钥，降低安全性。因此，使用随机或不可预测的盐是非常重要的。
 
 ## info 参数
@@ -128,4 +163,9 @@ Key2 = T1[32:64]
 `API` 密钥生成：从主密钥生成多个 `API` 密钥，以便对不同的应用进行认证。
 
 # 总结
-`HKDF` 是一种非常强大的密钥派生函数，它结合了 HMAC 和两步提取、扩展的过程，能够生成高度安全的密钥。通过从主密钥材料中提取出伪随机密钥，再通过扩展生成所需的多个密钥，`HKDF` 提供了一个灵活且可靠的密钥派生方案。无论是在加密协议、密钥交换还是 `API` 认证中，`HKDF` 都是一个非常有用的工具。
+
+`HKDF` 是一种非常强大的密钥派生函数，它结合了 `HMAC` 和两步提取、扩展的过程，能够生成高度安全的密钥。通过从主密钥材料中提取出伪随机密钥，再通过扩展生成所需的多个密钥，`HKDF` 提供了一个灵活且可靠的密钥派生方案。无论是在加密协议、密钥交换还是 `API` 认证中，`HKDF` 都是一个非常有用的工具。
+
+# 参考文献
+
+- [HMAC-based Extract-and-Expand Key Derivation Function (HKDF)](https://datatracker.ietf.org/doc/html/rfc5869)
