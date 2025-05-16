@@ -28,7 +28,7 @@
 <meta property="og:description" content="介绍在加密领域，密钥派生函数（KDF）是通过从一个初始密钥（通常称为“种子密钥”或“主密钥”）生成多个密钥的算法。HKDF（HMAC-based Key Derivation Function）是一种基于 HMAC 的密钥派生函数，它被设计用于从一个或多个输入密钥材料中生成多个安全的输出密钥。HKDF 是一个简洁且具有高度安全性的 KDF，广泛用于生成加密协议中的密钥（如 TLS、IPSec 等）">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-04-18T10:33:24.000Z">
-<meta property="article:modified_time" content="2025-05-16T05:11:35.373Z">
+<meta property="article:modified_time" content="2025-05-16T06:50:15.136Z">
 <meta property="article:author" content="yngty">
 <meta property="article:tag" content="HMAC">
 <meta property="article:tag" content="HKDF">
@@ -194,7 +194,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-05-16 05:11:35" itemprop="dateModified" datetime="2025-05-16T05:11:35+00:00">2025-05-16</time>
+                <time title="修改时间：2025-05-16 06:50:15" itemprop="dateModified" datetime="2025-05-16T06:50:15+00:00">2025-05-16</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -212,7 +212,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1.6k</span>
+              <span>1.7k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -235,13 +235,13 @@
 <p>在这篇文章中，我们将深入探讨 <code>HKDF</code> 的原理、计算过程以及应用场景，帮助你更好地理解这个关键的密码学工具。</p>
 <span id="more"></span>
 
-<h1 id="HKDF-的工作原理"><a href="#HKDF-的工作原理" class="headerlink" title="HKDF 的工作原理"></a>HKDF 的工作原理</h1><p><code>HKDF</code> 是一种 伪随机函数（<code>PRF</code>），其核心思想是从一个初始的种子密钥（或称主密钥）中生成多个密钥，并且能够提供高度的安全性。<code>HKDF</code> 通过两步过程实现密钥派生：<strong>提取（Extract）</strong> 和 <strong>扩展（Expand）</strong>。</p>
+<h1 id="HKDF-的工作原理"><a href="#HKDF-的工作原理" class="headerlink" title="HKDF 的工作原理"></a>HKDF 的工作原理</h1><p><code>HKDF</code> 是一种伪随机函数（<code>PRF</code>），其核心思想是从一个初始的种子密钥（或称主密钥）中生成多个密钥，并且能够提供高度的安全性。<code>HKDF</code> 通过两步过程实现密钥派生：<strong>提取（Extract）</strong> 和 <strong>扩展（Expand）</strong>。</p>
 <h2 id="1-提取（Extract）"><a href="#1-提取（Extract）" class="headerlink" title="1. 提取（Extract）"></a>1. 提取（Extract）</h2><p>提取过程是将输入的密钥材料（通常是随机的）和一个盐（<code>salt</code>）进行处理，得到一个固定大小的伪随机输出。盐的作用是增加随机性，避免相同的输入产生相同的输出，从而增加安全性。</p>
 <ul>
 <li><p><strong>输入</strong>：</p>
 <ul>
 <li><code>IKM（Input Key Material）</code>：初始密钥材料，通常是一个主密钥或其他随机数据。</li>
-<li><code>salt</code>（盐）：一个可选的随机值，通常是由一个非秘密值（例如，固定值或随机生成的值）组成。盐可以为空，但为空时应使用特定的默认值（如全零）。</li>
+<li><code>salt</code>（盐）：一个可选的随机值，通常是由一个非秘密值（例如，固定值或随机生成的值）组成。盐可以为空，<strong>但为空时应使用特定的默认值（如全零，长度则为所采用哈希函数的散列值长度）</strong>。</li>
 </ul>
 </li>
 <li><p><strong>输出</strong>：</p>
@@ -251,58 +251,59 @@
 </li>
 </ul>
 <p><code>HMAC</code> 算法将在提取过程中发挥作用，用盐和输入密钥材料（<code>IKM</code>）生成伪随机密钥（<code>PRK</code>）。</p>
-<p>提取过程的步骤：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PRK = HMAC(salt || IKM)</span><br></pre></td></tr></table></figure>
-
+<p>$$<br>\begin{aligned}</p>
+<p>&amp;\mathrm{PRK} &#x3D; \mathrm{HMAC}(\text{salt},\ \text{IKM}) \<br>\end{aligned}<br>$$</p>
 <h2 id="2-扩展（Expand）"><a href="#2-扩展（Expand）" class="headerlink" title="2. 扩展（Expand）"></a>2. 扩展（Expand）</h2><p>扩展过程使用从提取步骤得到的伪随机密钥（<code>PRK</code>）和一些额外的参数（如输出的密钥长度和上下文信息），进一步生成所需数量的密钥。扩展步骤是通过连续应用 <code>HMAC</code> 来逐步生成所需的密钥。</p>
 <ul>
 <li><p><strong>输入</strong>：</p>
 <ul>
 <li><code>PRK</code>（伪随机密钥）：提取过程的输出。</li>
 <li><code>info</code>（上下文信息）：可选的额外数据（如协议标识符、会话信息等），用于区分不同的密钥生成需求。</li>
-<li><code>L</code>（所需密钥长度）：派生出的密钥的总长度。</li>
+<li><code>L</code>（所需密钥长度）：所需的输出密钥长度，单位是字节 $L \leq 255 \times \text{HashLen}$</li>
 </ul>
 </li>
 <li><p><strong>输出</strong>：</p>
 <ul>
-<li>一个或多个密钥，长度为 <code>L</code>，可以用于加密、认证等多种目的。</li>
+<li><code>OKM</code> 输出密钥材料，长度为 <code>L</code> 字节</li>
 </ul>
 </li>
 </ul>
-<p>扩展过程通常通过不断迭代地将输出作为下次 <code>HMAC</code> 的输入来实现：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">T1 = HMAC(PRK, 0x01 || info)</span><br><span class="line">T2 = HMAC(PRK, T1)</span><br><span class="line">T3 = HMAC(PRK, T2)</span><br></pre></td></tr></table></figure>
-<p>直到生成足够长度的密钥为止。每次 <code>HMAC</code> 的输出都会参与下一轮的计算，保证了输出的密钥具备足够的随机性和安全性。</p>
-<h1 id="HKDF-的详细计算过程"><a href="#HKDF-的详细计算过程" class="headerlink" title="HKDF 的详细计算过程"></a>HKDF 的详细计算过程</h1><p>假设：</p>
-<ul>
-<li><code>IKM（Input Key Material）= &quot;SuperSecretKey&quot;</code>（种子密钥）</li>
-<li><code>salt = &quot;RandomSaltValue&quot;</code>（盐）</li>
-<li><code>info = &quot;ApplicationContext&quot;</code>（上下文信息）</li>
-<li>需要生成的密钥长度 <code>L = 64</code> 字节</li>
-</ul>
+<p>扩展阶段通过反复调用 <code>HMAC</code> 来生成一个或多个块，每个块的大小为 <code>HMAC</code> 输出长度（<code>HashLen</code>），直到输出满足总长度 <code>L</code>。公式如下：</p>
+<p>$$<br>\begin{aligned}<br>&amp; T_0 &#x3D; \text{空字符串（zero-length）} \\<br>&amp; T_1 &#x3D; \mathrm{HMAC}(PRK,\ T_0\ \texttt{||}\ \text{info}\ \texttt{||}\ \texttt{0x01}) \\<br>&amp; T_2 &#x3D; \mathrm{HMAC}(PRK,\ T_1\ \texttt{||}\ \text{info}\ \texttt{||}\ \texttt{0x02}) \\<br>&amp; T_3 &#x3D; \mathrm{HMAC}(PRK,\ T_2\ \texttt{||}\ \text{info}\ \texttt{||}\ \texttt{0x03}) \\<br>&amp; \vdots \\<br>&amp; OKM &#x3D; T_1\ \texttt{||}\ T_2\ \texttt{||}\ T_3\ \cdots \quad (\text{直到达到所需长度 L})<br>\end{aligned}<br>$$</p>
+<h1 id="HKDF-的详细计算过程"><a href="#HKDF-的详细计算过程" class="headerlink" title="HKDF 的详细计算过程"></a>HKDF 的详细计算过程</h1><p>我们以 使用 <strong>SHA-256（HashLen &#x3D; 32 字节）且需要输出 64 字节密钥</strong> 为例。</p>
 <h2 id="步骤-1：提取（Extract）"><a href="#步骤-1：提取（Extract）" class="headerlink" title="步骤 1：提取（Extract）"></a>步骤 1：提取（Extract）</h2><p>首先，我们使用 <code>HMAC</code> 对 <code>IKM</code> 和 <code>salt</code> 进行计算，得到伪随机密钥（<code>PRK</code>）。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PRK = HMAC(salt || IKM)</span><br></pre></td></tr></table></figure>
-<p><code>HMAC</code> 会根据 <code>SHA-256</code> 等哈希函数对 <code>salt || IKM</code> 进行计算，得到固定长度的输出，即伪随机密钥（<code>PRK</code>）。</p>
-<h3 id="步骤-2：扩展（Expand）"><a href="#步骤-2：扩展（Expand）" class="headerlink" title="步骤 2：扩展（Expand）"></a>步骤 2：扩展（Expand）</h3><p>接下来，使用 <code>PRK</code> 和 <code>info</code> 来生成最终的密钥。在这个过程中，我们会多次使用 <code>HMAC</code> 来生成所需的密钥。</p>
-<ol>
-<li><p>初始化：</p>
-<ul>
-<li><code>T1 = HMAC(PRK, 0x01 || info)</code></li>
+<p>$$<br>\mathrm{PRK} &#x3D; \mathrm{HMAC}(\text{salt},\ \text{IKM})<br>$$</p>
+<p><code>HMAC</code> 会根据 <code>SHA-256</code> 哈希函数对 <code>salt || IKM</code> 进行计算，得到固定长度的输出，即伪随机密钥（<code>PRK</code>）。</p>
+<h2 id="步骤-2：扩展（Expand）"><a href="#步骤-2：扩展（Expand）" class="headerlink" title="步骤 2：扩展（Expand）"></a>步骤 2：扩展（Expand）</h2><p>接下来，使用 <code>PRK</code> 和 <code>info</code> 来生成最终的密钥。在这个过程中，我们会多次使用 <code>HMAC</code> 来生成所需的密钥。</p>
+<h3 id="1-初始化："><a href="#1-初始化：" class="headerlink" title="1. 初始化："></a>1. 初始化：</h3><ul>
+<li>$T_0$ &#x3D; “”（空字符串）</li>
+<li><code>PRK</code> &#x3D; 来自提取阶段的 <code>HMAC</code> 输出（<code>32</code> 字节）</li>
+<li><code>info</code> &#x3D; 可选上下文信息（比如 b”context info”）</li>
 </ul>
-</li>
-<li><p>生成下一个块：</p>
+<h3 id="2-计算第一个区块-T-1"><a href="#2-计算第一个区块-T-1" class="headerlink" title="2. 计算第一个区块 $T_1$"></a>2. 计算第一个区块 $T_1$</h3><p>$$<br>T_1 &#x3D; \mathrm{HMAC}(\mathrm{PRK},\ T_0\ \texttt{||}\ \text{info}\ \texttt{||}\ \texttt{0x01})<br>$$</p>
 <ul>
-<li><code>T2 = HMAC(PRK, T1)</code></li>
+<li><p>$T_0$ <code>= &quot;&quot;</code></p>
+</li>
+<li><p>拼接内容为：<code>info + 0x01</code></p>
+</li>
+<li><p>调用 <code>HMAC: HMAC(PRK, info + 0x01)</code></p>
+</li>
+<li><p>输出 $T_1$（<code>32</code> 字节）</p>
+</li>
 </ul>
+<h3 id="3-计算第二个区块-T-2"><a href="#3-计算第二个区块-T-2" class="headerlink" title="3. 计算第二个区块 $T_2$"></a>3. 计算第二个区块 $T_2$</h3><p>$$<br>T_2 &#x3D; \mathrm{HMAC}(\mathrm{PRK},\ T_1\ \texttt{||}\ \text{info}\ \texttt{||}\ \texttt{0x02})<br>$$</p>
+<ul>
+<li><p>拼接内容为：$T_1$ + info + 0x02</p>
 </li>
-<li><p>如果需要继续生成更多的密钥，继续进行下去。</p>
+<li><p>调用 <code>HMAC</code>: HMAC(PRK, $T_1$ + info + 0x02)</p>
 </li>
-</ol>
-<p>例如：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">T1 = HMAC(PRK, 0x01 || info)    // 生成第一个密钥块</span><br><span class="line">T2 = HMAC(PRK, T1)              // 生成第二个密钥块</span><br><span class="line">T3 = HMAC(PRK, T2)              // 生成第三个密钥块</span><br></pre></td></tr></table></figure>
-<p>最终，通过连接这些块 <code>T1</code>, <code>T2</code>, <code>T3</code>, … 得到最终的密钥输出。如果所需的密钥长度 <code>L</code> 还没有满足，就继续生成更多的块，直到达到预期长度。</p>
-<h3 id="输出"><a href="#输出" class="headerlink" title="输出"></a>输出</h3><p>假设我们需要生成 <code>64</code> 字节的密钥，可能的输出（经过扩展）可能是：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Key1 = T1[0:32]</span><br><span class="line">Key2 = T1[32:64]</span><br></pre></td></tr></table></figure>
-<p>这些生成的密钥可以用作加密、身份验证等用途。</p>
+<li><p>输出 $T_2$（<code>32</code> 字节）</p>
+</li>
+</ul>
+<h3 id="4-拼接输出"><a href="#4-拼接输出" class="headerlink" title="4. 拼接输出"></a>4. 拼接输出</h3><p>$$<br>\mathrm{OKM} &#x3D; T_1\ \texttt{||}\ T_2 &#x3D; 64\ \text{字节}<br>$$</p>
+<p>如果需要更多字节（如 <code>80</code> 字节），则继续生成 $T_3$：</p>
+<p>$$<br>T_3 &#x3D; \mathrm{HMAC}(\mathrm{PRK},\ T_2\ \texttt{||}\ \text{info}\ \texttt{||}\ \texttt{0x03})<br>$$</p>
+<p>依此类推，直到拼接够 <code>L</code> 字节为止。</p>
 <h1 id="HKDF-的安全性"><a href="#HKDF-的安全性" class="headerlink" title="HKDF 的安全性"></a>HKDF 的安全性</h1><p><code>HKDF</code> 的安全性依赖于 <code>HMAC</code> 的安全性和良好的输入选择。由于 <code>HMAC</code> 基于强大的哈希函数（如 <code>SHA-256</code>），并且能够有效地防止碰撞攻击、重放攻击等，它本身是非常安全的。使用高质量的盐和上下文信息（<code>info</code>）可以进一步增加安全性，防止生成相同的密钥。</p>
 <h2 id="盐的作用"><a href="#盐的作用" class="headerlink" title="盐的作用"></a>盐的作用</h2><p>盐（<code>salt</code>）的作用是防止相同的输入材料（<code>IKM</code>）生成相同的伪随机密钥（<code>PRK</code>）。如果不同的密钥材料没有使用盐，可能会导致同样的密钥材料每次生成相同的派生密钥，降低安全性。因此，使用随机或不可预测的盐是非常重要的。</p>
 <h2 id="info-参数"><a href="#info-参数" class="headerlink" title="info 参数"></a>info 参数</h2><p><code>info</code> 参数的作用是提供额外的上下文信息，使得即使相同的主密钥和盐被用于生成不同的密钥，也能确保它们的差异性。例如，在 <code>TLS</code> 中，可以将会话ID作为 <code>info</code> 参数，保证不同会话中生成的密钥不同。</p>
@@ -311,7 +312,10 @@
 <p><code>IPSec</code>：用于加密和认证的密钥派生。</p>
 <p>密码学协议：例如，密钥交换协议中，<code>HKDF</code> 用于从共享密钥材料中派生密钥。</p>
 <p><code>API</code> 密钥生成：从主密钥生成多个 <code>API</code> 密钥，以便对不同的应用进行认证。</p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p><code>HKDF</code> 是一种非常强大的密钥派生函数，它结合了 HMAC 和两步提取、扩展的过程，能够生成高度安全的密钥。通过从主密钥材料中提取出伪随机密钥，再通过扩展生成所需的多个密钥，<code>HKDF</code> 提供了一个灵活且可靠的密钥派生方案。无论是在加密协议、密钥交换还是 <code>API</code> 认证中，<code>HKDF</code> 都是一个非常有用的工具。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p><code>HKDF</code> 是一种非常强大的密钥派生函数，它结合了 <code>HMAC</code> 和两步提取、扩展的过程，能够生成高度安全的密钥。通过从主密钥材料中提取出伪随机密钥，再通过扩展生成所需的多个密钥，<code>HKDF</code> 提供了一个灵活且可靠的密钥派生方案。无论是在加密协议、密钥交换还是 <code>API</code> 认证中，<code>HKDF</code> 都是一个非常有用的工具。</p>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/html/rfc5869">HMAC-based Extract-and-Expand Key Derivation Function (HKDF)</a></li>
+</ul>
 
     </div>
 
@@ -396,7 +400,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#HKDF-%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">HKDF 的工作原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E6%8F%90%E5%8F%96%EF%BC%88Extract%EF%BC%89"><span class="nav-number">2.1.</span> <span class="nav-text">1. 提取（Extract）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E6%89%A9%E5%B1%95%EF%BC%88Expand%EF%BC%89"><span class="nav-number">2.2.</span> <span class="nav-text">2. 扩展（Expand）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#HKDF-%E7%9A%84%E8%AF%A6%E7%BB%86%E8%AE%A1%E7%AE%97%E8%BF%87%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text">HKDF 的详细计算过程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A5%E9%AA%A4-1%EF%BC%9A%E6%8F%90%E5%8F%96%EF%BC%88Extract%EF%BC%89"><span class="nav-number">3.1.</span> <span class="nav-text">步骤 1：提取（Extract）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A5%E9%AA%A4-2%EF%BC%9A%E6%89%A9%E5%B1%95%EF%BC%88Expand%EF%BC%89"><span class="nav-number">3.1.1.</span> <span class="nav-text">步骤 2：扩展（Expand）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%87%BA"><span class="nav-number">3.1.2.</span> <span class="nav-text">输出</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#HKDF-%E7%9A%84%E5%AE%89%E5%85%A8%E6%80%A7"><span class="nav-number">4.</span> <span class="nav-text">HKDF 的安全性</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%90%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="nav-number">4.1.</span> <span class="nav-text">盐的作用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#info-%E5%8F%82%E6%95%B0"><span class="nav-number">4.2.</span> <span class="nav-text">info 参数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#HKDF-%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">5.</span> <span class="nav-text">HKDF 的应用场景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#HKDF-%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">HKDF 的工作原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E6%8F%90%E5%8F%96%EF%BC%88Extract%EF%BC%89"><span class="nav-number">2.1.</span> <span class="nav-text">1. 提取（Extract）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E6%89%A9%E5%B1%95%EF%BC%88Expand%EF%BC%89"><span class="nav-number">2.2.</span> <span class="nav-text">2. 扩展（Expand）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#HKDF-%E7%9A%84%E8%AF%A6%E7%BB%86%E8%AE%A1%E7%AE%97%E8%BF%87%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text">HKDF 的详细计算过程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A5%E9%AA%A4-1%EF%BC%9A%E6%8F%90%E5%8F%96%EF%BC%88Extract%EF%BC%89"><span class="nav-number">3.1.</span> <span class="nav-text">步骤 1：提取（Extract）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A5%E9%AA%A4-2%EF%BC%9A%E6%89%A9%E5%B1%95%EF%BC%88Expand%EF%BC%89"><span class="nav-number">3.2.</span> <span class="nav-text">步骤 2：扩展（Expand）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%88%9D%E5%A7%8B%E5%8C%96%EF%BC%9A"><span class="nav-number">3.2.1.</span> <span class="nav-text">1. 初始化：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%AE%A1%E7%AE%97%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%8C%BA%E5%9D%97-T-1"><span class="nav-number">3.2.2.</span> <span class="nav-text">2. 计算第一个区块 $T_1$</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E8%AE%A1%E7%AE%97%E7%AC%AC%E4%BA%8C%E4%B8%AA%E5%8C%BA%E5%9D%97-T-2"><span class="nav-number">3.2.3.</span> <span class="nav-text">3. 计算第二个区块 $T_2$</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E6%8B%BC%E6%8E%A5%E8%BE%93%E5%87%BA"><span class="nav-number">3.2.4.</span> <span class="nav-text">4. 拼接输出</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#HKDF-%E7%9A%84%E5%AE%89%E5%85%A8%E6%80%A7"><span class="nav-number">4.</span> <span class="nav-text">HKDF 的安全性</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%90%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="nav-number">4.1.</span> <span class="nav-text">盐的作用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#info-%E5%8F%82%E6%95%B0"><span class="nav-number">4.2.</span> <span class="nav-text">info 参数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#HKDF-%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">5.</span> <span class="nav-text">HKDF 的应用场景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">7.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -472,7 +476,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">60k</span>
+    <span title="站点总字数">61k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
@@ -530,6 +534,61 @@
 
 
   
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
 
   
 
