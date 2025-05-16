@@ -236,3 +236,9 @@ sequenceDiagram
 ## 总结
 
 `TLS 1.3` 通过精简握手流程、强制前向安全和算法升级，显著提升了安全性与性能。尽管 `TLS 1.2`仍在某些旧系统中使用，但 `TLS 1.3` 已成为现代 `Web` 服务、移动应用和 `IoT` 通信的首选协议。升级至 `TLS 1.3` 不仅是技术趋势，更是安全实践的必然要求。
+
+## 参考内容
+
+- [The Transport Layer Security (TLS) Protocol Version 1.2](https://datatracker.ietf.org/doc/html/rfc5246)
+- [The Transport Layer Security (TLS) Protocol Version 1.3](https://datatracker.ietf.org/doc/html/rfc8446)
+- [tls13_key_schedule](https://gist.github.com/yngty/c81f1266ed300135346464c1b3b78913)
