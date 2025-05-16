@@ -34,7 +34,6 @@ mathjax: true
 
 $$
 \begin{aligned}
-
 &\mathrm{PRK} = \mathrm{HMAC}(\text{salt},\ \text{IKM}) \\
 \end{aligned}
 $$
@@ -82,17 +81,16 @@ $$
 \mathrm{PRK} = \mathrm{HMAC}(\text{salt},\ \text{IKM})
 $$
 
-`HMAC` 会根据 `SHA-256` 哈希函数对 `salt || IKM` 进行计算，得到固定长度的输出，即伪随机密钥（`PRK`）。
+`HMAC` 会根据 `SHA-256` 哈希函数对 `salt` 和 `IKM` 进行计算，得到固定长度的输出，即**伪随机密钥**（`PRK`）。
 
 ## 步骤 2：扩展（Expand）
+
 接下来，使用 `PRK` 和 `info` 来生成最终的密钥。在这个过程中，我们会多次使用 `HMAC` 来生成所需的密钥。
 
 ###  1. 初始化：
 - $T_0$ = ""（空字符串）
 - `PRK` = 来自提取阶段的 `HMAC` 输出（`32` 字节）
 - `info` = 可选上下文信息（比如 b"context info"）
-
-
 
 ### 2. 计算第一个区块 $T_1$
 
@@ -104,7 +102,7 @@ $$
 
 - 拼接内容为：`info + 0x01`
 
-- 调用 `HMAC: HMAC(PRK, info + 0x01)`
+- 调用 `HMAC`: `HMAC(PRK, info + 0x01)`
 
 - 输出 $T_1$（`32` 字节）
 
@@ -118,7 +116,7 @@ $$
 
 - 拼接内容为：$T_1$ + info + 0x02
 
-- 调用 `HMAC`: HMAC(PRK, $T_1$ + info + 0x02)
+- 调用 `HMAC`: `HMAC(PRK, $T_1$ + info + 0x02)`
 
 - 输出 $T_2$（`32` 字节）
 
