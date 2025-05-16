@@ -30,7 +30,7 @@
 <meta property="og:image" content="https://yngty.github.io/images/Tux_ecb.png">
 <meta property="og:image" content="https://yngty.github.io/images/aes-gcm-diagram.png">
 <meta property="article:published_time" content="2025-04-08T10:11:14.000Z">
-<meta property="article:modified_time" content="2025-05-16T06:59:13.194Z">
+<meta property="article:modified_time" content="2025-05-16T07:23:32.661Z">
 <meta property="article:author" content="yngty">
 <meta property="article:tag" content="密码">
 <meta property="article:tag" content="加密">
@@ -197,7 +197,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-05-16 06:59:13" itemprop="dateModified" datetime="2025-05-16T06:59:13+00:00">2025-05-16</time>
+                <time title="修改时间：2025-05-16 07:23:32" itemprop="dateModified" datetime="2025-05-16T07:23:32+00:00">2025-05-16</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -215,14 +215,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>2.5k</span>
+              <span>2.6k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>9 分钟</span>
+              <span>10 分钟</span>
             </span>
 
         </div>
@@ -521,7 +521,7 @@
 <td>实现复杂，性能上相对较差。</td>
 </tr>
 </tbody></table>
-<h2 id="AES-GCM"><a href="#AES-GCM" class="headerlink" title="AES-GCM"></a>AES-GCM</h2><p><code>AES-GCM（Advanced Encryption Standard - Galois/Counter Mode）</code>是一种结合加密和认证的对称加密模式，广泛应用于需要高效保密性和数据完整性的场景（如<code>TLS</code>、<code>IPSec</code>）。以下是其核心步骤的详细分解：</p>
+<h1 id="AES-GCM"><a href="#AES-GCM" class="headerlink" title="AES-GCM"></a>AES-GCM</h1><p><code>AES-GCM（Advanced Encryption Standard - Galois/Counter Mode）</code>是一种结合加密和认证的对称加密模式，广泛应用于需要高效保密性和数据完整性的场景（如<code>TLS</code>、<code>IPSec</code>）。以下是其核心步骤的详细分解：</p>
 <h3 id="1-参数初始化"><a href="#1-参数初始化" class="headerlink" title="1. 参数初始化"></a>1. 参数初始化</h3><ul>
 <li><strong>密钥（Key）</strong>：<code>128/192/256</code>位的 <code>AES</code> 密钥，用于加密和生成认证标签。</li>
 <li><strong>初始向量（IV）</strong>：通常为 <code>12</code> 字节（<strong>推荐长度</strong>），需全局唯一，避免重复。</li>
@@ -530,15 +530,15 @@
 </ul>
 <h2 id="2-生成初始计数器块（J₀）"><a href="#2-生成初始计数器块（J₀）" class="headerlink" title="2. 生成初始计数器块（J₀）"></a>2. 生成初始计数器块（J₀）</h2><ul>
 <li><code>IV</code> 处理：<ul>
-<li>若 <code>IV</code> 为 <code>12</code> 字节：直接作为前 <code>12</code> 字节，后接4字节计数器（<code>0x00000001</code>），组成 <code>16</code> 字节的 <code>J₀</code> 。</li>
-<li>若 <code>IV</code> 非 <code>12</code> 字节：通过 <code>GHASH</code> 计算生成J₀（见步骤<code>6</code>）。</li>
+<li>若 <code>IV</code> 为 <code>12</code> 字节：直接作为前 <code>12</code> 字节，后接4字节计数器（<code>0x00000001</code>），组成 <code>16</code> 字节的 $J_0$ 。</li>
+<li>若 <code>IV</code> 非 <code>12</code> 字节：通过 <code>GHASH</code> 计算生成 $J_0$（见步骤<code>6</code>）。</li>
 </ul>
 </li>
 </ul>
 <h2 id="3-加密过程（CTR模式）"><a href="#3-加密过程（CTR模式）" class="headerlink" title="3. 加密过程（CTR模式）"></a>3. 加密过程（CTR模式）</h2><ul>
 <li><p>生成密钥流：</p>
 <ul>
-<li>初始计数器块：<code>J₀</code> 的<code>31</code>位最低有效位（<code>LSB</code>）递增，生成计数器序列 <code>J₀+1, J₀+2, ...</code>。</li>
+<li>初始计数器块：$J_0$ 的<code>31</code>位最低有效位（<code>LSB</code>）递增，生成计数器序列 <code>J₀+1, J₀+2, ...</code>。</li>
 <li>对每个计数器块进行 <code>AES</code> 加密，生成密钥流块。</li>
 </ul>
 </li>
@@ -548,28 +548,28 @@
 </ul>
 </li>
 </ul>
-<h2 id="4-认证过程（GHASH）"><a href="#4-认证过程（GHASH）" class="headerlink" title="4. 认证过程（GHASH）"></a>4. 认证过程（GHASH）</h2><p><code>GHASH</code> 核心操作：在 <code>Galois</code> 域（<code>GF(2¹²⁸)</code>）上的乘法，使用哈希子密钥 <code>H</code>,（<strong>由加密全0块得到</strong>, <code>H = AES-Encrypt(Key, 0¹²⁸)</code>）。</p>
+<h2 id="4-认证过程（GHASH）"><a href="#4-认证过程（GHASH）" class="headerlink" title="4. 认证过程（GHASH）"></a>4. 认证过程（GHASH）</h2><p><code>GHASH</code> 核心操作：在 <code>Galois</code> 域 $\mathrm{GF}(2^{128})$ 上的乘法，使用哈希子密钥 <code>H</code>,（<strong>由加密全0块得到</strong>, $H &#x3D; \mathrm{AES\text{-}Encrypt}(\mathrm{Key}, \mathbf{0}^{128})$）。</p>
 <p><strong>步骤</strong>：</p>
 <ol>
 <li><p><strong>处理AAD</strong>：</p>
 <ul>
-<li>将 <code>AAD</code> 填充为 <code>16</code> 字节的倍数，不够补零，分块为<code>A₁, A₂, ..., Aₘ</code>。</li>
+<li>将 <code>AAD</code> 填充为 <code>16</code> 字节的倍数，不够补零，分块为 $A_1, A_2, \ldots, A_m$。</li>
 <li>计算 <code>GHASH</code>：初始为<code>X = 0</code>（<code>128位全0</code>），依次与 <code>AAD</code> 块异或后乘 <code>H</code>。</li>
 </ul>
-<p> <code>X = (X ⊕ A_i) ⊗ H（⊗ 表示伽罗瓦域乘法）</code></p>
+<p> $$<br> X &#x3D; (X \oplus A_i) \otimes H<br> $$</p>
 </li>
 <li><p><strong>处理密文</strong>：</p>
 <ul>
-<li>将密文填充为 <code>16</code> 字节的倍数，不够补零，分块为<code>C₁, C₂, ..., Cₙ</code>。</li>
+<li>将密文填充为 <code>16</code> 字节的倍数，不够补零，分块为 $C_1, C_2, \ldots, C_m$。</li>
 <li>继续 <code>GHASH</code> 计算，与密文块异或后乘 <code>H</code>。</li>
 </ul>
-<p> <code>X = (X ⊕ C_i) ⊗ H</code></p>
+<p> $$<br> X &#x3D; (X \oplus C_i) \otimes H<br> $$</p>
 </li>
 <li><p><strong>处理长度块</strong>：</p>
 <ul>
 <li><p>拼接 <code>AAD</code> 长度和密文长度（各<code>64</code>位），组成 <code>16</code> 字节块。</p>
 <ul>
-<li>（1）单位必须为比特（bit）</li>
+<li>（1）单位必须为比特（<code>bit</code>）</li>
 <li>（2）<code>64</code> 位无符号整数表示</li>
 <li>（3）前 <code>8</code> 字节为 <code>AAD</code> 长度，后 <code>8</code> 字节为密文长度 的顺序拼接</li>
 </ul>
@@ -577,12 +577,20 @@
 <li><p>最后与长度块异或后乘 <code>H</code>，得到 <code>GHASH</code> 输出 <code>S</code> 。</p>
 </li>
 </ul>
-<p> <code>Len = len(AAD) || len(Ciphertext)</code></p>
-<p> <code>S = (X ⊕ Len) ⊗ H</code></p>
+<p> $$<br> \begin{aligned}<br> \text{Len} &amp;&#x3D; \text{len}(\text{AAD})\ \texttt{||} \ \text{len}(\text{Ciphertext}) \<br> S &amp;&#x3D; (X \oplus \text{Len}) \otimes H<br> \end{aligned}<br> $$</p>
 </li>
 </ol>
+<p><strong>📘 符号说明：</strong></p>
+<ul>
+<li>$\texttt{||}$ 表示拼接（<code>concatenation</code>）</li>
+<li>$\oplus$ 表示异或（<code>XOR</code>）</li>
+<li>$\otimes$ 表示伽罗瓦域乘法（$\mathrm{GF}(2^{128})$）</li>
+<li><code>len(...)</code> 表示比特长度，通常为 <code>64</code> 位整数（如 <code>GCM</code> 中的定义）</li>
+<li><code>X</code> 是前一轮 <code>GHASH</code> 累加值</li>
+<li><code>H</code> 是 <code>GHASH</code> 中的密钥（通常由 <code>AES</code> 加密 <code>0</code> 块得出）</li>
+</ul>
 <h2 id="5-生成认证标签（Tag）"><a href="#5-生成认证标签（Tag）" class="headerlink" title="5. 生成认证标签（Tag）"></a>5. 生成认证标签（Tag）</h2><ul>
-<li>加密<code>J₀</code>：<code>T = AES-Encrypt(J₀) ⊕ S</code>。</li>
+<li>加密 $J_0$：$T &#x3D; \mathrm{AES\text{-}Encrypt}(J_0) \oplus S$</li>
 <li>截断 <code>T</code> 为指定长度（通常<code>16</code>字节）作为最终认证标签。</li>
 </ul>
 <h2 id="6-输出结果"><a href="#6-输出结果" class="headerlink" title="6. 输出结果"></a>6. 输出结果</h2><ul>
@@ -680,7 +688,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E5%8A%A0%E5%AF%86%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">常见加密模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%88%86%E6%A8%A1%E5%BC%8F%EF%BC%9F"><span class="nav-number">1.1.</span> <span class="nav-text">为什么要分模式？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-ECB%E6%A8%A1%E5%BC%8F%EF%BC%88%E7%94%B5%E5%AD%90%E5%AF%86%E7%A0%81%E6%9C%AC%EF%BC%89"><span class="nav-number">1.2.</span> <span class="nav-text">1. ECB模式（电子密码本）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-CBC%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%AF%86%E7%A0%81%E5%9D%97%E9%93%BE%EF%BC%89"><span class="nav-number">1.3.</span> <span class="nav-text">2. CBC模式（密码块链）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-CTR%E6%A8%A1%E5%BC%8F%EF%BC%88%E8%AE%A1%E6%95%B0%E5%99%A8%E6%A8%A1%E5%BC%8F%EF%BC%89"><span class="nav-number">1.4.</span> <span class="nav-text">3. CTR模式（计数器模式）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-GCM%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BC%BD%E7%BD%97%E7%93%A6%E8%AE%A1%E6%95%B0%E5%99%A8%E6%A8%A1%E5%BC%8F%EF%BC%89"><span class="nav-number">1.5.</span> <span class="nav-text">4. GCM模式（伽罗瓦计数器模式）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-CFB-OFB%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%8F%8D%E9%A6%88%E6%A8%A1%E5%BC%8F%EF%BC%89"><span class="nav-number">1.6.</span> <span class="nav-text">5. CFB&#x2F;OFB模式（反馈模式）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E5%AF%86%E6%A8%A1%E5%BC%8F%E5%AF%B9%E6%AF%94%E8%A1%A8"><span class="nav-number">1.7.</span> <span class="nav-text">加密模式对比表</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">常见对称加密算法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E5%AF%86%E9%92%A5%E5%8D%8F%E5%95%86%E7%AE%97%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">常见密钥协商算法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#AES-GCM"><span class="nav-number">3.1.</span> <span class="nav-text">AES-GCM</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%8F%82%E6%95%B0%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">3.1.1.</span> <span class="nav-text">1. 参数初始化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E7%94%9F%E6%88%90%E5%88%9D%E5%A7%8B%E8%AE%A1%E6%95%B0%E5%99%A8%E5%9D%97%EF%BC%88J%E2%82%80%EF%BC%89"><span class="nav-number">3.2.</span> <span class="nav-text">2. 生成初始计数器块（J₀）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%8A%A0%E5%AF%86%E8%BF%87%E7%A8%8B%EF%BC%88CTR%E6%A8%A1%E5%BC%8F%EF%BC%89"><span class="nav-number">3.3.</span> <span class="nav-text">3. 加密过程（CTR模式）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E8%AE%A4%E8%AF%81%E8%BF%87%E7%A8%8B%EF%BC%88GHASH%EF%BC%89"><span class="nav-number">3.4.</span> <span class="nav-text">4. 认证过程（GHASH）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E7%94%9F%E6%88%90%E8%AE%A4%E8%AF%81%E6%A0%87%E7%AD%BE%EF%BC%88Tag%EF%BC%89"><span class="nav-number">3.5.</span> <span class="nav-text">5. 生成认证标签（Tag）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E8%BE%93%E5%87%BA%E7%BB%93%E6%9E%9C"><span class="nav-number">3.6.</span> <span class="nav-text">6. 输出结果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E5%85%A8%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="nav-number">3.7.</span> <span class="nav-text">安全注意事项</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E5%8A%A0%E5%AF%86%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">常见加密模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%88%86%E6%A8%A1%E5%BC%8F%EF%BC%9F"><span class="nav-number">1.1.</span> <span class="nav-text">为什么要分模式？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-ECB%E6%A8%A1%E5%BC%8F%EF%BC%88%E7%94%B5%E5%AD%90%E5%AF%86%E7%A0%81%E6%9C%AC%EF%BC%89"><span class="nav-number">1.2.</span> <span class="nav-text">1. ECB模式（电子密码本）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-CBC%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%AF%86%E7%A0%81%E5%9D%97%E9%93%BE%EF%BC%89"><span class="nav-number">1.3.</span> <span class="nav-text">2. CBC模式（密码块链）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-CTR%E6%A8%A1%E5%BC%8F%EF%BC%88%E8%AE%A1%E6%95%B0%E5%99%A8%E6%A8%A1%E5%BC%8F%EF%BC%89"><span class="nav-number">1.4.</span> <span class="nav-text">3. CTR模式（计数器模式）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-GCM%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%BC%BD%E7%BD%97%E7%93%A6%E8%AE%A1%E6%95%B0%E5%99%A8%E6%A8%A1%E5%BC%8F%EF%BC%89"><span class="nav-number">1.5.</span> <span class="nav-text">4. GCM模式（伽罗瓦计数器模式）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-CFB-OFB%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%8F%8D%E9%A6%88%E6%A8%A1%E5%BC%8F%EF%BC%89"><span class="nav-number">1.6.</span> <span class="nav-text">5. CFB&#x2F;OFB模式（反馈模式）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E5%AF%86%E6%A8%A1%E5%BC%8F%E5%AF%B9%E6%AF%94%E8%A1%A8"><span class="nav-number">1.7.</span> <span class="nav-text">加密模式对比表</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">常见对称加密算法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E5%AF%86%E9%92%A5%E5%8D%8F%E5%95%86%E7%AE%97%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">常见密钥协商算法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#AES-GCM"><span class="nav-number">4.</span> <span class="nav-text">AES-GCM</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%8F%82%E6%95%B0%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">4.0.1.</span> <span class="nav-text">1. 参数初始化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E7%94%9F%E6%88%90%E5%88%9D%E5%A7%8B%E8%AE%A1%E6%95%B0%E5%99%A8%E5%9D%97%EF%BC%88J%E2%82%80%EF%BC%89"><span class="nav-number">4.1.</span> <span class="nav-text">2. 生成初始计数器块（J₀）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%8A%A0%E5%AF%86%E8%BF%87%E7%A8%8B%EF%BC%88CTR%E6%A8%A1%E5%BC%8F%EF%BC%89"><span class="nav-number">4.2.</span> <span class="nav-text">3. 加密过程（CTR模式）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E8%AE%A4%E8%AF%81%E8%BF%87%E7%A8%8B%EF%BC%88GHASH%EF%BC%89"><span class="nav-number">4.3.</span> <span class="nav-text">4. 认证过程（GHASH）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E7%94%9F%E6%88%90%E8%AE%A4%E8%AF%81%E6%A0%87%E7%AD%BE%EF%BC%88Tag%EF%BC%89"><span class="nav-number">4.4.</span> <span class="nav-text">5. 生成认证标签（Tag）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E8%BE%93%E5%87%BA%E7%BB%93%E6%9E%9C"><span class="nav-number">4.5.</span> <span class="nav-text">6. 输出结果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E5%85%A8%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="nav-number">4.6.</span> <span class="nav-text">安全注意事项</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -761,7 +769,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">3:40</span>
+    <span title="站点阅读时长">3:41</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>
