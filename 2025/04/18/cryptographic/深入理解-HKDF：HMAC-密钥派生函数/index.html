@@ -28,7 +28,7 @@
 <meta property="og:description" content="介绍在加密领域，密钥派生函数（KDF）是通过从一个初始密钥（通常称为“种子密钥”或“主密钥”）生成多个密钥的算法。HKDF（HMAC-based Key Derivation Function）是一种基于 HMAC 的密钥派生函数，它被设计用于从一个或多个输入密钥材料中生成多个安全的输出密钥。HKDF 是一个简洁且具有高度安全性的 KDF，广泛用于生成加密协议中的密钥（如 TLS、IPSec 等）">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-04-18T10:33:24.000Z">
-<meta property="article:modified_time" content="2025-05-16T07:30:36.758Z">
+<meta property="article:modified_time" content="2025-05-19T02:12:25.152Z">
 <meta property="article:author" content="yngty">
 <meta property="article:tag" content="HMAC">
 <meta property="article:tag" content="HKDF">
@@ -194,7 +194,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-05-16 07:30:36" itemprop="dateModified" datetime="2025-05-16T07:30:36+00:00">2025-05-16</time>
+                <time title="修改时间：2025-05-19 02:12:25" itemprop="dateModified" datetime="2025-05-19T02:12:25+00:00">2025-05-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -235,66 +235,66 @@
 <p>在这篇文章中，我们将深入探讨 <code>HKDF</code> 的原理、计算过程以及应用场景，帮助你更好地理解这个关键的密码学工具。</p>
 <span id="more"></span>
 
-<h1 id="HKDF-的工作原理"><a href="#HKDF-的工作原理" class="headerlink" title="HKDF 的工作原理"></a>HKDF 的工作原理</h1><p><code>HKDF</code> 是一种伪随机函数（<code>PRF</code>），其核心思想是从一个初始的种子密钥（或称主密钥）中生成多个密钥，并且能够提供高度的安全性。<code>HKDF</code> 通过两步过程实现密钥派生：<strong>提取（Extract）</strong> 和 <strong>扩展（Expand）</strong>。</p>
-<h2 id="1-提取（Extract）"><a href="#1-提取（Extract）" class="headerlink" title="1. 提取（Extract）"></a>1. 提取（Extract）</h2><p>提取过程是将输入的密钥材料（通常是随机的）和一个盐（<code>salt</code>）进行处理，得到一个固定大小的伪随机输出。盐的作用是增加随机性，避免相同的输入产生相同的输出，从而增加安全性。</p>
+<h1 id="HKDF-的工作原理"><a href="#HKDF-的工作原理" class="headerlink" title="HKDF 的工作原理"></a>HKDF 的工作原理</h1><p><code>HKDF</code> 是一种伪随机函数（$PRF$），其核心思想是从一个初始的种子密钥（或称主密钥）中生成多个密钥，并且能够提供高度的安全性。<code>HKDF</code> 通过两步过程实现密钥派生：<strong>提取（Extract）</strong> 和 <strong>扩展（Expand）</strong>。</p>
+<h2 id="1-提取（Extract）"><a href="#1-提取（Extract）" class="headerlink" title="1. 提取（Extract）"></a>1. 提取（Extract）</h2><p>提取过程是将输入的密钥材料（通常是随机的）和一个盐（$salt$）进行处理，得到一个固定大小的伪随机输出。盐的作用是增加随机性，避免相同的输入产生相同的输出，从而增加安全性。</p>
 <ul>
 <li><p><strong>输入</strong>：</p>
 <ul>
-<li><code>IKM（Input Key Material）</code>：初始密钥材料，通常是一个主密钥或其他随机数据。</li>
-<li><code>salt</code>（盐）：一个可选的随机值，通常是由一个非秘密值（例如，固定值或随机生成的值）组成。盐可以为空，<strong>但为空时应使用特定的默认值（如全零，长度则为所采用哈希函数的散列值长度）</strong>。</li>
+<li>$IKM（Input Key Material）$：初始密钥材料，通常是一个主密钥或其他随机数据。</li>
+<li>$salt$（盐）：一个可选的随机值，通常是由一个非秘密值（例如，固定值或随机生成的值）组成。盐可以为空，<strong>但为空时应使用特定的默认值（如全零，长度则为所采用哈希函数的散列值长度）</strong>。</li>
 </ul>
 </li>
 <li><p><strong>输出</strong>：</p>
 <ul>
-<li><code>PRK（Pseudorandom Key）</code>：一个固定长度的伪随机密钥（<code>PRK</code>），通常使用 <code>HMAC</code> 作为提取过程的核心操作。</li>
+<li>$PRK（Pseudorandom Key）$：一个固定长度的伪随机密钥（$PRK$），通常使用 <code>HMAC</code> 作为提取过程的核心操作。</li>
 </ul>
 </li>
 </ul>
-<p><code>HMAC</code> 算法将在提取过程中发挥作用，用盐和输入密钥材料（<code>IKM</code>）生成伪随机密钥（<code>PRK</code>）。</p>
+<p><code>HMAC</code> 算法将在提取过程中发挥作用，用盐和输入密钥材料（$IKM$）生成伪随机密钥（$PRK$）。</p>
 <p>$$<br>\begin{aligned}<br>&amp;\mathrm{PRK} &#x3D; \mathrm{HMAC}(\text{salt},\ \text{IKM}) \<br>\end{aligned}<br>$$</p>
-<h2 id="2-扩展（Expand）"><a href="#2-扩展（Expand）" class="headerlink" title="2. 扩展（Expand）"></a>2. 扩展（Expand）</h2><p>扩展过程使用从提取步骤得到的伪随机密钥（<code>PRK</code>）和一些额外的参数（如输出的密钥长度和上下文信息），进一步生成所需数量的密钥。扩展步骤是通过连续应用 <code>HMAC</code> 来逐步生成所需的密钥。</p>
+<h2 id="2-扩展（Expand）"><a href="#2-扩展（Expand）" class="headerlink" title="2. 扩展（Expand）"></a>2. 扩展（Expand）</h2><p>扩展过程使用从提取步骤得到的伪随机密钥（$PRK$）和一些额外的参数（如输出的密钥长度和上下文信息），进一步生成所需数量的密钥。扩展步骤是通过连续应用 <code>HMAC</code> 来逐步生成所需的密钥。</p>
 <ul>
 <li><p><strong>输入</strong>：</p>
 <ul>
-<li><code>PRK</code>（伪随机密钥）：提取过程的输出。</li>
-<li><code>info</code>（上下文信息）：可选的额外数据（如协议标识符、会话信息等），用于区分不同的密钥生成需求。</li>
-<li><code>L</code>（所需密钥长度）：所需的输出密钥长度，单位是字节 $L \leq 255 \times \text{HashLen}$</li>
+<li>$PRK$（伪随机密钥）：提取过程的输出。</li>
+<li>$info$（上下文信息）：可选的额外数据（如协议标识符、会话信息等），用于区分不同的密钥生成需求。</li>
+<li>$L$（所需密钥长度）：所需的输出密钥长度，单位是字节 $L \leq 255 \times \text{HashLen}$</li>
 </ul>
 </li>
 <li><p><strong>输出</strong>：</p>
 <ul>
-<li><code>OKM</code> 输出密钥材料，长度为 <code>L</code> 字节</li>
+<li>${OKM}$: 输出密钥材料，长度为 $L$ 字节</li>
 </ul>
 </li>
 </ul>
 <p>扩展阶段通过反复调用 <code>HMAC</code> 来生成一个或多个块，每个块的大小为 <code>HMAC</code> 输出长度（<code>HashLen</code>），直到输出满足总长度 <code>L</code>。公式如下：</p>
 <p>$$<br>\begin{aligned}<br>&amp; T_0 &#x3D; \text{空字符串（zero-length）} \\<br>&amp; T_1 &#x3D; \mathrm{HMAC}(PRK,\ T_0\ \texttt{||}\ \text{info}\ \texttt{||}\ \texttt{0x01}) \\<br>&amp; T_2 &#x3D; \mathrm{HMAC}(PRK,\ T_1\ \texttt{||}\ \text{info}\ \texttt{||}\ \texttt{0x02}) \\<br>&amp; T_3 &#x3D; \mathrm{HMAC}(PRK,\ T_2\ \texttt{||}\ \text{info}\ \texttt{||}\ \texttt{0x03}) \\<br>&amp; \vdots \\<br>&amp; OKM &#x3D; T_1\ \texttt{||}\ T_2\ \texttt{||}\ T_3\ \cdots \quad (\text{直到达到所需长度 L})<br>\end{aligned}<br>$$</p>
 <h1 id="HKDF-的详细计算过程"><a href="#HKDF-的详细计算过程" class="headerlink" title="HKDF 的详细计算过程"></a>HKDF 的详细计算过程</h1><p>我们以 使用 <strong>SHA-256（HashLen &#x3D; 32 字节）且需要输出 64 字节密钥</strong> 为例。</p>
-<h2 id="步骤-1：提取（Extract）"><a href="#步骤-1：提取（Extract）" class="headerlink" title="步骤 1：提取（Extract）"></a>步骤 1：提取（Extract）</h2><p>首先，我们使用 <code>HMAC</code> 对 <code>IKM</code> 和 <code>salt</code> 进行计算，得到伪随机密钥（<code>PRK</code>）。</p>
+<h2 id="步骤-1：提取（Extract）"><a href="#步骤-1：提取（Extract）" class="headerlink" title="步骤 1：提取（Extract）"></a>步骤 1：提取（Extract）</h2><p>首先，我们使用 <code>HMAC</code> 对 $IKM$ 和 $salt$ 进行计算，得到<strong>伪随机密钥</strong>（$PRK$）。</p>
 <p>$$<br>\mathrm{PRK} &#x3D; \mathrm{HMAC}(\text{salt},\ \text{IKM})<br>$$</p>
-<p><code>HMAC</code> 会根据 <code>SHA-256</code> 哈希函数对 <code>salt</code> 和 <code>IKM</code> 进行计算，得到固定长度的输出，即<strong>伪随机密钥</strong>（<code>PRK</code>）。</p>
-<h2 id="步骤-2：扩展（Expand）"><a href="#步骤-2：扩展（Expand）" class="headerlink" title="步骤 2：扩展（Expand）"></a>步骤 2：扩展（Expand）</h2><p>接下来，使用 <code>PRK</code> 和 <code>info</code> 来生成最终的密钥。在这个过程中，我们会多次使用 <code>HMAC</code> 来生成所需的密钥。</p>
+<p><code>HMAC</code> 会根据 $SHA-256$ 哈希函数对 $salt$ 和 $IKM$ 进行计算，得到固定长度的输出，即<strong>伪随机密钥</strong>（$PRK$）。</p>
+<h2 id="步骤-2：扩展（Expand）"><a href="#步骤-2：扩展（Expand）" class="headerlink" title="步骤 2：扩展（Expand）"></a>步骤 2：扩展（Expand）</h2><p>接下来，使用 $PRK$ 和 $info$ 来生成最终的密钥。在这个过程中，我们会多次使用 <code>HMAC</code> 来生成所需的密钥。</p>
 <h3 id="1-初始化："><a href="#1-初始化：" class="headerlink" title="1. 初始化："></a>1. 初始化：</h3><ul>
-<li>$T_0$ &#x3D; “”（空字符串）</li>
-<li><code>PRK</code> &#x3D; 来自提取阶段的 <code>HMAC</code> 输出（<code>32</code> 字节）</li>
-<li><code>info</code> &#x3D; 可选上下文信息（比如 b”context info”）</li>
+<li>$T_0 &#x3D; “”（空字符串）$</li>
+<li>$PRK$ &#x3D; 来自提取阶段的 <code>HMAC</code> 输出（<code>32</code> 字节）</li>
+<li>$info$ &#x3D; 可选上下文信息（比如 <code>b&quot;context info&quot;</code>）</li>
 </ul>
 <h3 id="2-计算第一个区块-T-1"><a href="#2-计算第一个区块-T-1" class="headerlink" title="2. 计算第一个区块 $T_1$"></a>2. 计算第一个区块 $T_1$</h3><p>$$<br>T_1 &#x3D; \mathrm{HMAC}(\mathrm{PRK},\ T_0\ \texttt{||}\ \text{info}\ \texttt{||}\ \texttt{0x01})<br>$$</p>
 <ul>
-<li><p>$T_0$ <code>= &quot;&quot;</code></p>
+<li><p>$T_0 &#x3D; “”$</p>
 </li>
-<li><p>拼接内容为：<code>info + 0x01</code></p>
+<li><p>拼接内容为：$info + 0x01$</p>
 </li>
-<li><p>调用 <code>HMAC</code>: <code>HMAC(PRK, info + 0x01)</code></p>
+<li><p>调用 <code>HMAC</code>: $HMAC(PRK, info + 0x01)$</p>
 </li>
 <li><p>输出 $T_1$（<code>32</code> 字节）</p>
 </li>
 </ul>
 <h3 id="3-计算第二个区块-T-2"><a href="#3-计算第二个区块-T-2" class="headerlink" title="3. 计算第二个区块 $T_2$"></a>3. 计算第二个区块 $T_2$</h3><p>$$<br>T_2 &#x3D; \mathrm{HMAC}(\mathrm{PRK},\ T_1\ \texttt{||}\ \text{info}\ \texttt{||}\ \texttt{0x02})<br>$$</p>
 <ul>
-<li><p>拼接内容为：$T_1$ + info + 0x02</p>
+<li><p>拼接内容为：$T_1 + info + 0x02$</p>
 </li>
-<li><p>调用 <code>HMAC</code>: <code>HMAC(PRK, $T_1$ + info + 0x02)</code></p>
+<li><p>调用 <code>HMAC</code>: $HMAC(PRK, T_1 + info + 0x0)$</p>
 </li>
 <li><p>输出 $T_2$（<code>32</code> 字节）</p>
 </li>
@@ -302,10 +302,10 @@
 <h3 id="4-拼接输出"><a href="#4-拼接输出" class="headerlink" title="4. 拼接输出"></a>4. 拼接输出</h3><p>$$<br>\mathrm{OKM} &#x3D; T_1\ \texttt{||}\ T_2 &#x3D; 64\ \text{字节}<br>$$</p>
 <p>如果需要更多字节（如 <code>80</code> 字节），则继续生成 $T_3$：</p>
 <p>$$<br>T_3 &#x3D; \mathrm{HMAC}(\mathrm{PRK},\ T_2\ \texttt{||}\ \text{info}\ \texttt{||}\ \texttt{0x03})<br>$$</p>
-<p>依此类推，直到拼接够 <code>L</code> 字节为止。</p>
-<h1 id="HKDF-的安全性"><a href="#HKDF-的安全性" class="headerlink" title="HKDF 的安全性"></a>HKDF 的安全性</h1><p><code>HKDF</code> 的安全性依赖于 <code>HMAC</code> 的安全性和良好的输入选择。由于 <code>HMAC</code> 基于强大的哈希函数（如 <code>SHA-256</code>），并且能够有效地防止碰撞攻击、重放攻击等，它本身是非常安全的。使用高质量的盐和上下文信息（<code>info</code>）可以进一步增加安全性，防止生成相同的密钥。</p>
-<h2 id="盐的作用"><a href="#盐的作用" class="headerlink" title="盐的作用"></a>盐的作用</h2><p>盐（<code>salt</code>）的作用是防止相同的输入材料（<code>IKM</code>）生成相同的伪随机密钥（<code>PRK</code>）。如果不同的密钥材料没有使用盐，可能会导致同样的密钥材料每次生成相同的派生密钥，降低安全性。因此，使用随机或不可预测的盐是非常重要的。</p>
-<h2 id="info-参数"><a href="#info-参数" class="headerlink" title="info 参数"></a>info 参数</h2><p><code>info</code> 参数的作用是提供额外的上下文信息，使得即使相同的主密钥和盐被用于生成不同的密钥，也能确保它们的差异性。例如，在 <code>TLS</code> 中，可以将会话ID作为 <code>info</code> 参数，保证不同会话中生成的密钥不同。</p>
+<p>依此类推，直到拼接够 $L$ 字节为止。</p>
+<h1 id="HKDF-的安全性"><a href="#HKDF-的安全性" class="headerlink" title="HKDF 的安全性"></a>HKDF 的安全性</h1><p><code>HKDF</code> 的安全性依赖于 <code>HMAC</code> 的安全性和良好的输入选择。由于 <code>HMAC</code> 基于强大的哈希函数（如 $SHA-256$），并且能够有效地防止碰撞攻击、重放攻击等，它本身是非常安全的。使用高质量的盐和上下文信息（$info$）可以进一步增加安全性，防止生成相同的密钥。</p>
+<h2 id="盐的作用"><a href="#盐的作用" class="headerlink" title="盐的作用"></a>盐的作用</h2><p>盐（$salt$）的作用是防止相同的输入材料（$IKM$）生成相同的伪随机密钥（$PRK$）。如果不同的密钥材料没有使用盐，可能会导致同样的密钥材料每次生成相同的派生密钥，降低安全性。因此，使用随机或不可预测的盐是非常重要的。</p>
+<h2 id="info-参数"><a href="#info-参数" class="headerlink" title="info 参数"></a>info 参数</h2><p>$info$ 参数的作用是提供额外的上下文信息，使得即使相同的主密钥和盐被用于生成不同的密钥，也能确保它们的差异性。例如，在 <code>TLS</code> 中，可以将会话ID作为 $info$ 参数，保证不同会话中生成的密钥不同。</p>
 <h1 id="HKDF-的应用场景"><a href="#HKDF-的应用场景" class="headerlink" title="HKDF 的应用场景"></a>HKDF 的应用场景</h1><p><code>HKDF</code> 在许多加密协议和应用中都有广泛的应用。以下是一些典型场景：</p>
 <p><code>TLS/SSL</code>：在 <code>TLS</code> 连接中，<code>HKDF</code> 用于派生会话密钥，保证每次连接都有不同的密钥，增加安全性。</p>
 <p><code>IPSec</code>：用于加密和认证的密钥派生。</p>
