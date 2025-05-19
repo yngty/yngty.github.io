@@ -29,7 +29,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://yngty.github.io/images/hmac.png">
 <meta property="article:published_time" content="2025-04-18T10:26:26.000Z">
-<meta property="article:modified_time" content="2025-05-19T02:12:25.152Z">
+<meta property="article:modified_time" content="2025-05-19T02:58:05.395Z">
 <meta property="article:author" content="yngty">
 <meta property="article:tag" content="HMAC">
 <meta name="twitter:card" content="summary">
@@ -195,7 +195,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-05-19 02:12:25" itemprop="dateModified" datetime="2025-05-19T02:12:25+00:00">2025-05-19</time>
+                <time title="修改时间：2025-05-19 02:58:05" itemprop="dateModified" datetime="2025-05-19T02:58:05+00:00">2025-05-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -220,7 +220,7 @@
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>4 分钟</span>
+              <span>5 分钟</span>
             </span>
 
         </div>
@@ -238,58 +238,55 @@
 
 <h1 id="HMAC的工作原理"><a href="#HMAC的工作原理" class="headerlink" title="HMAC的工作原理"></a>HMAC的工作原理</h1><p><code>HMAC</code> 的工作原理可以通过以下几个步骤来描述：</p>
 <ol>
-<li><p>选择哈希算法：HMAC可以使用任何哈希函数，如 <code>MD5</code>、<code>SHA-1</code>、<code>SHA-256</code>等。算法的选择通常取决于安全要求及性能需求。</p>
+<li><p>选择哈希算法：<code>HMAC</code> 可以使用任何哈希函数，如 $MD5$、$SHA\text{-}1$、$SHA\text{-}256$等。算法的选择通常取决于安全要求及性能需求。</p>
 </li>
-<li><p>密钥处理：<code>HMAC</code> 算法需要一个密钥。如果密钥的长度小于哈希函数的块大小，则需要对密钥进行填充，在末尾填充<code>0</code>。如果密钥的长度大于块大小，则首先对密钥进行哈希处理，使得密钥的长度与块大小一致。</p>
+<li><p>密钥处理：<code>HMAC</code> 算法需要一个密钥。如果密钥的长度小于哈希函数的块大小，则需要对密钥进行填充，在末尾填充 $0$。如果密钥的长度大于块大小，则首先对密钥进行哈希处理，使得密钥的长度与块大小一致。</p>
 </li>
-<li><p>内外填充：在 <code>HMAC</code> 中，密钥会被分别与两个常量值（<code>ipad</code> 和 <code>opad</code>）进行组合：</p>
+<li><p>内外填充：在 <code>HMAC</code> 中，密钥会被分别与两个常量值（$ipad$ 和 $opad$）进行组合：</p>
 <ul>
-<li><code>ipad</code>（内填充）：一个由 <code>0x36</code> 组成的块（长度等于哈希函数的块大小）。</li>
-<li><code>opad</code>（外填充）：一个由 <code>0x5C</code> 组成的块（长度等于哈希函数的块大小）。</li>
+<li>$ipad$（内填充）：一个由 $0x36$ 组成的块（长度等于哈希函数的块大小）。</li>
+<li>$opad$（外填充）：一个由 $0x5C$ 组成的块（长度等于哈希函数的块大小）。</li>
 </ul>
 </li>
-<li><p>计算过程：HMAC的计算分为两个主要步骤：</p>
+<li><p>计算过程：<code>HMAC</code> 的计算分为两个主要步骤：</p>
 <ol>
-<li>内层哈希：首先将密钥与 <code>ipad</code> 进行异或运算，得到一个新的密钥。然后，将该新密钥与消息数据进行连接，并计算哈希值。</li>
-<li>外层哈希：接着，将密钥与 <code>opad</code> 进行异或运算，得到一个新的密钥。然后，将该新密钥与第一步得到的哈希值进行连接，并计算哈希值。最终得到的哈希值就是 <code>HMAC</code> 值。</li>
+<li>内层哈希：首先将密钥与 $ipad$ 进行异或运算，得到一个新的密钥。然后，将该新密钥与消息数据进行连接，并计算哈希值。</li>
+<li>外层哈希：接着，将密钥与 $opad$ 进行异或运算，得到一个新的密钥。然后，将该新密钥与第一步得到的哈希值进行连接，并计算哈希值。最终得到的哈希值就是 <code>HMAC</code> 值。</li>
 </ol>
 </li>
 </ol>
-<p>$$<br>\mathrm{HMAC}(K, m) &#x3D; H\left((K’ \oplus \text{opad}) ,|, H\left((K’ \oplus \text{ipad}) ,|, m\right)\right)<br>$$</p>
+<p>$$<br>\mathrm{HMAC}(K, m) &#x3D; H\left((K’ \oplus \text{opad}) \,\|\, H\left((K’ \oplus \text{ipad}) ,|, m\right)\right)<br>$$</p>
 <p>其中：</p>
 <ul>
-<li>( H )：哈希函数（如 SHA-256）</li>
-<li>( K )：原始密钥</li>
-<li>( m )：消息</li>
-<li>( K’ )：处理后的密钥，如果 ( K ) 长度大于块长度，则先哈希再填充，否则直接填充到块长度</li>
-<li>( $\text{opad}$ )：外部填充常量，重复字节 <code>0x5c</code></li>
-<li>( $\text{ipad}$ )：内部填充常量，重复字节 <code>0x36</code></li>
-<li>( $|$ )：表示字节连接</li>
-<li>( $\oplus$ )：按位异或</li>
+<li>\( H \)：哈希函数（如 SHA-256）</li>
+<li>\( K \)：原始密钥</li>
+<li>\( m \)：消息</li>
+<li>\( K’ \)：处理后的密钥，如果 \( K \) 长度大于块长度，则先哈希再填充，否则直接填充到块长度</li>
+<li>\( \text{opad} \)：外部填充常量，重复字节 <code>0x5c</code></li>
+<li>\( \text{ipad} \)：内部填充常量，重复字节 <code>0x36</code></li>
+<li>\( \| \)：表示字节连接</li>
+<li>\( \oplus \)：按位异或</li>
 </ul>
 <p><img src="/../../images/hmac.png" alt="hmac"></p>
-<h1 id="HMAC的计算过程"><a href="#HMAC的计算过程" class="headerlink" title="HMAC的计算过程"></a>HMAC的计算过程</h1><p>下面通过具体的计算例子来详细说明 <code>HMAC</code> 的生成过程。假设我们使用 <code>SHA-256</code> 哈希算法，并且给定一个密钥和消息。</p>
+<h1 id="HMAC的计算过程"><a href="#HMAC的计算过程" class="headerlink" title="HMAC的计算过程"></a>HMAC的计算过程</h1><p>下面通过具体的计算例子来详细说明 <code>HMAC</code> 的生成过程。假设我们使用 $SHA\text{-}256$ 哈希算法，并且给定一个密钥和消息。</p>
 <h2 id="步骤1：准备工作"><a href="#步骤1：准备工作" class="headerlink" title="步骤1：准备工作"></a>步骤1：准备工作</h2><p>假设：</p>
 <ul>
-<li>密钥：<code>K = &quot;key&quot;</code></li>
-<li>消息：<code>M = &quot;The quick brown fox jumps over the lazy dog&quot;</code></li>
+<li>密钥：$K &#x3D; “key”$</li>
+<li>消息：$M &#x3D; “The quick brown fox jumps over the lazy dog”$</li>
 </ul>
-<p>首先，<code>SHA-256</code> 的块大小为 <code>64</code> 字节（<code>512</code> 位），因此我们需要将密钥扩展或截断为 <code>64</code> 字节的长度。如果密钥小于 <code>64</code> 字节，则通过补零使其长度达到 <code>64</code> 字节。</p>
+<p>首先，$SHA\text{-}256$ 的块大小为 $64$ 字节（$512$ 位），因此我们需要将密钥扩展或截断为 $64$ 字节的长度。如果密钥小于 $64$ 字节，则通过补零使其长度达到 $64$ 字节。</p>
 <p>密钥扩展后：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">K = &quot;key&quot; =&gt; 0x6B65790000000000000000000000000000000000000000000000000000000000</span><br></pre></td></tr></table></figure>
 
-<h2 id="步骤2：内层计算"><a href="#步骤2：内层计算" class="headerlink" title="步骤2：内层计算"></a>步骤2：内层计算</h2><p>将密钥与 <code>ipad</code>（<code>0x36</code> 的重复块）进行异或，得到内层密钥：</p>
+<h2 id="步骤2：内层计算"><a href="#步骤2：内层计算" class="headerlink" title="步骤2：内层计算"></a>步骤2：内层计算</h2><p>将密钥与 $ipad$（$0x36$ 的重复块）进行异或，得到内层密钥：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">K ⊕ ipad = 0x6B65790000000000000000000000000000000000000000000000000000000000</span><br><span class="line">           ⊕ 0x3636363636363636363636363636363636363636363636363636363636363636</span><br><span class="line">           ------------------------------------</span><br><span class="line">           0x5D3187376C7D2D6C74702C7270657D6E7E7D696F7B7D7C0B68726D786D7E7F7E</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-<p>接着，将内层密钥与消息M进行拼接，并对拼接后的数据进行 <code>SHA-256</code> 哈希计算：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">H1 = SHA-256(K ⊕ ipad || M)</span><br></pre></td></tr></table></figure>
-
-<h1 id="步骤3：外层计算"><a href="#步骤3：外层计算" class="headerlink" title="步骤3：外层计算"></a>步骤3：外层计算</h1><p>将密钥与 <code>opad</code>（<code>0x5C</code> 的重复块）进行异或，得到外层密钥：</p>
+<p>接着，将内层密钥与消息 <code>M</code> 进行拼接，并对拼接后的数据进行 $SHA\text{-}256$ 哈希计算：</p>
+<p>$$<br>H_1 &#x3D; \mathrm{SHA\text{-}256}\left((K \oplus \mathrm{ipad}) \,\|\, M\right)<br>$$</p>
+<h1 id="步骤3：外层计算"><a href="#步骤3：外层计算" class="headerlink" title="步骤3：外层计算"></a>步骤3：外层计算</h1><p>将密钥与 $opad$（$0x5C$ 的重复块）进行异或，得到外层密钥：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">K ⊕ opad = 0x6B65790000000000000000000000000000000000000000000000000000000000</span><br><span class="line">           ⊕ 0x5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C5C</span><br><span class="line">           ------------------------------------</span><br><span class="line">           0x1775744441E8B54D5F7D2A0C7640E45F2B70D1639B4D2B4C4D4D3A2B4F4F49F2</span><br></pre></td></tr></table></figure>
-<p>然后，将外层密钥与第一步计算得到的哈希值 <code>H1</code> 进行拼接，并对拼接后的数据进行 <code>SHA-256</code> 哈希计算：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HMAC = SHA-256(K ⊕ opad || H1)</span><br></pre></td></tr></table></figure>
-
-<p>最终，得到的 <code>HMAC</code> 就是我们需要的消息认证码。</p>
+<p>然后，将外层密钥与第一步计算得到的哈希值 $H_1$ 进行拼接，并对拼接后的数据进行 $SHA\text{-}256$ 哈希计算：</p>
+<p>$$<br>HMAC &#x3D; \mathrm{SHA\text{-}256}\left((K \oplus \mathrm{opad}) \,\|\, H_1\right)<br>$$<br>最终，得到的 <code>HMAC</code> 就是我们需要的消息认证码。</p>
 <h1 id="HMAC的安全性"><a href="#HMAC的安全性" class="headerlink" title="HMAC的安全性"></a>HMAC的安全性</h1><p><code>HMAC</code> 的安全性依赖于两个因素：</p>
 <ol>
 <li><p>哈希函数的安全性：如果选择的哈希函数本身存在安全漏洞（如碰撞攻击），则 <code>HMAC</code> 的安全性也会受到影响。</p>
@@ -297,7 +294,7 @@
 <li><p>密钥的管理：<code>HMAC</code> 依赖于密钥的机密性。如果密钥泄露，<code>HMAC</code> 的安全性将大大降低。</p>
 </li>
 </ol>
-<p>因此，建议使用强大的哈希算法（如 <code>SHA-256</code> 或更高版本的算法），并采取合适的措施管理密钥。</p>
+<p>因此，建议使用强大的哈希算法（如 $SHA\text{-}256$ 或更高版本的算法），并采取合适的措施管理密钥。</p>
 <h1 id="HMAC的应用场景"><a href="#HMAC的应用场景" class="headerlink" title="HMAC的应用场景"></a>HMAC的应用场景</h1><p><code>HMAC</code> 有许多应用场景，以下是一些常见的例子：</p>
 <ul>
 <li><p><code>API</code>认证：通过 <code>HMAC</code> 可以确保请求的数据未被篡改，并且能够验证请求者的身份。</p>
