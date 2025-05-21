@@ -154,13 +154,13 @@ mathjax: true
     - 明文分块（每块`16`字节）与对应密钥流异或，得到密文。
 
 ## 4. 认证过程（GHASH）
-`GHASH` 核心操作：在 `Galois` 域 $\mathrm{GF}(2^{128})$ 上的乘法，使用哈希子密钥 `H`,（**由加密全0块得到**, $H = \mathrm{AES\text{-}Encrypt}(\mathrm{Key}, \mathbf{0}^{128})$）。
+`GHASH` 核心操作：在 `Galois` 域 $\mathrm{GF}(2^{128})$ 上的乘法，使用哈希子密钥 $H$,（**由加密全0块得到**, $H = \mathrm{AES\text{-}Encrypt}(\mathrm{Key}, \mathbf{0}^{128})$）。
 
 **步骤**：
 
 1. **处理AAD**：
     - 将 `AAD` 填充为 `16` 字节的倍数，不够补零，分块为 $A_1, A_2, \ldots, A_m$。
-    - 计算 `GHASH`：初始为`X = 0`（`128位全0`），依次与 `AAD` 块异或后乘 `H`。
+    - 计算 `GHASH`：初始为`X = 0`（`128位全0`），依次与 `AAD` 块异或后乘 $H$。
 
     $$
     X = (X \oplus A_i) \otimes H
@@ -168,7 +168,7 @@ mathjax: true
 
 2. **处理密文**：
     - 将密文填充为 `16` 字节的倍数，不够补零，分块为 $C_1, C_2, \ldots, C_m$。
-    - 继续 `GHASH` 计算，与密文块异或后乘 `H`。
+    - 继续 `GHASH` 计算，与密文块异或后乘 $H$。
 
     $$
     X = (X \oplus C_i) \otimes H
@@ -180,11 +180,11 @@ mathjax: true
         - （2）`64` 位无符号整数表示
         - （3）前 `8` 字节为 `AAD` 长度，后 `8` 字节为密文长度 的顺序拼接
 
-    - 最后与长度块异或后乘 `H`，得到 `GHASH` 输出 `S` 。
+    - 最后与长度块异或后乘 $H$，得到 `GHASH` 输出 $S$ 。
 
     $$
     \begin{aligned}
-    \text{Len} &= \text{len}(\text{AAD})\ \texttt{||} \ \text{len}(\text{Ciphertext}) \\
+    \text{Len} &= \text{len}(\text{AAD})\ \texttt{||} \ \text{len}(\text{Ciphertext}) \\\\
     S &= (X \oplus \text{Len}) \otimes H
     \end{aligned}
     $$
