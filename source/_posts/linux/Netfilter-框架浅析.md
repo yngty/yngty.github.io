@@ -2,12 +2,15 @@
 title: Netfilter 框架浅析
 tags:
   - Netfilter
+  - 防火墙
+  - 网络安全
+  - iptables
 categories:
   - Network
+  - 网络安全
+  - Linux 内核
 date: 2024-07-11 17:42:47
 ---
-
-
 
 `Netfilter`，在 `Linux` 内核中的一个软件框架，用于管理网络数据包。不仅具有网络地址转换（`NAT`）的功能，也具备数据包内容修改、以及数据包过滤等防火墙功能。利用运作于用户空间的应用软件，如 `iptables` 、`nftables` 、`ebtables` 和 `arptables` 等，来控制 `Netfilter`，系统管理者可以管理通过Linux操作系统的各种网络数据包。`1990` 年代，`Netfilter` 在 `Linux 2.3.15` 版时进入Linux内核，正式应用于 `Linux 2.4` 版。
 
