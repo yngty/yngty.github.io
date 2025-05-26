@@ -18,7 +18,7 @@ categories:
 <!--more-->
 `MIME` 类型名字遵循指定的格式：
 
-类型和子类型， 在 MIME 类型中，类型和子类型不区分大小写。
+类型和子类型， 在 `MIME` 类型中，类型和子类型不区分大小写。
 
 ```
 media-type/subtype-identifier
@@ -57,7 +57,7 @@ application/vnd.api+json
     例如：
 
     ```shell
-    ➜ xdg-mime query filetype one.jpg 
+    ➜ xdg-mime query filetype one.jpg
     image/jpeg
     ```
 
@@ -106,7 +106,7 @@ application/vnd.api+json
 
     例如：
     ```
-    ➜ file --mime-type one.jpg 
+    ➜ file --mime-type one.jpg
     one.jpg: inode/symlink
     ```
 
