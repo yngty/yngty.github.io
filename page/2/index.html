@@ -119,17 +119,17 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">87</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">88</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
 
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">16</span></a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">51</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">54</span></a>
 
   </li>
   </ul>
@@ -155,6 +155,110 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2024/09/13/git/Git-%E5%A4%87%E5%BF%98%E5%BD%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Symbol Crash">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/09/13/git/Git-%E5%A4%87%E5%BF%98%E5%BD%95/" class="post-title-link" itemprop="url">Git 备忘录</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-09-13 10:38:55" itemprop="dateCreated datePublished" datetime="2024-09-13T10:38:55+00:00">2024-09-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-05-26 09:44:34" itemprop="dateModified" datetime="2025-05-26T09:44:34+00:00">2025-05-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Git/" itemprop="url" rel="index"><span itemprop="name">Git</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>360</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="如何修改-Git提交历史中的-author-等信息"><a href="#如何修改-Git提交历史中的-author-等信息" class="headerlink" title="如何修改 Git提交历史中的 author 等信息"></a>如何修改 <code>Git</code>提交历史中的 <code>author</code> 等信息</h1><h2 id="修改上次提交的commit信息"><a href="#修改上次提交的commit信息" class="headerlink" title="修改上次提交的commit信息"></a>修改上次提交的commit信息</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git commit --amend --author=&quot;newname&lt;newmail&gt;&quot;</span><br><span class="line">// 不想修改提交信息，则添加--no-edit</span><br><span class="line">git commit --amend --author=&quot;newname&lt;newmail&gt;&quot; --no-edit</span><br></pre></td></tr></table></figure>
+
+<h1 id="cherry-pick-冲突"><a href="#cherry-pick-冲突" class="headerlink" title="cherry-pick 冲突"></a>cherry-pick 冲突</h1><p>在 <code>Git</code> 中，若想选择性保留冲突文件的原始版本（当前分支的版本）或合并来的版本（被 <code>cherry-pick</code> 的提交版本），可以通过以下命令实现：</p>
+<h2 id="1-保留当前分支的原始版本"><a href="#1-保留当前分支的原始版本" class="headerlink" title="1. 保留当前分支的原始版本"></a>1. 保留当前分支的原始版本</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 针对特定冲突文件（例如你的 xxx.cpp）</span></span><br><span class="line">git checkout --ours src/xxx.cpp</span><br><span class="line"></span><br><span class="line"><span class="comment"># 标记冲突已解决</span></span><br><span class="line">git add src/xxx.cpp</span><br><span class="line"></span><br><span class="line"><span class="comment"># 继续完成 cherry-pick 流程</span></span><br><span class="line">git cherry-pick --<span class="built_in">continue</span></span><br></pre></td></tr></table></figure>
+<h2 id="2-保留合并来的版本（冲突文件以被-cherry-pick-的提交内容为准）"><a href="#2-保留合并来的版本（冲突文件以被-cherry-pick-的提交内容为准）" class="headerlink" title="2. 保留合并来的版本（冲突文件以被 cherry-pick 的提交内容为准）"></a>2. 保留合并来的版本（冲突文件以被 cherry-pick 的提交内容为准）</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 针对特定冲突文件</span></span><br><span class="line">git checkout --theirs src/xxx.cpp</span><br><span class="line"></span><br><span class="line"><span class="comment"># 标记冲突已解决</span></span><br><span class="line">git add src/xxx.cpp</span><br><span class="line"></span><br><span class="line"><span class="comment"># 继续完成 cherry-pick 流程</span></span><br><span class="line">git cherry-pick --<span class="built_in">continue</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="关键概念说明："><a href="#关键概念说明：" class="headerlink" title="关键概念说明："></a>关键概念说明：</h2><ul>
+<li><p><strong>–ours</strong>：代表当前分支的版本（即你在执行 <code>cherry-pick</code> 时的本地原始状态）。</p>
+</li>
+<li><p><strong>–theirs</strong>：代表被 <code>cherry-pick</code> 的提交的版本（即你要合并进来的修改）。</p>
+</li>
+</ul>
+<h2 id="补充说明："><a href="#补充说明：" class="headerlink" title="补充说明："></a>补充说明：</h2><p>如果多个文件冲突，可以批量操作：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 保留所有文件的当前分支版本</span></span><br><span class="line">git checkout --ours .</span><br><span class="line"></span><br><span class="line"><span class="comment"># 或保留所有文件的合并来的版本</span></span><br><span class="line">git checkout --theirs .</span><br></pre></td></tr></table></figure>
+<p>（操作后仍需 <code>git add</code> 并 <code>git cherry-pick --continue</code>）</p>
+<p>如果中途想彻底放弃整个 <code>cherry-pick</code>，仍可用：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git cherry-pick --abort</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -190,7 +294,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-05-21 05:56:56" itemprop="dateModified" datetime="2025-05-21T05:56:56+00:00">2025-05-21</time>
+                <time title="修改时间：2025-05-26 09:44:34" itemprop="dateModified" datetime="2025-05-26T09:44:34+00:00">2025-05-26</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -300,7 +404,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-05-21 05:56:56" itemprop="dateModified" datetime="2025-05-21T05:56:56+00:00">2025-05-21</time>
+                <time title="修改时间：2025-05-26 09:44:34" itemprop="dateModified" datetime="2025-05-26T09:44:34+00:00">2025-05-26</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -372,7 +476,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2024/07/11/network/Netfilter-%E6%A1%86%E6%9E%B6%E6%B5%85%E6%9E%90/">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2024/07/11/linux/Netfilter-%E6%A1%86%E6%9E%B6%E6%B5%85%E6%9E%90/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -386,7 +490,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2024/07/11/network/Netfilter-%E6%A1%86%E6%9E%B6%E6%B5%85%E6%9E%90/" class="post-title-link" itemprop="url">Netfilter 框架浅析</a>
+            <a href="/2024/07/11/linux/Netfilter-%E6%A1%86%E6%9E%B6%E6%B5%85%E6%9E%90/" class="post-title-link" itemprop="url">Netfilter 框架浅析</a>
         </h2>
 
         <div class="post-meta">
@@ -403,7 +507,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-05-21 05:56:56" itemprop="dateModified" datetime="2025-05-21T05:56:56+00:00">2025-05-21</time>
+                <time title="修改时间：2025-05-26 09:44:34" itemprop="dateModified" datetime="2025-05-26T09:44:34+00:00">2025-05-26</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -412,6 +516,14 @@
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/Network/" itemprop="url" rel="index"><span itemprop="name">Network</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Network/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">网络安全</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Network/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/Linux-%E5%86%85%E6%A0%B8/" itemprop="url" rel="index"><span itemprop="name">Linux 内核</span></a>
                 </span>
             </span>
 
@@ -443,7 +555,7 @@
           <p><code>Netfilter</code>，在 <code>Linux</code> 内核中的一个软件框架，用于管理网络数据包。不仅具有网络地址转换（<code>NAT</code>）的功能，也具备数据包内容修改、以及数据包过滤等防火墙功能。利用运作于用户空间的应用软件，如 <code>iptables</code> 、<code>nftables</code> 、<code>ebtables</code> 和 <code>arptables</code> 等，来控制 <code>Netfilter</code>，系统管理者可以管理通过Linux操作系统的各种网络数据包。<code>1990</code> 年代，<code>Netfilter</code> 在 <code>Linux 2.3.15</code> 版时进入Linux内核，正式应用于 <code>Linux 2.4</code> 版。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2024/07/11/network/Netfilter-%E6%A1%86%E6%9E%B6%E6%B5%85%E6%9E%90/#more" rel="contents">
+              <a class="btn" href="/2024/07/11/linux/Netfilter-%E6%A1%86%E6%9E%B6%E6%B5%85%E6%9E%90/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -498,7 +610,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-05-21 05:56:56" itemprop="dateModified" datetime="2025-05-21T05:56:56+00:00">2025-05-21</time>
+                <time title="修改时间：2025-05-26 09:44:34" itemprop="dateModified" datetime="2025-05-26T09:44:34+00:00">2025-05-26</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -605,7 +717,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-05-21 05:56:56" itemprop="dateModified" datetime="2025-05-21T05:56:56+00:00">2025-05-21</time>
+                <time title="修改时间：2025-05-26 09:44:34" itemprop="dateModified" datetime="2025-05-26T09:44:34+00:00">2025-05-26</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -700,7 +812,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-05-21 05:56:56" itemprop="dateModified" datetime="2025-05-21T05:56:56+00:00">2025-05-21</time>
+                <time title="修改时间：2025-05-26 09:44:34" itemprop="dateModified" datetime="2025-05-26T09:44:34+00:00">2025-05-26</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -795,7 +907,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-05-21 05:56:56" itemprop="dateModified" datetime="2025-05-21T05:56:56+00:00">2025-05-21</time>
+                <time title="修改时间：2025-05-26 09:44:34" itemprop="dateModified" datetime="2025-05-26T09:44:34+00:00">2025-05-26</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -898,7 +1010,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-05-21 05:56:56" itemprop="dateModified" datetime="2025-05-21T05:56:56+00:00">2025-05-21</time>
+                <time title="修改时间：2025-05-26 09:44:34" itemprop="dateModified" datetime="2025-05-26T09:44:34+00:00">2025-05-26</time>
               </span>
 
           <br>
@@ -990,7 +1102,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-05-21 05:56:56" itemprop="dateModified" datetime="2025-05-21T05:56:56+00:00">2025-05-21</time>
+                <time title="修改时间：2025-05-26 09:44:34" itemprop="dateModified" datetime="2025-05-26T09:44:34+00:00">2025-05-26</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1036,103 +1148,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2024/02/26/qt/Qt-QML-%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5%E5%9F%BA%E7%A1%80/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2024/01/22/c++/C-Class-layout/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="yngty">
-      <meta itemprop="description" content="预测未来的最好方式就是实现它">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Symbol Crash">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/01/22/c++/C-Class-layout/" class="post-title-link" itemprop="url">C++ Class layout</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-01-22 10:24:40" itemprop="dateCreated datePublished" datetime="2024-01-22T10:24:40+00:00">2024-01-22</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-05-21 05:56:56" itemprop="dateModified" datetime="2025-05-21T05:56:56+00:00">2025-05-21</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C-C/" itemprop="url" rel="index"><span itemprop="name">C/C++</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>620</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>2 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="C-Class"><a href="#C-Class" class="headerlink" title="C++ Class"></a>C++ Class</h1><p>在类定义中，只有非静态数据声明会增加类对象的大小</p>
-<h1 id="Empty-Class"><a href="#Empty-Class" class="headerlink" title="Empty Class"></a>Empty Class</h1><p>一个空类在C++中没有非静态数据成员、没有虚函数，也没有虚基类。这样的类通常被称为“无状态”，因为它们不封装任何状态或数据。然而，即使一个空类没有显式的数据成员，它仍然需要占用一些内存空间。</p>
-<p>C++标准规定，不同类型的对象必须具有不同的地址。因此，一个空类对象必须在内存中具有唯一的地址。这确保了即使一个空类对象没有任何可见的数据成员或行为，它也必须占用至少一个字节的内存，以区分它与具有不同类型的其他对象。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2024/01/22/c++/C-Class-layout/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1223,20 +1238,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">87</span>
+          <span class="site-state-item-count">88</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-count">16</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-count">54</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -1283,12 +1298,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">62k</span>
+    <span title="站点总字数">63k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">3:46</span>
+    <span title="站点阅读时长">3:51</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>

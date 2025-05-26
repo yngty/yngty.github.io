@@ -28,7 +28,7 @@
 <meta property="og:description" content="什么是 MIME 类型？MIME（多用途 Internet 邮件扩展）的类型来识别文件格式。 MIME 类型构成了 Internet 上对文件类型进行分类的标准方法。  MIME Type是用于描述文件的类型的一种表述方法，其将文件划分为多种类型，方便对其进行统一的管理。 MIME Type指定了文件的类型名称、描述、图标信息，同时通过与.desktop应用程序描述文件整合，指定了文件的打开方式。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-11-23T20:14:31.000Z">
-<meta property="article:modified_time" content="2025-05-21T05:56:56.138Z">
+<meta property="article:modified_time" content="2025-05-26T09:44:34.269Z">
 <meta property="article:author" content="yngty">
 <meta property="article:tag" content="Linux">
 <meta property="article:tag" content="mime">
@@ -123,17 +123,17 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">87</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">88</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
 
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a>
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">16</span></a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">51</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">54</span></a>
 
   </li>
   </ul>
@@ -194,7 +194,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-05-21 05:56:56" itemprop="dateModified" datetime="2025-05-21T05:56:56+00:00">2025-05-21</time>
+                <time title="修改时间：2025-05-26 09:44:34" itemprop="dateModified" datetime="2025-05-26T09:44:34+00:00">2025-05-26</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -238,7 +238,7 @@
 </ul>
 <span id="more"></span>
 <p><code>MIME</code> 类型名字遵循指定的格式：</p>
-<p>类型和子类型， 在 MIME 类型中，类型和子类型不区分大小写。</p>
+<p>类型和子类型， 在 <code>MIME</code> 类型中，类型和子类型不区分大小写。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">media-type/subtype-identifier</span><br></pre></td></tr></table></figure>
 
 <p>目前，有十种注册类型：<code>application</code>，<code>audio</code>，<code>example</code>，<code>font</code>，<code>image</code>，<code>message</code>，<code>model</code>，<code>multipart</code>，<code>text</code>和<code>video</code>。</p>
@@ -253,7 +253,7 @@
 <li><p>显示文件的<code>MIME</code>类型：</p>
   <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xdg-mime query filetype &#123;file&#125;</span><br></pre></td></tr></table></figure>
 <p>  例如：</p>
-  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">➜ xdg-mime query filetype one.jpg </span><br><span class="line">image/jpeg</span><br></pre></td></tr></table></figure>
+  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">➜ xdg-mime query filetype one.jpg</span><br><span class="line">image/jpeg</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>显示<code>MIME</code> 类型的默认应用程序</p>
   <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xdg-mime query default &#123;mimetype&#125;</span><br></pre></td></tr></table></figure>
@@ -276,7 +276,7 @@
   <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">file --mime-type INPUT_FILE</span><br></pre></td></tr></table></figure>
 
 <p>  例如：</p>
-  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">➜ file --mime-type one.jpg </span><br><span class="line">one.jpg: inode/symlink</span><br></pre></td></tr></table></figure></li>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">➜ file --mime-type one.jpg</span><br><span class="line">one.jpg: inode/symlink</span><br></pre></td></tr></table></figure></li>
 </ul>
 <h1 id="自定义的-MIME-类型"><a href="#自定义的-MIME-类型" class="headerlink" title="自定义的 MIME 类型"></a>自定义的 MIME 类型</h1><p>如需为系统上的所有用户添加一个自定义的 <code>MIME</code> 类型，并为该 <code>MIME</code> 类型注册一个默认的应用程序，您需要在 <code>/usr/share/mime/packages/</code> 目录下创建一个新的 <code>MIME</code> 类型说明文件，在 <code>/usr/share/applications/</code> 目录下创建一个 <code>.desktop</code> 文件。</p>
 <p>比如我们创建一个<code>application/x-newtype</code>类型：</p>
@@ -403,20 +403,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">87</span>
+          <span class="site-state-item-count">88</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-count">16</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-count">54</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -463,12 +463,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">62k</span>
+    <span title="站点总字数">63k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">3:46</span>
+    <span title="站点阅读时长">3:51</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>
