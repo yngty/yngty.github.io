@@ -119,17 +119,17 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">88</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">89</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
 
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">16</span></a>
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">17</span></a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">54</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">60</span></a>
 
   </li>
   </ul>
@@ -155,6 +155,140 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2023/07/25/network/TCP-%E5%8D%8F%E8%AE%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Symbol Crash">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/07/25/network/TCP-%E5%8D%8F%E8%AE%AE/" class="post-title-link" itemprop="url">TCP 协议</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-07-25 09:43:58" itemprop="dateCreated datePublished" datetime="2023-07-25T09:43:58+00:00">2023-07-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-05-27 06:49:50" itemprop="dateModified" datetime="2025-05-27T06:49:50+00:00">2025-05-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Network/" itemprop="url" rel="index"><span itemprop="name">Network</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.9k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>10 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="TCP-基本认识"><a href="#TCP-基本认识" class="headerlink" title="TCP 基本认识"></a><code>TCP</code> 基本认识</h1><p><code>TCP</code> 是 <strong>面向连接的、可靠的、基于字节流</strong>的传输层通信协议。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"> 0                   1                   2                   3</span><br><span class="line"> 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|          Source Port          |       Destination Port        |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                        Sequence Number                        |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                    Acknowledgment Number                      |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|  Data |           |U|A|P|R|S|F|                               |</span><br><span class="line">| Offset| Reserved  |R|C|S|S|Y|I|            Window             |</span><br><span class="line">|       |           |G|K|H|T|N|N|                               |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|           Checksum            |         Urgent Pointer        |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                    Options                    |    Padding    |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                             data                              |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br></pre></td></tr></table></figure>
+<h2 id="源端口-Source-Port"><a href="#源端口-Source-Port" class="headerlink" title="源端口(Source Port)"></a>源端口(<code>Source Port</code>)</h2><p>源端口，<code>16</code> 位</p>
+<h2 id="目标端口-Destination-Port"><a href="#目标端口-Destination-Port" class="headerlink" title="目标端口(Destination Port)"></a>目标端口(<code>Destination Port</code>)</h2><p>目标端口，<code>16</code> 位</p>
+<h2 id="序列号-Sequence-Number"><a href="#序列号-Sequence-Number" class="headerlink" title="序列号 (Sequence Number)"></a>序列号 (<code>Sequence Number</code>)</h2><p><code>TCP</code> 是面向字节流的协议，通过 <code>TCP</code> 传输的字节流的每个字节都分配了序列号，序列号（<code>Sequence number</code>）指的是本报文段第一个字节的序列号。</p>
+<p>序列号加上报文的长度，就可以确定传输的是哪一段数据。序列号是一个 <code>32</code> 位的无符号整数，达到 <code>2^32-1</code> 后循环到 <code>0</code>。</p>
+<p>在 <code>SYN</code> 报文中，序列号用于交换彼此的初始序列号，在其它报文中，序列号用于保证包的顺序。</p>
+<p>因为网络层（<code>IP</code> 层）不保证包的顺序，<code>TCP</code> 协议利用序列号来解决网络包乱序、重复的问题，以保证数据包以正确的顺序组装传递给上层应用。</p>
+<h3 id="初始序列号-（Initial-Sequence-Number-ISN）"><a href="#初始序列号-（Initial-Sequence-Number-ISN）" class="headerlink" title="初始序列号 （Initial Sequence Number, ISN）"></a>初始序列号 （<code>Initial Sequence Number, ISN</code>）</h3><p>在建立连接之初，通信双方都会各自选择一个序列号，称之为初始序列号。在建立连接时，通信双方通过 <code>SYN</code> 报文交换彼此的 <code>ISN</code></p>
+<h3 id="序列号回绕"><a href="#序列号回绕" class="headerlink" title="序列号回绕"></a>序列号回绕</h3><h2 id="确认号-Acknowledgment-Number"><a href="#确认号-Acknowledgment-Number" class="headerlink" title="确认号 (Acknowledgment Number)"></a>确认号 (<code>Acknowledgment Number</code>)</h2><p><code>TCP</code> 使用确认号（<code>Acknowledgment number, ACK</code>）来告知对方下一个期望接收的序列号，小于此确认号的所有字节都已经收到</p>
+<h2 id="头部长度-Data-Offset"><a href="#头部长度-Data-Offset" class="headerlink" title="头部长度 (Data Offset ):"></a>头部长度 (<code>Data Offset </code>):</h2><p>只有 <code>4</code> 位, 取值范围 <code>0~15</code>, 表示 <code>TCP</code>头长度为 <code>32位(4字节)</code>的数量。<code>TCP</code> 头（甚至包括选项）的长度是 <code>32</code> 位的整数倍。例如 <code>DOffset</code>的值为 <code>0111</code>, 则该TCP包头的长度为 <code>7 * 4 = 28</code></p>
+<h2 id="TCP-Flags"><a href="#TCP-Flags" class="headerlink" title="TCP Flags"></a>TCP Flags</h2><ul>
+<li><code>SYN（Synchronize）</code>：用于发起连接数据包同步双方的初始序列号</li>
+<li><code>ACK（Acknowledge）</code>：确认数据包</li>
+<li><code>RST（Reset）</code>：这个标记用来强制断开连接，通常是之前建立的连接已经不在了、包不合法、或者实在无能为力处理</li>
+<li><code>FIN（Finish）</code>：通知对方我发完了所有数据，准备断开连接，后面我不会再发数据包给你了。</li>
+<li><code>PSH（Push）</code>：告知对方这些数据包收到以后应该马上交给上层应用，不能缓存起来</li>
+</ul>
+<h2 id="窗口大小-Window-Size"><a href="#窗口大小-Window-Size" class="headerlink" title="窗口大小 (Window Size)"></a>窗口大小 (<code>Window Size</code>)</h2><p>窗口大小字段是接收方用来控制发送方数据流量的机制。它表示接收方当前允许发送方发送但尚未确认的数据字节数。通过动态调整窗口大小，<code>TCP</code> 可以有效地进行流量控制，防止发送方数据发送过快导致接收方缓存溢出。</p>
+<p><code>TCP</code> 协议窗口大小只有 <code>16</code> 位，最大窗口大小为 <code>65535</code> 字节(<code>64KB</code>), 在今天显然不够用，所以 <code>TCP</code> 协议引入了 <strong>TCP 窗口缩放</strong> 选项，作为窗口缩放的比例因子，比利因子的值在 <code>0～14</code>，其中 <code>0</code> 表示不缩放，最大值为  <code>14</code>。比例因子可以将窗口扩大到原来的 <code>2</code> 的 <code>n</code> 次方，比如窗口大小缩放前为 <code>1050</code>，缩放因子为 <code>7</code>，则真正的窗口大小为 <code>1050 * 128 = 134400</code></p>
+<h2 id="窗口缩放选项"><a href="#窗口缩放选项" class="headerlink" title="窗口缩放选项"></a>窗口缩放选项</h2><p>由于窗口大小字段只有 <code>16</code> 位，最大值为 <code>65535</code> 字节，这对于高带宽-延迟产品 (<code>BDP</code>) 的网络可能不够。为了解决这个问题，<code>TCP</code> 窗口缩放选项 (<code>Window Scale Option</code>) 被引入，用于扩展窗口大小的范围。</p>
+<p>窗口缩放选项在 <code>TCP</code> 连接建立时通过 <code>SYN</code> 包交换协商。窗口缩放因子 (<code>Window Scale Factor</code>) 表示允许窗口大小值左移的位数，从而有效地扩展窗口大小的范围。</p>
+<h3 id="计算实际窗口大小"><a href="#计算实际窗口大小" class="headerlink" title="计算实际窗口大小"></a>计算实际窗口大小</h3><p>实际的窗口大小计算如下：</p>
+<p>$$Actual Window Size &#x3D; Window Size \times 2 ^{Window Scale Factor}$$</p>
+<h3 id="示例（带窗口缩放）"><a href="#示例（带窗口缩放）" class="headerlink" title="示例（带窗口缩放）"></a>示例（带窗口缩放）</h3><p>假设窗口大小字段的值是 <code>8192</code>（十进制），窗口缩放因子是 <code>3</code>：</p>
+<p>$Actual Window Size &#x3D; 8192 \times 2 ^ 3 &#x3D; 8192 \times 8 &#x3D; 65536 $ bytes</p>
+<p>这表示接收方可以接受最多 <code>65536</code> 字节的未确认数据。</p>
+<h2 id="可选项-Options"><a href="#可选项-Options" class="headerlink" title="可选项 (Options)"></a>可选项 (<code>Options</code>)</h2><p>只有 (<code>DOffset &gt; 5</code>) 才有此数据,</p>
+<p>可选项的格式：</p>
+<ul>
+<li><p>一个字节的 <code>Kind</code></p>
+<ul>
+<li><code>No-Operation</code>: 无操作。</li>
+</ul>
+</li>
+<li><p>一个字节的 <code>Kind</code>, 一个字节的 <code>option-length</code>，和真实的 <code>option data</code></p>
+<ul>
+<li><code>MSS</code>：最大段大小选项，是 <code>TCP</code> 允许的从对方接收的最大报文段</li>
+<li><code>SACK</code>：选择确认选项</li>
+<li><code>Window Scale</code>：窗口缩放选项
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/07/25/network/TCP-%E5%8D%8F%E8%AE%AE/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -190,7 +324,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-05-26 09:44:34" itemprop="dateModified" datetime="2025-05-26T09:44:34+00:00">2025-05-26</time>
+                <time title="修改时间：2025-05-27 06:49:50" itemprop="dateModified" datetime="2025-05-27T06:49:50+00:00">2025-05-27</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -291,7 +425,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-05-26 09:44:34" itemprop="dateModified" datetime="2025-05-26T09:44:34+00:00">2025-05-26</time>
+                <time title="修改时间：2025-05-27 06:49:50" itemprop="dateModified" datetime="2025-05-27T06:49:50+00:00">2025-05-27</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -395,7 +529,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-05-26 09:44:34" itemprop="dateModified" datetime="2025-05-26T09:44:34+00:00">2025-05-26</time>
+                <time title="修改时间：2025-05-27 06:49:50" itemprop="dateModified" datetime="2025-05-27T06:49:50+00:00">2025-05-27</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -480,7 +614,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2023/07/17/network/http%E5%8D%8F%E8%AE%AE/" class="post-title-link" itemprop="url">http协议</a>
+            <a href="/2023/07/17/network/http%E5%8D%8F%E8%AE%AE/" class="post-title-link" itemprop="url">HTTP 协议</a>
         </h2>
 
         <div class="post-meta">
@@ -497,7 +631,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-05-26 09:44:34" itemprop="dateModified" datetime="2025-05-26T09:44:34+00:00">2025-05-26</time>
+                <time title="修改时间：2025-05-27 06:49:50" itemprop="dateModified" datetime="2025-05-27T06:49:50+00:00">2025-05-27</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -595,7 +729,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-05-26 09:44:34" itemprop="dateModified" datetime="2025-05-26T09:44:34+00:00">2025-05-26</time>
+                <time title="修改时间：2025-05-27 06:49:50" itemprop="dateModified" datetime="2025-05-27T06:49:50+00:00">2025-05-27</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -746,7 +880,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-05-26 09:44:34" itemprop="dateModified" datetime="2025-05-26T09:44:34+00:00">2025-05-26</time>
+                <time title="修改时间：2025-05-27 06:49:50" itemprop="dateModified" datetime="2025-05-27T06:49:50+00:00">2025-05-27</time>
               </span>
 
           <br>
@@ -835,7 +969,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-05-26 09:44:34" itemprop="dateModified" datetime="2025-05-26T09:44:34+00:00">2025-05-26</time>
+                <time title="修改时间：2025-05-27 06:49:50" itemprop="dateModified" datetime="2025-05-27T06:49:50+00:00">2025-05-27</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -937,7 +1071,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-05-26 09:44:34" itemprop="dateModified" datetime="2025-05-26T09:44:34+00:00">2025-05-26</time>
+                <time title="修改时间：2025-05-27 06:49:50" itemprop="dateModified" datetime="2025-05-27T06:49:50+00:00">2025-05-27</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1083,7 +1217,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-05-26 09:44:34" itemprop="dateModified" datetime="2025-05-26T09:44:34+00:00">2025-05-26</time>
+                <time title="修改时间：2025-05-27 06:49:50" itemprop="dateModified" datetime="2025-05-27T06:49:50+00:00">2025-05-27</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1129,115 +1263,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2023/03/11/c++/enable-shared-from-this%E7%9A%84%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2023/03/10/effective-stl/effective-stl-21/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="yngty">
-      <meta itemprop="description" content="预测未来的最好方式就是实现它">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Symbol Crash">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/03/10/effective-stl/effective-stl-21/" class="post-title-link" itemprop="url">Effective-STL 21：总是让比较函数在等值情况下返回 false</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2023-03-10 21:05:20" itemprop="dateCreated datePublished" datetime="2023-03-10T21:05:20+00:00">2023-03-10</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-05-26 09:44:34" itemprop="dateModified" datetime="2025-05-26T09:44:34+00:00">2025-05-26</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Effective-STL/" itemprop="url" rel="index"><span itemprop="name">Effective-STL</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>461</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>2 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <blockquote>
-<p>Item 21: Always have comparison functions return false for equal values.</p>
-</blockquote>
-<h1 id="严格弱序-strict-weak-ordering"><a href="#严格弱序-strict-weak-ordering" class="headerlink" title="严格弱序( strict weak ordering )"></a>严格弱序( <code>strict weak ordering</code> )</h1><p>先补充下严格弱序的概念: 对两个变量 <code>x</code> 和 <code>y</code>：</p>
-<ul>
-<li><code>x &gt; y</code> 等同于 <code>y &lt; x</code></li>
-<li><code>x == y</code> 等同于 <code>!(x &lt; y) &amp;&amp; !(x &gt; y)</code></li>
-</ul>
-<p>要想严格弱序，就需要遵循如下规则：</p>
-<ul>
-<li>每个变量值必须等于其本身（<code>irreflexivity</code>）：<code>x &lt; x</code> 永远不能为 <code>true</code></li>
-<li>不对称性（<code>asymmetry</code>）：如果 <code>x &lt; y</code>，那么 <code>y &lt; x</code> 就不能为 <code>true</code></li>
-<li>有序性必须可传递性：如果 <code>x &lt; y</code> 并且 <code>y &lt; z</code>，那么 <code>x &lt; z</code></li>
-<li>值相同必须具有可传递性：如果 <code>x == y</code> 并且 <code>y == z</code>，那么 <code>x == z</code></li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2023/03/10/effective-stl/effective-stl-21/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1328,20 +1353,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">88</span>
+          <span class="site-state-item-count">89</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-count">17</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">54</span>
+        <span class="site-state-item-count">60</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -1388,12 +1413,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">63k</span>
+    <span title="站点总字数">65k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">3:51</span>
+    <span title="站点阅读时长">3:55</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>
