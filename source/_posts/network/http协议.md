@@ -1,8 +1,10 @@
 ---
-title: http协议
+title: HTTP 协议
 date: 2023-07-17 11:42:24
 tags:
 - http
+- 网络
+- 网络协议
 categories:
 - Network
 ---
