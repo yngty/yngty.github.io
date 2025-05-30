@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yngty.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="什么是 security？在 macOS 系统中，security 命令是一个强大的工具，可以让你管理密钥链（Keychain）中的敏感信息，如密码、证书、私钥等。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="掌握 macOS 的 security 命令">
+<meta property="og:url" content="https://yngty.github.io/2025/05/27/macos/%E6%8E%8C%E6%8F%A1-macOS-%E7%9A%84-security-%E5%91%BD%E4%BB%A4/index.html">
+<meta property="og:site_name" content="Symbol Crash">
+<meta property="og:description" content="什么是 security？在 macOS 系统中，security 命令是一个强大的工具，可以让你管理密钥链（Keychain）中的敏感信息，如密码、证书、私钥等。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-05-27T15:30:21.000Z">
+<meta property="article:modified_time" content="2025-05-30T07:41:14.679Z">
+<meta property="article:author" content="yngty">
+<meta property="article:tag" content="Keychain">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://yngty.github.io/2025/05/27/macos/%E6%8E%8C%E6%8F%A1-macOS-%E7%9A%84-security-%E5%91%BD%E4%BB%A4/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>掌握 macOS 的 security 命令 | Symbol Crash</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Symbol Crash" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Symbol Crash</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">不学无术</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">92</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">18</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">65</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2025/05/27/macos/%E6%8E%8C%E6%8F%A1-macOS-%E7%9A%84-security-%E5%91%BD%E4%BB%A4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Symbol Crash">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          掌握 macOS 的 security 命令
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-05-27 15:30:21" itemprop="dateCreated datePublished" datetime="2025-05-27T15:30:21+00:00">2025-05-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-05-30 07:41:14" itemprop="dateModified" datetime="2025-05-30T07:41:14+00:00">2025-05-30</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/MacOS/" itemprop="url" rel="index"><span itemprop="name">MacOS</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>660</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="什么是-security？"><a href="#什么是-security？" class="headerlink" title="什么是 security？"></a>什么是 security？</h2><p>在 <code>macOS</code> 系统中，<code>security</code> 命令是一个强大的工具，可以让你管理密钥链（<code>Keychain</code>）中的敏感信息，如密码、证书、私钥等。</p>
+<hr>
+<span id="more"></span>
+
+<h2 id="钥匙串管理"><a href="#钥匙串管理" class="headerlink" title="钥匙串管理"></a>钥匙串管理</h2><h3 id="1-基础操作"><a href="#1-基础操作" class="headerlink" title="1. 基础操作"></a>1. 基础操作</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 列出所有钥匙串</span></span><br><span class="line">security list-keychains</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建新钥匙串（密码为 123）</span></span><br><span class="line">security create-keychain -p 123 MyKeychain.keychain</span><br><span class="line"></span><br><span class="line"><span class="comment"># 解锁钥匙串</span></span><br><span class="line">security unlock-keychain -p 123 MyKeychain.keychain</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-设置默认钥匙串"><a href="#2-设置默认钥匙串" class="headerlink" title="2. 设置默认钥匙串"></a>2. 设置默认钥匙串</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">security default-keychain -s ~/Library/Keychains/login.keychain</span><br></pre></td></tr></table></figure>
+<h2 id="证书管理"><a href="#证书管理" class="headerlink" title="证书管理"></a>证书管理</h2><h3 id="1-查找证书"><a href="#1-查找证书" class="headerlink" title="1. 查找证书"></a>1. 查找证书</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 列出所有代码签名证书</span></span><br><span class="line">security find-identity -v -p codesigning</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>find-identity</strong>：查找钥匙串中的身份标识（证书+私钥对）</li>
+<li><strong>-v</strong>：详细模式，显示更多信息</li>
+<li><strong>-p codesigning</strong>：只查找支持代码签名策略的证书</li>
+</ul>
+<p>输出示例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1) 1234567890ABCDEF1234567890ABCDEF12345678 <span class="string">&quot;Apple Development: your@email.com (TEAMID)&quot;</span></span><br><span class="line">2) ABCDEF1234567890ABCDEF1234567890ABCDEF12 <span class="string">&quot;Developer ID Application: Company Name (TEAMID)&quot;</span></span><br><span class="line">   2 valid identities found</span><br></pre></td></tr></table></figure>
+<h1 id="查看证书详细信息"><a href="#查看证书详细信息" class="headerlink" title="查看证书详细信息"></a>查看证书详细信息</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">security find-certificate -c <span class="string">&quot;Apple Development&quot;</span> -a -Z</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>-c &quot;Apple Development&quot;</code>：按证书名称过滤（支持模糊匹配）</li>
+<li><code>-a</code>：搜索所有钥匙串（包括系统和登录钥匙串）</li>
+<li><code>-Z</code>：显示证书的 <code>SHA-1</code> 哈希值</li>
+</ul>
+<h3 id="2-导入-导出证书"><a href="#2-导入-导出证书" class="headerlink" title="2. 导入&#x2F;导出证书"></a>2. 导入&#x2F;导出证书</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 导入 .p12 证书到登录钥匙串</span></span><br><span class="line">security import cert.p12 -k ~/Library/Keychains/login.keychain -T /usr/bin/codesign</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>import：导入操作</p>
+</li>
+<li><p>cert.p12：PKCS#12 格式的证书文件</p>
+</li>
+<li><p>-k：指定目标钥匙串路径</p>
+</li>
+<li><p>-T &#x2F;usr&#x2F;bin&#x2F;codesign：授权 codesign 工具访问此证书</p>
+</li>
+</ul>
+<h3 id="导出证书为-PEM-格式"><a href="#导出证书为-PEM-格式" class="headerlink" title="导出证书为 PEM 格式"></a>导出证书为 PEM 格式</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">security <span class="built_in">export</span> -k login.keychain -t certs -f pemseq -o certs.pem</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>-t certs：导出类型为证书（非私钥）</p>
+</li>
+<li><p>-f pemseq：输出格式为 PEM 序列（包含完整证书链）</p>
+</li>
+<li><p>-o certs.pem：输出文件名</p>
+</li>
+</ul>
+<p><strong>提示</strong>：<code>-T /usr/bin/codesign</code> 表示允许 <code>codesign</code> 访问此证书。</p>
+<h3 id="高级导出选项："><a href="#高级导出选项：" class="headerlink" title="高级导出选项："></a>高级导出选项：</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 导出 PKCS#12 格式（包含私钥）</span></span><br><span class="line">security <span class="built_in">export</span> -k login.keychain -t identities \</span><br><span class="line">  -f pkcs12 -P <span class="string">&quot;strongPassword&quot;</span> -o full.p12</span><br><span class="line"></span><br><span class="line"><span class="comment"># 仅导出叶子证书</span></span><br><span class="line">security <span class="built_in">export</span> -k login.keychain -c <span class="string">&quot;Developer ID&quot;</span> \</span><br><span class="line">  -f pem -o single-cert.pem</span><br></pre></td></tr></table></figure>
+
+<h2 id="密码管理"><a href="#密码管理" class="headerlink" title="密码管理"></a>密码管理</h2><h3 id="1-存储密码"><a href="#1-存储密码" class="headerlink" title="1. 存储密码"></a>1. 存储密码</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">security add-generic-password \</span><br><span class="line">  -a <span class="string">&quot;admin&quot;</span> \</span><br><span class="line">  -s <span class="string">&quot;MySQL_Prod&quot;</span> \</span><br><span class="line">  -w <span class="string">&quot;s3cret&quot;</span> \</span><br><span class="line">  -T /usr/bin/codesign</span><br></pre></td></tr></table></figure>
+<h3 id="2-读取密码（用于脚本自动化）"><a href="#2-读取密码（用于脚本自动化）" class="headerlink" title="2. 读取密码（用于脚本自动化）"></a>2. 读取密码（用于脚本自动化）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">security find-generic-password -s <span class="string">&quot;MySQL_Prod&quot;</span> -w</span><br></pre></td></tr></table></figure>
+
+<h2 id="高级场景"><a href="#高级场景" class="headerlink" title="高级场景"></a>高级场景</h2><h3 id="1-修复钥匙串权限"><a href="#1-修复钥匙串权限" class="headerlink" title="1. 修复钥匙串权限"></a>1. 修复钥匙串权限</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">security set-key-partition-list -S <span class="string">&quot;apple-tool:,apple:&quot;</span> -s -k <span class="string">&quot;password&quot;</span> login.keychain</span><br></pre></td></tr></table></figure>
+<ul>
+<li>解决 <code>codesign</code> 因权限不足报错的问题。</li>
+</ul>
+<h3 id="2-解析-iOS-描述文件"><a href="#2-解析-iOS-描述文件" class="headerlink" title="2. 解析 iOS 描述文件"></a>2. 解析 iOS 描述文件</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">security cms -D -i embedded.mobileprovision</span><br></pre></td></tr></table></figure>
+
+<h2 id="实战示例"><a href="#实战示例" class="headerlink" title="实战示例"></a>实战示例</h2><h3 id="场景-1：CI-CD-中的自动化解锁"><a href="#场景-1：CI-CD-中的自动化解锁" class="headerlink" title="场景 1：CI&#x2F;CD 中的自动化解锁"></a>场景 1：CI&#x2F;CD 中的自动化解锁</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 解锁钥匙串（假设密码存储在环境变量中）</span></span><br><span class="line">security unlock-keychain -p <span class="string">&quot;<span class="variable">$KEYCHAIN_PASSWORD</span>&quot;</span> login.keychain</span><br><span class="line"></span><br><span class="line"><span class="comment"># 执行代码签名</span></span><br><span class="line">codesign -s <span class="string">&quot;Developer ID&quot;</span> App.app</span><br></pre></td></tr></table></figure>
+<h3 id="场景-2：调试证书链"><a href="#场景-2：调试证书链" class="headerlink" title="场景 2：调试证书链"></a>场景 2：调试证书链</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 验证证书是否受信任</span></span><br><span class="line">security verify-cert -c dev_cert.pem -k login.keychain</span><br><span class="line"></span><br><span class="line"><span class="comment"># 转换为可读格式</span></span><br><span class="line">security find-certificate -c <span class="string">&quot;Apple Development&quot;</span> -p | openssl x509 -text</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考资源"><a href="#参考资源" class="headerlink" title="参考资源"></a>参考资源</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/security/keychain-services?language=objc"><code>Apple Keychain</code> 官方文档</a></li>
+<li>终端手册：<code>man security</code></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Keychain/" rel="tag"># Keychain</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2025/05/27/macos/%E6%8E%8C%E6%8F%A1-macOS-%E7%9A%84-codesign-%E5%91%BD%E4%BB%A4/" rel="prev" title="掌握 macOS 的 codesign 命令">
+      <i class="fa fa-chevron-left"></i> 掌握 macOS 的 codesign 命令
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2025/05/30/network/certificate-revocation/" rel="next" title="浏览器是如何知道网页证书被吊销的？">
+      浏览器是如何知道网页证书被吊销的？ <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF-security%EF%BC%9F"><span class="nav-number">1.</span> <span class="nav-text">什么是 security？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%92%A5%E5%8C%99%E4%B8%B2%E7%AE%A1%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">钥匙串管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%9F%BA%E7%A1%80%E6%93%8D%E4%BD%9C"><span class="nav-number">2.1.</span> <span class="nav-text">1. 基础操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%AE%BE%E7%BD%AE%E9%BB%98%E8%AE%A4%E9%92%A5%E5%8C%99%E4%B8%B2"><span class="nav-number">2.2.</span> <span class="nav-text">2. 设置默认钥匙串</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%81%E4%B9%A6%E7%AE%A1%E7%90%86"><span class="nav-number">3.</span> <span class="nav-text">证书管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%9F%A5%E6%89%BE%E8%AF%81%E4%B9%A6"><span class="nav-number">3.1.</span> <span class="nav-text">1. 查找证书</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E8%AF%81%E4%B9%A6%E8%AF%A6%E7%BB%86%E4%BF%A1%E6%81%AF"><span class="nav-number"></span> <span class="nav-text">查看证书详细信息</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%AF%BC%E5%85%A5-%E5%AF%BC%E5%87%BA%E8%AF%81%E4%B9%A6"><span class="nav-number">0.1.</span> <span class="nav-text">2. 导入&#x2F;导出证书</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%BC%E5%87%BA%E8%AF%81%E4%B9%A6%E4%B8%BA-PEM-%E6%A0%BC%E5%BC%8F"><span class="nav-number">0.2.</span> <span class="nav-text">导出证书为 PEM 格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%AB%98%E7%BA%A7%E5%AF%BC%E5%87%BA%E9%80%89%E9%A1%B9%EF%BC%9A"><span class="nav-number">0.3.</span> <span class="nav-text">高级导出选项：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%86%E7%A0%81%E7%AE%A1%E7%90%86"><span class="nav-number">1.</span> <span class="nav-text">密码管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%AD%98%E5%82%A8%E5%AF%86%E7%A0%81"><span class="nav-number">1.1.</span> <span class="nav-text">1. 存储密码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%AF%BB%E5%8F%96%E5%AF%86%E7%A0%81%EF%BC%88%E7%94%A8%E4%BA%8E%E8%84%9A%E6%9C%AC%E8%87%AA%E5%8A%A8%E5%8C%96%EF%BC%89"><span class="nav-number">1.2.</span> <span class="nav-text">2. 读取密码（用于脚本自动化）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%AB%98%E7%BA%A7%E5%9C%BA%E6%99%AF"><span class="nav-number">2.</span> <span class="nav-text">高级场景</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E4%BF%AE%E5%A4%8D%E9%92%A5%E5%8C%99%E4%B8%B2%E6%9D%83%E9%99%90"><span class="nav-number">2.1.</span> <span class="nav-text">1. 修复钥匙串权限</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%A7%A3%E6%9E%90-iOS-%E6%8F%8F%E8%BF%B0%E6%96%87%E4%BB%B6"><span class="nav-number">2.2.</span> <span class="nav-text">2. 解析 iOS 描述文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E6%88%98%E7%A4%BA%E4%BE%8B"><span class="nav-number">3.</span> <span class="nav-text">实战示例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF-1%EF%BC%9ACI-CD-%E4%B8%AD%E7%9A%84%E8%87%AA%E5%8A%A8%E5%8C%96%E8%A7%A3%E9%94%81"><span class="nav-number">3.1.</span> <span class="nav-text">场景 1：CI&#x2F;CD 中的自动化解锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF-2%EF%BC%9A%E8%B0%83%E8%AF%95%E8%AF%81%E4%B9%A6%E9%93%BE"><span class="nav-number">3.2.</span> <span class="nav-text">场景 2：调试证书链</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%BA%90"><span class="nav-number">4.</span> <span class="nav-text">参考资源</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="yngty"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">yngty</p>
+  <div class="site-description" itemprop="description">预测未来的最好方式就是实现它</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">92</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">65</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yngty" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yngty" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yngty@foxmail.com" title="E-Mail → mailto:yngty@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yngty</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">67k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">4:05</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
