@@ -77,7 +77,7 @@ kern_return_t HelloKext_stop(kmod_info_t *ki, void *d)
     sudo chown -R 0:0 HelloKext.kext
     ```
 2. 加载前可以用命令 `kextutil  -print-diagnostics HelloKext.kext` 检查一遍扩展, 第一次加载 · 需要在系统便好设置中审批扩展启动，并重启
-3. 执行命令 `log show --predicate 'eventMessage contains "HelloKext"' --info` 查看日志
+3. 执行命令 `log show --predicate 'senderImagePath contains "HelloKext"' --info` 查看日志
 4. 执行命令 `sudo kextload HelloKext.kext`，加载内核，发现日志`HelloKext loaded.`打印了出来。
 5. 执行命令 `kextstat | grep -v com.apple`, 可以看到自己的内核模块的确加载成功了。
 6. 执行命令 `sudo kextunload HelloKext.kext` ，卸载内核，发现日志`HelloKext unloaded.`打印了出来。
