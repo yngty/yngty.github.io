@@ -6,7 +6,7 @@
   <link href="https://yngty.github.io/atom.xml" rel="self"/>
   
   <link href="https://yngty.github.io/"/>
-  <updated>2025-07-31T03:32:23.372Z</updated>
+  <updated>2025-08-01T02:37:30.265Z</updated>
   <id>https://yngty.github.io/</id>
   
   <author>
@@ -17,11 +17,101 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>⚡ MongoDB 性能优化篇：索引、查询调优与分片最佳实践</title>
+    <link href="https://yngty.github.io/2025/08/01/mongodb/%E2%9A%A1-MongoDB-%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E7%AF%87%EF%BC%9A%E7%B4%A2%E5%BC%95%E3%80%81%E6%9F%A5%E8%AF%A2%E8%B0%83%E4%BC%98%E4%B8%8E%E5%88%86%E7%89%87%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/"/>
+    <id>https://yngty.github.io/2025/08/01/mongodb/%E2%9A%A1-MongoDB-%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E7%AF%87%EF%BC%9A%E7%B4%A2%E5%BC%95%E3%80%81%E6%9F%A5%E8%AF%A2%E8%B0%83%E4%BC%98%E4%B8%8E%E5%88%86%E7%89%87%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/</id>
+    <published>2025-08-01T10:10:05.000Z</published>
+    <updated>2025-08-01T02:37:30.265Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;1-为什么需要优化？&quot;&gt;&lt;a href=&quot;#1-为什么需要优化？&quot; class=&quot;headerlink&quot; title=&quot;1. 为什么需要优化？&quot;&gt;&lt;/a&gt;1. 为什么需要优化？&lt;/h1&gt;&lt;p&gt;&lt;code&gt;MongoDB&lt;/code&gt; 虽然灵活，但如果不加优化，可能出现：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;查询性能低（扫描全表）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;分片热点（某一分片压力过大）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;内存占用高（缓存无效）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;写入延迟大（锁竞争）&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;优化的核心目标是：&lt;strong&gt;减少扫描量，减少锁竞争，充分利用索引与缓存&lt;/strong&gt;。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="mongodb" scheme="https://yngty.github.io/categories/mongodb/"/>
+    
+    <category term="数据库" scheme="https://yngty.github.io/categories/mongodb/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    
+    <category term="mongodb" scheme="https://yngty.github.io/tags/mongodb/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>⚡ MongoDB 高级篇：聚合、分片、副本集全面解析</title>
+    <link href="https://yngty.github.io/2025/08/01/mongodb/%E2%9A%A1-MongoDB-%E9%AB%98%E7%BA%A7%E7%AF%87%EF%BC%9A%E8%81%9A%E5%90%88%E3%80%81%E5%88%86%E7%89%87%E3%80%81%E5%89%AF%E6%9C%AC%E9%9B%86%E5%85%A8%E9%9D%A2%E8%A7%A3%E6%9E%90/"/>
+    <id>https://yngty.github.io/2025/08/01/mongodb/%E2%9A%A1-MongoDB-%E9%AB%98%E7%BA%A7%E7%AF%87%EF%BC%9A%E8%81%9A%E5%90%88%E3%80%81%E5%88%86%E7%89%87%E3%80%81%E5%89%AF%E6%9C%AC%E9%9B%86%E5%85%A8%E9%9D%A2%E8%A7%A3%E6%9E%90/</id>
+    <published>2025-08-01T10:06:31.000Z</published>
+    <updated>2025-08-01T02:37:30.265Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;1-聚合（Aggregation-Framework）&quot;&gt;&lt;a href=&quot;#1-聚合（Aggregation-Framework）&quot; class=&quot;headerlink&quot; title=&quot;1. 聚合（Aggregation Framework）&quot;&gt;&lt;/a&gt;1. 聚合（Aggregation Framework）&lt;/h1&gt;&lt;p&gt;聚合是 &lt;code&gt;MongoDB&lt;/code&gt; 中最强大的分析与数据处理工具，相当于 &lt;code&gt;SQL&lt;/code&gt; 中的 &lt;code&gt;GROUP BY&lt;/code&gt;、&lt;code&gt;JOIN&lt;/code&gt;、&lt;code&gt;WHERE&lt;/code&gt;、&lt;code&gt;ORDER BY&lt;/code&gt; 等组合。&lt;/p&gt;
+&lt;h2 id=&quot;1-1-聚合管道的基本原理&quot;&gt;&lt;a href=&quot;#1-1-聚合管道的基本原理&quot; class=&quot;headerlink&quot; title=&quot;1.1 聚合管道的基本原理&quot;&gt;&lt;/a&gt;1.1 聚合管道的基本原理&lt;/h2&gt;&lt;p&gt;&lt;code&gt;MongoDB&lt;/code&gt; 的聚合是一个数据流管道：&lt;/p&gt;
+&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;输入文档  →  &lt;span class=&quot;variable&quot;&gt;$match&lt;/span&gt;  →  &lt;span class=&quot;variable&quot;&gt;$group&lt;/span&gt;  →  &lt;span class=&quot;variable&quot;&gt;$sort&lt;/span&gt;  →  &lt;span class=&quot;variable&quot;&gt;$project&lt;/span&gt;  →  输出结果&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;每个阶段都会对数据进行筛选、计算、排序或重塑。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="mongodb" scheme="https://yngty.github.io/categories/mongodb/"/>
+    
+    <category term="数据库" scheme="https://yngty.github.io/categories/mongodb/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    
+    <category term="mongodb" scheme="https://yngty.github.io/tags/mongodb/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>🚀 MongoDB 入门到进阶：从零开始掌握文档型数据库</title>
+    <link href="https://yngty.github.io/2025/08/01/mongodb/%F0%9F%9A%80-MongoDB-%E5%85%A5%E9%97%A8%E5%88%B0%E8%BF%9B%E9%98%B6%EF%BC%9A%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E6%8E%8C%E6%8F%A1%E6%96%87%E6%A1%A3%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    <id>https://yngty.github.io/2025/08/01/mongodb/%F0%9F%9A%80-MongoDB-%E5%85%A5%E9%97%A8%E5%88%B0%E8%BF%9B%E9%98%B6%EF%BC%9A%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E6%8E%8C%E6%8F%A1%E6%96%87%E6%A1%A3%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93/</id>
+    <published>2025-08-01T09:51:39.000Z</published>
+    <updated>2025-08-01T02:37:30.265Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;1-什么是-MongoDB？&quot;&gt;&lt;a href=&quot;#1-什么是-MongoDB？&quot; class=&quot;headerlink&quot; title=&quot;1. 什么是 MongoDB？&quot;&gt;&lt;/a&gt;1. 什么是 MongoDB？&lt;/h1&gt;&lt;p&gt;&lt;code&gt;MongoDB&lt;/code&gt; 是一种 &lt;strong&gt;面向文档的 &lt;code&gt;NoSQL&lt;/code&gt; 数据库&lt;/strong&gt;，与传统的关系型数据库（&lt;code&gt;MySQL&lt;/code&gt;、&lt;code&gt;PostgreSQL&lt;/code&gt;）不同，它不使用表格和行，而是使用 &lt;strong&gt;BSON&lt;/strong&gt;（二进制 &lt;code&gt;JSON&lt;/code&gt;）存储数据。&lt;br&gt;简单来说，它是一个 &lt;strong&gt;JSON 存储与查询引擎&lt;/strong&gt;。&lt;/p&gt;
+&lt;h2 id=&quot;MongoDB-的核心特性：&quot;&gt;&lt;a href=&quot;#MongoDB-的核心特性：&quot; class=&quot;headerlink&quot; title=&quot;MongoDB 的核心特性：&quot;&gt;&lt;/a&gt;MongoDB 的核心特性：&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;文档型存储&lt;/strong&gt;：每条数据是一个 JSON 对象。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;无固定模式（Schema-less）&lt;/strong&gt;：字段可以灵活增加或减少。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;高扩展性&lt;/strong&gt;：支持分片（&lt;code&gt;Sharding&lt;/code&gt;）与副本集（&lt;code&gt;Replica Set&lt;/code&gt;）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;强大的查询语言&lt;/strong&gt;：支持聚合（&lt;code&gt;Aggregation&lt;/code&gt;）、全文检索（&lt;code&gt;Full-Text Search&lt;/code&gt;）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;天然适合大数据与高并发场景&lt;/strong&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;</summary>
+    
+    
+    
+    <category term="mongodb" scheme="https://yngty.github.io/categories/mongodb/"/>
+    
+    <category term="数据库" scheme="https://yngty.github.io/categories/mongodb/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    
+    <category term="mongodb" scheme="https://yngty.github.io/tags/mongodb/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Makefile 拾遗</title>
     <link href="https://yngty.github.io/2025/07/31/linux/Makefile-%E6%8B%BE%E9%81%97/"/>
     <id>https://yngty.github.io/2025/07/31/linux/Makefile-%E6%8B%BE%E9%81%97/</id>
     <published>2025-07-31T11:18:39.000Z</published>
-    <updated>2025-07-31T03:32:23.372Z</updated>
+    <updated>2025-08-01T02:37:30.264Z</updated>
     
     
     <summary type="html">&lt;h2 id=&quot;一、什么是-Makefile&quot;&gt;&lt;a href=&quot;#一、什么是-Makefile&quot; class=&quot;headerlink&quot; title=&quot;一、什么是 Makefile&quot;&gt;&lt;/a&gt;一、什么是 Makefile&lt;/h2&gt;&lt;p&gt;&lt;code&gt;Makefile&lt;/code&gt; 是为 &lt;code&gt;make&lt;/code&gt; 命令准备的脚本文件，它描述了项目中文件之间的依赖关系以及如何编译它们。它允许你只输入一条命令 &lt;code&gt;make&lt;/code&gt;，即可自动编译项目中所有需要更新的部分。&lt;/p&gt;
@@ -40,7 +130,7 @@
     <link href="https://yngty.github.io/2025/07/08/macos/macOS-syscall-hook/"/>
     <id>https://yngty.github.io/2025/07/08/macos/macOS-syscall-hook/</id>
     <published>2025-07-08T09:45:24.000Z</published>
-    <updated>2025-07-31T03:32:23.372Z</updated>
+    <updated>2025-08-01T02:37:30.265Z</updated>
     
     
       
@@ -61,7 +151,7 @@
     <link href="https://yngty.github.io/2025/07/04/macos/macOS-IOKit-%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E5%85%A5%E9%97%A8%E6%8C%87%E5%8D%97/"/>
     <id>https://yngty.github.io/2025/07/04/macos/macOS-IOKit-%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E5%85%A5%E9%97%A8%E6%8C%87%E5%8D%97/</id>
     <published>2025-07-04T17:36:58.000Z</published>
-    <updated>2025-07-31T03:32:23.372Z</updated>
+    <updated>2025-08-01T02:37:30.265Z</updated>
     
     
       
@@ -97,7 +187,7 @@
     <link href="https://yngty.github.io/2025/06/04/macos/macOS-%E5%86%85%E6%A0%B8%E6%89%A9%E5%B1%95%E7%BC%96%E7%A8%8B%E5%88%9D%E6%8E%A2/"/>
     <id>https://yngty.github.io/2025/06/04/macos/macOS-%E5%86%85%E6%A0%B8%E6%89%A9%E5%B1%95%E7%BC%96%E7%A8%8B%E5%88%9D%E6%8E%A2/</id>
     <published>2025-06-04T14:41:04.000Z</published>
-    <updated>2025-07-31T03:32:23.373Z</updated>
+    <updated>2025-08-01T02:37:30.265Z</updated>
     
     
     <summary type="html">&lt;h2 id=&quot;什么是-macOS-内核扩展（KEXT）？&quot;&gt;&lt;a href=&quot;#什么是-macOS-内核扩展（KEXT）？&quot; class=&quot;headerlink&quot; title=&quot;什么是 macOS 内核扩展（KEXT）？&quot;&gt;&lt;/a&gt;什么是 macOS 内核扩展（KEXT）？&lt;/h2&gt;&lt;p&gt;&lt;code&gt;macOS&lt;/code&gt; 内核扩展是一种动态链接库（通常后缀为 &lt;code&gt;.kext&lt;/code&gt;），用于扩展 &lt;code&gt;XNU&lt;/code&gt; 内核的功能。&lt;code&gt;KEXT&lt;/code&gt; 可被用于编写驱动程序、系统安全模块、文件系统支持等底层功能。&lt;/p&gt;
@@ -119,7 +209,7 @@
     <link href="https://yngty.github.io/2025/05/30/network/certificate-revocation/"/>
     <id>https://yngty.github.io/2025/05/30/network/certificate-revocation/</id>
     <published>2025-05-30T14:59:11.000Z</published>
-    <updated>2025-07-31T03:32:23.374Z</updated>
+    <updated>2025-08-01T02:37:30.266Z</updated>
     
     
     <summary type="html">&lt;p&gt;在 &lt;code&gt;HTTPS&lt;/code&gt; 通信中，浏览器如何判断一个网页使用的证书是否已经 &lt;strong&gt;吊销&lt;/strong&gt;（&lt;code&gt;Revoked&lt;/code&gt;）？证书一旦吊销，就意味着它已不再可信，但如何通知用户浏览器，是一个非常关键的安全机制。&lt;/p&gt;
@@ -145,7 +235,7 @@
     <link href="https://yngty.github.io/2025/05/27/macos/%E6%8E%8C%E6%8F%A1-macOS-%E7%9A%84-security-%E5%91%BD%E4%BB%A4/"/>
     <id>https://yngty.github.io/2025/05/27/macos/%E6%8E%8C%E6%8F%A1-macOS-%E7%9A%84-security-%E5%91%BD%E4%BB%A4/</id>
     <published>2025-05-27T15:30:21.000Z</published>
-    <updated>2025-07-31T03:32:23.373Z</updated>
+    <updated>2025-08-01T02:37:30.265Z</updated>
     
     
     <summary type="html">&lt;h2 id=&quot;什么是-security？&quot;&gt;&lt;a href=&quot;#什么是-security？&quot; class=&quot;headerlink&quot; title=&quot;什么是 security？&quot;&gt;&lt;/a&gt;什么是 security？&lt;/h2&gt;&lt;p&gt;在 &lt;code&gt;macOS&lt;/code&gt; 系统中，&lt;code&gt;security&lt;/code&gt; 命令是一个强大的工具，可以让你管理密钥链（&lt;code&gt;Keychain&lt;/code&gt;）中的敏感信息，如密码、证书、私钥等。&lt;/p&gt;
@@ -165,7 +255,7 @@
     <link href="https://yngty.github.io/2025/05/27/macos/%E6%8E%8C%E6%8F%A1-macOS-%E7%9A%84-codesign-%E5%91%BD%E4%BB%A4/"/>
     <id>https://yngty.github.io/2025/05/27/macos/%E6%8E%8C%E6%8F%A1-macOS-%E7%9A%84-codesign-%E5%91%BD%E4%BB%A4/</id>
     <published>2025-05-27T15:19:30.000Z</published>
-    <updated>2025-07-31T03:32:23.373Z</updated>
+    <updated>2025-08-01T02:37:30.265Z</updated>
     
     
     <summary type="html">&lt;h2 id=&quot;什么是-codesign？&quot;&gt;&lt;a href=&quot;#什么是-codesign？&quot; class=&quot;headerlink&quot; title=&quot;什么是 codesign？&quot;&gt;&lt;/a&gt;什么是 codesign？&lt;/h2&gt;&lt;p&gt;&lt;code&gt;codesign&lt;/code&gt; 是 &lt;code&gt;macOS&lt;/code&gt; 和 &lt;code&gt;iOS&lt;/code&gt; 开发中用于&lt;strong&gt;代码签名&lt;/strong&gt;的核心命令行工具，它确保应用程序的来源可信且未被篡改。无论是发布到 &lt;code&gt;App Store&lt;/code&gt; 还是独立分发，代码签名都是必经流程。&lt;/p&gt;
@@ -185,7 +275,7 @@
     <link href="https://yngty.github.io/2025/05/27/network/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3-IP%E5%8D%8F%E8%AE%AE/"/>
     <id>https://yngty.github.io/2025/05/27/network/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3-IP%E5%8D%8F%E8%AE%AE/</id>
     <published>2025-05-27T13:56:43.000Z</published>
-    <updated>2025-07-31T03:32:23.374Z</updated>
+    <updated>2025-08-01T02:37:30.267Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;深入理解-IP-协议&quot;&gt;&lt;a href=&quot;#深入理解-IP-协议&quot; class=&quot;headerlink&quot; title=&quot;深入理解 IP 协议&quot;&gt;&lt;/a&gt;深入理解 IP 协议&lt;/h1&gt;&lt;h2 id=&quot;1-简介&quot;&gt;&lt;a href=&quot;#1-简介&quot; class=&quot;headerlink&quot; title=&quot;1. 简介&quot;&gt;&lt;/a&gt;1. 简介&lt;/h2&gt;&lt;p&gt;&lt;code&gt;IP&lt;/code&gt; 协议（&lt;code&gt;Internet Protocol&lt;/code&gt;，互联网协议）是现代网络通信的基础。它定义了数据如何在网络中传输，并为不同的设备提供唯一的地址标识。&lt;code&gt;IP&lt;/code&gt; 协议是所有网络通信的核心，广泛应用于全球范围内的计算机网络、局域网（&lt;code&gt;LAN&lt;/code&gt;）以及广域网（&lt;code&gt;WAN&lt;/code&gt;）。&lt;/p&gt;
@@ -213,7 +303,7 @@
     <link href="https://yngty.github.io/2025/05/26/linux/iptables-deep-dive/"/>
     <id>https://yngty.github.io/2025/05/26/linux/iptables-deep-dive/</id>
     <published>2025-05-26T10:00:00.000Z</published>
-    <updated>2025-07-31T03:32:23.372Z</updated>
+    <updated>2025-08-01T02:37:30.264Z</updated>
     
     
     <summary type="html">&lt;h2 id=&quot;一、前言&quot;&gt;&lt;a href=&quot;#一、前言&quot; class=&quot;headerlink&quot; title=&quot;一、前言&quot;&gt;&lt;/a&gt;一、前言&lt;/h2&gt;&lt;p&gt;在 &lt;code&gt;Linux&lt;/code&gt; 网络安全与数据包处理领域，&lt;code&gt;iptables&lt;/code&gt; 是不可忽视的重要工具。它是 &lt;code&gt;Linux&lt;/code&gt; 系统上用于配置防火墙规则的用户空间工具，底层依赖内核模块 Netfilter 实现数据包的捕获与处理。&lt;/p&gt;
@@ -245,7 +335,7 @@
     <link href="https://yngty.github.io/2025/05/09/network/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3TUN%E4%B8%8ETAP%EF%BC%9A%E8%99%9A%E6%8B%9F%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E7%9A%84%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/"/>
     <id>https://yngty.github.io/2025/05/09/network/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3TUN%E4%B8%8ETAP%EF%BC%9A%E8%99%9A%E6%8B%9F%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E7%9A%84%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/</id>
     <published>2025-05-09T17:20:28.000Z</published>
-    <updated>2025-07-31T03:32:23.374Z</updated>
+    <updated>2025-08-01T02:37:30.267Z</updated>
     
     
     <summary type="html">&lt;p&gt;在构建虚拟网络或实现VPN时，&lt;strong&gt;TUN&lt;/strong&gt;和&lt;strong&gt;TAP&lt;/strong&gt;是两个常被提及的虚拟网络设备。它们看似相似，却在网络协议栈的不同层级发挥作用。本文将深入解析它们的工作原理、应用场景及配置方法。&lt;/p&gt;</summary>
@@ -270,7 +360,7 @@
     <link href="https://yngty.github.io/2025/05/07/network/SOCKS5-%E4%BB%A3%E7%90%86%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3/"/>
     <id>https://yngty.github.io/2025/05/07/network/SOCKS5-%E4%BB%A3%E7%90%86%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3/</id>
     <published>2025-05-07T14:49:41.000Z</published>
-    <updated>2025-07-31T03:32:23.373Z</updated>
+    <updated>2025-08-01T02:37:30.266Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;SOCKS5-代理协议详解&quot;&gt;&lt;a href=&quot;#SOCKS5-代理协议详解&quot; class=&quot;headerlink&quot; title=&quot;SOCKS5 代理协议详解&quot;&gt;&lt;/a&gt;SOCKS5 代理协议详解&lt;/h1&gt;&lt;p&gt;&lt;strong&gt;SOCKS5&lt;/strong&gt; 是一种网络代理协议，是 &lt;code&gt;SOCKS&lt;/code&gt; 协议的第五个版本, 它不仅支持传统的 &lt;code&gt;TCP&lt;/code&gt; 连接，还增加了对 &lt;code&gt;UDP&lt;/code&gt; 和多种认证方法的支持。&lt;code&gt;SOCKS5&lt;/code&gt; 工作在 &lt;code&gt;OSI&lt;/code&gt; 模型的&lt;strong&gt;会话层&lt;/strong&gt;，广泛用于突破网络限制、隐藏客户端真实 &lt;code&gt;IP&lt;/code&gt; 等场景。本文深入解析其协议字段、工作模式及认证机制。&lt;/p&gt;</summary>
@@ -291,7 +381,7 @@
     <link href="https://yngty.github.io/2025/05/07/network/%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3FTP%E5%8D%8F%E8%AE%AE%EF%BC%9A%E5%8E%9F%E7%90%86%E3%80%81%E5%91%BD%E4%BB%A4%E4%B8%8E%E6%95%B0%E6%8D%AE%E8%BF%9E%E6%8E%A5/"/>
     <id>https://yngty.github.io/2025/05/07/network/%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3FTP%E5%8D%8F%E8%AE%AE%EF%BC%9A%E5%8E%9F%E7%90%86%E3%80%81%E5%91%BD%E4%BB%A4%E4%B8%8E%E6%95%B0%E6%8D%AE%E8%BF%9E%E6%8E%A5/</id>
     <published>2025-05-07T14:41:21.000Z</published>
-    <updated>2025-07-31T03:32:23.374Z</updated>
+    <updated>2025-08-01T02:37:30.266Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;深入了解FTP协议：原理、命令与数据连接&quot;&gt;&lt;a href=&quot;#深入了解FTP协议：原理、命令与数据连接&quot; class=&quot;headerlink&quot; title=&quot;深入了解FTP协议：原理、命令与数据连接&quot;&gt;&lt;/a&gt;深入了解FTP协议：原理、命令与数据连接&lt;/h1&gt;&lt;h2 id=&quot;什么是FTP协议？&quot;&gt;&lt;a href=&quot;#什么是FTP协议？&quot; class=&quot;headerlink&quot; title=&quot;什么是FTP协议？&quot;&gt;&lt;/a&gt;什么是FTP协议？&lt;/h2&gt;&lt;p&gt;&lt;code&gt;FTP（File Transfer Protocol）&lt;/code&gt; 是最常用的网络文件传输协议之一，允许计算机之间通过网络传输文件。它是一个基于客户端-服务器模型的协议，通过 &lt;code&gt;TCP&lt;/code&gt; 连接进行通信，通常运行在端口 &lt;code&gt;21&lt;/code&gt;。FTP主要支持两种模式：&lt;strong&gt;主动模式&lt;/strong&gt;和&lt;strong&gt;被动模式&lt;/strong&gt;。&lt;/p&gt;
@@ -313,7 +403,7 @@
     <link href="https://yngty.github.io/2025/04/18/cryptographic/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3-HKDF%EF%BC%9AHMAC-%E5%AF%86%E9%92%A5%E6%B4%BE%E7%94%9F%E5%87%BD%E6%95%B0/"/>
     <id>https://yngty.github.io/2025/04/18/cryptographic/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3-HKDF%EF%BC%9AHMAC-%E5%AF%86%E9%92%A5%E6%B4%BE%E7%94%9F%E5%87%BD%E6%95%B0/</id>
     <published>2025-04-18T10:33:24.000Z</published>
-    <updated>2025-07-31T03:32:23.370Z</updated>
+    <updated>2025-08-01T02:37:30.262Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;介绍&quot;&gt;&lt;a href=&quot;#介绍&quot; class=&quot;headerlink&quot; title=&quot;介绍&quot;&gt;&lt;/a&gt;介绍&lt;/h1&gt;&lt;p&gt;在加密领域，密钥派生函数（&lt;code&gt;KDF&lt;/code&gt;）是通过从一个初始密钥（通常称为“种子密钥”或“主密钥”）生成多个密钥的算法。&lt;code&gt;HKDF（HMAC-based Key Derivation Function）&lt;/code&gt;是一种基于 &lt;code&gt;HMAC&lt;/code&gt; 的密钥派生函数，它被设计用于从一个或多个输入密钥材料中生成多个安全的输出密钥。&lt;code&gt;HKDF&lt;/code&gt; 是一个简洁且具有高度安全性的 &lt;code&gt;KDF&lt;/code&gt;，广泛用于生成加密协议中的密钥（如 &lt;code&gt;TLS&lt;/code&gt;、&lt;code&gt;IPSec&lt;/code&gt; 等）。&lt;/p&gt;
@@ -335,7 +425,7 @@
     <link href="https://yngty.github.io/2025/04/18/cryptographic/HMAC%EF%BC%9A%E7%90%86%E8%A7%A3%E5%85%B6%E5%8E%9F%E7%90%86%E5%92%8C%E8%AE%A1%E7%AE%97%E8%BF%87%E7%A8%8B/"/>
     <id>https://yngty.github.io/2025/04/18/cryptographic/HMAC%EF%BC%9A%E7%90%86%E8%A7%A3%E5%85%B6%E5%8E%9F%E7%90%86%E5%92%8C%E8%AE%A1%E7%AE%97%E8%BF%87%E7%A8%8B/</id>
     <published>2025-04-18T10:26:26.000Z</published>
-    <updated>2025-07-31T03:32:23.370Z</updated>
+    <updated>2025-08-01T02:37:30.262Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;介绍&quot;&gt;&lt;a href=&quot;#介绍&quot; class=&quot;headerlink&quot; title=&quot;介绍&quot;&gt;&lt;/a&gt;介绍&lt;/h1&gt;&lt;p&gt;&lt;strong&gt;HMAC（Hash-based Message Authentication Code&lt;/strong&gt;是一种基于哈希函数的消息认证码（&lt;code&gt;MAC&lt;/code&gt;）算法，用于验证数据的完整性和真实性。它通过结合哈希算法与密钥来生成一个认证码，可以防止数据在传输过程中被篡改。&lt;code&gt;HMAC&lt;/code&gt; 广泛应用于网络协议（如 &lt;code&gt;TLS&lt;/code&gt;、&lt;code&gt;IPSec&lt;/code&gt; 等）、数字签名以及 &lt;code&gt;API&lt;/code&gt; 认证等场景中。&lt;/p&gt;
@@ -355,7 +445,7 @@
     <link href="https://yngty.github.io/2025/04/08/network/TLS/TLS-1-2-and-TLS-1-3-Handshake/"/>
     <id>https://yngty.github.io/2025/04/08/network/TLS/TLS-1-2-and-TLS-1-3-Handshake/</id>
     <published>2025-04-08T10:17:59.000Z</published>
-    <updated>2025-07-31T03:32:23.374Z</updated>
+    <updated>2025-08-01T02:37:30.266Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;TLS-1-2-与-TLS-1-3-握手流程深度解析：安全与性能的演进&quot;&gt;&lt;a href=&quot;#TLS-1-2-与-TLS-1-3-握手流程深度解析：安全与性能的演进&quot; class=&quot;headerlink&quot; title=&quot;TLS 1.2 与 TLS 1.3 握手流程深度解析：安全与性能的演进&quot;&gt;&lt;/a&gt;TLS 1.2 与 TLS 1.3 握手流程深度解析：安全与性能的演进&lt;/h1&gt;&lt;h2 id=&quot;引言&quot;&gt;&lt;a href=&quot;#引言&quot; class=&quot;headerlink&quot; title=&quot;引言&quot;&gt;&lt;/a&gt;引言&lt;/h2&gt;&lt;p&gt;&lt;code&gt;TLS&lt;/code&gt;（传输层安全协议）是互联网加密通信的基石。从 &lt;code&gt;TLS 1.2&lt;/code&gt; 到 &lt;code&gt;TLS 1.3&lt;/code&gt;，协议在安全性和性能上实现了质的飞跃。本文将深入对比两者的握手流程，解析其设计差异，并探讨为何 &lt;code&gt;TLS 1.3&lt;/code&gt; 成为现代网络通信的首选。&lt;/p&gt;
@@ -373,7 +463,7 @@
     <link href="https://yngty.github.io/2025/04/08/cryptographic/cryptographic_algorithms/"/>
     <id>https://yngty.github.io/2025/04/08/cryptographic/cryptographic_algorithms/</id>
     <published>2025-04-08T10:11:14.000Z</published>
-    <updated>2025-07-31T03:32:23.370Z</updated>
+    <updated>2025-08-01T02:37:30.262Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;常见加密模式&quot;&gt;&lt;a href=&quot;#常见加密模式&quot; class=&quot;headerlink&quot; title=&quot;常见加密模式&quot;&gt;&lt;/a&gt;常见加密模式&lt;/h1&gt;&lt;h2 id=&quot;为什么要分模式？&quot;&gt;&lt;a href=&quot;#为什么要分模式？&quot; class=&quot;headerlink&quot; title=&quot;为什么要分模式？&quot;&gt;&lt;/a&gt;为什么要分模式？&lt;/h2&gt;&lt;p&gt;对称加密算法（如&lt;code&gt;AES&lt;/code&gt;）只能加密&lt;strong&gt;固定长度&lt;/strong&gt;的数据块（比如 &lt;code&gt;AES&lt;/code&gt; 的块是 &lt;code&gt;128&lt;/code&gt; 位）。如果要加密一个很长的文件，就需要将文件切分成多个块，再逐个加密。&lt;/p&gt;
@@ -395,7 +485,7 @@
     <link href="https://yngty.github.io/2025/02/24/macos/Mac-%E7%BB%88%E7%AB%AF%E8%AE%BE%E5%A4%87%E6%8E%A7%E5%88%B6/"/>
     <id>https://yngty.github.io/2025/02/24/macos/Mac-%E7%BB%88%E7%AB%AF%E8%AE%BE%E5%A4%87%E6%8E%A7%E5%88%B6/</id>
     <published>2025-02-24T14:05:09.000Z</published>
-    <updated>2025-07-31T03:32:23.372Z</updated>
+    <updated>2025-08-01T02:37:30.264Z</updated>
     
     
       
@@ -409,79 +499,6 @@
     
     
     
-    
-  </entry>
-  
-  <entry>
-    <title>MacOS文件监控</title>
-    <link href="https://yngty.github.io/2024/10/25/macos/MacOS%E6%96%87%E4%BB%B6%E7%9B%91%E6%8E%A7/"/>
-    <id>https://yngty.github.io/2024/10/25/macos/MacOS%E6%96%87%E4%BB%B6%E7%9B%91%E6%8E%A7/</id>
-    <published>2024-10-25T10:25:38.000Z</published>
-    <updated>2025-07-31T03:32:23.372Z</updated>
-    
-    
-    <summary type="html">&lt;h1 id=&quot;1-文件系统事件：文件变动的探测器&quot;&gt;&lt;a href=&quot;#1-文件系统事件：文件变动的探测器&quot; class=&quot;headerlink&quot; title=&quot;1. 文件系统事件：文件变动的探测器&quot;&gt;&lt;/a&gt;1. 文件系统事件：文件变动的探测器&lt;/h1&gt;&lt;p&gt;文件系统事件是macOS提供的一个API，可以帮助我们监听文件或目录的变更。只要文件或目录发生变化，这个API就会发出通知。&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="macOS" scheme="https://yngty.github.io/categories/macOS/"/>
-    
-    
-    <category term="macOS" scheme="https://yngty.github.io/tags/macOS/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Git 备忘录</title>
-    <link href="https://yngty.github.io/2024/09/13/git/Git-%E5%A4%87%E5%BF%98%E5%BD%95/"/>
-    <id>https://yngty.github.io/2024/09/13/git/Git-%E5%A4%87%E5%BF%98%E5%BD%95/</id>
-    <published>2024-09-13T10:38:55.000Z</published>
-    <updated>2025-07-31T03:32:23.372Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;如何修改-Git提交历史中的-author-等信息&quot;&gt;&lt;a href=&quot;#如何修改-Git提交历史中的-author-等信息&quot; class=&quot;headerlink&quot; title=&quot;如何修改 Git提交历史中的 author 等信息&quot;&gt;&lt;/a&gt;如何修改</summary>
-        
-      
-    
-    
-    
-    <category term="Git" scheme="https://yngty.github.io/categories/Git/"/>
-    
-    
-    <category term="Git" scheme="https://yngty.github.io/tags/Git/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>HTTP 代理原理</title>
-    <link href="https://yngty.github.io/2024/07/22/network/HTTP-%E4%BB%A3%E7%90%86%E5%8E%9F%E7%90%86/"/>
-    <id>https://yngty.github.io/2024/07/22/network/HTTP-%E4%BB%A3%E7%90%86%E5%8E%9F%E7%90%86/</id>
-    <published>2024-07-22T14:49:00.000Z</published>
-    <updated>2025-07-31T03:32:23.373Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;1-引言&quot;&gt;&lt;a href=&quot;#1-引言&quot; class=&quot;headerlink&quot; title=&quot;1. 引言&quot;&gt;&lt;/a&gt;1. 引言&lt;/h1&gt;&lt;p&gt;在网络通信中，&lt;code&gt;HTTP&lt;/code&gt;</summary>
-        
-      
-    
-    
-    
-    <category term="Network" scheme="https://yngty.github.io/categories/Network/"/>
-    
-    
-    <category term="http" scheme="https://yngty.github.io/tags/http/"/>
-    
-    <category term="代理" scheme="https://yngty.github.io/tags/%E4%BB%A3%E7%90%86/"/>
-    
-    <category term="网络协议" scheme="https://yngty.github.io/tags/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/"/>
     
   </entry>
   

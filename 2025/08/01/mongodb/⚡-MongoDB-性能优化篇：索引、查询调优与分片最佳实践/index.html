@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yngty.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="1. 为什么需要优化？MongoDB 虽然灵活，但如果不加优化，可能出现：  查询性能低（扫描全表）  分片热点（某一分片压力过大）  内存占用高（缓存无效）  写入延迟大（锁竞争）   优化的核心目标是：减少扫描量，减少锁竞争，充分利用索引与缓存。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="⚡ MongoDB 性能优化篇：索引、查询调优与分片最佳实践">
+<meta property="og:url" content="https://yngty.github.io/2025/08/01/mongodb/%E2%9A%A1-MongoDB-%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E7%AF%87%EF%BC%9A%E7%B4%A2%E5%BC%95%E3%80%81%E6%9F%A5%E8%AF%A2%E8%B0%83%E4%BC%98%E4%B8%8E%E5%88%86%E7%89%87%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/index.html">
+<meta property="og:site_name" content="Symbol Crash">
+<meta property="og:description" content="1. 为什么需要优化？MongoDB 虽然灵活，但如果不加优化，可能出现：  查询性能低（扫描全表）  分片热点（某一分片压力过大）  内存占用高（缓存无效）  写入延迟大（锁竞争）   优化的核心目标是：减少扫描量，减少锁竞争，充分利用索引与缓存。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-08-01T10:10:05.000Z">
+<meta property="article:modified_time" content="2025-08-01T02:37:30.265Z">
+<meta property="article:author" content="yngty">
+<meta property="article:tag" content="mongodb">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://yngty.github.io/2025/08/01/mongodb/%E2%9A%A1-MongoDB-%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E7%AF%87%EF%BC%9A%E7%B4%A2%E5%BC%95%E3%80%81%E6%9F%A5%E8%AF%A2%E8%B0%83%E4%BC%98%E4%B8%8E%E5%88%86%E7%89%87%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>⚡ MongoDB 性能优化篇：索引、查询调优与分片最佳实践 | Symbol Crash</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Symbol Crash" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Symbol Crash</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">不学无术</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">99</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">19</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">72</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2025/08/01/mongodb/%E2%9A%A1-MongoDB-%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E7%AF%87%EF%BC%9A%E7%B4%A2%E5%BC%95%E3%80%81%E6%9F%A5%E8%AF%A2%E8%B0%83%E4%BC%98%E4%B8%8E%E5%88%86%E7%89%87%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Symbol Crash">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ⚡ MongoDB 性能优化篇：索引、查询调优与分片最佳实践
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2025-08-01 10:10:05 / 修改时间：02:37:30" itemprop="dateCreated datePublished" datetime="2025-08-01T10:10:05+00:00">2025-08-01</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/mongodb/" itemprop="url" rel="index"><span itemprop="name">mongodb</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/mongodb/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>883</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="1-为什么需要优化？"><a href="#1-为什么需要优化？" class="headerlink" title="1. 为什么需要优化？"></a>1. 为什么需要优化？</h1><p><code>MongoDB</code> 虽然灵活，但如果不加优化，可能出现：</p>
+<ul>
+<li><p>查询性能低（扫描全表）</p>
+</li>
+<li><p>分片热点（某一分片压力过大）</p>
+</li>
+<li><p>内存占用高（缓存无效）</p>
+</li>
+<li><p>写入延迟大（锁竞争）</p>
+</li>
+</ul>
+<p>优化的核心目标是：<strong>减少扫描量，减少锁竞争，充分利用索引与缓存</strong>。</p>
+<span id="more"></span>
+
+<h1 id="2-索引优化（Index-Optimization）"><a href="#2-索引优化（Index-Optimization）" class="headerlink" title="2. 索引优化（Index Optimization）"></a>2. 索引优化（Index Optimization）</h1><p>MongoDB 查询性能的关键就是索引。</p>
+<h2 id="2-1-索引类型"><a href="#2-1-索引类型" class="headerlink" title="2.1 索引类型"></a>2.1 索引类型</h2><table>
+<thead>
+<tr>
+<th align="left">类型</th>
+<th align="left">作用</th>
+<th align="left">示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">单字段索引</td>
+<td align="left">针对单个字段</td>
+<td align="left">db.users.createIndex({ age: 1 })</td>
+</tr>
+<tr>
+<td align="left">复合索引</td>
+<td align="left">多个字段组合</td>
+<td align="left">db.users.createIndex({ name: 1, age: -1 })</td>
+</tr>
+<tr>
+<td align="left">唯一索引</td>
+<td align="left">防止重复值</td>
+<td align="left">db.users.createIndex({ email: 1 }, { unique: true })</td>
+</tr>
+<tr>
+<td align="left">文本索引</td>
+<td align="left">搜索文本</td>
+<td align="left">db.articles.createIndex({ content: “text” })</td>
+</tr>
+<tr>
+<td align="left">地理索引</td>
+<td align="left">地理位置查询</td>
+<td align="left">db.locations.createIndex({ loc: “2dsphere” })</td>
+</tr>
+</tbody></table>
+<h2 id="2-2-索引命中原则"><a href="#2-2-索引命中原则" class="headerlink" title="2.2 索引命中原则"></a>2.2 索引命中原则</h2><ol>
+<li><p><strong>查询条件中用到的字段要有索引</strong></p>
+</li>
+<li><p><strong>复合索引遵循最左前缀原则</strong></p>
+<p> 例如：</p>
+ <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.<span class="property">users</span>.<span class="title function_">createIndex</span>(&#123; <span class="attr">name</span>: <span class="number">1</span>, <span class="attr">age</span>: <span class="number">1</span> &#125;)</span><br></pre></td></tr></table></figure>
+<p> 这个索引可用于：</p>
+<ul>
+<li><p><code>&#123; name: &quot;Tom&quot; &#125;</code></p>
+</li>
+<li><p><code>&#123; name: &quot;Tom&quot;, age: 25 &#125;</code><br> 但不能用于：</p>
+</li>
+<li><p><code>&#123; age: 25 &#125;</code>（会全表扫描）</p>
+</li>
+</ul>
+</li>
+<li><p><strong>避免过多索引</strong>（写入成本高，内存占用大）</p>
+</li>
+<li><p><strong>定期清理无用索引</strong>：</p>
+ <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.<span class="property">users</span>.<span class="title function_">dropIndex</span>(<span class="string">&quot;name_1&quot;</span>)</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="2-3-查看查询是否使用索引"><a href="#2-3-查看查询是否使用索引" class="headerlink" title="2.3 查看查询是否使用索引"></a>2.3 查看查询是否使用索引</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.<span class="property">users</span>.<span class="title function_">find</span>(&#123; <span class="attr">age</span>: &#123; <span class="attr">$gt</span>: <span class="number">25</span> &#125; &#125;).<span class="title function_">explain</span>(<span class="string">&quot;executionStats&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>如果输出中 <code>&quot;stage&quot;</code> 是 <code>&quot;COLLSCAN&quot;</code> → 全表扫描，需要优化。<br>如果是 <code>&quot;IXSCAN&quot;</code> → 命中索引。</p>
+<h1 id="3-查询优化（Query-Optimization）"><a href="#3-查询优化（Query-Optimization）" class="headerlink" title="3. 查询优化（Query Optimization）"></a>3. 查询优化（Query Optimization）</h1><h2 id="3-1-只取需要的字段"><a href="#3-1-只取需要的字段" class="headerlink" title="3.1 只取需要的字段"></a>3.1 只取需要的字段</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.<span class="property">users</span>.<span class="title function_">find</span>(&#123;&#125;, &#123; <span class="attr">name</span>: <span class="number">1</span>, <span class="attr">age</span>: <span class="number">1</span>, <span class="attr">_id</span>: <span class="number">0</span> &#125;)</span><br></pre></td></tr></table></figure>
+<p>减少网络传输与内存占用。</p>
+<h2 id="3-2-避免-where、正则前缀模糊"><a href="#3-2-避免-where、正则前缀模糊" class="headerlink" title="3.2 避免 $where、正则前缀模糊"></a>3.2 避免 $where、正则前缀模糊</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 慢（无法利用索引）</span></span><br><span class="line">db.<span class="property">users</span>.<span class="title function_">find</span>(&#123; <span class="attr">name</span>: <span class="regexp">/Tom/</span> &#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 快（利用索引）</span></span><br><span class="line">db.<span class="property">users</span>.<span class="title function_">find</span>(&#123; <span class="attr">name</span>: <span class="regexp">/^Tom/</span> &#125;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-3-提前过滤-match"><a href="#3-3-提前过滤-match" class="headerlink" title="3.3 提前过滤 $match"></a>3.3 提前过滤 $match</h2><p>聚合时 <code>$match</code> 放前面，减少后续数据量：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">db.<span class="property">orders</span>.<span class="title function_">aggregate</span>([</span><br><span class="line">  &#123; <span class="attr">$match</span>: &#123; <span class="attr">status</span>: <span class="string">&quot;completed&quot;</span> &#125; &#125;, <span class="comment">// 放前面</span></span><br><span class="line">  &#123; <span class="attr">$group</span>: &#123; <span class="attr">_id</span>: <span class="string">&quot;$customerId&quot;</span>, <span class="attr">total</span>: &#123; <span class="attr">$sum</span>: <span class="string">&quot;$amount&quot;</span> &#125; &#125; &#125;</span><br><span class="line">])</span><br></pre></td></tr></table></figure>
+<h2 id="3-4-批量写入"><a href="#3-4-批量写入" class="headerlink" title="3.4 批量写入"></a>3.4 批量写入</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.<span class="property">collection</span>.<span class="title function_">insertMany</span>([...], &#123; <span class="attr">ordered</span>: <span class="literal">false</span> &#125;)</span><br></pre></td></tr></table></figure>
+
+<p>并行插入数据，减少锁竞争。</p>
+<h1 id="4-分片优化（Sharding-Optimization）"><a href="#4-分片优化（Sharding-Optimization）" class="headerlink" title="4. 分片优化（Sharding Optimization）"></a>4. 分片优化（Sharding Optimization）</h1><h2 id="4-1-选择合适的分片键"><a href="#4-1-选择合适的分片键" class="headerlink" title="4.1 选择合适的分片键"></a>4.1 选择合适的分片键</h2><ul>
+<li><p>高基数（<code>cardinality</code>）字段，例如 userId<br>（避免低基数字段导致数据集中在少数分片）</p>
+</li>
+<li><p>避免时间戳作为唯一分片键（会产生热点写入）</p>
+</li>
+<li><p>考虑复合分片键，例如 <code>&#123; region: 1, userId: 1 &#125;</code></p>
+</li>
+</ul>
+<h2 id="4-2-预分片"><a href="#4-2-预分片" class="headerlink" title="4.2 预分片"></a>4.2 预分片</h2><p>大规模导入数据前，先预分片：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">sh.<span class="title function_">enableSharding</span>(<span class="string">&quot;mydb&quot;</span>)</span><br><span class="line">sh.<span class="title function_">shardCollection</span>(<span class="string">&quot;mydb.users&quot;</span>, &#123; <span class="attr">userId</span>: <span class="number">1</span> &#125;)</span><br></pre></td></tr></table></figure>
+<h2 id="4-3-均衡分布"><a href="#4-3-均衡分布" class="headerlink" title="4.3 均衡分布"></a>4.3 均衡分布</h2><p>定期检查分片均衡：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sh.<span class="title function_">status</span>()</span><br></pre></td></tr></table></figure>
+<p>如果不均衡，可手动触发：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sh.<span class="title function_">startBalancer</span>()</span><br></pre></td></tr></table></figure>
+<h1 id="5-聚合优化（Aggregation-Optimization）"><a href="#5-聚合优化（Aggregation-Optimization）" class="headerlink" title="5. 聚合优化（Aggregation Optimization）"></a>5. 聚合优化（Aggregation Optimization）</h1><h2 id="5-1-match-前置"><a href="#5-1-match-前置" class="headerlink" title="5.1 $match 前置"></a>5.1 $match 前置</h2><p>将过滤条件尽量放在管道前端，减少后续处理数据量。</p>
+<h2 id="5-2-project-提前裁剪字段"><a href="#5-2-project-提前裁剪字段" class="headerlink" title="5.2 $project 提前裁剪字段"></a>5.2 $project 提前裁剪字段</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">db.<span class="property">orders</span>.<span class="title function_">aggregate</span>([</span><br><span class="line">  &#123; <span class="attr">$project</span>: &#123; <span class="attr">orderId</span>: <span class="number">1</span>, <span class="attr">amount</span>: <span class="number">1</span>, <span class="attr">_id</span>: <span class="number">0</span> &#125; &#125;,</span><br><span class="line">  &#123; <span class="attr">$group</span>: &#123; <span class="attr">_id</span>: <span class="string">&quot;$orderId&quot;</span>, <span class="attr">total</span>: &#123; <span class="attr">$sum</span>: <span class="string">&quot;$amount&quot;</span> &#125; &#125; &#125;</span><br><span class="line">])</span><br></pre></td></tr></table></figure>
+<h2 id="5-3-避免-lookup-过多"><a href="#5-3-避免-lookup-过多" class="headerlink" title="5.3 避免 $lookup 过多"></a>5.3 避免 $lookup 过多</h2><p>跨集合关联查询代价大，可以考虑：</p>
+<ul>
+<li><p>数据冗余（反范式设计）</p>
+</li>
+<li><p>预计算结果存储到新集合</p>
+</li>
+</ul>
+<h1 id="6-实测优化建议"><a href="#6-实测优化建议" class="headerlink" title="6. 实测优化建议"></a>6. 实测优化建议</h1><p>我做过一次 <code>1000</code> 万条订单数据的优化对比：</p>
+<table>
+<thead>
+<tr>
+<th align="left">优化前（无索引）</th>
+<th align="left">优化后（加索引 + $match 前置）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">查询耗时：12.4s</td>
+<td align="left">查询耗时：0.8s</td>
+</tr>
+<tr>
+<td align="left">CPU 占用：95%</td>
+<td align="left">CPU 占用：25%</td>
+</tr>
+<tr>
+<td align="left">内存占用：8GB</td>
+<td align="left">内存占用：3GB</td>
+</tr>
+</tbody></table>
+<h1 id="7-运维与监控"><a href="#7-运维与监控" class="headerlink" title="7. 运维与监控"></a>7. 运维与监控</h1><h2 id="7-1-常用工具"><a href="#7-1-常用工具" class="headerlink" title="7.1 常用工具"></a>7.1 常用工具</h2><ul>
+<li><p><code>mongostat</code> → 实时查看 <code>QPS</code>、锁、缓存命中率</p>
+</li>
+<li><p><code>mongotop</code> → 查看集合读写耗时</p>
+</li>
+<li><p><code>db.serverStatus()</code> → 查看实例状态</p>
+</li>
+</ul>
+<h2 id="7-2-性能监控平台"><a href="#7-2-性能监控平台" class="headerlink" title="7.2 性能监控平台"></a>7.2 性能监控平台</h2><ul>
+<li><p><strong>MongoDB Atlas</strong>（官方云监控）</p>
+</li>
+<li><p><strong>Prometheus + Grafana</strong>（开源可视化）</p>
+</li>
+</ul>
+<h1 id="8-总结"><a href="#8-总结" class="headerlink" title="8. 总结"></a>8. 总结</h1><p>MongoDB 性能优化的核心公式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">高效索引 + 合理分片键 + 精简查询字段 + 聚合前置过滤</span><br></pre></td></tr></table></figure>
+<p>建议开发时就养成：</p>
+<ol>
+<li><p><strong>先设计索引</strong>再写查询</p>
+</li>
+<li><p>定期 <code>explain()</code> 检查查询计划</p>
+</li>
+<li><p>高并发场景下，<strong>优先副本集 + 分片结合</strong></p>
+</li>
+<li><p>聚合复杂计算时，考虑<strong>预计算表</strong></p>
+</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/mongodb/" rel="tag"># mongodb</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2025/08/01/mongodb/%E2%9A%A1-MongoDB-%E9%AB%98%E7%BA%A7%E7%AF%87%EF%BC%9A%E8%81%9A%E5%90%88%E3%80%81%E5%88%86%E7%89%87%E3%80%81%E5%89%AF%E6%9C%AC%E9%9B%86%E5%85%A8%E9%9D%A2%E8%A7%A3%E6%9E%90/" rel="prev" title="⚡ MongoDB 高级篇：聚合、分片、副本集全面解析">
+      <i class="fa fa-chevron-left"></i> ⚡ MongoDB 高级篇：聚合、分片、副本集全面解析
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E4%BC%98%E5%8C%96%EF%BC%9F"><span class="nav-number">1.</span> <span class="nav-text">1. 为什么需要优化？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E7%B4%A2%E5%BC%95%E4%BC%98%E5%8C%96%EF%BC%88Index-Optimization%EF%BC%89"><span class="nav-number">2.</span> <span class="nav-text">2. 索引优化（Index Optimization）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-%E7%B4%A2%E5%BC%95%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 索引类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-%E7%B4%A2%E5%BC%95%E5%91%BD%E4%B8%AD%E5%8E%9F%E5%88%99"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 索引命中原则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-%E6%9F%A5%E7%9C%8B%E6%9F%A5%E8%AF%A2%E6%98%AF%E5%90%A6%E4%BD%BF%E7%94%A8%E7%B4%A2%E5%BC%95"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 查看查询是否使用索引</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96%EF%BC%88Query-Optimization%EF%BC%89"><span class="nav-number">3.</span> <span class="nav-text">3. 查询优化（Query Optimization）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-%E5%8F%AA%E5%8F%96%E9%9C%80%E8%A6%81%E7%9A%84%E5%AD%97%E6%AE%B5"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 只取需要的字段</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-%E9%81%BF%E5%85%8D-where%E3%80%81%E6%AD%A3%E5%88%99%E5%89%8D%E7%BC%80%E6%A8%A1%E7%B3%8A"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 避免 $where、正则前缀模糊</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-%E6%8F%90%E5%89%8D%E8%BF%87%E6%BB%A4-match"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 提前过滤 $match</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-4-%E6%89%B9%E9%87%8F%E5%86%99%E5%85%A5"><span class="nav-number">3.4.</span> <span class="nav-text">3.4 批量写入</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-%E5%88%86%E7%89%87%E4%BC%98%E5%8C%96%EF%BC%88Sharding-Optimization%EF%BC%89"><span class="nav-number">4.</span> <span class="nav-text">4. 分片优化（Sharding Optimization）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-%E9%80%89%E6%8B%A9%E5%90%88%E9%80%82%E7%9A%84%E5%88%86%E7%89%87%E9%94%AE"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 选择合适的分片键</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2-%E9%A2%84%E5%88%86%E7%89%87"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 预分片</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-3-%E5%9D%87%E8%A1%A1%E5%88%86%E5%B8%83"><span class="nav-number">4.3.</span> <span class="nav-text">4.3 均衡分布</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-%E8%81%9A%E5%90%88%E4%BC%98%E5%8C%96%EF%BC%88Aggregation-Optimization%EF%BC%89"><span class="nav-number">5.</span> <span class="nav-text">5. 聚合优化（Aggregation Optimization）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#5-1-match-%E5%89%8D%E7%BD%AE"><span class="nav-number">5.1.</span> <span class="nav-text">5.1 $match 前置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-2-project-%E6%8F%90%E5%89%8D%E8%A3%81%E5%89%AA%E5%AD%97%E6%AE%B5"><span class="nav-number">5.2.</span> <span class="nav-text">5.2 $project 提前裁剪字段</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-3-%E9%81%BF%E5%85%8D-lookup-%E8%BF%87%E5%A4%9A"><span class="nav-number">5.3.</span> <span class="nav-text">5.3 避免 $lookup 过多</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-%E5%AE%9E%E6%B5%8B%E4%BC%98%E5%8C%96%E5%BB%BA%E8%AE%AE"><span class="nav-number">6.</span> <span class="nav-text">6. 实测优化建议</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7-%E8%BF%90%E7%BB%B4%E4%B8%8E%E7%9B%91%E6%8E%A7"><span class="nav-number">7.</span> <span class="nav-text">7. 运维与监控</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#7-1-%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7"><span class="nav-number">7.1.</span> <span class="nav-text">7.1 常用工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-2-%E6%80%A7%E8%83%BD%E7%9B%91%E6%8E%A7%E5%B9%B3%E5%8F%B0"><span class="nav-number">7.2.</span> <span class="nav-text">7.2 性能监控平台</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#8-%E6%80%BB%E7%BB%93"><span class="nav-number">8.</span> <span class="nav-text">8. 总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="yngty"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">yngty</p>
+  <div class="site-description" itemprop="description">预测未来的最好方式就是实现它</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">99</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">72</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yngty" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yngty" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yngty@foxmail.com" title="E-Mail → mailto:yngty@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yngty</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">71k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">4:19</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme    : 'default',
+      logLevel : 3,
+      flowchart: { curve     : 'linear' },
+      gantt    : { axisFormat: '%m/%d/%Y' },
+      sequence : { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

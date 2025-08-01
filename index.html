@@ -119,12 +119,12 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">96</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">99</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
 
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">18</span></a>
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">19</span></a>
 
   </li>
         <li class="menu-item menu-item-tags">
@@ -159,6 +159,312 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2025/08/01/mongodb/%E2%9A%A1-MongoDB-%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E7%AF%87%EF%BC%9A%E7%B4%A2%E5%BC%95%E3%80%81%E6%9F%A5%E8%AF%A2%E8%B0%83%E4%BC%98%E4%B8%8E%E5%88%86%E7%89%87%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Symbol Crash">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2025/08/01/mongodb/%E2%9A%A1-MongoDB-%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E7%AF%87%EF%BC%9A%E7%B4%A2%E5%BC%95%E3%80%81%E6%9F%A5%E8%AF%A2%E8%B0%83%E4%BC%98%E4%B8%8E%E5%88%86%E7%89%87%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" class="post-title-link" itemprop="url">⚡ MongoDB 性能优化篇：索引、查询调优与分片最佳实践</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2025-08-01 10:10:05 / 修改时间：02:37:30" itemprop="dateCreated datePublished" datetime="2025-08-01T10:10:05+00:00">2025-08-01</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/mongodb/" itemprop="url" rel="index"><span itemprop="name">mongodb</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/mongodb/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>883</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="1-为什么需要优化？"><a href="#1-为什么需要优化？" class="headerlink" title="1. 为什么需要优化？"></a>1. 为什么需要优化？</h1><p><code>MongoDB</code> 虽然灵活，但如果不加优化，可能出现：</p>
+<ul>
+<li><p>查询性能低（扫描全表）</p>
+</li>
+<li><p>分片热点（某一分片压力过大）</p>
+</li>
+<li><p>内存占用高（缓存无效）</p>
+</li>
+<li><p>写入延迟大（锁竞争）</p>
+</li>
+</ul>
+<p>优化的核心目标是：<strong>减少扫描量，减少锁竞争，充分利用索引与缓存</strong>。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2025/08/01/mongodb/%E2%9A%A1-MongoDB-%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E7%AF%87%EF%BC%9A%E7%B4%A2%E5%BC%95%E3%80%81%E6%9F%A5%E8%AF%A2%E8%B0%83%E4%BC%98%E4%B8%8E%E5%88%86%E7%89%87%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2025/08/01/mongodb/%E2%9A%A1-MongoDB-%E9%AB%98%E7%BA%A7%E7%AF%87%EF%BC%9A%E8%81%9A%E5%90%88%E3%80%81%E5%88%86%E7%89%87%E3%80%81%E5%89%AF%E6%9C%AC%E9%9B%86%E5%85%A8%E9%9D%A2%E8%A7%A3%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Symbol Crash">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2025/08/01/mongodb/%E2%9A%A1-MongoDB-%E9%AB%98%E7%BA%A7%E7%AF%87%EF%BC%9A%E8%81%9A%E5%90%88%E3%80%81%E5%88%86%E7%89%87%E3%80%81%E5%89%AF%E6%9C%AC%E9%9B%86%E5%85%A8%E9%9D%A2%E8%A7%A3%E6%9E%90/" class="post-title-link" itemprop="url">⚡ MongoDB 高级篇：聚合、分片、副本集全面解析</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2025-08-01 10:06:31 / 修改时间：02:37:30" itemprop="dateCreated datePublished" datetime="2025-08-01T10:06:31+00:00">2025-08-01</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/mongodb/" itemprop="url" rel="index"><span itemprop="name">mongodb</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/mongodb/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>775</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="1-聚合（Aggregation-Framework）"><a href="#1-聚合（Aggregation-Framework）" class="headerlink" title="1. 聚合（Aggregation Framework）"></a>1. 聚合（Aggregation Framework）</h1><p>聚合是 <code>MongoDB</code> 中最强大的分析与数据处理工具，相当于 <code>SQL</code> 中的 <code>GROUP BY</code>、<code>JOIN</code>、<code>WHERE</code>、<code>ORDER BY</code> 等组合。</p>
+<h2 id="1-1-聚合管道的基本原理"><a href="#1-1-聚合管道的基本原理" class="headerlink" title="1.1 聚合管道的基本原理"></a>1.1 聚合管道的基本原理</h2><p><code>MongoDB</code> 的聚合是一个数据流管道：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">输入文档  →  <span class="variable">$match</span>  →  <span class="variable">$group</span>  →  <span class="variable">$sort</span>  →  <span class="variable">$project</span>  →  输出结果</span><br></pre></td></tr></table></figure>
+
+<p>每个阶段都会对数据进行筛选、计算、排序或重塑。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2025/08/01/mongodb/%E2%9A%A1-MongoDB-%E9%AB%98%E7%BA%A7%E7%AF%87%EF%BC%9A%E8%81%9A%E5%90%88%E3%80%81%E5%88%86%E7%89%87%E3%80%81%E5%89%AF%E6%9C%AC%E9%9B%86%E5%85%A8%E9%9D%A2%E8%A7%A3%E6%9E%90/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2025/08/01/mongodb/%F0%9F%9A%80-MongoDB-%E5%85%A5%E9%97%A8%E5%88%B0%E8%BF%9B%E9%98%B6%EF%BC%9A%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E6%8E%8C%E6%8F%A1%E6%96%87%E6%A1%A3%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Symbol Crash">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2025/08/01/mongodb/%F0%9F%9A%80-MongoDB-%E5%85%A5%E9%97%A8%E5%88%B0%E8%BF%9B%E9%98%B6%EF%BC%9A%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E6%8E%8C%E6%8F%A1%E6%96%87%E6%A1%A3%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93/" class="post-title-link" itemprop="url">🚀 MongoDB 入门到进阶：从零开始掌握文档型数据库</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2025-08-01 09:51:39 / 修改时间：02:37:30" itemprop="dateCreated datePublished" datetime="2025-08-01T09:51:39+00:00">2025-08-01</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/mongodb/" itemprop="url" rel="index"><span itemprop="name">mongodb</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/mongodb/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>717</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="1-什么是-MongoDB？"><a href="#1-什么是-MongoDB？" class="headerlink" title="1. 什么是 MongoDB？"></a>1. 什么是 MongoDB？</h1><p><code>MongoDB</code> 是一种 <strong>面向文档的 <code>NoSQL</code> 数据库</strong>，与传统的关系型数据库（<code>MySQL</code>、<code>PostgreSQL</code>）不同，它不使用表格和行，而是使用 <strong>BSON</strong>（二进制 <code>JSON</code>）存储数据。<br>简单来说，它是一个 <strong>JSON 存储与查询引擎</strong>。</p>
+<h2 id="MongoDB-的核心特性："><a href="#MongoDB-的核心特性：" class="headerlink" title="MongoDB 的核心特性："></a>MongoDB 的核心特性：</h2><ul>
+<li><p><strong>文档型存储</strong>：每条数据是一个 JSON 对象。</p>
+</li>
+<li><p><strong>无固定模式（Schema-less）</strong>：字段可以灵活增加或减少。</p>
+</li>
+<li><p><strong>高扩展性</strong>：支持分片（<code>Sharding</code>）与副本集（<code>Replica Set</code>）。</p>
+</li>
+<li><p><strong>强大的查询语言</strong>：支持聚合（<code>Aggregation</code>）、全文检索（<code>Full-Text Search</code>）。</p>
+</li>
+<li><p><strong>天然适合大数据与高并发场景</strong>。</p>
+</li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2025/08/01/mongodb/%F0%9F%9A%80-MongoDB-%E5%85%A5%E9%97%A8%E5%88%B0%E8%BF%9B%E9%98%B6%EF%BC%9A%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E6%8E%8C%E6%8F%A1%E6%96%87%E6%A1%A3%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2025/07/31/linux/Makefile-%E6%8B%BE%E9%81%97/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -182,10 +488,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2025-07-31 11:18:39 / 修改时间：03:32:23" itemprop="dateCreated datePublished" datetime="2025-07-31T11:18:39+00:00">2025-07-31</time>
+              <time title="创建时间：2025-07-31 11:18:39" itemprop="dateCreated datePublished" datetime="2025-07-31T11:18:39+00:00">2025-07-31</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-08-01 02:37:30" itemprop="dateModified" datetime="2025-08-01T02:37:30+00:00">2025-08-01</time>
+              </span>
 
           <br>
             <span class="post-meta-item" title="本文字数">
@@ -272,7 +584,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-07-31 03:32:23" itemprop="dateModified" datetime="2025-07-31T03:32:23+00:00">2025-07-31</time>
+                <time title="修改时间：2025-08-01 02:37:30" itemprop="dateModified" datetime="2025-08-01T02:37:30+00:00">2025-08-01</time>
               </span>
 
           <br>
@@ -354,7 +666,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-07-31 03:32:23" itemprop="dateModified" datetime="2025-07-31T03:32:23+00:00">2025-07-31</time>
+                <time title="修改时间：2025-08-01 02:37:30" itemprop="dateModified" datetime="2025-08-01T02:37:30+00:00">2025-08-01</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -487,7 +799,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-07-31 03:32:23" itemprop="dateModified" datetime="2025-07-31T03:32:23+00:00">2025-07-31</time>
+                <time title="修改时间：2025-08-01 02:37:30" itemprop="dateModified" datetime="2025-08-01T02:37:30+00:00">2025-08-01</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -583,7 +895,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-07-31 03:32:23" itemprop="dateModified" datetime="2025-07-31T03:32:23+00:00">2025-07-31</time>
+                <time title="修改时间：2025-08-01 02:37:30" itemprop="dateModified" datetime="2025-08-01T02:37:30+00:00">2025-08-01</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -679,7 +991,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-07-31 03:32:23" itemprop="dateModified" datetime="2025-07-31T03:32:23+00:00">2025-07-31</time>
+                <time title="修改时间：2025-08-01 02:37:30" itemprop="dateModified" datetime="2025-08-01T02:37:30+00:00">2025-08-01</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -775,7 +1087,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-07-31 03:32:23" itemprop="dateModified" datetime="2025-07-31T03:32:23+00:00">2025-07-31</time>
+                <time title="修改时间：2025-08-01 02:37:30" itemprop="dateModified" datetime="2025-08-01T02:37:30+00:00">2025-08-01</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -817,301 +1129,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2025/05/27/macos/%E6%8E%8C%E6%8F%A1-macOS-%E7%9A%84-codesign-%E5%91%BD%E4%BB%A4/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2025/05/27/network/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3-IP%E5%8D%8F%E8%AE%AE/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="yngty">
-      <meta itemprop="description" content="预测未来的最好方式就是实现它">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Symbol Crash">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2025/05/27/network/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3-IP%E5%8D%8F%E8%AE%AE/" class="post-title-link" itemprop="url">深入理解 IP 协议</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2025-05-27 13:56:43" itemprop="dateCreated datePublished" datetime="2025-05-27T13:56:43+00:00">2025-05-27</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-07-31 03:32:23" itemprop="dateModified" datetime="2025-07-31T03:32:23+00:00">2025-07-31</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Network/" itemprop="url" rel="index"><span itemprop="name">Network</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>1.3k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>5 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="深入理解-IP-协议"><a href="#深入理解-IP-协议" class="headerlink" title="深入理解 IP 协议"></a>深入理解 IP 协议</h1><h2 id="1-简介"><a href="#1-简介" class="headerlink" title="1. 简介"></a>1. 简介</h2><p><code>IP</code> 协议（<code>Internet Protocol</code>，互联网协议）是现代网络通信的基础。它定义了数据如何在网络中传输，并为不同的设备提供唯一的地址标识。<code>IP</code> 协议是所有网络通信的核心，广泛应用于全球范围内的计算机网络、局域网（<code>LAN</code>）以及广域网（<code>WAN</code>）。</p>
-<p>本文将详细探讨 <code>IP</code> 协议的基础知识、工作原理、以及常见的版本（<code>IPv4</code> 和 <code>IPv6</code>）。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2025/05/27/network/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3-IP%E5%8D%8F%E8%AE%AE/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2025/05/26/linux/iptables-deep-dive/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="yngty">
-      <meta itemprop="description" content="预测未来的最好方式就是实现它">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Symbol Crash">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2025/05/26/linux/iptables-deep-dive/" class="post-title-link" itemprop="url">深入理解 iptables：Linux 网络包过滤的核心机制</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2025-05-26 10:00:00" itemprop="dateCreated datePublished" datetime="2025-05-26T10:00:00+00:00">2025-05-26</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-07-31 03:32:23" itemprop="dateModified" datetime="2025-07-31T03:32:23+00:00">2025-07-31</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Network/" itemprop="url" rel="index"><span itemprop="name">Network</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Network/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">网络安全</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Network/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/Linux-%E5%86%85%E6%A0%B8/" itemprop="url" rel="index"><span itemprop="name">Linux 内核</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>1.2k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>4 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h2><p>在 <code>Linux</code> 网络安全与数据包处理领域，<code>iptables</code> 是不可忽视的重要工具。它是 <code>Linux</code> 系统上用于配置防火墙规则的用户空间工具，底层依赖内核模块 Netfilter 实现数据包的捕获与处理。</p>
-<hr>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2025/05/26/linux/iptables-deep-dive/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2025/05/09/network/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3TUN%E4%B8%8ETAP%EF%BC%9A%E8%99%9A%E6%8B%9F%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E7%9A%84%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="yngty">
-      <meta itemprop="description" content="预测未来的最好方式就是实现它">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Symbol Crash">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2025/05/09/network/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3TUN%E4%B8%8ETAP%EF%BC%9A%E8%99%9A%E6%8B%9F%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E7%9A%84%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/" class="post-title-link" itemprop="url">深入理解TUN与TAP：虚拟网络设备的原理与应用</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2025-05-09 17:20:28" itemprop="dateCreated datePublished" datetime="2025-05-09T17:20:28+00:00">2025-05-09</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-07-31 03:32:23" itemprop="dateModified" datetime="2025-07-31T03:32:23+00:00">2025-07-31</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96/" itemprop="url" rel="index"><span itemprop="name">网络虚拟化</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>1.2k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>4 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>在构建虚拟网络或实现VPN时，<strong>TUN</strong>和<strong>TAP</strong>是两个常被提及的虚拟网络设备。它们看似相似，却在网络协议栈的不同层级发挥作用。本文将深入解析它们的工作原理、应用场景及配置方法。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2025/05/09/network/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3TUN%E4%B8%8ETAP%EF%BC%9A%E8%99%9A%E6%8B%9F%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E7%9A%84%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1202,14 +1219,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">99</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-count">19</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
@@ -1262,12 +1279,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">69k</span>
+    <span title="站点总字数">71k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">4:11</span>
+    <span title="站点阅读时长">4:19</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>
