@@ -32,11 +32,31 @@ db.orders.aggregate([
 ```
 **2) $group 分组统计**
 
+它会按照 `_id` 字段的值来分组，然后对每组数据做聚合计算
+
 ```js
 db.orders.aggregate([
   { $group: { _id: "$customerId", totalSpent: { $sum: "$amount" } } }
 ])
 ```
+相当于:
+
+- 按 `customerId` 字段的值来分组
+- 建一个字段 `totalSpent`, 对每个分组内所有文档的 `amount` 字段做求和
+
+
+常用聚合运算符
+
+|运算符 |	作用|
+| :- | :- |
+| $sum	|求和|
+| $avg|	平均值|
+| $min	|最小值|
+| $max|	最大值|
+| $firs|	每组第一条记录|
+| $last|	每组最后一条记录|
+| $push	|把每个值放进数组|
+| $addToSet	|去重后放进数组|
 
 **3) $project 重塑字段**
 
@@ -44,7 +64,22 @@ db.orders.aggregate([
 db.orders.aggregate([
   { $project: { _id: 0, orderId: 1, amountUSD: "$amount" } }
 ])
+
+{ "_id": 1, "orderId": "A001", "amount": 100 }
+
+执行后结果 =>
+
+{ "orderId": "A001", "amountUSD": 100 }
+
 ```
+相当于：
+- 不要 `_id` (`MongoDB` 默认会带上 `_id`，所以这里显式关掉）。
+
+- 保留 `orderId`。
+
+- 新增 `amountUSD` 字段，它的值来自 `amount` 字段。
+
+
 
 **4) $sort 排序**
 
@@ -53,6 +88,15 @@ db.orders.aggregate([
   { $sort: { amount: -1 } }
 ])
 ```
+- **1 表示升序（从小到大）**
+- **-1 表示降序（从大到小）**
+
+    ```js
+    { $sort: { amount: -1, orderId: 1 } }
+
+    表示先按 `amount` 降序，金额相同的再按 `orderId` 升序。
+    ```
+
 **5) $lookup 关联集合（类似 SQL JOIN）**
 
 ```js
@@ -67,6 +111,11 @@ db.orders.aggregate([
   }
 ])
 ```
+- 对 `orders` 集合中的每条文档，取出它的 `customerId`。
+
+- 在 `customers` 集合中查找 `_id` 等于 `customerId` 的文档。
+
+- 把匹配到的所有 `customers` 文档放进当前订单文档的 `customerInfo` 数组字段里。 `as：新建一个字段名`，关联匹配到的结果都会放在这个字段下，是**一个数组**，即使匹配只有一个也会是数组。
 
 ## 1.3 聚合示例：统计用户总消费金额并排序
 ```js
