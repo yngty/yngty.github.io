@@ -5,6 +5,7 @@ tags:
 - mongodb
 categories:
 - mongodb
+- 数据库
 ---
 
 
@@ -12,8 +13,8 @@ categories:
 
 - 对文档部分内容进行排序的数据结构
 - 加快文档查询和文档排序的速度
-- 复合键索引只能支持前缀子查询 
- 
+- 复合键索引只能支持前缀子查询
+
 ## 索引操作
 
 ### 创建索引
@@ -23,7 +24,7 @@ db.<collection>.createIndex(<keys>, <options>)
 ```
 - `<keys>` 文档指定了创建索引的字段
 - `<options>` 创建索引的参数和设定索引的特性
-     
+
 #### 创建一个单键索引
 
 ```shell
@@ -84,7 +85,7 @@ db.accountWithIndex.createIndex({balance:1},{unique:true})
 ```shell
 db.accountWithIndex.createIndex({balance:1}, { sparse:true})
 ```
-如果同一个索引既具有唯一性，又具有稀疏性，就可以保存多篇缺失索引键值的文档了 
+如果同一个索引既具有唯一性，又具有稀疏性，就可以保存多篇缺失索引键值的文档了
 
 ```shell
 db.accountWithIndex.createIndex({balance:1}, { sparse:true, unique:true})
@@ -113,7 +114,7 @@ db.accountWithIndex.createIndex({lastAccess:1},{expireAfterSeconds:20})
 - `explain()`返回结果中包含的 `winningPlan`字段表示数据库的查询方法
     - `stage`
         - `COLLSCAN` 完整查询整个集合
-        - `FETCH` `IXSCAN` 通过索引查询，返回完整文档 
+        - `FETCH` `IXSCAN` 通过索引查询，返回完整文档
         -` PROJECTION_COVERED`  `IXSCAN`, 直接使用索引存在的字段，无序完整文档，没有 `FETCH` 阶段
 
 没有 `IXSCAN` 阶段，都耗费资源

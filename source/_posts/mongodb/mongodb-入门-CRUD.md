@@ -5,6 +5,7 @@ tags:
 - mongodb
 categories:
 - mongodb
+- 数据库
 ---
 # 文档主键
 
@@ -130,7 +131,7 @@ db.accounts.insertMany(
 
 ### 错误处理
 
-在**顺序**写入时，一旦遇到错误，操作便会退出，剩余的文档无论正确与否，都不会被写入。 
+在**顺序**写入时，一旦遇到错误，操作便会退出，剩余的文档无论正确与否，都不会被写入。
 
 在**乱序**写入时，即使某些文档造成了错误，剩余的正确文档仍然会被写入
 
@@ -329,7 +330,7 @@ db.accounts.find(
 
 ### 字段操作符
 
-- `$exists` 
+- `$exists`
     - 查询包含字段值的文档
     - 操作命令格式:
         ```
@@ -344,7 +345,7 @@ db.accounts.find(
 )
 ```
 
-- `$type` 
+- `$type`
     - 查询包含字段值类型的文档
     - 操作命令格式:
         ```
@@ -375,13 +376,13 @@ db.accounts.find(
 ```
 ### 数组操作符
 
-- `$all` 
+- `$all`
     - 筛选数组中包含所有的查询值的文档
     - 操作命令格式:
         ```
         { field: { $all: [<value1>, <value2>, ... ]}}
         ```
-- `$elemMatch` 
+- `$elemMatch`
     - 筛选数组中任一一个元素满足查询条件
     - 操作命令格式:
         ```
@@ -530,7 +531,7 @@ db.accounts.find({}, {_id : 0, name: 1, contact: {$slice: 1}})
 db.accounts.find({}, {_id : 0, name: 1, contact: {$elemMatch: {$gt: "Alabama"}}})
 ```
 
-与下等同: 
+与下等同:
 
 ```shell
 db.accounts.find({contact: { $gt: "Alabama"}}, {_id : 0, name: 1, contact: "contact.$: 1"})
@@ -545,7 +546,7 @@ db.collection.update(<query>, <update>, <options>)
 - `<update>` 更新文档
 - `<options>` 设置参数
 
-## 更新整篇文档   
+## 更新整篇文档
 
 如果 `<update>` 文档不包含任何更新操作符，`db.collection.update()` 将会使用 `<update>`文档直接替换集合中符合 `<query>` 文档筛选条件的文档
 
@@ -553,7 +554,7 @@ db.collection.update(<query>, <update>, <options>)
 db.account.update({name:"alice" }, {name : "alice", "balance":123})
 ```
 
-注意问题: 
+注意问题:
 
 - 文档主键 `_id` 是不可以更改的
 - 只有**第一篇**符合 `<query>` 文档符合筛选条件的文档会被更新
@@ -569,25 +570,25 @@ db.account.update({name:"alice" }, {name : "alice", "balance":123})
 - `$mul` 相乘字段值
 - `$min` 比较减小字段值
 - `$max` 比较增大字段值
- 
+
  ### $set
 
 ```
 { $set: { <filed1>: <value1>, ...}}
 ```
 
-举个例子: 
+举个例子:
 
 ```shell
 db.accounts.update(
     {name: "jack"},
     {
-        $set: 
+        $set:
         {
             balance: 3000,
             info: {
                 dateOpened: new Date("2016-05-18T16:00:00Z"),
-                branch: "branch1" 
+                branch: "branch1"
             },
         }
     }
@@ -600,7 +601,7 @@ db.accounts.update(
 db.accounts.update(
     {name: "jack"},
     {
-        $set: 
+        $set:
         {
             "info.dateOpened": new Date("2017-01-01T16:00:00Z")
         }
@@ -612,7 +613,7 @@ db.accounts.update(
 
 在 `$set` 中使用**数组名加下标**，如果向现有数组字段范围以外的位置添加新值，数组字段的长度会被扩大，未被赋值的数组成员将被设置为 `null`
 
-举个例子 `jack`的  `contact` 数组中默认有 `3` 个元素: 
+举个例子 `jack`的  `contact` 数组中默认有 `3` 个元素:
 
 - 更新  `jack`的 `contact` 数组中第一个元素
 
@@ -620,7 +621,7 @@ db.accounts.update(
     db.accounts.update(
         {name: "jack"},
         {
-            $set: 
+            $set:
             {
                 "contact.0": "666666"
             }
@@ -635,7 +636,7 @@ db.accounts.update(
     db.accounts.update(
         {name: "jack"},
         {
-            $set: 
+            $set:
             {
                 "contact.3": "77777"
             }
@@ -651,7 +652,7 @@ db.accounts.update(
     db.accounts.update(
         {name: "jack"},
         {
-            $set: 
+            $set:
             {
                 "contact.5": "99999"
             }
@@ -659,7 +660,7 @@ db.accounts.update(
     )
     ```
 
-### $unset 
+### $unset
 
 删除字段, 传入任何值都一样，默认设置为 `""`, 格式如下:
 
@@ -746,7 +747,7 @@ db.accounts.update(
     }
 )
 ```
-**使用注意**: 
+**使用注意**:
 
 - `$inc`、 `$mul` 只能应用在**数字**字段上
 - 当更新字段不存在时
@@ -779,7 +780,7 @@ db.accounts.update(
 )
 ```
 
-**使用注意**: 
+**使用注意**:
 
 - 可以在任何可以比较大小的字段上使用
 - 当更新字段不存在时
@@ -801,7 +802,7 @@ db.accounts.update(
         Timestamp\
         Regular Expression\
         MaxKey (internal type)
-        
+
 
 ## 更新数组操作符
 
@@ -899,7 +900,7 @@ db.accounts.update(
 ```shell
 db.accounts.update(
     { name: "karen"},
-    { $pull: { contact: { $elemMatch: { $eq: "22222222" }}}}  
+    { $pull: { contact: { $elemMatch: { $eq: "22222222" }}}}
 )
 ```
 
@@ -1141,11 +1142,11 @@ db.accounts.update(
 )
 ```
 ## options
- 
+
 ### multi
 
 
-``` 
+```
 { multi: <boolean> }
 ```
 
@@ -1168,7 +1169,7 @@ db.accounts.update(
 
 ### upsert
 
-``` 
+```
 { upsert: <boolean> }
 ```
 
@@ -1264,4 +1265,3 @@ db.accounts.drop()
 ````
 
 > 如果集合中的文档数量较多，使用 `remove` 命令删除所有的文档效率不高，这种情况下推荐，使用 `drop` 命令删除集合，然后再创建空集合并创建索引。
-
