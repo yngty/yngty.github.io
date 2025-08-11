@@ -20,15 +20,15 @@
     var CONFIG = {"hostname":"yngty.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
-  <meta name="description" content="一、什么是 MakefileMakefile 是为 make 命令准备的脚本文件，它描述了项目中文件之间的依赖关系以及如何编译它们。它允许你只输入一条命令 make，即可自动编译项目中所有需要更新的部分。 二、Makefile 基本语法最基本的格式如下： 12目标: 依赖	命令">
+  <meta name="description" content="一、什么是 MakefileMakefile 是为 make 命令准备的脚本文件，它描述了项目中文件之间的依赖关系以及如何编译它们。它允许你只输入一条命令 make，即可自动编译项目中所有需要更新的部分。 二、Makefile 基本语法最基本的格式如下： 12目标: 依赖	命令  例如： 12hello.o: hello.c	gcc -c hello.c -o hello.o 含义：当 hello">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Makefile 拾遗">
 <meta property="og:url" content="https://yngty.github.io/2025/07/31/linux/Makefile-%E6%8B%BE%E9%81%97/index.html">
 <meta property="og:site_name" content="Symbol Crash">
-<meta property="og:description" content="一、什么是 MakefileMakefile 是为 make 命令准备的脚本文件，它描述了项目中文件之间的依赖关系以及如何编译它们。它允许你只输入一条命令 make，即可自动编译项目中所有需要更新的部分。 二、Makefile 基本语法最基本的格式如下： 12目标: 依赖	命令">
+<meta property="og:description" content="一、什么是 MakefileMakefile 是为 make 命令准备的脚本文件，它描述了项目中文件之间的依赖关系以及如何编译它们。它允许你只输入一条命令 make，即可自动编译项目中所有需要更新的部分。 二、Makefile 基本语法最基本的格式如下： 12目标: 依赖	命令  例如： 12hello.o: hello.c	gcc -c hello.c -o hello.o 含义：当 hello">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-07-31T11:18:39.000Z">
-<meta property="article:modified_time" content="2025-08-01T02:50:03.763Z">
+<meta property="article:modified_time" content="2025-08-11T03:02:45.581Z">
 <meta property="article:author" content="yngty">
 <meta property="article:tag" content="Makefile">
 <meta name="twitter:card" content="summary">
@@ -122,17 +122,17 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">99</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">101</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
 
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">19</span></a>
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">20</span></a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">72</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">77</span></a>
 
   </li>
   </ul>
@@ -193,7 +193,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-08-01 02:50:03" itemprop="dateModified" datetime="2025-08-01T02:50:03+00:00">2025-08-01</time>
+                <time title="修改时间：2025-08-11 03:02:45" itemprop="dateModified" datetime="2025-08-11T03:02:45+00:00">2025-08-11</time>
               </span>
 
           <br>
@@ -202,14 +202,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>383</span>
+              <span>835</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
+              <span>3 分钟</span>
             </span>
 
         </div>
@@ -224,12 +224,16 @@
         <h2 id="一、什么是-Makefile"><a href="#一、什么是-Makefile" class="headerlink" title="一、什么是 Makefile"></a>一、什么是 Makefile</h2><p><code>Makefile</code> 是为 <code>make</code> 命令准备的脚本文件，它描述了项目中文件之间的依赖关系以及如何编译它们。它允许你只输入一条命令 <code>make</code>，即可自动编译项目中所有需要更新的部分。</p>
 <h2 id="二、Makefile-基本语法"><a href="#二、Makefile-基本语法" class="headerlink" title="二、Makefile 基本语法"></a>二、Makefile 基本语法</h2><p>最基本的格式如下：</p>
 <figure class="highlight make"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">目标: 依赖</span></span><br><span class="line">	命令</span><br></pre></td></tr></table></figure>
-<span id="more"></span>
 
 <p>例如：</p>
 <figure class="highlight make"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">hello.o: hello.c</span></span><br><span class="line">	gcc -c hello.c -o hello.o</span><br></pre></td></tr></table></figure>
-<p>这表示当 <code>hello.c</code> 更新时，使用 <code>gcc</code> 编译生成 <code>hello.o</code>。</p>
-<h1 id="自动变量"><a href="#自动变量" class="headerlink" title="自动变量"></a>自动变量</h1><p>自动变量是 <code>make</code> 在执行规则时自动设置的特殊变量。它们根据当前规则中的目标和依赖动态赋值，不需要你手动传参。</p>
+<p>含义：当 hello.c 更新时，执行 gcc -c hello.c -o hello.o 生成 hello.o。</p>
+<blockquote>
+<p>make 会自动根据文件的时间戳判断哪些目标需要重新生成，这就是它的高效之处。</p>
+</blockquote>
+<span id="more"></span>
+
+<h1 id="三、自动变量"><a href="#三、自动变量" class="headerlink" title="三、自动变量"></a>三、自动变量</h1><p>自动变量是 <code>make</code> 在执行规则时自动设置的特殊变量。它们根据当前规则中的目标和依赖动态赋值，不需要你手动传参。</p>
 <table>
 <thead>
 <tr>
@@ -262,32 +266,92 @@
 <td>所有<strong>比目标新的依赖项</strong></td>
 </tr>
 </tbody></table>
-<h2 id="示例讲解"><a href="#示例讲解" class="headerlink" title="示例讲解"></a>示例讲解</h2><h3 id="示例-1：用-和"><a href="#示例-1：用-和" class="headerlink" title="示例 1：用 $@ 和 $&lt;"></a>示例 1：用 <code>$@</code> 和 <code>$&lt;</code></h3><figure class="highlight make"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">hello.o: hello.c</span></span><br><span class="line">	gcc -c <span class="variable">$&lt;</span> -o <span class="variable">$@</span></span><br></pre></td></tr></table></figure>
+<h2 id="示例讲解"><a href="#示例讲解" class="headerlink" title="示例讲解"></a>示例讲解</h2><h3 id="示例-1：-和"><a href="#示例-1：-和" class="headerlink" title="示例 1：$@ 和 $&lt;"></a>示例 1：<code>$@</code> 和 <code>$&lt;</code></h3><figure class="highlight make"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">hello.o: hello.c</span></span><br><span class="line">	gcc -c <span class="variable">$&lt;</span> -o <span class="variable">$@</span></span><br></pre></td></tr></table></figure>
 <p>等价于:</p>
 <figure class="highlight make"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">hello.o: hello.c</span></span><br><span class="line">	gcc -c hello.c -o hello.o</span><br></pre></td></tr></table></figure>
-<h3 id="示例-2：多个依赖用"><a href="#示例-2：多个依赖用" class="headerlink" title="示例 2：多个依赖用 $^"></a>示例 2：多个依赖用 <code>$^</code></h3><figure class="highlight make"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">main: main.o utils.o</span></span><br><span class="line">	gcc <span class="variable">$^</span> -o <span class="variable">$@</span></span><br></pre></td></tr></table></figure>
+<h3 id="示例-2：-（所有依赖）"><a href="#示例-2：-（所有依赖）" class="headerlink" title="示例 2：$^（所有依赖）"></a>示例 2：<code>$^</code>（所有依赖）</h3><figure class="highlight make"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">main: main.o utils.o</span></span><br><span class="line">	gcc <span class="variable">$^</span> -o <span class="variable">$@</span></span><br></pre></td></tr></table></figure>
 
 <p>等价于：</p>
 <figure class="highlight make"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">main: main.o utils.o</span></span><br><span class="line">	gcc main.o utils.o -o main</span><br></pre></td></tr></table></figure>
 
-<h3 id="示例-3：用-构建-c-和-o"><a href="#示例-3：用-构建-c-和-o" class="headerlink" title="示例 3：用 $* 构建 .c 和 .o"></a>示例 3：用 <code>$*</code> 构建 <code>.c</code> 和 <code>.o</code></h3><figure class="highlight make"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">%.o: %.c</span></span><br><span class="line">	gcc -c <span class="variable">$&lt;</span> -o <span class="variable">$@</span></span><br></pre></td></tr></table></figure>
+<h3 id="示例-3：模式规则"><a href="#示例-3：模式规则" class="headerlink" title="示例 3：模式规则 %"></a>示例 3：模式规则 <code>%</code></h3><figure class="highlight make"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">%.o: %.c</span></span><br><span class="line">	gcc -c <span class="variable">$&lt;</span> -o <span class="variable">$@</span></span><br></pre></td></tr></table></figure>
 
 <p>这个模式规则可以自动匹配：</p>
 <ul>
 <li><code>main.o ← main.c</code></li>
 <li><code>utils.o ← utils.c</code></li>
+</ul>
+<p>此时</p>
+<ul>
 <li><code>$*</code> 表示不带扩展名的 <code>stem</code>，比如 <code>main</code>、<code>utils</code></li>
 <li><code>$&lt;</code> 是 <code>main.c</code></li>
 <li><code>$@</code> 是 <code>main.o</code></li>
 </ul>
-<h3 id="示例-4：使用-构建增量目标"><a href="#示例-4：使用-构建增量目标" class="headerlink" title="示例 4：使用 $? 构建增量目标"></a>示例 4：使用 <code>$?</code> 构建增量目标</h3><figure class="highlight make"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">backup.tar: file1 file2</span></span><br><span class="line">	tar -cf <span class="variable">$@</span> <span class="variable">$?</span></span><br></pre></td></tr></table></figure>
+<h3 id="示例-4：-（比目标新的依赖）"><a href="#示例-4：-（比目标新的依赖）" class="headerlink" title="示例 4：$?（比目标新的依赖）"></a>示例 4：<code>$?</code>（比目标新的依赖）</h3><figure class="highlight make"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">backup.tar: file1 file2</span></span><br><span class="line">	tar -cf <span class="variable">$@</span> <span class="variable">$?</span></span><br></pre></td></tr></table></figure>
 
 <p>含义：</p>
 <ul>
 <li><code>backup.tar</code> 是目标</li>
-<li><code>file1</code> <code>file2</code> 是依赖</li>
-<li><code>$?</code> 表示比 <code>backup.tar</code> 新的文件（即需要重新打包的）</li>
+<li><code>$?</code> 是所有比 <code>backup.tar</code> 新的文件（需要重新打包的部分）</li>
 </ul>
+<h1 id="四、wildcard-patsubst-basename"><a href="#四、wildcard-patsubst-basename" class="headerlink" title="四、wildcard &#x2F; patsubst &#x2F; basename"></a>四、wildcard &#x2F; patsubst &#x2F; basename</h1><p>除了自动变量，<code>Makefile</code> 还提供了强大的字符串处理函数，常见的有 <code>wildcard</code>、<code>patsubst</code> 和 <code>basename</code>。<br>它们可以帮助你实现自动化构建，让 <code>Makefile</code> 更加简洁和可扩展。</p>
+<h2 id="1-wildcard-——-查找文件"><a href="#1-wildcard-——-查找文件" class="headerlink" title="1. wildcard —— 查找文件"></a>1. wildcard —— 查找文件</h2><p>语法：</p>
+<figure class="highlight make"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$(<span class="built_in">wildcard</span> pattern...)</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>PATTERN：文件匹配模式（支持 *、?、[…] 等 shell 风格的通配符）</p>
+</li>
+<li><p>返回值：匹配到的文件名列表（以空格分隔）</p>
+</li>
+</ul>
+<blockquote>
+<p>💡 简单来说，<code>wildcard</code> 会去 磁盘 上找文件，不是对字符串做替换，而是 真实地查找存在的文件。</p>
+</blockquote>
+<p>示例：</p>
+<figure class="highlight make"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">SRC := <span class="variable">$(<span class="built_in">wildcard</span> *.c)</span></span><br><span class="line"></span><br><span class="line"><span class="section">all:</span></span><br><span class="line">	@echo <span class="variable">$(SRC)</span></span><br></pre></td></tr></table></figure>
+
+<p>如果目录中有：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">main</span><span class="selector-class">.c</span> foo<span class="selector-class">.c</span> bar<span class="selector-class">.c</span> readme<span class="selector-class">.txt</span></span><br></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">main</span><span class="selector-class">.c</span> foo<span class="selector-class">.c</span> bar<span class="selector-class">.c</span></span><br></pre></td></tr></table></figure>
+
+<p>💡 <strong>作用</strong>：自动扫描匹配的文件，而不是手写文件名。</p>
+<h2 id="2-patsubst-——-模式替换"><a href="#2-patsubst-——-模式替换" class="headerlink" title="2. patsubst —— 模式替换"></a>2. patsubst —— 模式替换</h2><p>语法：</p>
+<figure class="highlight make"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$(<span class="built_in">patsubst</span> pattern,replacement,text)</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><pattern>：要匹配的模式（支持 <code>%</code> 通配符）</p>
+</li>
+<li><p><replacement>：替换成的新模式（同样支持 <code>%</code>）</p>
+</li>
+<li><p><text>：要进行替换的一组字符串（以空格分隔）</p>
+</li>
+</ul>
+<p>示例：</p>
+<figure class="highlight make"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">SRC := foo.c bar.c main.c</span><br><span class="line">OBJ := <span class="variable">$(<span class="built_in">patsubst</span> %.c,%.o,<span class="variable">$(SRC)</span>)</span></span><br><span class="line"></span><br><span class="line"><span class="section">all:</span></span><br><span class="line">	@echo <span class="variable">$(OBJ)</span></span><br></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">foo<span class="selector-class">.o</span> bar<span class="selector-class">.o</span> <span class="selector-tag">main</span><span class="selector-class">.o</span></span><br></pre></td></tr></table></figure>
+
+<p>💡 <strong>作用</strong>：批量替换文件名后缀，例如 .c → .o。</p>
+<h2 id="3-basename-——-去掉扩展名"><a href="#3-basename-——-去掉扩展名" class="headerlink" title="3. basename —— 去掉扩展名"></a>3. basename —— 去掉扩展名</h2><p>语法：</p>
+<figure class="highlight make"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$(<span class="built_in">basename</span> names...)</span></span><br></pre></td></tr></table></figure>
+<p>示例：</p>
+<figure class="highlight make"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">FILES := foo.c bar.c readme.txt</span><br><span class="line">NAMES := <span class="variable">$(<span class="built_in">basename</span> <span class="variable">$(FILES)</span>)</span></span><br><span class="line"></span><br><span class="line"><span class="section">all:</span></span><br><span class="line">	@echo <span class="variable">$(NAMES)</span></span><br></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">foo bar readme</span><br></pre></td></tr></table></figure>
+<p>💡 <strong>作用</strong>：获取不带扩展名的“纯文件名”。</p>
+<h2 id="4-三者结合的自动化构建"><a href="#4-三者结合的自动化构建" class="headerlink" title="4. 三者结合的自动化构建"></a>4. 三者结合的自动化构建</h2><p>假设目录中有：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">bootstrap.bpf.c bootstrap.c</span><br><span class="line">user_ringbuf.bpf.c user_ringbuf.c</span><br></pre></td></tr></table></figure>
+
+<p>我们想要：</p>
+<p>自动找到所有 <code>.bpf.c</code> 文件</p>
+<p>自动去掉扩展名</p>
+<p>自动生成 <code>.bpf.o</code> 和 <code>.skel.h</code> 列表</p>
+<figure class="highlight make"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">PROGRAMS := <span class="variable">$(<span class="built_in">basename</span> $(<span class="built_in">wildcard</span> *.bpf.c)</span>)</span><br><span class="line">BPF_OBJS := <span class="variable">$(<span class="built_in">patsubst</span> %,%.bpf.o,<span class="variable">$(PROGRAMS)</span>)</span></span><br><span class="line">SKELS    := <span class="variable">$(<span class="built_in">patsubst</span> %,%.skel.h,<span class="variable">$(PROGRAMS)</span>)</span></span><br><span class="line"></span><br><span class="line"><span class="section">all:</span></span><br><span class="line">	@echo <span class="string">&quot;PROGRAMS: <span class="variable">$(PROGRAMS)</span>&quot;</span></span><br><span class="line">	@echo <span class="string">&quot;BPF_OBJS: <span class="variable">$(BPF_OBJS)</span>&quot;</span></span><br><span class="line">	@echo <span class="string">&quot;SKELS: <span class="variable">$(SKELS)</span>&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>执行结果：</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">PROGRAMS: bootstrap user_ringbuf</span></span><br><span class="line"><span class="section">BPF_OBJS: bootstrap.bpf.o user_ringbuf.bpf.o</span></span><br><span class="line"><span class="section">SKELS: bootstrap.skel.h user_ringbuf.skel.h</span></span><br></pre></td></tr></table></figure>
+
+<p>新增一个 <code>trace_connect.bpf.c</code> 后，<code>Makefile</code> 会自动识别并更新，无需修改变量。</p>
 
     </div>
 
@@ -371,7 +435,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E4%BB%80%E4%B9%88%E6%98%AF-Makefile"><span class="nav-number">1.</span> <span class="nav-text">一、什么是 Makefile</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81Makefile-%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">二、Makefile 基本语法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%87%AA%E5%8A%A8%E5%8F%98%E9%87%8F"><span class="nav-number"></span> <span class="nav-text">自动变量</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B%E8%AE%B2%E8%A7%A3"><span class="nav-number">1.</span> <span class="nav-text">示例讲解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B-1%EF%BC%9A%E7%94%A8-%E5%92%8C"><span class="nav-number">1.1.</span> <span class="nav-text">示例 1：用 $@ 和 $&lt;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B-2%EF%BC%9A%E5%A4%9A%E4%B8%AA%E4%BE%9D%E8%B5%96%E7%94%A8"><span class="nav-number">1.2.</span> <span class="nav-text">示例 2：多个依赖用 $^</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B-3%EF%BC%9A%E7%94%A8-%E6%9E%84%E5%BB%BA-c-%E5%92%8C-o"><span class="nav-number">1.3.</span> <span class="nav-text">示例 3：用 $* 构建 .c 和 .o</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B-4%EF%BC%9A%E4%BD%BF%E7%94%A8-%E6%9E%84%E5%BB%BA%E5%A2%9E%E9%87%8F%E7%9B%AE%E6%A0%87"><span class="nav-number">1.4.</span> <span class="nav-text">示例 4：使用 $? 构建增量目标</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E4%BB%80%E4%B9%88%E6%98%AF-Makefile"><span class="nav-number">1.</span> <span class="nav-text">一、什么是 Makefile</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81Makefile-%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">二、Makefile 基本语法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E8%87%AA%E5%8A%A8%E5%8F%98%E9%87%8F"><span class="nav-number"></span> <span class="nav-text">三、自动变量</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B%E8%AE%B2%E8%A7%A3"><span class="nav-number">1.</span> <span class="nav-text">示例讲解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B-1%EF%BC%9A-%E5%92%8C"><span class="nav-number">1.1.</span> <span class="nav-text">示例 1：$@ 和 $&lt;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B-2%EF%BC%9A-%EF%BC%88%E6%89%80%E6%9C%89%E4%BE%9D%E8%B5%96%EF%BC%89"><span class="nav-number">1.2.</span> <span class="nav-text">示例 2：$^（所有依赖）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B-3%EF%BC%9A%E6%A8%A1%E5%BC%8F%E8%A7%84%E5%88%99"><span class="nav-number">1.3.</span> <span class="nav-text">示例 3：模式规则 %</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B-4%EF%BC%9A-%EF%BC%88%E6%AF%94%E7%9B%AE%E6%A0%87%E6%96%B0%E7%9A%84%E4%BE%9D%E8%B5%96%EF%BC%89"><span class="nav-number">1.4.</span> <span class="nav-text">示例 4：$?（比目标新的依赖）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%9B%E3%80%81wildcard-patsubst-basename"><span class="nav-number"></span> <span class="nav-text">四、wildcard &#x2F; patsubst &#x2F; basename</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-wildcard-%E2%80%94%E2%80%94-%E6%9F%A5%E6%89%BE%E6%96%87%E4%BB%B6"><span class="nav-number">1.</span> <span class="nav-text">1. wildcard —— 查找文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-patsubst-%E2%80%94%E2%80%94-%E6%A8%A1%E5%BC%8F%E6%9B%BF%E6%8D%A2"><span class="nav-number">2.</span> <span class="nav-text">2. patsubst —— 模式替换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-basename-%E2%80%94%E2%80%94-%E5%8E%BB%E6%8E%89%E6%89%A9%E5%B1%95%E5%90%8D"><span class="nav-number">3.</span> <span class="nav-text">3. basename —— 去掉扩展名</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E4%B8%89%E8%80%85%E7%BB%93%E5%90%88%E7%9A%84%E8%87%AA%E5%8A%A8%E5%8C%96%E6%9E%84%E5%BB%BA"><span class="nav-number">4.</span> <span class="nav-text">4. 三者结合的自动化构建</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -387,20 +451,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">99</span>
+          <span class="site-state-item-count">101</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-count">20</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">72</span>
+        <span class="site-state-item-count">77</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -447,12 +511,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">72k</span>
+    <span title="站点总字数">74k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">4:21</span>
+    <span title="站点阅读时长">4:28</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>

@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yngty.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="一、eBPF 是什么？1. 简单理解eBPF 就是一个让你安全地在 Linux 内核中运行自定义代码的机制。 它可以在内核中运行经过验证的“沙盒字节码”，而不需要修改内核源码，也不需要编写复杂的内核模块。 2. eBPF 的核心优势 安全：内核会对 eBPF 程序进行严格验证（Verifier）  高性能：字节码会被 JIT 编译成本地机器码  灵活：几乎可以挂到内核的任何地方（网络、进程、文件系">
+<meta property="og:type" content="article">
+<meta property="og:title" content="eBPF 入门">
+<meta property="og:url" content="https://yngty.github.io/2025/08/01/linux/eBPF-%E5%85%A5%E9%97%A8/index.html">
+<meta property="og:site_name" content="Symbol Crash">
+<meta property="og:description" content="一、eBPF 是什么？1. 简单理解eBPF 就是一个让你安全地在 Linux 内核中运行自定义代码的机制。 它可以在内核中运行经过验证的“沙盒字节码”，而不需要修改内核源码，也不需要编写复杂的内核模块。 2. eBPF 的核心优势 安全：内核会对 eBPF 程序进行严格验证（Verifier）  高性能：字节码会被 JIT 编译成本地机器码  灵活：几乎可以挂到内核的任何地方（网络、进程、文件系">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-08-01T11:24:28.000Z">
+<meta property="article:modified_time" content="2025-08-11T03:02:45.581Z">
+<meta property="article:author" content="yngty">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="eBPF">
+<meta property="article:tag" content="性能分析">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://yngty.github.io/2025/08/01/linux/eBPF-%E5%85%A5%E9%97%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>eBPF 入门 | Symbol Crash</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Symbol Crash" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Symbol Crash</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">不学无术</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">101</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">20</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">77</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yngty.github.io/2025/08/01/linux/eBPF-%E5%85%A5%E9%97%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="yngty">
+      <meta itemprop="description" content="预测未来的最好方式就是实现它">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Symbol Crash">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          eBPF 入门
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-08-01 11:24:28" itemprop="dateCreated datePublished" datetime="2025-08-01T11:24:28+00:00">2025-08-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-08-11 03:02:45" itemprop="dateModified" datetime="2025-08-11T03:02:45+00:00">2025-08-11</time>
+              </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>792</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="一、eBPF-是什么？"><a href="#一、eBPF-是什么？" class="headerlink" title="一、eBPF 是什么？"></a>一、eBPF 是什么？</h1><h2 id="1-简单理解"><a href="#1-简单理解" class="headerlink" title="1. 简单理解"></a>1. 简单理解</h2><p><code>eBPF</code> 就是一个<strong>让你安全地在 <code>Linux</code> 内核中运行自定义代码的机制</strong>。</p>
+<p>它可以在内核中运行经过验证的“沙盒字节码”，而不需要修改内核源码，也不需要编写复杂的内核模块。</p>
+<h2 id="2-eBPF-的核心优势"><a href="#2-eBPF-的核心优势" class="headerlink" title="2. eBPF 的核心优势"></a>2. eBPF 的核心优势</h2><ul>
+<li><p><strong>安全</strong>：内核会对 <code>eBPF</code> 程序进行严格验证（<code>Verifier</code>）</p>
+</li>
+<li><p><strong>高性能</strong>：字节码会被 <code>JIT</code> 编译成本地机器码</p>
+</li>
+<li><p><strong>灵活</strong>：几乎可以挂到内核的任何地方（网络、进程、文件系统等）</p>
+</li>
+<li><p><strong>热插拔</strong>：加载&#x2F;卸载不影响系统运行</p>
+</li>
+</ul>
+<h1 id="二、eBPF-运行架构"><a href="#二、eBPF-运行架构" class="headerlink" title="二、eBPF 运行架构"></a>二、eBPF 运行架构</h1><p>下面这张图，可以帮你快速理解 eBPF 的工作原理：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="operator">+</span><span class="comment">------------------------------+</span></span><br><span class="line"><span class="operator">|</span> 用户态 (<span class="keyword">User</span> Space)          <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span>                              <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span>  eBPF 程序 (C <span class="operator">/</span> bpftrace)    <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span>  ↓ clang 编译                <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span>  eBPF 字节码 (.o)            <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">--------------+---------------+</span></span><br><span class="line">               <span class="operator">|</span></span><br><span class="line">               v</span><br><span class="line"><span class="operator">+</span><span class="comment">--------------+---------------+</span></span><br><span class="line"><span class="operator">|</span> 内核态 (Kernel Space)        <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span>                              <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span>  eBPF 验证器 (Verifier)      <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span>    <span class="operator">-</span> 检查安全性              <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span>    <span class="operator">-</span> 防止死循环              <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span>    <span class="operator">-</span> 检查内存访问范围        <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span>                              <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span>  JIT 编译器 (JIT Compiler)   <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span>    <span class="operator">-</span> 转成本地机器码执行      <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span>                              <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span>  挂载到 Hook 点              <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span>    <span class="operator">-</span> kprobe<span class="operator">/</span>tracepoint       <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span>    <span class="operator">-</span> XDP<span class="operator">/</span>tc                  <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span>    <span class="operator">-</span> socket <span class="keyword">filter</span>           <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">------------------------------+</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="三、eBPF-常用挂钩点"><a href="#三、eBPF-常用挂钩点" class="headerlink" title="三、eBPF 常用挂钩点"></a>三、eBPF 常用挂钩点</h1><table>
+<thead>
+<tr>
+<th align="left">类型</th>
+<th align="left">说明</th>
+<th align="left">场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>Socket Filter</strong></td>
+<td align="left">套接字层数据包过滤</td>
+<td align="left">tcpdump、网络分析</td>
+</tr>
+<tr>
+<td align="left"><strong>kprobe&#x2F;kretprobe</strong></td>
+<td align="left">内核函数入口&#x2F;返回点插桩</td>
+<td align="left">系统调用跟踪</td>
+</tr>
+<tr>
+<td align="left"><strong>tracepoint</strong></td>
+<td align="left">预定义内核事件</td>
+<td align="left">性能分析</td>
+</tr>
+<tr>
+<td align="left"><strong>tc BPF</strong></td>
+<td align="left">网络流量控制</td>
+<td align="left">限速、QoS</td>
+</tr>
+<tr>
+<td align="left"><strong>XDP</strong></td>
+<td align="left">网络驱动最底层数据包处理</td>
+<td align="left">DDoS 防护</td>
+</tr>
+</tbody></table>
+<h1 id="四、eBPF-实战：追踪-TCP-连接"><a href="#四、eBPF-实战：追踪-TCP-连接" class="headerlink" title="四、eBPF 实战：追踪 TCP 连接"></a>四、eBPF 实战：追踪 TCP 连接</h1><p>我们做一个小实验：当进程建立 <code>TCP</code> 连接时，打印 <code>PID</code>、目标 <code>IP</code>、端口。</p>
+<h2 id="1-内核态-eBPF-程序"><a href="#1-内核态-eBPF-程序" class="headerlink" title="1. 内核态 eBPF 程序"></a>1. 内核态 eBPF 程序</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// tcpconnect.bpf.c</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;vmlinux.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bpf/bpf_helpers.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bpf/bpf_endian.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">char</span> LICENSE[] SEC(<span class="string">&quot;license&quot;</span>) = <span class="string">&quot;GPL&quot;</span>;</span><br><span class="line"></span><br><span class="line">SEC(<span class="string">&quot;kprobe/tcp_v4_connect&quot;</span>)</span><br><span class="line"><span class="type">int</span> <span class="title function_">tcp_connect</span><span class="params">(<span class="keyword">struct</span> pt_regs *ctx)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">sock</span> *<span class="title">sk</span> =</span> (<span class="keyword">struct</span> sock *)PT_REGS_PARM1(ctx);</span><br><span class="line">    u32 pid = bpf_get_current_pid_tgid() &gt;&gt; <span class="number">32</span>;</span><br><span class="line"></span><br><span class="line">    __be32 daddr = <span class="number">0</span>;</span><br><span class="line">    __be16 dport = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    bpf_probe_read_kernel(&amp;daddr, <span class="keyword">sizeof</span>(daddr), &amp;sk-&gt;__sk_common.skc_daddr);</span><br><span class="line">    bpf_probe_read_kernel(&amp;dport, <span class="keyword">sizeof</span>(dport), &amp;sk-&gt;__sk_common.skc_dport);</span><br><span class="line"></span><br><span class="line">    bpf_printk(<span class="string">&quot;PID %d -&gt; %pI4:%d\n&quot;</span>, pid, &amp;daddr, bpf_ntohs(dport));</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-用户态加载器"><a href="#2-用户态加载器" class="headerlink" title="2. 用户态加载器"></a>2. 用户态加载器</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// loader.c</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bpf/libbpf.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">libbpf_print_fn</span><span class="params">(<span class="keyword">enum</span> libbpf_print_level level, <span class="type">const</span> <span class="type">char</span> *format, va_list args)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">vfprintf</span>(<span class="built_in">stderr</span>, format, args);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">bpf_object</span> *<span class="title">obj</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">bpf_program</span> *<span class="title">prog</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">bpf_link</span> *<span class="title">link</span>;</span></span><br><span class="line">    <span class="type">int</span> err;</span><br><span class="line"></span><br><span class="line">    libbpf_set_print(libbpf_print_fn);</span><br><span class="line"></span><br><span class="line">    obj = bpf_object__open_file(<span class="string">&quot;tcpconnect.bpf.o&quot;</span>, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">if</span> (libbpf_get_error(obj)) &#123;</span><br><span class="line">        <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">&quot;打开 eBPF 对象失败\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    err = bpf_object__load(obj);</span><br><span class="line">    <span class="keyword">if</span> (err) &#123;</span><br><span class="line">        <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">&quot;加载 eBPF 程序失败\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    prog = bpf_object__find_program_by_name(obj, <span class="string">&quot;tcp_connect&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (!prog) &#123;</span><br><span class="line">        <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">&quot;找不到 eBPF 程序\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    link = bpf_program__attach_kprobe(prog, <span class="literal">false</span>, <span class="string">&quot;tcp_v4_connect&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (libbpf_get_error(link)) &#123;</span><br><span class="line">        <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">&quot;附加 kprobe 失败\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;成功加载并附加 eBPF 程序。按 Ctrl+C 停止\n&quot;</span>);</span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">        sleep(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    bpf_link__destroy(link);</span><br><span class="line">    bpf_object__close(obj);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="3-编译运行"><a href="#3-编译运行" class="headerlink" title="3. 编译运行"></a>3. 编译运行</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 编译内核态</span></span><br><span class="line">clang -O2 -g -target bpf -D__TARGET_ARCH_x86 -c tcpconnect.bpf.c -o tcpconnect.bpf.o</span><br><span class="line"></span><br><span class="line"><span class="comment"># 编译用户态</span></span><br><span class="line">gcc loader.c -o loader -lbpf</span><br><span class="line"></span><br><span class="line"><span class="comment"># 运行</span></span><br><span class="line"><span class="built_in">sudo</span> ./loader</span><br></pre></td></tr></table></figure>
+<h2 id="4-查看日志"><a href="#4-查看日志" class="headerlink" title="4. 查看日志"></a>4. 查看日志</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> <span class="built_in">cat</span> /sys/kernel/debug/tracing/trace_pipe</span><br></pre></td></tr></table></figure>
+
+<p>示例输出：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">PID 1234 -&gt; 93.184.216.34:80</span><br><span class="line">PID 5678 -&gt; 142.250.72.238:443</span><br></pre></td></tr></table></figure>
+
+<h1 id="五、eBPF-的实际应用"><a href="#五、eBPF-的实际应用" class="headerlink" title="五、eBPF 的实际应用"></a>五、eBPF 的实际应用</h1><ol>
+<li><p>性能分析</p>
+<ul>
+<li>bcc &#x2F; bpftrace 脚本库</li>
+</ul>
+</li>
+<li><p>网络安全</p>
+<ul>
+<li>XDP 高速包过滤</li>
+</ul>
+</li>
+<li><p>故障排查</p>
+<ul>
+<li>内核函数动态追踪</li>
+</ul>
+</li>
+<li><p>容器可观测性</p>
+<ul>
+<li>Cilium、Pixie</li>
+</ul>
+</li>
+</ol>
+<h1 id="六、总结"><a href="#六、总结" class="headerlink" title="六、总结"></a>六、总结</h1><p>eBPF 已经成为 Linux 内核可观测性和网络安全的核心技术。<br>它的强大在于：</p>
+<ul>
+<li><p>不改内核源码</p>
+</li>
+<li><p>高性能</p>
+</li>
+<li><p>高安全</p>
+</li>
+<li><p>热插拔</p>
+</li>
+</ul>
+<p>对于开发者和运维工程师来说，掌握 <code>eBPF</code>，不仅可以提高故障排查效率，还能为安全和性能优化带来新的可能性。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+              <a href="/tags/eBPF/" rel="tag"># eBPF</a>
+              <a href="/tags/%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" rel="tag"># 性能分析</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2025/08/01/mongodb/%E2%9A%A1-MongoDB-%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E7%AF%87%EF%BC%9A%E7%B4%A2%E5%BC%95%E3%80%81%E6%9F%A5%E8%AF%A2%E8%B0%83%E4%BC%98%E4%B8%8E%E5%88%86%E7%89%87%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" rel="prev" title="⚡ MongoDB 性能优化篇：索引、查询调优与分片最佳实践">
+      <i class="fa fa-chevron-left"></i> ⚡ MongoDB 性能优化篇：索引、查询调优与分片最佳实践
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2025/08/11/csharp/C-%E4%B8%AD%E7%9A%84%E5%8D%8F%E5%8F%98%E4%B8%8E%E9%80%86%E5%8F%98/" rel="next" title="C# 中的协变与逆变">
+      C# 中的协变与逆变 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81eBPF-%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-number">1.</span> <span class="nav-text">一、eBPF 是什么？</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E7%AE%80%E5%8D%95%E7%90%86%E8%A7%A3"><span class="nav-number">1.1.</span> <span class="nav-text">1. 简单理解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-eBPF-%E7%9A%84%E6%A0%B8%E5%BF%83%E4%BC%98%E5%8A%BF"><span class="nav-number">1.2.</span> <span class="nav-text">2. eBPF 的核心优势</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E3%80%81eBPF-%E8%BF%90%E8%A1%8C%E6%9E%B6%E6%9E%84"><span class="nav-number">2.</span> <span class="nav-text">二、eBPF 运行架构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89%E3%80%81eBPF-%E5%B8%B8%E7%94%A8%E6%8C%82%E9%92%A9%E7%82%B9"><span class="nav-number">3.</span> <span class="nav-text">三、eBPF 常用挂钩点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%9B%E3%80%81eBPF-%E5%AE%9E%E6%88%98%EF%BC%9A%E8%BF%BD%E8%B8%AA-TCP-%E8%BF%9E%E6%8E%A5"><span class="nav-number">4.</span> <span class="nav-text">四、eBPF 实战：追踪 TCP 连接</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%86%85%E6%A0%B8%E6%80%81-eBPF-%E7%A8%8B%E5%BA%8F"><span class="nav-number">4.1.</span> <span class="nav-text">1. 内核态 eBPF 程序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E7%94%A8%E6%88%B7%E6%80%81%E5%8A%A0%E8%BD%BD%E5%99%A8"><span class="nav-number">4.2.</span> <span class="nav-text">2. 用户态加载器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E7%BC%96%E8%AF%91%E8%BF%90%E8%A1%8C"><span class="nav-number">4.3.</span> <span class="nav-text">3. 编译运行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E6%9F%A5%E7%9C%8B%E6%97%A5%E5%BF%97"><span class="nav-number">4.4.</span> <span class="nav-text">4. 查看日志</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%94%E3%80%81eBPF-%E7%9A%84%E5%AE%9E%E9%99%85%E5%BA%94%E7%94%A8"><span class="nav-number">5.</span> <span class="nav-text">五、eBPF 的实际应用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%AD%E3%80%81%E6%80%BB%E7%BB%93"><span class="nav-number">6.</span> <span class="nav-text">六、总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="yngty"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">yngty</p>
+  <div class="site-description" itemprop="description">预测未来的最好方式就是实现它</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">101</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">77</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yngty" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yngty" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yngty@foxmail.com" title="E-Mail → mailto:yngty@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yngty</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">74k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">4:28</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme    : 'default',
+      logLevel : 3,
+      flowchart: { curve     : 'linear' },
+      gantt    : { axisFormat: '%m/%d/%Y' },
+      sequence : { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
